@@ -84,6 +84,8 @@ type BACnetCalendarEntryDateBuilder interface {
 	WithDateValue(BACnetContextTagDate) BACnetCalendarEntryDateBuilder
 	// WithDateValueBuilder adds DateValue (property field) which is build by the builder
 	WithDateValueBuilder(func(BACnetContextTagDateBuilder) BACnetContextTagDateBuilder) BACnetCalendarEntryDateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetCalendarEntryBuilder
 	// Build builds the BACnetCalendarEntryDate or returns an error if something is wrong
 	Build() (BACnetCalendarEntryDate, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetCalendarEntryDateBuilder) = (*_BACnetCalendarEntryDateBuilder)(nil)
 
 func (b *_BACnetCalendarEntryDateBuilder) setParent(contract BACnetCalendarEntryContract) {
 	b.BACnetCalendarEntryContract = contract
+	contract.(*_BACnetCalendarEntry)._SubType = b._BACnetCalendarEntryDate
 }
 
 func (b *_BACnetCalendarEntryDateBuilder) WithMandatoryFields(dateValue BACnetContextTagDate) BACnetCalendarEntryDateBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetCalendarEntryDateBuilder) MustBuild() BACnetCalendarEntryDate {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetCalendarEntryDateBuilder) Done() BACnetCalendarEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetCalendarEntryBuilder().(*_BACnetCalendarEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetCalendarEntryDate) deepCopy() *_BACnetCalendarEntryDate {
 	}
 	_BACnetCalendarEntryDateCopy := &_BACnetCalendarEntryDate{
 		m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).deepCopy(),
-		m.DateValue.DeepCopy().(BACnetContextTagDate),
+		utils.DeepCopy[BACnetContextTagDate](m.DateValue),
 	}
-	m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
+	_BACnetCalendarEntryDateCopy.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
 	return _BACnetCalendarEntryDateCopy
 }
 

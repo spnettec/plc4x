@@ -92,6 +92,8 @@ type BACnetContextTagBooleanBuilder interface {
 	WithPayload(BACnetTagPayloadBoolean) BACnetContextTagBooleanBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadBooleanBuilder) BACnetTagPayloadBooleanBuilder) BACnetContextTagBooleanBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetContextTagBuilder
 	// Build builds the BACnetContextTagBoolean or returns an error if something is wrong
 	Build() (BACnetContextTagBoolean, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,6 +117,7 @@ var _ (BACnetContextTagBooleanBuilder) = (*_BACnetContextTagBooleanBuilder)(nil)
 
 func (b *_BACnetContextTagBooleanBuilder) setParent(contract BACnetContextTagContract) {
 	b.BACnetContextTagContract = contract
+	contract.(*_BACnetContextTag)._SubType = b._BACnetContextTagBoolean
 }
 
 func (b *_BACnetContextTagBooleanBuilder) WithMandatoryFields(value uint8, payload BACnetTagPayloadBoolean) BACnetContextTagBooleanBuilder {
@@ -165,8 +168,10 @@ func (b *_BACnetContextTagBooleanBuilder) MustBuild() BACnetContextTagBoolean {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetContextTagBooleanBuilder) Done() BACnetContextTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetContextTagBuilder().(*_BACnetContextTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -373,9 +378,9 @@ func (m *_BACnetContextTagBoolean) deepCopy() *_BACnetContextTagBoolean {
 	_BACnetContextTagBooleanCopy := &_BACnetContextTagBoolean{
 		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
 		m.Value,
-		m.Payload.DeepCopy().(BACnetTagPayloadBoolean),
+		utils.DeepCopy[BACnetTagPayloadBoolean](m.Payload),
 	}
-	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	_BACnetContextTagBooleanCopy.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
 	return _BACnetContextTagBooleanCopy
 }
 

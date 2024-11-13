@@ -86,6 +86,8 @@ type BACnetConstructedDataObjectNameBuilder interface {
 	WithObjectName(BACnetApplicationTagCharacterString) BACnetConstructedDataObjectNameBuilder
 	// WithObjectNameBuilder adds ObjectName (property field) which is build by the builder
 	WithObjectNameBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataObjectNameBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataObjectName or returns an error if something is wrong
 	Build() (BACnetConstructedDataObjectName, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataObjectNameBuilder) = (*_BACnetConstructedDataObjectN
 
 func (b *_BACnetConstructedDataObjectNameBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataObjectName
 }
 
 func (b *_BACnetConstructedDataObjectNameBuilder) WithMandatoryFields(objectName BACnetApplicationTagCharacterString) BACnetConstructedDataObjectNameBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataObjectNameBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataObjectNameBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataObjectName) deepCopy() *_BACnetConstructedDataObj
 	}
 	_BACnetConstructedDataObjectNameCopy := &_BACnetConstructedDataObjectName{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ObjectName.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.ObjectName),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataObjectNameCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataObjectNameCopy
 }
 

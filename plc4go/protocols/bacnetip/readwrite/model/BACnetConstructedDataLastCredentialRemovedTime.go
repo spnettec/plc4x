@@ -86,6 +86,8 @@ type BACnetConstructedDataLastCredentialRemovedTimeBuilder interface {
 	WithLastCredentialRemovedTime(BACnetDateTime) BACnetConstructedDataLastCredentialRemovedTimeBuilder
 	// WithLastCredentialRemovedTimeBuilder adds LastCredentialRemovedTime (property field) which is build by the builder
 	WithLastCredentialRemovedTimeBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataLastCredentialRemovedTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLastCredentialRemovedTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataLastCredentialRemovedTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLastCredentialRemovedTimeBuilder) = (*_BACnetConstru
 
 func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLastCredentialRemovedTime
 }
 
 func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) WithMandatoryFields(lastCredentialRemovedTime BACnetDateTime) BACnetConstructedDataLastCredentialRemovedTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLastCredentialRemovedTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) deepCopy() *_BACnetCon
 	}
 	_BACnetConstructedDataLastCredentialRemovedTimeCopy := &_BACnetConstructedDataLastCredentialRemovedTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LastCredentialRemovedTime.DeepCopy().(BACnetDateTime),
+		utils.DeepCopy[BACnetDateTime](m.LastCredentialRemovedTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLastCredentialRemovedTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLastCredentialRemovedTimeCopy
 }
 

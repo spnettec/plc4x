@@ -117,6 +117,8 @@ type BACnetEventParameterBufferReadyBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterBufferReadyBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterBufferReadyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterBuilder
 	// Build builds the BACnetEventParameterBufferReady or returns an error if something is wrong
 	Build() (BACnetEventParameterBufferReady, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +142,7 @@ var _ (BACnetEventParameterBufferReadyBuilder) = (*_BACnetEventParameterBufferRe
 
 func (b *_BACnetEventParameterBufferReadyBuilder) setParent(contract BACnetEventParameterContract) {
 	b.BACnetEventParameterContract = contract
+	contract.(*_BACnetEventParameter)._SubType = b._BACnetEventParameterBufferReady
 }
 
 func (b *_BACnetEventParameterBufferReadyBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, notificationThreshold BACnetContextTagUnsignedInteger, previousNotificationCount BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) BACnetEventParameterBufferReadyBuilder {
@@ -257,8 +260,10 @@ func (b *_BACnetEventParameterBufferReadyBuilder) MustBuild() BACnetEventParamet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterBufferReadyBuilder) Done() BACnetEventParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -460,12 +465,12 @@ func (m *_BACnetEventParameterBufferReady) deepCopy() *_BACnetEventParameterBuff
 	}
 	_BACnetEventParameterBufferReadyCopy := &_BACnetEventParameterBufferReady{
 		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.NotificationThreshold.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.PreviousNotificationCount.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.NotificationThreshold),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.PreviousNotificationCount),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	_BACnetEventParameterBufferReadyCopy.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
 	return _BACnetEventParameterBufferReadyCopy
 }
 

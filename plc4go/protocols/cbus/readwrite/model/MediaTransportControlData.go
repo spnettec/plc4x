@@ -101,110 +101,47 @@ type MediaTransportControlDataBuilder interface {
 	// WithMediaLinkGroup adds MediaLinkGroup (property field)
 	WithMediaLinkGroup(byte) MediaTransportControlDataBuilder
 	// AsMediaTransportControlDataStop converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataStop() interface {
-		MediaTransportControlDataStopBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataStop() MediaTransportControlDataStopBuilder
 	// AsMediaTransportControlDataPlay converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataPlay() interface {
-		MediaTransportControlDataPlayBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataPlay() MediaTransportControlDataPlayBuilder
 	// AsMediaTransportControlDataPauseResume converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataPauseResume() interface {
-		MediaTransportControlDataPauseResumeBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataPauseResume() MediaTransportControlDataPauseResumeBuilder
 	// AsMediaTransportControlDataSetCategory converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataSetCategory() interface {
-		MediaTransportControlDataSetCategoryBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataSetCategory() MediaTransportControlDataSetCategoryBuilder
 	// AsMediaTransportControlDataSetSelection converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataSetSelection() interface {
-		MediaTransportControlDataSetSelectionBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataSetSelection() MediaTransportControlDataSetSelectionBuilder
 	// AsMediaTransportControlDataSetTrack converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataSetTrack() interface {
-		MediaTransportControlDataSetTrackBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataSetTrack() MediaTransportControlDataSetTrackBuilder
 	// AsMediaTransportControlDataShuffleOnOff converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataShuffleOnOff() interface {
-		MediaTransportControlDataShuffleOnOffBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataShuffleOnOff() MediaTransportControlDataShuffleOnOffBuilder
 	// AsMediaTransportControlDataRepeatOnOff converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataRepeatOnOff() interface {
-		MediaTransportControlDataRepeatOnOffBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataRepeatOnOff() MediaTransportControlDataRepeatOnOffBuilder
 	// AsMediaTransportControlDataNextPreviousCategory converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataNextPreviousCategory() interface {
-		MediaTransportControlDataNextPreviousCategoryBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataNextPreviousCategory() MediaTransportControlDataNextPreviousCategoryBuilder
 	// AsMediaTransportControlDataNextPreviousSelection converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataNextPreviousSelection() interface {
-		MediaTransportControlDataNextPreviousSelectionBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataNextPreviousSelection() MediaTransportControlDataNextPreviousSelectionBuilder
 	// AsMediaTransportControlDataNextPreviousTrack converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataNextPreviousTrack() interface {
-		MediaTransportControlDataNextPreviousTrackBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataNextPreviousTrack() MediaTransportControlDataNextPreviousTrackBuilder
 	// AsMediaTransportControlDataFastForward converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataFastForward() interface {
-		MediaTransportControlDataFastForwardBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataFastForward() MediaTransportControlDataFastForwardBuilder
 	// AsMediaTransportControlDataRewind converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataRewind() interface {
-		MediaTransportControlDataRewindBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataRewind() MediaTransportControlDataRewindBuilder
 	// AsMediaTransportControlDataSourcePowerControl converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataSourcePowerControl() interface {
-		MediaTransportControlDataSourcePowerControlBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataSourcePowerControl() MediaTransportControlDataSourcePowerControlBuilder
 	// AsMediaTransportControlDataTotalTracks converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataTotalTracks() interface {
-		MediaTransportControlDataTotalTracksBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataTotalTracks() MediaTransportControlDataTotalTracksBuilder
 	// AsMediaTransportControlDataStatusRequest converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataStatusRequest() interface {
-		MediaTransportControlDataStatusRequestBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataStatusRequest() MediaTransportControlDataStatusRequestBuilder
 	// AsMediaTransportControlDataEnumerateCategoriesSelectionTracks converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataEnumerateCategoriesSelectionTracks() interface {
-		MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataEnumerateCategoriesSelectionTracks() MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
 	// AsMediaTransportControlDataEnumerationsSize converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataEnumerationsSize() interface {
-		MediaTransportControlDataEnumerationsSizeBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataEnumerationsSize() MediaTransportControlDataEnumerationsSizeBuilder
 	// AsMediaTransportControlDataTrackName converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataTrackName() interface {
-		MediaTransportControlDataTrackNameBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataTrackName() MediaTransportControlDataTrackNameBuilder
 	// AsMediaTransportControlDataSelectionName converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataSelectionName() interface {
-		MediaTransportControlDataSelectionNameBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataSelectionName() MediaTransportControlDataSelectionNameBuilder
 	// AsMediaTransportControlDataCategoryName converts this build to a subType of MediaTransportControlData. It is always possible to return to current builder using Done()
-	AsMediaTransportControlDataCategoryName() interface {
-		MediaTransportControlDataCategoryNameBuilder
-		Done() MediaTransportControlDataBuilder
-	}
+	AsMediaTransportControlDataCategoryName() MediaTransportControlDataCategoryNameBuilder
 	// Build builds the MediaTransportControlData or returns an error if something is wrong
 	PartialBuild() (MediaTransportControlDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -265,14 +202,8 @@ func (b *_MediaTransportControlDataBuilder) PartialMustBuild() MediaTransportCon
 	return build
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataStop() interface {
-	MediaTransportControlDataStopBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataStopBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataStop() MediaTransportControlDataStopBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataStopBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataStopBuilder().(*_MediaTransportControlDataStopBuilder)
@@ -281,14 +212,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataStop() in
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataPlay() interface {
-	MediaTransportControlDataPlayBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataPlayBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataPlay() MediaTransportControlDataPlayBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataPlayBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataPlayBuilder().(*_MediaTransportControlDataPlayBuilder)
@@ -297,14 +222,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataPlay() in
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataPauseResume() interface {
-	MediaTransportControlDataPauseResumeBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataPauseResumeBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataPauseResume() MediaTransportControlDataPauseResumeBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataPauseResumeBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataPauseResumeBuilder().(*_MediaTransportControlDataPauseResumeBuilder)
@@ -313,14 +232,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataPauseResu
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSetCategory() interface {
-	MediaTransportControlDataSetCategoryBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataSetCategoryBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSetCategory() MediaTransportControlDataSetCategoryBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataSetCategoryBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataSetCategoryBuilder().(*_MediaTransportControlDataSetCategoryBuilder)
@@ -329,14 +242,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSetCatego
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSetSelection() interface {
-	MediaTransportControlDataSetSelectionBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataSetSelectionBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSetSelection() MediaTransportControlDataSetSelectionBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataSetSelectionBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataSetSelectionBuilder().(*_MediaTransportControlDataSetSelectionBuilder)
@@ -345,14 +252,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSetSelect
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSetTrack() interface {
-	MediaTransportControlDataSetTrackBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataSetTrackBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSetTrack() MediaTransportControlDataSetTrackBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataSetTrackBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataSetTrackBuilder().(*_MediaTransportControlDataSetTrackBuilder)
@@ -361,14 +262,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSetTrack(
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataShuffleOnOff() interface {
-	MediaTransportControlDataShuffleOnOffBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataShuffleOnOffBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataShuffleOnOff() MediaTransportControlDataShuffleOnOffBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataShuffleOnOffBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataShuffleOnOffBuilder().(*_MediaTransportControlDataShuffleOnOffBuilder)
@@ -377,14 +272,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataShuffleOn
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataRepeatOnOff() interface {
-	MediaTransportControlDataRepeatOnOffBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataRepeatOnOffBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataRepeatOnOff() MediaTransportControlDataRepeatOnOffBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataRepeatOnOffBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataRepeatOnOffBuilder().(*_MediaTransportControlDataRepeatOnOffBuilder)
@@ -393,14 +282,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataRepeatOnO
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataNextPreviousCategory() interface {
-	MediaTransportControlDataNextPreviousCategoryBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataNextPreviousCategoryBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataNextPreviousCategory() MediaTransportControlDataNextPreviousCategoryBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataNextPreviousCategoryBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataNextPreviousCategoryBuilder().(*_MediaTransportControlDataNextPreviousCategoryBuilder)
@@ -409,14 +292,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataNextPrevi
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataNextPreviousSelection() interface {
-	MediaTransportControlDataNextPreviousSelectionBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataNextPreviousSelectionBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataNextPreviousSelection() MediaTransportControlDataNextPreviousSelectionBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataNextPreviousSelectionBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataNextPreviousSelectionBuilder().(*_MediaTransportControlDataNextPreviousSelectionBuilder)
@@ -425,14 +302,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataNextPrevi
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataNextPreviousTrack() interface {
-	MediaTransportControlDataNextPreviousTrackBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataNextPreviousTrackBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataNextPreviousTrack() MediaTransportControlDataNextPreviousTrackBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataNextPreviousTrackBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataNextPreviousTrackBuilder().(*_MediaTransportControlDataNextPreviousTrackBuilder)
@@ -441,14 +312,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataNextPrevi
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataFastForward() interface {
-	MediaTransportControlDataFastForwardBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataFastForwardBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataFastForward() MediaTransportControlDataFastForwardBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataFastForwardBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataFastForwardBuilder().(*_MediaTransportControlDataFastForwardBuilder)
@@ -457,14 +322,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataFastForwa
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataRewind() interface {
-	MediaTransportControlDataRewindBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataRewindBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataRewind() MediaTransportControlDataRewindBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataRewindBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataRewindBuilder().(*_MediaTransportControlDataRewindBuilder)
@@ -473,14 +332,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataRewind() 
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSourcePowerControl() interface {
-	MediaTransportControlDataSourcePowerControlBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataSourcePowerControlBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSourcePowerControl() MediaTransportControlDataSourcePowerControlBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataSourcePowerControlBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataSourcePowerControlBuilder().(*_MediaTransportControlDataSourcePowerControlBuilder)
@@ -489,14 +342,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSourcePow
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataTotalTracks() interface {
-	MediaTransportControlDataTotalTracksBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataTotalTracksBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataTotalTracks() MediaTransportControlDataTotalTracksBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataTotalTracksBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataTotalTracksBuilder().(*_MediaTransportControlDataTotalTracksBuilder)
@@ -505,14 +352,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataTotalTrac
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataStatusRequest() interface {
-	MediaTransportControlDataStatusRequestBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataStatusRequestBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataStatusRequest() MediaTransportControlDataStatusRequestBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataStatusRequestBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataStatusRequestBuilder().(*_MediaTransportControlDataStatusRequestBuilder)
@@ -521,14 +362,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataStatusReq
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataEnumerateCategoriesSelectionTracks() interface {
-	MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataEnumerateCategoriesSelectionTracks() MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder().(*_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder)
@@ -537,14 +372,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataEnumerate
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataEnumerationsSize() interface {
-	MediaTransportControlDataEnumerationsSizeBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataEnumerationsSizeBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataEnumerationsSize() MediaTransportControlDataEnumerationsSizeBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataEnumerationsSizeBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataEnumerationsSizeBuilder().(*_MediaTransportControlDataEnumerationsSizeBuilder)
@@ -553,14 +382,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataEnumerati
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataTrackName() interface {
-	MediaTransportControlDataTrackNameBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataTrackNameBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataTrackName() MediaTransportControlDataTrackNameBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataTrackNameBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataTrackNameBuilder().(*_MediaTransportControlDataTrackNameBuilder)
@@ -569,14 +392,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataTrackName
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSelectionName() interface {
-	MediaTransportControlDataSelectionNameBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataSelectionNameBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSelectionName() MediaTransportControlDataSelectionNameBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataSelectionNameBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataSelectionNameBuilder().(*_MediaTransportControlDataSelectionNameBuilder)
@@ -585,14 +402,8 @@ func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataSelection
 	return cb
 }
 
-func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataCategoryName() interface {
-	MediaTransportControlDataCategoryNameBuilder
-	Done() MediaTransportControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MediaTransportControlDataCategoryNameBuilder
-		Done() MediaTransportControlDataBuilder
-	}); ok {
+func (b *_MediaTransportControlDataBuilder) AsMediaTransportControlDataCategoryName() MediaTransportControlDataCategoryNameBuilder {
+	if cb, ok := b.childBuilder.(MediaTransportControlDataCategoryNameBuilder); ok {
 		return cb
 	}
 	cb := NewMediaTransportControlDataCategoryNameBuilder().(*_MediaTransportControlDataCategoryNameBuilder)

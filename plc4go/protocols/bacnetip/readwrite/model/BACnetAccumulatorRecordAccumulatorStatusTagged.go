@@ -334,7 +334,7 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) deepCopy() *_BACnetAcc
 		return nil
 	}
 	_BACnetAccumulatorRecordAccumulatorStatusTaggedCopy := &_BACnetAccumulatorRecordAccumulatorStatusTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

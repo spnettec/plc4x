@@ -122,6 +122,8 @@ type BACnetConfirmedServiceRequestWritePropertyBuilder interface {
 	WithOptionalPriority(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestWritePropertyBuilder
 	// WithOptionalPriorityBuilder adds Priority (property field) which is build by the builder
 	WithOptionalPriorityBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestWritePropertyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestWriteProperty or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestWriteProperty, error)
 	// MustBuild does the same as Build but panics on error
@@ -145,6 +147,7 @@ var _ (BACnetConfirmedServiceRequestWritePropertyBuilder) = (*_BACnetConfirmedSe
 
 func (b *_BACnetConfirmedServiceRequestWritePropertyBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestWriteProperty
 }
 
 func (b *_BACnetConfirmedServiceRequestWritePropertyBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyValue BACnetConstructedData) BACnetConfirmedServiceRequestWritePropertyBuilder {
@@ -274,8 +277,10 @@ func (b *_BACnetConfirmedServiceRequestWritePropertyBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestWritePropertyBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -511,13 +516,13 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) deepCopy() *_BACnetConfirm
 	}
 	_BACnetConfirmedServiceRequestWritePropertyCopy := &_BACnetConfirmedServiceRequestWriteProperty{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.PropertyValue.DeepCopy().(BACnetConstructedData),
-		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
+		utils.DeepCopy[BACnetConstructedData](m.PropertyValue),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Priority),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestWritePropertyCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestWritePropertyCopy
 }
 

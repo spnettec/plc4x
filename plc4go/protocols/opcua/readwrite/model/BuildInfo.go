@@ -134,6 +134,8 @@ type BuildInfoBuilder interface {
 	WithBuildNumberBuilder(func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder
 	// WithBuildDate adds BuildDate (property field)
 	WithBuildDate(int64) BuildInfoBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BuildInfo or returns an error if something is wrong
 	Build() (BuildInfo, error)
 	// MustBuild does the same as Build but panics on error
@@ -157,6 +159,7 @@ var _ (BuildInfoBuilder) = (*_BuildInfoBuilder)(nil)
 
 func (b *_BuildInfoBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BuildInfo
 }
 
 func (b *_BuildInfoBuilder) WithMandatoryFields(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) BuildInfoBuilder {
@@ -303,8 +306,10 @@ func (b *_BuildInfoBuilder) MustBuild() BuildInfo {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BuildInfoBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -544,14 +549,14 @@ func (m *_BuildInfo) deepCopy() *_BuildInfo {
 	}
 	_BuildInfoCopy := &_BuildInfo{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ProductUri.DeepCopy().(PascalString),
-		m.ManufacturerName.DeepCopy().(PascalString),
-		m.ProductName.DeepCopy().(PascalString),
-		m.SoftwareVersion.DeepCopy().(PascalString),
-		m.BuildNumber.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.ProductUri),
+		utils.DeepCopy[PascalString](m.ManufacturerName),
+		utils.DeepCopy[PascalString](m.ProductName),
+		utils.DeepCopy[PascalString](m.SoftwareVersion),
+		utils.DeepCopy[PascalString](m.BuildNumber),
 		m.BuildDate,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BuildInfoCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BuildInfoCopy
 }
 

@@ -145,6 +145,8 @@ type AddNodesItemBuilder interface {
 	WithTypeDefinition(ExpandedNodeId) AddNodesItemBuilder
 	// WithTypeDefinitionBuilder adds TypeDefinition (property field) which is build by the builder
 	WithTypeDefinitionBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddNodesItemBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AddNodesItem or returns an error if something is wrong
 	Build() (AddNodesItem, error)
 	// MustBuild does the same as Build but panics on error
@@ -168,6 +170,7 @@ var _ (AddNodesItemBuilder) = (*_AddNodesItemBuilder)(nil)
 
 func (b *_AddNodesItemBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AddNodesItem
 }
 
 func (b *_AddNodesItemBuilder) WithMandatoryFields(parentNodeId ExpandedNodeId, referenceTypeId NodeId, requestedNewNodeId ExpandedNodeId, browseName QualifiedName, nodeClass NodeClass, nodeAttributes ExtensionObject, typeDefinition ExpandedNodeId) AddNodesItemBuilder {
@@ -338,8 +341,10 @@ func (b *_AddNodesItemBuilder) MustBuild() AddNodesItem {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AddNodesItemBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -596,15 +601,15 @@ func (m *_AddNodesItem) deepCopy() *_AddNodesItem {
 	}
 	_AddNodesItemCopy := &_AddNodesItem{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ParentNodeId.DeepCopy().(ExpandedNodeId),
-		m.ReferenceTypeId.DeepCopy().(NodeId),
-		m.RequestedNewNodeId.DeepCopy().(ExpandedNodeId),
-		m.BrowseName.DeepCopy().(QualifiedName),
+		utils.DeepCopy[ExpandedNodeId](m.ParentNodeId),
+		utils.DeepCopy[NodeId](m.ReferenceTypeId),
+		utils.DeepCopy[ExpandedNodeId](m.RequestedNewNodeId),
+		utils.DeepCopy[QualifiedName](m.BrowseName),
 		m.NodeClass,
-		m.NodeAttributes.DeepCopy().(ExtensionObject),
-		m.TypeDefinition.DeepCopy().(ExpandedNodeId),
+		utils.DeepCopy[ExtensionObject](m.NodeAttributes),
+		utils.DeepCopy[ExpandedNodeId](m.TypeDefinition),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AddNodesItemCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AddNodesItemCopy
 }
 

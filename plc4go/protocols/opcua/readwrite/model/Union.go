@@ -71,6 +71,8 @@ type UnionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() UnionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the Union or returns an error if something is wrong
 	Build() (Union, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (UnionBuilder) = (*_UnionBuilder)(nil)
 
 func (b *_UnionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._Union
 }
 
 func (b *_UnionBuilder) WithMandatoryFields() UnionBuilder {
@@ -115,8 +118,10 @@ func (b *_UnionBuilder) MustBuild() Union {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_UnionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_Union) deepCopy() *_Union {
 	_UnionCopy := &_Union{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_UnionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UnionCopy
 }
 

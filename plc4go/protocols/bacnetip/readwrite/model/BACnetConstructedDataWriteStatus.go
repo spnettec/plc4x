@@ -86,6 +86,8 @@ type BACnetConstructedDataWriteStatusBuilder interface {
 	WithWriteStatus(BACnetWriteStatusTagged) BACnetConstructedDataWriteStatusBuilder
 	// WithWriteStatusBuilder adds WriteStatus (property field) which is build by the builder
 	WithWriteStatusBuilder(func(BACnetWriteStatusTaggedBuilder) BACnetWriteStatusTaggedBuilder) BACnetConstructedDataWriteStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataWriteStatus or returns an error if something is wrong
 	Build() (BACnetConstructedDataWriteStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataWriteStatusBuilder) = (*_BACnetConstructedDataWriteS
 
 func (b *_BACnetConstructedDataWriteStatusBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataWriteStatus
 }
 
 func (b *_BACnetConstructedDataWriteStatusBuilder) WithMandatoryFields(writeStatus BACnetWriteStatusTagged) BACnetConstructedDataWriteStatusBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataWriteStatusBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataWriteStatusBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataWriteStatus) deepCopy() *_BACnetConstructedDataWr
 	}
 	_BACnetConstructedDataWriteStatusCopy := &_BACnetConstructedDataWriteStatus{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.WriteStatus.DeepCopy().(BACnetWriteStatusTagged),
+		utils.DeepCopy[BACnetWriteStatusTagged](m.WriteStatus),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataWriteStatusCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataWriteStatusCopy
 }
 

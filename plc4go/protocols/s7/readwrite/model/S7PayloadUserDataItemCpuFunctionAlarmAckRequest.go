@@ -82,6 +82,8 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder interface {
 	WithMandatoryFields(messageObjects []AlarmMessageObjectAckType) S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder
 	// WithMessageObjects adds MessageObjects (property field)
 	WithMessageObjects(...AlarmMessageObjectAckType) S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadUserDataItemCpuFunctionAlarmAckRequest or returns an error if something is wrong
 	Build() (S7PayloadUserDataItemCpuFunctionAlarmAckRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -105,6 +107,7 @@ var _ (S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder) = (*_S7PayloadUse
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemCpuFunctionAlarmAckRequest
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder) WithMandatoryFields(messageObjects []AlarmMessageObjectAckType) S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder {
@@ -131,8 +134,10 @@ func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder) MustBuild() S7
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,7 +349,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) deepCopy() *_S7Payloa
 		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		utils.DeepCopySlice[AlarmMessageObjectAckType, AlarmMessageObjectAckType](m.MessageObjects),
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadUserDataItemCpuFunctionAlarmAckRequestCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemCpuFunctionAlarmAckRequestCopy
 }
 

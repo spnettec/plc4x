@@ -71,6 +71,8 @@ type ApduDataExtNetworkParameterResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtNetworkParameterResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtNetworkParameterResponse or returns an error if something is wrong
 	Build() (ApduDataExtNetworkParameterResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataExtNetworkParameterResponseBuilder) = (*_ApduDataExtNetworkParame
 
 func (b *_ApduDataExtNetworkParameterResponseBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtNetworkParameterResponse
 }
 
 func (b *_ApduDataExtNetworkParameterResponseBuilder) WithMandatoryFields() ApduDataExtNetworkParameterResponseBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataExtNetworkParameterResponseBuilder) MustBuild() ApduDataExtNet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtNetworkParameterResponseBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataExtNetworkParameterResponse) deepCopy() *_ApduDataExtNetworkPa
 	_ApduDataExtNetworkParameterResponseCopy := &_ApduDataExtNetworkParameterResponse{
 		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtNetworkParameterResponseCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtNetworkParameterResponseCopy
 }
 

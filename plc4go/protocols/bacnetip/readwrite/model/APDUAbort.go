@@ -98,6 +98,8 @@ type APDUAbortBuilder interface {
 	WithAbortReason(BACnetAbortReasonTagged) APDUAbortBuilder
 	// WithAbortReasonBuilder adds AbortReason (property field) which is build by the builder
 	WithAbortReasonBuilder(func(BACnetAbortReasonTaggedBuilder) BACnetAbortReasonTaggedBuilder) APDUAbortBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() APDUBuilder
 	// Build builds the APDUAbort or returns an error if something is wrong
 	Build() (APDUAbort, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,6 +123,7 @@ var _ (APDUAbortBuilder) = (*_APDUAbortBuilder)(nil)
 
 func (b *_APDUAbortBuilder) setParent(contract APDUContract) {
 	b.APDUContract = contract
+	contract.(*_APDU)._SubType = b._APDUAbort
 }
 
 func (b *_APDUAbortBuilder) WithMandatoryFields(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged) APDUAbortBuilder {
@@ -176,8 +179,10 @@ func (b *_APDUAbortBuilder) MustBuild() APDUAbort {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_APDUAbortBuilder) Done() APDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAPDUBuilder().(*_APDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -381,10 +386,10 @@ func (m *_APDUAbort) deepCopy() *_APDUAbort {
 		m.APDUContract.(*_APDU).deepCopy(),
 		m.Server,
 		m.OriginalInvokeId,
-		m.AbortReason.DeepCopy().(BACnetAbortReasonTagged),
+		utils.DeepCopy[BACnetAbortReasonTagged](m.AbortReason),
 		m.reservedField0,
 	}
-	m.APDUContract.(*_APDU)._SubType = m
+	_APDUAbortCopy.APDUContract.(*_APDU)._SubType = m
 	return _APDUAbortCopy
 }
 

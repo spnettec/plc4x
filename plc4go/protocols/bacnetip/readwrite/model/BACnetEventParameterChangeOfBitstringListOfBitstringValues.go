@@ -375,9 +375,9 @@ func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) deepCopy()
 		return nil
 	}
 	_BACnetEventParameterChangeOfBitstringListOfBitstringValuesCopy := &_BACnetEventParameterChangeOfBitstringListOfBitstringValues{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetApplicationTagBitString, BACnetApplicationTagBitString](m.ListOfBitstringValues),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetEventParameterChangeOfBitstringListOfBitstringValuesCopy

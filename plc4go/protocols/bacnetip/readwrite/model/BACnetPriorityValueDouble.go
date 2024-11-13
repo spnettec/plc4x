@@ -84,6 +84,8 @@ type BACnetPriorityValueDoubleBuilder interface {
 	WithDoubleValue(BACnetApplicationTagDouble) BACnetPriorityValueDoubleBuilder
 	// WithDoubleValueBuilder adds DoubleValue (property field) which is build by the builder
 	WithDoubleValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetPriorityValueDoubleBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPriorityValueBuilder
 	// Build builds the BACnetPriorityValueDouble or returns an error if something is wrong
 	Build() (BACnetPriorityValueDouble, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPriorityValueDoubleBuilder) = (*_BACnetPriorityValueDoubleBuilder)(
 
 func (b *_BACnetPriorityValueDoubleBuilder) setParent(contract BACnetPriorityValueContract) {
 	b.BACnetPriorityValueContract = contract
+	contract.(*_BACnetPriorityValue)._SubType = b._BACnetPriorityValueDouble
 }
 
 func (b *_BACnetPriorityValueDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetPriorityValueDoubleBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPriorityValueDoubleBuilder) MustBuild() BACnetPriorityValueDoubl
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPriorityValueDoubleBuilder) Done() BACnetPriorityValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPriorityValueDouble) deepCopy() *_BACnetPriorityValueDouble {
 	}
 	_BACnetPriorityValueDoubleCopy := &_BACnetPriorityValueDouble{
 		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
-		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+		utils.DeepCopy[BACnetApplicationTagDouble](m.DoubleValue),
 	}
-	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	_BACnetPriorityValueDoubleCopy.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
 	return _BACnetPriorityValueDoubleCopy
 }
 

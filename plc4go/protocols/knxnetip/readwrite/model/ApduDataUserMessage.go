@@ -71,6 +71,8 @@ type ApduDataUserMessageBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataUserMessageBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataUserMessage or returns an error if something is wrong
 	Build() (ApduDataUserMessage, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataUserMessageBuilder) = (*_ApduDataUserMessageBuilder)(nil)
 
 func (b *_ApduDataUserMessageBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataUserMessage
 }
 
 func (b *_ApduDataUserMessageBuilder) WithMandatoryFields() ApduDataUserMessageBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataUserMessageBuilder) MustBuild() ApduDataUserMessage {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataUserMessageBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataUserMessage) deepCopy() *_ApduDataUserMessage {
 	_ApduDataUserMessageCopy := &_ApduDataUserMessage{
 		m.ApduDataContract.(*_ApduData).deepCopy(),
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataUserMessageCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataUserMessageCopy
 }
 

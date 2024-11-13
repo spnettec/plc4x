@@ -86,6 +86,8 @@ type BACnetContextTagCharacterStringBuilder interface {
 	WithPayload(BACnetTagPayloadCharacterString) BACnetContextTagCharacterStringBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadCharacterStringBuilder) BACnetTagPayloadCharacterStringBuilder) BACnetContextTagCharacterStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetContextTagBuilder
 	// Build builds the BACnetContextTagCharacterString or returns an error if something is wrong
 	Build() (BACnetContextTagCharacterString, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetContextTagCharacterStringBuilder) = (*_BACnetContextTagCharacterStr
 
 func (b *_BACnetContextTagCharacterStringBuilder) setParent(contract BACnetContextTagContract) {
 	b.BACnetContextTagContract = contract
+	contract.(*_BACnetContextTag)._SubType = b._BACnetContextTagCharacterString
 }
 
 func (b *_BACnetContextTagCharacterStringBuilder) WithMandatoryFields(payload BACnetTagPayloadCharacterString) BACnetContextTagCharacterStringBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetContextTagCharacterStringBuilder) MustBuild() BACnetContextTagCh
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetContextTagCharacterStringBuilder) Done() BACnetContextTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetContextTagBuilder().(*_BACnetContextTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -339,9 +344,9 @@ func (m *_BACnetContextTagCharacterString) deepCopy() *_BACnetContextTagCharacte
 	}
 	_BACnetContextTagCharacterStringCopy := &_BACnetContextTagCharacterString{
 		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadCharacterString),
+		utils.DeepCopy[BACnetTagPayloadCharacterString](m.Payload),
 	}
-	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	_BACnetContextTagCharacterStringCopy.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
 	return _BACnetContextTagCharacterStringCopy
 }
 

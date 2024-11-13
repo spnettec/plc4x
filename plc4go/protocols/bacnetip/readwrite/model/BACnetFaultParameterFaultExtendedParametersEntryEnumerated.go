@@ -84,6 +84,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder interface
 	WithEnumeratedValue(BACnetApplicationTagEnumerated) BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
 	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
 	WithEnumeratedValueBuilder(func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
 	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryEnumerated or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultExtendedParametersEntryEnumerated, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) = (*_B
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
 	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
+	contract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = b._BACnetFaultParameterFaultExtendedParametersEntryEnumerated
 }
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) Mus
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterFaultExtendedParametersEntryBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) deepCopy()
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedCopy := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
 		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
-		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+		utils.DeepCopy[BACnetApplicationTagEnumerated](m.EnumeratedValue),
 	}
-	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedCopy.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
 	return _BACnetFaultParameterFaultExtendedParametersEntryEnumeratedCopy
 }
 

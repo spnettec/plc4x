@@ -86,6 +86,8 @@ type BACnetConstructedDataTrackingValueBuilder interface {
 	WithTrackingValue(BACnetLifeSafetyStateTagged) BACnetConstructedDataTrackingValueBuilder
 	// WithTrackingValueBuilder adds TrackingValue (property field) which is build by the builder
 	WithTrackingValueBuilder(func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataTrackingValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTrackingValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataTrackingValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTrackingValueBuilder) = (*_BACnetConstructedDataTrac
 
 func (b *_BACnetConstructedDataTrackingValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTrackingValue
 }
 
 func (b *_BACnetConstructedDataTrackingValueBuilder) WithMandatoryFields(trackingValue BACnetLifeSafetyStateTagged) BACnetConstructedDataTrackingValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTrackingValueBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTrackingValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataTrackingValue) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataTrackingValueCopy := &_BACnetConstructedDataTrackingValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.TrackingValue.DeepCopy().(BACnetLifeSafetyStateTagged),
+		utils.DeepCopy[BACnetLifeSafetyStateTagged](m.TrackingValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTrackingValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTrackingValueCopy
 }
 

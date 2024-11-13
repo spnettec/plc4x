@@ -71,6 +71,8 @@ type MResetReqBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() MResetReqBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the MResetReq or returns an error if something is wrong
 	Build() (MResetReq, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (MResetReqBuilder) = (*_MResetReqBuilder)(nil)
 
 func (b *_MResetReqBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._MResetReq
 }
 
 func (b *_MResetReqBuilder) WithMandatoryFields() MResetReqBuilder {
@@ -115,8 +118,10 @@ func (b *_MResetReqBuilder) MustBuild() MResetReq {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MResetReqBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_MResetReq) deepCopy() *_MResetReq {
 	_MResetReqCopy := &_MResetReq{
 		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_MResetReqCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _MResetReqCopy
 }
 

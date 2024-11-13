@@ -112,19 +112,15 @@ type ExtensionObjectWithMaskBuilder interface {
 	// WithEncodingMaskBuilder adds EncodingMask (property field) which is build by the builder
 	WithEncodingMaskBuilder(func(ExtensionObjectEncodingMaskBuilder) ExtensionObjectEncodingMaskBuilder) ExtensionObjectWithMaskBuilder
 	// AsBinaryExtensionObjectWithMask converts this build to a subType of ExtensionObjectWithMask. It is always possible to return to current builder using Done()
-	AsBinaryExtensionObjectWithMask() interface {
-		BinaryExtensionObjectWithMaskBuilder
-		Done() ExtensionObjectWithMaskBuilder
-	}
+	AsBinaryExtensionObjectWithMask() BinaryExtensionObjectWithMaskBuilder
 	// AsNullExtensionObjectWithMask converts this build to a subType of ExtensionObjectWithMask. It is always possible to return to current builder using Done()
-	AsNullExtensionObjectWithMask() interface {
-		NullExtensionObjectWithMaskBuilder
-		Done() ExtensionObjectWithMaskBuilder
-	}
+	AsNullExtensionObjectWithMask() NullExtensionObjectWithMaskBuilder
 	// Build builds the ExtensionObjectWithMask or returns an error if something is wrong
 	PartialBuild() (ExtensionObjectWithMaskContract, error)
 	// MustBuild does the same as Build but panics on error
 	PartialMustBuild() ExtensionObjectWithMaskContract
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectBuilder
 	// Build builds the ExtensionObjectWithMask or returns an error if something is wrong
 	Build() (ExtensionObjectWithMask, error)
 	// MustBuild does the same as Build but panics on error
@@ -156,6 +152,7 @@ var _ (ExtensionObjectWithMaskBuilder) = (*_ExtensionObjectWithMaskBuilder)(nil)
 
 func (b *_ExtensionObjectWithMaskBuilder) setParent(contract ExtensionObjectContract) {
 	b.ExtensionObjectContract = contract
+	contract.(*_ExtensionObject)._SubType = b._ExtensionObjectWithMask
 }
 
 func (b *_ExtensionObjectWithMaskBuilder) WithMandatoryFields(encodingMask ExtensionObjectEncodingMask) ExtensionObjectWithMaskBuilder {
@@ -201,14 +198,8 @@ func (b *_ExtensionObjectWithMaskBuilder) PartialMustBuild() ExtensionObjectWith
 	return build
 }
 
-func (b *_ExtensionObjectWithMaskBuilder) AsBinaryExtensionObjectWithMask() interface {
-	BinaryExtensionObjectWithMaskBuilder
-	Done() ExtensionObjectWithMaskBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BinaryExtensionObjectWithMaskBuilder
-		Done() ExtensionObjectWithMaskBuilder
-	}); ok {
+func (b *_ExtensionObjectWithMaskBuilder) AsBinaryExtensionObjectWithMask() BinaryExtensionObjectWithMaskBuilder {
+	if cb, ok := b.childBuilder.(BinaryExtensionObjectWithMaskBuilder); ok {
 		return cb
 	}
 	cb := NewBinaryExtensionObjectWithMaskBuilder().(*_BinaryExtensionObjectWithMaskBuilder)
@@ -217,14 +208,8 @@ func (b *_ExtensionObjectWithMaskBuilder) AsBinaryExtensionObjectWithMask() inte
 	return cb
 }
 
-func (b *_ExtensionObjectWithMaskBuilder) AsNullExtensionObjectWithMask() interface {
-	NullExtensionObjectWithMaskBuilder
-	Done() ExtensionObjectWithMaskBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NullExtensionObjectWithMaskBuilder
-		Done() ExtensionObjectWithMaskBuilder
-	}); ok {
+func (b *_ExtensionObjectWithMaskBuilder) AsNullExtensionObjectWithMask() NullExtensionObjectWithMaskBuilder {
+	if cb, ok := b.childBuilder.(NullExtensionObjectWithMaskBuilder); ok {
 		return cb
 	}
 	cb := NewNullExtensionObjectWithMaskBuilder().(*_NullExtensionObjectWithMaskBuilder)
@@ -233,8 +218,10 @@ func (b *_ExtensionObjectWithMaskBuilder) AsNullExtensionObjectWithMask() interf
 	return cb
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ExtensionObjectWithMaskBuilder) Done() ExtensionObjectBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectBuilder().(*_ExtensionObjectBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -436,9 +423,9 @@ func (m *_ExtensionObjectWithMask) deepCopy() *_ExtensionObjectWithMask {
 	_ExtensionObjectWithMaskCopy := &_ExtensionObjectWithMask{
 		m.ExtensionObjectContract.(*_ExtensionObject).deepCopy(),
 		nil, // will be set by child
-		m.EncodingMask.DeepCopy().(ExtensionObjectEncodingMask),
+		utils.DeepCopy[ExtensionObjectEncodingMask](m.EncodingMask),
 		m.ExtensionId,
 	}
-	m.ExtensionObjectContract.(*_ExtensionObject)._SubType = m
+	_ExtensionObjectWithMaskCopy.ExtensionObjectContract.(*_ExtensionObject)._SubType = m
 	return _ExtensionObjectWithMaskCopy
 }

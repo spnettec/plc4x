@@ -86,6 +86,8 @@ type BACnetConstructedDataAttemptedSamplesBuilder interface {
 	WithAttemptedSamples(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAttemptedSamplesBuilder
 	// WithAttemptedSamplesBuilder adds AttemptedSamples (property field) which is build by the builder
 	WithAttemptedSamplesBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAttemptedSamplesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAttemptedSamples or returns an error if something is wrong
 	Build() (BACnetConstructedDataAttemptedSamples, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAttemptedSamplesBuilder) = (*_BACnetConstructedDataA
 
 func (b *_BACnetConstructedDataAttemptedSamplesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAttemptedSamples
 }
 
 func (b *_BACnetConstructedDataAttemptedSamplesBuilder) WithMandatoryFields(attemptedSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAttemptedSamplesBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAttemptedSamplesBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAttemptedSamplesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataAttemptedSamples) deepCopy() *_BACnetConstructedD
 	}
 	_BACnetConstructedDataAttemptedSamplesCopy := &_BACnetConstructedDataAttemptedSamples{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AttemptedSamples.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.AttemptedSamples),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAttemptedSamplesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAttemptedSamplesCopy
 }
 

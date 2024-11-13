@@ -89,6 +89,8 @@ type TelephonyDataRecallLastNumberBuilder interface {
 	WithRecallLastNumberType(byte) TelephonyDataRecallLastNumberBuilder
 	// WithNumber adds Number (property field)
 	WithNumber(string) TelephonyDataRecallLastNumberBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TelephonyDataBuilder
 	// Build builds the TelephonyDataRecallLastNumber or returns an error if something is wrong
 	Build() (TelephonyDataRecallLastNumber, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (TelephonyDataRecallLastNumberBuilder) = (*_TelephonyDataRecallLastNumberB
 
 func (b *_TelephonyDataRecallLastNumberBuilder) setParent(contract TelephonyDataContract) {
 	b.TelephonyDataContract = contract
+	contract.(*_TelephonyData)._SubType = b._TelephonyDataRecallLastNumber
 }
 
 func (b *_TelephonyDataRecallLastNumberBuilder) WithMandatoryFields(recallLastNumberType byte, number string) TelephonyDataRecallLastNumberBuilder {
@@ -143,8 +146,10 @@ func (b *_TelephonyDataRecallLastNumberBuilder) MustBuild() TelephonyDataRecallL
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TelephonyDataRecallLastNumberBuilder) Done() TelephonyDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTelephonyDataBuilder().(*_TelephonyDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -364,7 +369,7 @@ func (m *_TelephonyDataRecallLastNumber) deepCopy() *_TelephonyDataRecallLastNum
 		m.RecallLastNumberType,
 		m.Number,
 	}
-	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	_TelephonyDataRecallLastNumberCopy.TelephonyDataContract.(*_TelephonyData)._SubType = m
 	return _TelephonyDataRecallLastNumberCopy
 }
 

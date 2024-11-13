@@ -86,6 +86,8 @@ type BACnetConstructedDataBACnetIPv6MulticastAddressBuilder interface {
 	WithIpv6MulticastAddress(BACnetApplicationTagOctetString) BACnetConstructedDataBACnetIPv6MulticastAddressBuilder
 	// WithIpv6MulticastAddressBuilder adds Ipv6MulticastAddress (property field) which is build by the builder
 	WithIpv6MulticastAddressBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataBACnetIPv6MulticastAddressBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBACnetIPv6MulticastAddress or returns an error if something is wrong
 	Build() (BACnetConstructedDataBACnetIPv6MulticastAddress, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBACnetIPv6MulticastAddressBuilder) = (*_BACnetConstr
 
 func (b *_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBACnetIPv6MulticastAddress
 }
 
 func (b *_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder) WithMandatoryFields(ipv6MulticastAddress BACnetApplicationTagOctetString) BACnetConstructedDataBACnetIPv6MulticastAddressBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder) MustBuild() BA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBACnetIPv6MulticastAddressBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) deepCopy() *_BACnetCo
 	}
 	_BACnetConstructedDataBACnetIPv6MulticastAddressCopy := &_BACnetConstructedDataBACnetIPv6MulticastAddress{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Ipv6MulticastAddress.DeepCopy().(BACnetApplicationTagOctetString),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.Ipv6MulticastAddress),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBACnetIPv6MulticastAddressCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBACnetIPv6MulticastAddressCopy
 }
 

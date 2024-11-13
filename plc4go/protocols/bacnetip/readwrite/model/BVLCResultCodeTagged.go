@@ -333,7 +333,7 @@ func (m *_BVLCResultCodeTagged) deepCopy() *_BVLCResultCodeTagged {
 		return nil
 	}
 	_BVLCResultCodeTaggedCopy := &_BVLCResultCodeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

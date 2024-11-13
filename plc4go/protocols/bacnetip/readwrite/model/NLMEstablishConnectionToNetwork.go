@@ -85,6 +85,8 @@ type NLMEstablishConnectionToNetworkBuilder interface {
 	WithDestinationNetworkAddress(uint16) NLMEstablishConnectionToNetworkBuilder
 	// WithTerminationTime adds TerminationTime (property field)
 	WithTerminationTime(uint8) NLMEstablishConnectionToNetworkBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMEstablishConnectionToNetwork or returns an error if something is wrong
 	Build() (NLMEstablishConnectionToNetwork, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (NLMEstablishConnectionToNetworkBuilder) = (*_NLMEstablishConnectionToNetw
 
 func (b *_NLMEstablishConnectionToNetworkBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMEstablishConnectionToNetwork
 }
 
 func (b *_NLMEstablishConnectionToNetworkBuilder) WithMandatoryFields(destinationNetworkAddress uint16, terminationTime uint8) NLMEstablishConnectionToNetworkBuilder {
@@ -139,8 +142,10 @@ func (b *_NLMEstablishConnectionToNetworkBuilder) MustBuild() NLMEstablishConnec
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMEstablishConnectionToNetworkBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_NLMEstablishConnectionToNetwork) deepCopy() *_NLMEstablishConnectionTo
 		m.DestinationNetworkAddress,
 		m.TerminationTime,
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMEstablishConnectionToNetworkCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMEstablishConnectionToNetworkCopy
 }
 

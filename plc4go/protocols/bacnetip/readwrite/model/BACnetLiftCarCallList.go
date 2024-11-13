@@ -279,7 +279,7 @@ func (m *_BACnetLiftCarCallList) deepCopy() *_BACnetLiftCarCallList {
 		return nil
 	}
 	_BACnetLiftCarCallListCopy := &_BACnetLiftCarCallList{
-		m.FloorNumbers.DeepCopy().(BACnetLiftCarCallListFloorList),
+		utils.DeepCopy[BACnetLiftCarCallListFloorList](m.FloorNumbers),
 	}
 	return _BACnetLiftCarCallListCopy
 }

@@ -95,6 +95,8 @@ type EphemeralKeyTypeBuilder interface {
 	WithSignature(PascalByteString) EphemeralKeyTypeBuilder
 	// WithSignatureBuilder adds Signature (property field) which is build by the builder
 	WithSignatureBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) EphemeralKeyTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the EphemeralKeyType or returns an error if something is wrong
 	Build() (EphemeralKeyType, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (EphemeralKeyTypeBuilder) = (*_EphemeralKeyTypeBuilder)(nil)
 
 func (b *_EphemeralKeyTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._EphemeralKeyType
 }
 
 func (b *_EphemeralKeyTypeBuilder) WithMandatoryFields(publicKey PascalByteString, signature PascalByteString) EphemeralKeyTypeBuilder {
@@ -187,8 +190,10 @@ func (b *_EphemeralKeyTypeBuilder) MustBuild() EphemeralKeyType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EphemeralKeyTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_EphemeralKeyType) deepCopy() *_EphemeralKeyType {
 	}
 	_EphemeralKeyTypeCopy := &_EphemeralKeyType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.PublicKey.DeepCopy().(PascalByteString),
-		m.Signature.DeepCopy().(PascalByteString),
+		utils.DeepCopy[PascalByteString](m.PublicKey),
+		utils.DeepCopy[PascalByteString](m.Signature),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_EphemeralKeyTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EphemeralKeyTypeCopy
 }
 

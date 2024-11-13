@@ -79,6 +79,8 @@ type EipListIdentityResponseBuilder interface {
 	WithMandatoryFields(items []CommandSpecificDataItem) EipListIdentityResponseBuilder
 	// WithItems adds Items (property field)
 	WithItems(...CommandSpecificDataItem) EipListIdentityResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EipPacketBuilder
 	// Build builds the EipListIdentityResponse or returns an error if something is wrong
 	Build() (EipListIdentityResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (EipListIdentityResponseBuilder) = (*_EipListIdentityResponseBuilder)(nil)
 
 func (b *_EipListIdentityResponseBuilder) setParent(contract EipPacketContract) {
 	b.EipPacketContract = contract
+	contract.(*_EipPacket)._SubType = b._EipListIdentityResponse
 }
 
 func (b *_EipListIdentityResponseBuilder) WithMandatoryFields(items []CommandSpecificDataItem) EipListIdentityResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_EipListIdentityResponseBuilder) MustBuild() EipListIdentityResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EipListIdentityResponseBuilder) Done() EipPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEipPacketBuilder().(*_EipPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -314,7 +319,7 @@ func (m *_EipListIdentityResponse) deepCopy() *_EipListIdentityResponse {
 		m.EipPacketContract.(*_EipPacket).deepCopy(),
 		utils.DeepCopySlice[CommandSpecificDataItem, CommandSpecificDataItem](m.Items),
 	}
-	m.EipPacketContract.(*_EipPacket)._SubType = m
+	_EipListIdentityResponseCopy.EipPacketContract.(*_EipPacket)._SubType = m
 	return _EipListIdentityResponseCopy
 }
 

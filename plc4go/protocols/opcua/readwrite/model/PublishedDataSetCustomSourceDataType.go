@@ -81,6 +81,8 @@ type PublishedDataSetCustomSourceDataTypeBuilder interface {
 	WithMandatoryFields(cyclicDataSet bool) PublishedDataSetCustomSourceDataTypeBuilder
 	// WithCyclicDataSet adds CyclicDataSet (property field)
 	WithCyclicDataSet(bool) PublishedDataSetCustomSourceDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PublishedDataSetCustomSourceDataType or returns an error if something is wrong
 	Build() (PublishedDataSetCustomSourceDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -104,6 +106,7 @@ var _ (PublishedDataSetCustomSourceDataTypeBuilder) = (*_PublishedDataSetCustomS
 
 func (b *_PublishedDataSetCustomSourceDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PublishedDataSetCustomSourceDataType
 }
 
 func (b *_PublishedDataSetCustomSourceDataTypeBuilder) WithMandatoryFields(cyclicDataSet bool) PublishedDataSetCustomSourceDataTypeBuilder {
@@ -130,8 +133,10 @@ func (b *_PublishedDataSetCustomSourceDataTypeBuilder) MustBuild() PublishedData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PublishedDataSetCustomSourceDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -302,7 +307,7 @@ func (m *_PublishedDataSetCustomSourceDataType) deepCopy() *_PublishedDataSetCus
 		m.CyclicDataSet,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PublishedDataSetCustomSourceDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PublishedDataSetCustomSourceDataTypeCopy
 }
 

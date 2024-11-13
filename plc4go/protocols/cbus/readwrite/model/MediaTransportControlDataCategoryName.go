@@ -79,6 +79,8 @@ type MediaTransportControlDataCategoryNameBuilder interface {
 	WithMandatoryFields(categoryName string) MediaTransportControlDataCategoryNameBuilder
 	// WithCategoryName adds CategoryName (property field)
 	WithCategoryName(string) MediaTransportControlDataCategoryNameBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataCategoryName or returns an error if something is wrong
 	Build() (MediaTransportControlDataCategoryName, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (MediaTransportControlDataCategoryNameBuilder) = (*_MediaTransportControlD
 
 func (b *_MediaTransportControlDataCategoryNameBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataCategoryName
 }
 
 func (b *_MediaTransportControlDataCategoryNameBuilder) WithMandatoryFields(categoryName string) MediaTransportControlDataCategoryNameBuilder {
@@ -128,8 +131,10 @@ func (b *_MediaTransportControlDataCategoryNameBuilder) MustBuild() MediaTranspo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataCategoryNameBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -282,7 +287,7 @@ func (m *_MediaTransportControlDataCategoryName) deepCopy() *_MediaTransportCont
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.CategoryName,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataCategoryNameCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataCategoryNameCopy
 }
 

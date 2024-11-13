@@ -86,6 +86,8 @@ type BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder interface {
 	WithCovIncrement(BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
 	// WithCovIncrementBuilder adds CovIncrement (property field) which is build by the builder
 	WithCovIncrementBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLargeAnalogValueCOVIncrement or returns an error if something is wrong
 	Build() (BACnetConstructedDataLargeAnalogValueCOVIncrement, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) = (*_BACnetCons
 
 func (b *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLargeAnalogValueCOVIncrement
 }
 
 func (b *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) deepCopy() *_BACnet
 	}
 	_BACnetConstructedDataLargeAnalogValueCOVIncrementCopy := &_BACnetConstructedDataLargeAnalogValueCOVIncrement{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CovIncrement.DeepCopy().(BACnetApplicationTagDouble),
+		utils.DeepCopy[BACnetApplicationTagDouble](m.CovIncrement),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLargeAnalogValueCOVIncrementCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLargeAnalogValueCOVIncrementCopy
 }
 

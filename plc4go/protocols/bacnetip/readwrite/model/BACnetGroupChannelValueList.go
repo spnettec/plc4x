@@ -374,9 +374,9 @@ func (m *_BACnetGroupChannelValueList) deepCopy() *_BACnetGroupChannelValueList 
 		return nil
 	}
 	_BACnetGroupChannelValueListCopy := &_BACnetGroupChannelValueList{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetEventSummary, BACnetEventSummary](m.ListOfEventSummaries),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetGroupChannelValueListCopy

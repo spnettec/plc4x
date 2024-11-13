@@ -84,6 +84,8 @@ type BACnetPropertyStatesBinaryLightningValueBuilder interface {
 	WithBinaryLightningValue(BACnetBinaryLightingPVTagged) BACnetPropertyStatesBinaryLightningValueBuilder
 	// WithBinaryLightningValueBuilder adds BinaryLightningValue (property field) which is build by the builder
 	WithBinaryLightningValueBuilder(func(BACnetBinaryLightingPVTaggedBuilder) BACnetBinaryLightingPVTaggedBuilder) BACnetPropertyStatesBinaryLightningValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesBinaryLightningValue or returns an error if something is wrong
 	Build() (BACnetPropertyStatesBinaryLightningValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesBinaryLightningValueBuilder) = (*_BACnetPropertyState
 
 func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesBinaryLightningValue
 }
 
 func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) WithMandatoryFields(binaryLightningValue BACnetBinaryLightingPVTagged) BACnetPropertyStatesBinaryLightningValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) MustBuild() BACnetPro
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesBinaryLightningValueBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) deepCopy() *_BACnetPropertyS
 	}
 	_BACnetPropertyStatesBinaryLightningValueCopy := &_BACnetPropertyStatesBinaryLightningValue{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.BinaryLightningValue.DeepCopy().(BACnetBinaryLightingPVTagged),
+		utils.DeepCopy[BACnetBinaryLightingPVTagged](m.BinaryLightningValue),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesBinaryLightningValueCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesBinaryLightningValueCopy
 }
 

@@ -85,6 +85,8 @@ type S7MessageResponseDataBuilder interface {
 	WithErrorClass(uint8) S7MessageResponseDataBuilder
 	// WithErrorCode adds ErrorCode (property field)
 	WithErrorCode(uint8) S7MessageResponseDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7MessageBuilder
 	// Build builds the S7MessageResponseData or returns an error if something is wrong
 	Build() (S7MessageResponseData, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (S7MessageResponseDataBuilder) = (*_S7MessageResponseDataBuilder)(nil)
 
 func (b *_S7MessageResponseDataBuilder) setParent(contract S7MessageContract) {
 	b.S7MessageContract = contract
+	contract.(*_S7Message)._SubType = b._S7MessageResponseData
 }
 
 func (b *_S7MessageResponseDataBuilder) WithMandatoryFields(errorClass uint8, errorCode uint8) S7MessageResponseDataBuilder {
@@ -139,8 +142,10 @@ func (b *_S7MessageResponseDataBuilder) MustBuild() S7MessageResponseData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7MessageResponseDataBuilder) Done() S7MessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7MessageBuilder().(*_S7MessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_S7MessageResponseData) deepCopy() *_S7MessageResponseData {
 		m.ErrorClass,
 		m.ErrorCode,
 	}
-	m.S7MessageContract.(*_S7Message)._SubType = m
+	_S7MessageResponseDataCopy.S7MessageContract.(*_S7Message)._SubType = m
 	return _S7MessageResponseDataCopy
 }
 

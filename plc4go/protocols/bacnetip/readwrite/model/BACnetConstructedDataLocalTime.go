@@ -86,6 +86,8 @@ type BACnetConstructedDataLocalTimeBuilder interface {
 	WithLocalTime(BACnetApplicationTagTime) BACnetConstructedDataLocalTimeBuilder
 	// WithLocalTimeBuilder adds LocalTime (property field) which is build by the builder
 	WithLocalTimeBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetConstructedDataLocalTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLocalTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataLocalTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLocalTimeBuilder) = (*_BACnetConstructedDataLocalTim
 
 func (b *_BACnetConstructedDataLocalTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLocalTime
 }
 
 func (b *_BACnetConstructedDataLocalTimeBuilder) WithMandatoryFields(localTime BACnetApplicationTagTime) BACnetConstructedDataLocalTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLocalTimeBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLocalTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLocalTime) deepCopy() *_BACnetConstructedDataLoca
 	}
 	_BACnetConstructedDataLocalTimeCopy := &_BACnetConstructedDataLocalTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LocalTime.DeepCopy().(BACnetApplicationTagTime),
+		utils.DeepCopy[BACnetApplicationTagTime](m.LocalTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLocalTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLocalTimeCopy
 }
 

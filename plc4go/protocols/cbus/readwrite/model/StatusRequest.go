@@ -94,20 +94,11 @@ type StatusRequestBuilder interface {
 	// WithStatusType adds StatusType (property field)
 	WithStatusType(byte) StatusRequestBuilder
 	// AsStatusRequestBinaryState converts this build to a subType of StatusRequest. It is always possible to return to current builder using Done()
-	AsStatusRequestBinaryState() interface {
-		StatusRequestBinaryStateBuilder
-		Done() StatusRequestBuilder
-	}
+	AsStatusRequestBinaryState() StatusRequestBinaryStateBuilder
 	// AsStatusRequestBinaryStateDeprecated converts this build to a subType of StatusRequest. It is always possible to return to current builder using Done()
-	AsStatusRequestBinaryStateDeprecated() interface {
-		StatusRequestBinaryStateDeprecatedBuilder
-		Done() StatusRequestBuilder
-	}
+	AsStatusRequestBinaryStateDeprecated() StatusRequestBinaryStateDeprecatedBuilder
 	// AsStatusRequestLevel converts this build to a subType of StatusRequest. It is always possible to return to current builder using Done()
-	AsStatusRequestLevel() interface {
-		StatusRequestLevelBuilder
-		Done() StatusRequestBuilder
-	}
+	AsStatusRequestLevel() StatusRequestLevelBuilder
 	// Build builds the StatusRequest or returns an error if something is wrong
 	PartialBuild() (StatusRequestContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -163,14 +154,8 @@ func (b *_StatusRequestBuilder) PartialMustBuild() StatusRequestContract {
 	return build
 }
 
-func (b *_StatusRequestBuilder) AsStatusRequestBinaryState() interface {
-	StatusRequestBinaryStateBuilder
-	Done() StatusRequestBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		StatusRequestBinaryStateBuilder
-		Done() StatusRequestBuilder
-	}); ok {
+func (b *_StatusRequestBuilder) AsStatusRequestBinaryState() StatusRequestBinaryStateBuilder {
+	if cb, ok := b.childBuilder.(StatusRequestBinaryStateBuilder); ok {
 		return cb
 	}
 	cb := NewStatusRequestBinaryStateBuilder().(*_StatusRequestBinaryStateBuilder)
@@ -179,14 +164,8 @@ func (b *_StatusRequestBuilder) AsStatusRequestBinaryState() interface {
 	return cb
 }
 
-func (b *_StatusRequestBuilder) AsStatusRequestBinaryStateDeprecated() interface {
-	StatusRequestBinaryStateDeprecatedBuilder
-	Done() StatusRequestBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		StatusRequestBinaryStateDeprecatedBuilder
-		Done() StatusRequestBuilder
-	}); ok {
+func (b *_StatusRequestBuilder) AsStatusRequestBinaryStateDeprecated() StatusRequestBinaryStateDeprecatedBuilder {
+	if cb, ok := b.childBuilder.(StatusRequestBinaryStateDeprecatedBuilder); ok {
 		return cb
 	}
 	cb := NewStatusRequestBinaryStateDeprecatedBuilder().(*_StatusRequestBinaryStateDeprecatedBuilder)
@@ -195,14 +174,8 @@ func (b *_StatusRequestBuilder) AsStatusRequestBinaryStateDeprecated() interface
 	return cb
 }
 
-func (b *_StatusRequestBuilder) AsStatusRequestLevel() interface {
-	StatusRequestLevelBuilder
-	Done() StatusRequestBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		StatusRequestLevelBuilder
-		Done() StatusRequestBuilder
-	}); ok {
+func (b *_StatusRequestBuilder) AsStatusRequestLevel() StatusRequestLevelBuilder {
+	if cb, ok := b.childBuilder.(StatusRequestLevelBuilder); ok {
 		return cb
 	}
 	cb := NewStatusRequestLevelBuilder().(*_StatusRequestLevelBuilder)

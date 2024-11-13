@@ -71,6 +71,8 @@ type AdsDeviceNotificationResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() AdsDeviceNotificationResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AmsPacketBuilder
 	// Build builds the AdsDeviceNotificationResponse or returns an error if something is wrong
 	Build() (AdsDeviceNotificationResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (AdsDeviceNotificationResponseBuilder) = (*_AdsDeviceNotificationResponseB
 
 func (b *_AdsDeviceNotificationResponseBuilder) setParent(contract AmsPacketContract) {
 	b.AmsPacketContract = contract
+	contract.(*_AmsPacket)._SubType = b._AdsDeviceNotificationResponse
 }
 
 func (b *_AdsDeviceNotificationResponseBuilder) WithMandatoryFields() AdsDeviceNotificationResponseBuilder {
@@ -115,8 +118,10 @@ func (b *_AdsDeviceNotificationResponseBuilder) MustBuild() AdsDeviceNotificatio
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsDeviceNotificationResponseBuilder) Done() AmsPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAmsPacketBuilder().(*_AmsPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -249,7 +254,7 @@ func (m *_AdsDeviceNotificationResponse) deepCopy() *_AdsDeviceNotificationRespo
 	_AdsDeviceNotificationResponseCopy := &_AdsDeviceNotificationResponse{
 		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 	}
-	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	_AdsDeviceNotificationResponseCopy.AmsPacketContract.(*_AmsPacket)._SubType = m
 	return _AdsDeviceNotificationResponseCopy
 }
 

@@ -71,6 +71,8 @@ type ConnectionRequestInformationDeviceManagementBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ConnectionRequestInformationDeviceManagementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ConnectionRequestInformationBuilder
 	// Build builds the ConnectionRequestInformationDeviceManagement or returns an error if something is wrong
 	Build() (ConnectionRequestInformationDeviceManagement, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ConnectionRequestInformationDeviceManagementBuilder) = (*_ConnectionReque
 
 func (b *_ConnectionRequestInformationDeviceManagementBuilder) setParent(contract ConnectionRequestInformationContract) {
 	b.ConnectionRequestInformationContract = contract
+	contract.(*_ConnectionRequestInformation)._SubType = b._ConnectionRequestInformationDeviceManagement
 }
 
 func (b *_ConnectionRequestInformationDeviceManagementBuilder) WithMandatoryFields() ConnectionRequestInformationDeviceManagementBuilder {
@@ -115,8 +118,10 @@ func (b *_ConnectionRequestInformationDeviceManagementBuilder) MustBuild() Conne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ConnectionRequestInformationDeviceManagementBuilder) Done() ConnectionRequestInformationBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewConnectionRequestInformationBuilder().(*_ConnectionRequestInformationBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -246,7 +251,7 @@ func (m *_ConnectionRequestInformationDeviceManagement) deepCopy() *_ConnectionR
 	_ConnectionRequestInformationDeviceManagementCopy := &_ConnectionRequestInformationDeviceManagement{
 		m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).deepCopy(),
 	}
-	m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = m
+	_ConnectionRequestInformationDeviceManagementCopy.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = m
 	return _ConnectionRequestInformationDeviceManagementCopy
 }
 

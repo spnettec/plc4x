@@ -103,20 +103,11 @@ type ClockAndTimekeepingDataBuilder interface {
 	// WithArgument adds Argument (property field)
 	WithArgument(byte) ClockAndTimekeepingDataBuilder
 	// AsClockAndTimekeepingDataUpdateTime converts this build to a subType of ClockAndTimekeepingData. It is always possible to return to current builder using Done()
-	AsClockAndTimekeepingDataUpdateTime() interface {
-		ClockAndTimekeepingDataUpdateTimeBuilder
-		Done() ClockAndTimekeepingDataBuilder
-	}
+	AsClockAndTimekeepingDataUpdateTime() ClockAndTimekeepingDataUpdateTimeBuilder
 	// AsClockAndTimekeepingDataUpdateDate converts this build to a subType of ClockAndTimekeepingData. It is always possible to return to current builder using Done()
-	AsClockAndTimekeepingDataUpdateDate() interface {
-		ClockAndTimekeepingDataUpdateDateBuilder
-		Done() ClockAndTimekeepingDataBuilder
-	}
+	AsClockAndTimekeepingDataUpdateDate() ClockAndTimekeepingDataUpdateDateBuilder
 	// AsClockAndTimekeepingDataRequestRefresh converts this build to a subType of ClockAndTimekeepingData. It is always possible to return to current builder using Done()
-	AsClockAndTimekeepingDataRequestRefresh() interface {
-		ClockAndTimekeepingDataRequestRefreshBuilder
-		Done() ClockAndTimekeepingDataBuilder
-	}
+	AsClockAndTimekeepingDataRequestRefresh() ClockAndTimekeepingDataRequestRefreshBuilder
 	// Build builds the ClockAndTimekeepingData or returns an error if something is wrong
 	PartialBuild() (ClockAndTimekeepingDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -177,14 +168,8 @@ func (b *_ClockAndTimekeepingDataBuilder) PartialMustBuild() ClockAndTimekeeping
 	return build
 }
 
-func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataUpdateTime() interface {
-	ClockAndTimekeepingDataUpdateTimeBuilder
-	Done() ClockAndTimekeepingDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ClockAndTimekeepingDataUpdateTimeBuilder
-		Done() ClockAndTimekeepingDataBuilder
-	}); ok {
+func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataUpdateTime() ClockAndTimekeepingDataUpdateTimeBuilder {
+	if cb, ok := b.childBuilder.(ClockAndTimekeepingDataUpdateTimeBuilder); ok {
 		return cb
 	}
 	cb := NewClockAndTimekeepingDataUpdateTimeBuilder().(*_ClockAndTimekeepingDataUpdateTimeBuilder)
@@ -193,14 +178,8 @@ func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataUpdateTime() 
 	return cb
 }
 
-func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataUpdateDate() interface {
-	ClockAndTimekeepingDataUpdateDateBuilder
-	Done() ClockAndTimekeepingDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ClockAndTimekeepingDataUpdateDateBuilder
-		Done() ClockAndTimekeepingDataBuilder
-	}); ok {
+func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataUpdateDate() ClockAndTimekeepingDataUpdateDateBuilder {
+	if cb, ok := b.childBuilder.(ClockAndTimekeepingDataUpdateDateBuilder); ok {
 		return cb
 	}
 	cb := NewClockAndTimekeepingDataUpdateDateBuilder().(*_ClockAndTimekeepingDataUpdateDateBuilder)
@@ -209,14 +188,8 @@ func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataUpdateDate() 
 	return cb
 }
 
-func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataRequestRefresh() interface {
-	ClockAndTimekeepingDataRequestRefreshBuilder
-	Done() ClockAndTimekeepingDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ClockAndTimekeepingDataRequestRefreshBuilder
-		Done() ClockAndTimekeepingDataBuilder
-	}); ok {
+func (b *_ClockAndTimekeepingDataBuilder) AsClockAndTimekeepingDataRequestRefresh() ClockAndTimekeepingDataRequestRefreshBuilder {
+	if cb, ok := b.childBuilder.(ClockAndTimekeepingDataRequestRefreshBuilder); ok {
 		return cb
 	}
 	cb := NewClockAndTimekeepingDataRequestRefreshBuilder().(*_ClockAndTimekeepingDataRequestRefreshBuilder)

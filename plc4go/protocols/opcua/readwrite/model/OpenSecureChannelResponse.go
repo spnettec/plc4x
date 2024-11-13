@@ -112,6 +112,8 @@ type OpenSecureChannelResponseBuilder interface {
 	WithServerNonce(PascalByteString) OpenSecureChannelResponseBuilder
 	// WithServerNonceBuilder adds ServerNonce (property field) which is build by the builder
 	WithServerNonceBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) OpenSecureChannelResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the OpenSecureChannelResponse or returns an error if something is wrong
 	Build() (OpenSecureChannelResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (OpenSecureChannelResponseBuilder) = (*_OpenSecureChannelResponseBuilder)(
 
 func (b *_OpenSecureChannelResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._OpenSecureChannelResponse
 }
 
 func (b *_OpenSecureChannelResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, serverProtocolVersion uint32, securityToken ChannelSecurityToken, serverNonce PascalByteString) OpenSecureChannelResponseBuilder {
@@ -233,8 +236,10 @@ func (b *_OpenSecureChannelResponseBuilder) MustBuild() OpenSecureChannelRespons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_OpenSecureChannelResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -440,12 +445,12 @@ func (m *_OpenSecureChannelResponse) deepCopy() *_OpenSecureChannelResponse {
 	}
 	_OpenSecureChannelResponseCopy := &_OpenSecureChannelResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		m.ServerProtocolVersion,
-		m.SecurityToken.DeepCopy().(ChannelSecurityToken),
-		m.ServerNonce.DeepCopy().(PascalByteString),
+		utils.DeepCopy[ChannelSecurityToken](m.SecurityToken),
+		utils.DeepCopy[PascalByteString](m.ServerNonce),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_OpenSecureChannelResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _OpenSecureChannelResponseCopy
 }
 

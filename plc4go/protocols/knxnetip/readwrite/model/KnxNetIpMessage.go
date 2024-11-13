@@ -94,85 +94,37 @@ type KnxNetIpMessageBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() KnxNetIpMessageBuilder
 	// AsSearchRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsSearchRequest() interface {
-		SearchRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsSearchRequest() SearchRequestBuilder
 	// AsSearchResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsSearchResponse() interface {
-		SearchResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsSearchResponse() SearchResponseBuilder
 	// AsDescriptionRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsDescriptionRequest() interface {
-		DescriptionRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsDescriptionRequest() DescriptionRequestBuilder
 	// AsDescriptionResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsDescriptionResponse() interface {
-		DescriptionResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsDescriptionResponse() DescriptionResponseBuilder
 	// AsConnectionRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsConnectionRequest() interface {
-		ConnectionRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsConnectionRequest() ConnectionRequestBuilder
 	// AsConnectionResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsConnectionResponse() interface {
-		ConnectionResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsConnectionResponse() ConnectionResponseBuilder
 	// AsConnectionStateRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsConnectionStateRequest() interface {
-		ConnectionStateRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsConnectionStateRequest() ConnectionStateRequestBuilder
 	// AsConnectionStateResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsConnectionStateResponse() interface {
-		ConnectionStateResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsConnectionStateResponse() ConnectionStateResponseBuilder
 	// AsDisconnectRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsDisconnectRequest() interface {
-		DisconnectRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsDisconnectRequest() DisconnectRequestBuilder
 	// AsDisconnectResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsDisconnectResponse() interface {
-		DisconnectResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsDisconnectResponse() DisconnectResponseBuilder
 	// AsUnknownMessage converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsUnknownMessage() interface {
-		UnknownMessageBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsUnknownMessage() UnknownMessageBuilder
 	// AsDeviceConfigurationRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsDeviceConfigurationRequest() interface {
-		DeviceConfigurationRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsDeviceConfigurationRequest() DeviceConfigurationRequestBuilder
 	// AsDeviceConfigurationAck converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsDeviceConfigurationAck() interface {
-		DeviceConfigurationAckBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsDeviceConfigurationAck() DeviceConfigurationAckBuilder
 	// AsTunnelingRequest converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsTunnelingRequest() interface {
-		TunnelingRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsTunnelingRequest() TunnelingRequestBuilder
 	// AsTunnelingResponse converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsTunnelingResponse() interface {
-		TunnelingResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsTunnelingResponse() TunnelingResponseBuilder
 	// AsRoutingIndication converts this build to a subType of KnxNetIpMessage. It is always possible to return to current builder using Done()
-	AsRoutingIndication() interface {
-		RoutingIndicationBuilder
-		Done() KnxNetIpMessageBuilder
-	}
+	AsRoutingIndication() RoutingIndicationBuilder
 	// Build builds the KnxNetIpMessage or returns an error if something is wrong
 	PartialBuild() (KnxNetIpMessageContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -223,14 +175,8 @@ func (b *_KnxNetIpMessageBuilder) PartialMustBuild() KnxNetIpMessageContract {
 	return build
 }
 
-func (b *_KnxNetIpMessageBuilder) AsSearchRequest() interface {
-	SearchRequestBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SearchRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsSearchRequest() SearchRequestBuilder {
+	if cb, ok := b.childBuilder.(SearchRequestBuilder); ok {
 		return cb
 	}
 	cb := NewSearchRequestBuilder().(*_SearchRequestBuilder)
@@ -239,14 +185,8 @@ func (b *_KnxNetIpMessageBuilder) AsSearchRequest() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsSearchResponse() interface {
-	SearchResponseBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SearchResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsSearchResponse() SearchResponseBuilder {
+	if cb, ok := b.childBuilder.(SearchResponseBuilder); ok {
 		return cb
 	}
 	cb := NewSearchResponseBuilder().(*_SearchResponseBuilder)
@@ -255,14 +195,8 @@ func (b *_KnxNetIpMessageBuilder) AsSearchResponse() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsDescriptionRequest() interface {
-	DescriptionRequestBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DescriptionRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsDescriptionRequest() DescriptionRequestBuilder {
+	if cb, ok := b.childBuilder.(DescriptionRequestBuilder); ok {
 		return cb
 	}
 	cb := NewDescriptionRequestBuilder().(*_DescriptionRequestBuilder)
@@ -271,14 +205,8 @@ func (b *_KnxNetIpMessageBuilder) AsDescriptionRequest() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsDescriptionResponse() interface {
-	DescriptionResponseBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DescriptionResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsDescriptionResponse() DescriptionResponseBuilder {
+	if cb, ok := b.childBuilder.(DescriptionResponseBuilder); ok {
 		return cb
 	}
 	cb := NewDescriptionResponseBuilder().(*_DescriptionResponseBuilder)
@@ -287,14 +215,8 @@ func (b *_KnxNetIpMessageBuilder) AsDescriptionResponse() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsConnectionRequest() interface {
-	ConnectionRequestBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConnectionRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsConnectionRequest() ConnectionRequestBuilder {
+	if cb, ok := b.childBuilder.(ConnectionRequestBuilder); ok {
 		return cb
 	}
 	cb := NewConnectionRequestBuilder().(*_ConnectionRequestBuilder)
@@ -303,14 +225,8 @@ func (b *_KnxNetIpMessageBuilder) AsConnectionRequest() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsConnectionResponse() interface {
-	ConnectionResponseBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConnectionResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsConnectionResponse() ConnectionResponseBuilder {
+	if cb, ok := b.childBuilder.(ConnectionResponseBuilder); ok {
 		return cb
 	}
 	cb := NewConnectionResponseBuilder().(*_ConnectionResponseBuilder)
@@ -319,14 +235,8 @@ func (b *_KnxNetIpMessageBuilder) AsConnectionResponse() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsConnectionStateRequest() interface {
-	ConnectionStateRequestBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConnectionStateRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsConnectionStateRequest() ConnectionStateRequestBuilder {
+	if cb, ok := b.childBuilder.(ConnectionStateRequestBuilder); ok {
 		return cb
 	}
 	cb := NewConnectionStateRequestBuilder().(*_ConnectionStateRequestBuilder)
@@ -335,14 +245,8 @@ func (b *_KnxNetIpMessageBuilder) AsConnectionStateRequest() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsConnectionStateResponse() interface {
-	ConnectionStateResponseBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConnectionStateResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsConnectionStateResponse() ConnectionStateResponseBuilder {
+	if cb, ok := b.childBuilder.(ConnectionStateResponseBuilder); ok {
 		return cb
 	}
 	cb := NewConnectionStateResponseBuilder().(*_ConnectionStateResponseBuilder)
@@ -351,14 +255,8 @@ func (b *_KnxNetIpMessageBuilder) AsConnectionStateResponse() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsDisconnectRequest() interface {
-	DisconnectRequestBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DisconnectRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsDisconnectRequest() DisconnectRequestBuilder {
+	if cb, ok := b.childBuilder.(DisconnectRequestBuilder); ok {
 		return cb
 	}
 	cb := NewDisconnectRequestBuilder().(*_DisconnectRequestBuilder)
@@ -367,14 +265,8 @@ func (b *_KnxNetIpMessageBuilder) AsDisconnectRequest() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsDisconnectResponse() interface {
-	DisconnectResponseBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DisconnectResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsDisconnectResponse() DisconnectResponseBuilder {
+	if cb, ok := b.childBuilder.(DisconnectResponseBuilder); ok {
 		return cb
 	}
 	cb := NewDisconnectResponseBuilder().(*_DisconnectResponseBuilder)
@@ -383,14 +275,8 @@ func (b *_KnxNetIpMessageBuilder) AsDisconnectResponse() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsUnknownMessage() interface {
-	UnknownMessageBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		UnknownMessageBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsUnknownMessage() UnknownMessageBuilder {
+	if cb, ok := b.childBuilder.(UnknownMessageBuilder); ok {
 		return cb
 	}
 	cb := NewUnknownMessageBuilder().(*_UnknownMessageBuilder)
@@ -399,14 +285,8 @@ func (b *_KnxNetIpMessageBuilder) AsUnknownMessage() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsDeviceConfigurationRequest() interface {
-	DeviceConfigurationRequestBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DeviceConfigurationRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsDeviceConfigurationRequest() DeviceConfigurationRequestBuilder {
+	if cb, ok := b.childBuilder.(DeviceConfigurationRequestBuilder); ok {
 		return cb
 	}
 	cb := NewDeviceConfigurationRequestBuilder().(*_DeviceConfigurationRequestBuilder)
@@ -415,14 +295,8 @@ func (b *_KnxNetIpMessageBuilder) AsDeviceConfigurationRequest() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsDeviceConfigurationAck() interface {
-	DeviceConfigurationAckBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DeviceConfigurationAckBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsDeviceConfigurationAck() DeviceConfigurationAckBuilder {
+	if cb, ok := b.childBuilder.(DeviceConfigurationAckBuilder); ok {
 		return cb
 	}
 	cb := NewDeviceConfigurationAckBuilder().(*_DeviceConfigurationAckBuilder)
@@ -431,14 +305,8 @@ func (b *_KnxNetIpMessageBuilder) AsDeviceConfigurationAck() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsTunnelingRequest() interface {
-	TunnelingRequestBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TunnelingRequestBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsTunnelingRequest() TunnelingRequestBuilder {
+	if cb, ok := b.childBuilder.(TunnelingRequestBuilder); ok {
 		return cb
 	}
 	cb := NewTunnelingRequestBuilder().(*_TunnelingRequestBuilder)
@@ -447,14 +315,8 @@ func (b *_KnxNetIpMessageBuilder) AsTunnelingRequest() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsTunnelingResponse() interface {
-	TunnelingResponseBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TunnelingResponseBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsTunnelingResponse() TunnelingResponseBuilder {
+	if cb, ok := b.childBuilder.(TunnelingResponseBuilder); ok {
 		return cb
 	}
 	cb := NewTunnelingResponseBuilder().(*_TunnelingResponseBuilder)
@@ -463,14 +325,8 @@ func (b *_KnxNetIpMessageBuilder) AsTunnelingResponse() interface {
 	return cb
 }
 
-func (b *_KnxNetIpMessageBuilder) AsRoutingIndication() interface {
-	RoutingIndicationBuilder
-	Done() KnxNetIpMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		RoutingIndicationBuilder
-		Done() KnxNetIpMessageBuilder
-	}); ok {
+func (b *_KnxNetIpMessageBuilder) AsRoutingIndication() RoutingIndicationBuilder {
+	if cb, ok := b.childBuilder.(RoutingIndicationBuilder); ok {
 		return cb
 	}
 	cb := NewRoutingIndicationBuilder().(*_RoutingIndicationBuilder)

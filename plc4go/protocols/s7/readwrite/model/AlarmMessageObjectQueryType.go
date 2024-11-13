@@ -657,13 +657,13 @@ func (m *_AlarmMessageObjectQueryType) deepCopy() *_AlarmMessageObjectQueryType 
 	}
 	_AlarmMessageObjectQueryTypeCopy := &_AlarmMessageObjectQueryType{
 		m.LengthDataset,
-		m.EventState.DeepCopy().(State),
-		m.AckStateGoing.DeepCopy().(State),
-		m.AckStateComing.DeepCopy().(State),
-		m.TimeComing.DeepCopy().(DateAndTime),
-		m.ValueComing.DeepCopy().(AssociatedValueType),
-		m.TimeGoing.DeepCopy().(DateAndTime),
-		m.ValueGoing.DeepCopy().(AssociatedValueType),
+		utils.DeepCopy[State](m.EventState),
+		utils.DeepCopy[State](m.AckStateGoing),
+		utils.DeepCopy[State](m.AckStateComing),
+		utils.DeepCopy[DateAndTime](m.TimeComing),
+		utils.DeepCopy[AssociatedValueType](m.ValueComing),
+		utils.DeepCopy[DateAndTime](m.TimeGoing),
+		utils.DeepCopy[AssociatedValueType](m.ValueGoing),
 		m.reservedField0,
 	}
 	return _AlarmMessageObjectQueryTypeCopy

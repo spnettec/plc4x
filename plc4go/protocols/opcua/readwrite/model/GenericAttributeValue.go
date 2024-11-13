@@ -90,6 +90,8 @@ type GenericAttributeValueBuilder interface {
 	WithValue(Variant) GenericAttributeValueBuilder
 	// WithValueBuilder adds Value (property field) which is build by the builder
 	WithValueBuilder(func(VariantBuilder) VariantBuilder) GenericAttributeValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the GenericAttributeValue or returns an error if something is wrong
 	Build() (GenericAttributeValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (GenericAttributeValueBuilder) = (*_GenericAttributeValueBuilder)(nil)
 
 func (b *_GenericAttributeValueBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._GenericAttributeValue
 }
 
 func (b *_GenericAttributeValueBuilder) WithMandatoryFields(attributeId uint32, value Variant) GenericAttributeValueBuilder {
@@ -163,8 +166,10 @@ func (b *_GenericAttributeValueBuilder) MustBuild() GenericAttributeValue {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_GenericAttributeValueBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -337,9 +342,9 @@ func (m *_GenericAttributeValue) deepCopy() *_GenericAttributeValue {
 	_GenericAttributeValueCopy := &_GenericAttributeValue{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.AttributeId,
-		m.Value.DeepCopy().(Variant),
+		utils.DeepCopy[Variant](m.Value),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_GenericAttributeValueCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _GenericAttributeValueCopy
 }
 

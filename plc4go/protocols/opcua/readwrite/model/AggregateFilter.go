@@ -107,6 +107,8 @@ type AggregateFilterBuilder interface {
 	WithAggregateConfiguration(AggregateConfiguration) AggregateFilterBuilder
 	// WithAggregateConfigurationBuilder adds AggregateConfiguration (property field) which is build by the builder
 	WithAggregateConfigurationBuilder(func(AggregateConfigurationBuilder) AggregateConfigurationBuilder) AggregateFilterBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AggregateFilter or returns an error if something is wrong
 	Build() (AggregateFilter, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,6 +132,7 @@ var _ (AggregateFilterBuilder) = (*_AggregateFilterBuilder)(nil)
 
 func (b *_AggregateFilterBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AggregateFilter
 }
 
 func (b *_AggregateFilterBuilder) WithMandatoryFields(startTime int64, aggregateType NodeId, processingInterval float64, aggregateConfiguration AggregateConfiguration) AggregateFilterBuilder {
@@ -209,8 +212,10 @@ func (b *_AggregateFilterBuilder) MustBuild() AggregateFilter {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AggregateFilterBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -417,11 +422,11 @@ func (m *_AggregateFilter) deepCopy() *_AggregateFilter {
 	_AggregateFilterCopy := &_AggregateFilter{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StartTime,
-		m.AggregateType.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.AggregateType),
 		m.ProcessingInterval,
-		m.AggregateConfiguration.DeepCopy().(AggregateConfiguration),
+		utils.DeepCopy[AggregateConfiguration](m.AggregateConfiguration),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AggregateFilterCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AggregateFilterCopy
 }
 

@@ -87,6 +87,8 @@ type APDUSimpleAckBuilder interface {
 	WithOriginalInvokeId(uint8) APDUSimpleAckBuilder
 	// WithServiceChoice adds ServiceChoice (property field)
 	WithServiceChoice(BACnetConfirmedServiceChoice) APDUSimpleAckBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() APDUBuilder
 	// Build builds the APDUSimpleAck or returns an error if something is wrong
 	Build() (APDUSimpleAck, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (APDUSimpleAckBuilder) = (*_APDUSimpleAckBuilder)(nil)
 
 func (b *_APDUSimpleAckBuilder) setParent(contract APDUContract) {
 	b.APDUContract = contract
+	contract.(*_APDU)._SubType = b._APDUSimpleAck
 }
 
 func (b *_APDUSimpleAckBuilder) WithMandatoryFields(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice) APDUSimpleAckBuilder {
@@ -141,8 +144,10 @@ func (b *_APDUSimpleAckBuilder) MustBuild() APDUSimpleAck {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_APDUSimpleAckBuilder) Done() APDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAPDUBuilder().(*_APDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -331,7 +336,7 @@ func (m *_APDUSimpleAck) deepCopy() *_APDUSimpleAck {
 		m.ServiceChoice,
 		m.reservedField0,
 	}
-	m.APDUContract.(*_APDU)._SubType = m
+	_APDUSimpleAckCopy.APDUContract.(*_APDU)._SubType = m
 	return _APDUSimpleAckCopy
 }
 

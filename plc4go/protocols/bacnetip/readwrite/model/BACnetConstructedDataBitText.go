@@ -89,6 +89,8 @@ type BACnetConstructedDataBitTextBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBitTextBuilder
 	// WithBitText adds BitText (property field)
 	WithBitText(...BACnetApplicationTagCharacterString) BACnetConstructedDataBitTextBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBitText or returns an error if something is wrong
 	Build() (BACnetConstructedDataBitText, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataBitTextBuilder) = (*_BACnetConstructedDataBitTextBui
 
 func (b *_BACnetConstructedDataBitTextBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBitText
 }
 
 func (b *_BACnetConstructedDataBitTextBuilder) WithMandatoryFields(bitText []BACnetApplicationTagCharacterString) BACnetConstructedDataBitTextBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataBitTextBuilder) MustBuild() BACnetConstructedData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBitTextBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataBitText) deepCopy() *_BACnetConstructedDataBitTex
 	}
 	_BACnetConstructedDataBitTextCopy := &_BACnetConstructedDataBitText{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.BitText),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBitTextCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBitTextCopy
 }
 

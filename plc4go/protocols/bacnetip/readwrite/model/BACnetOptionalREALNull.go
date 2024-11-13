@@ -84,6 +84,8 @@ type BACnetOptionalREALNullBuilder interface {
 	WithNullValue(BACnetApplicationTagNull) BACnetOptionalREALNullBuilder
 	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
 	WithNullValueBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetOptionalREALNullBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetOptionalREALBuilder
 	// Build builds the BACnetOptionalREALNull or returns an error if something is wrong
 	Build() (BACnetOptionalREALNull, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetOptionalREALNullBuilder) = (*_BACnetOptionalREALNullBuilder)(nil)
 
 func (b *_BACnetOptionalREALNullBuilder) setParent(contract BACnetOptionalREALContract) {
 	b.BACnetOptionalREALContract = contract
+	contract.(*_BACnetOptionalREAL)._SubType = b._BACnetOptionalREALNull
 }
 
 func (b *_BACnetOptionalREALNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetOptionalREALNullBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetOptionalREALNullBuilder) MustBuild() BACnetOptionalREALNull {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetOptionalREALNullBuilder) Done() BACnetOptionalREALBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetOptionalREALBuilder().(*_BACnetOptionalREALBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetOptionalREALNull) deepCopy() *_BACnetOptionalREALNull {
 	}
 	_BACnetOptionalREALNullCopy := &_BACnetOptionalREALNull{
 		m.BACnetOptionalREALContract.(*_BACnetOptionalREAL).deepCopy(),
-		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+		utils.DeepCopy[BACnetApplicationTagNull](m.NullValue),
 	}
-	m.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = m
+	_BACnetOptionalREALNullCopy.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = m
 	return _BACnetOptionalREALNullCopy
 }
 

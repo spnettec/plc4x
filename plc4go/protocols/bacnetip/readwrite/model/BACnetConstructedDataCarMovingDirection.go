@@ -86,6 +86,8 @@ type BACnetConstructedDataCarMovingDirectionBuilder interface {
 	WithCarMovingDirection(BACnetLiftCarDirectionTagged) BACnetConstructedDataCarMovingDirectionBuilder
 	// WithCarMovingDirectionBuilder adds CarMovingDirection (property field) which is build by the builder
 	WithCarMovingDirectionBuilder(func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetConstructedDataCarMovingDirectionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCarMovingDirection or returns an error if something is wrong
 	Build() (BACnetConstructedDataCarMovingDirection, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataCarMovingDirectionBuilder) = (*_BACnetConstructedDat
 
 func (b *_BACnetConstructedDataCarMovingDirectionBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCarMovingDirection
 }
 
 func (b *_BACnetConstructedDataCarMovingDirectionBuilder) WithMandatoryFields(carMovingDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarMovingDirectionBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataCarMovingDirectionBuilder) MustBuild() BACnetCons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCarMovingDirectionBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataCarMovingDirection) deepCopy() *_BACnetConstructe
 	}
 	_BACnetConstructedDataCarMovingDirectionCopy := &_BACnetConstructedDataCarMovingDirection{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CarMovingDirection.DeepCopy().(BACnetLiftCarDirectionTagged),
+		utils.DeepCopy[BACnetLiftCarDirectionTagged](m.CarMovingDirection),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCarMovingDirectionCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCarMovingDirectionCopy
 }
 

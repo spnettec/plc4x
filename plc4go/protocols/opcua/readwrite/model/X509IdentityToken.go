@@ -95,6 +95,8 @@ type X509IdentityTokenBuilder interface {
 	WithCertificateData(PascalByteString) X509IdentityTokenBuilder
 	// WithCertificateDataBuilder adds CertificateData (property field) which is build by the builder
 	WithCertificateDataBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) X509IdentityTokenBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the X509IdentityToken or returns an error if something is wrong
 	Build() (X509IdentityToken, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (X509IdentityTokenBuilder) = (*_X509IdentityTokenBuilder)(nil)
 
 func (b *_X509IdentityTokenBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._X509IdentityToken
 }
 
 func (b *_X509IdentityTokenBuilder) WithMandatoryFields(policyId PascalString, certificateData PascalByteString) X509IdentityTokenBuilder {
@@ -187,8 +190,10 @@ func (b *_X509IdentityTokenBuilder) MustBuild() X509IdentityToken {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_X509IdentityTokenBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_X509IdentityToken) deepCopy() *_X509IdentityToken {
 	}
 	_X509IdentityTokenCopy := &_X509IdentityToken{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.PolicyId.DeepCopy().(PascalString),
-		m.CertificateData.DeepCopy().(PascalByteString),
+		utils.DeepCopy[PascalString](m.PolicyId),
+		utils.DeepCopy[PascalByteString](m.CertificateData),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_X509IdentityTokenCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _X509IdentityTokenCopy
 }
 

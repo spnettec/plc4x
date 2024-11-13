@@ -132,6 +132,8 @@ type ErrorReportingDataGenericBuilder interface {
 	WithErrorData1(uint8) ErrorReportingDataGenericBuilder
 	// WithErrorData2 adds ErrorData2 (property field)
 	WithErrorData2(uint8) ErrorReportingDataGenericBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ErrorReportingDataBuilder
 	// Build builds the ErrorReportingDataGeneric or returns an error if something is wrong
 	Build() (ErrorReportingDataGeneric, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,7 @@ var _ (ErrorReportingDataGenericBuilder) = (*_ErrorReportingDataGenericBuilder)(
 
 func (b *_ErrorReportingDataGenericBuilder) setParent(contract ErrorReportingDataContract) {
 	b.ErrorReportingDataContract = contract
+	contract.(*_ErrorReportingData)._SubType = b._ErrorReportingDataGeneric
 }
 
 func (b *_ErrorReportingDataGenericBuilder) WithMandatoryFields(systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8) ErrorReportingDataGenericBuilder {
@@ -235,8 +238,10 @@ func (b *_ErrorReportingDataGenericBuilder) MustBuild() ErrorReportingDataGeneri
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ErrorReportingDataGenericBuilder) Done() ErrorReportingDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewErrorReportingDataBuilder().(*_ErrorReportingDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -580,7 +585,7 @@ func (m *_ErrorReportingDataGeneric) deepCopy() *_ErrorReportingDataGeneric {
 	}
 	_ErrorReportingDataGenericCopy := &_ErrorReportingDataGeneric{
 		m.ErrorReportingDataContract.(*_ErrorReportingData).deepCopy(),
-		m.SystemCategory.DeepCopy().(ErrorReportingSystemCategory),
+		utils.DeepCopy[ErrorReportingSystemCategory](m.SystemCategory),
 		m.MostRecent,
 		m.Acknowledge,
 		m.MostSevere,
@@ -589,7 +594,7 @@ func (m *_ErrorReportingDataGeneric) deepCopy() *_ErrorReportingDataGeneric {
 		m.ErrorData1,
 		m.ErrorData2,
 	}
-	m.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = m
+	_ErrorReportingDataGenericCopy.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = m
 	return _ErrorReportingDataGenericCopy
 }
 

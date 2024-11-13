@@ -106,45 +106,21 @@ type AccessControlDataBuilder interface {
 	// WithAccessPointId adds AccessPointId (property field)
 	WithAccessPointId(byte) AccessControlDataBuilder
 	// AsAccessControlDataValidAccessRequest converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
-	AsAccessControlDataValidAccessRequest() interface {
-		AccessControlDataValidAccessRequestBuilder
-		Done() AccessControlDataBuilder
-	}
+	AsAccessControlDataValidAccessRequest() AccessControlDataValidAccessRequestBuilder
 	// AsAccessControlDataInvalidAccessRequest converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
-	AsAccessControlDataInvalidAccessRequest() interface {
-		AccessControlDataInvalidAccessRequestBuilder
-		Done() AccessControlDataBuilder
-	}
+	AsAccessControlDataInvalidAccessRequest() AccessControlDataInvalidAccessRequestBuilder
 	// AsAccessControlDataAccessPointLeftOpen converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
-	AsAccessControlDataAccessPointLeftOpen() interface {
-		AccessControlDataAccessPointLeftOpenBuilder
-		Done() AccessControlDataBuilder
-	}
+	AsAccessControlDataAccessPointLeftOpen() AccessControlDataAccessPointLeftOpenBuilder
 	// AsAccessControlDataAccessPointForcedOpen converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
-	AsAccessControlDataAccessPointForcedOpen() interface {
-		AccessControlDataAccessPointForcedOpenBuilder
-		Done() AccessControlDataBuilder
-	}
+	AsAccessControlDataAccessPointForcedOpen() AccessControlDataAccessPointForcedOpenBuilder
 	// AsAccessControlDataAccessPointClosed converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
-	AsAccessControlDataAccessPointClosed() interface {
-		AccessControlDataAccessPointClosedBuilder
-		Done() AccessControlDataBuilder
-	}
+	AsAccessControlDataAccessPointClosed() AccessControlDataAccessPointClosedBuilder
 	// AsAccessControlDataRequestToExit converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
-	AsAccessControlDataRequestToExit() interface {
-		AccessControlDataRequestToExitBuilder
-		Done() AccessControlDataBuilder
-	}
+	AsAccessControlDataRequestToExit() AccessControlDataRequestToExitBuilder
 	// AsAccessControlDataCloseAccessPoint converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
-	AsAccessControlDataCloseAccessPoint() interface {
-		AccessControlDataCloseAccessPointBuilder
-		Done() AccessControlDataBuilder
-	}
+	AsAccessControlDataCloseAccessPoint() AccessControlDataCloseAccessPointBuilder
 	// AsAccessControlDataLockAccessPoint converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
-	AsAccessControlDataLockAccessPoint() interface {
-		AccessControlDataLockAccessPointBuilder
-		Done() AccessControlDataBuilder
-	}
+	AsAccessControlDataLockAccessPoint() AccessControlDataLockAccessPointBuilder
 	// Build builds the AccessControlData or returns an error if something is wrong
 	PartialBuild() (AccessControlDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -210,14 +186,8 @@ func (b *_AccessControlDataBuilder) PartialMustBuild() AccessControlDataContract
 	return build
 }
 
-func (b *_AccessControlDataBuilder) AsAccessControlDataValidAccessRequest() interface {
-	AccessControlDataValidAccessRequestBuilder
-	Done() AccessControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AccessControlDataValidAccessRequestBuilder
-		Done() AccessControlDataBuilder
-	}); ok {
+func (b *_AccessControlDataBuilder) AsAccessControlDataValidAccessRequest() AccessControlDataValidAccessRequestBuilder {
+	if cb, ok := b.childBuilder.(AccessControlDataValidAccessRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAccessControlDataValidAccessRequestBuilder().(*_AccessControlDataValidAccessRequestBuilder)
@@ -226,14 +196,8 @@ func (b *_AccessControlDataBuilder) AsAccessControlDataValidAccessRequest() inte
 	return cb
 }
 
-func (b *_AccessControlDataBuilder) AsAccessControlDataInvalidAccessRequest() interface {
-	AccessControlDataInvalidAccessRequestBuilder
-	Done() AccessControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AccessControlDataInvalidAccessRequestBuilder
-		Done() AccessControlDataBuilder
-	}); ok {
+func (b *_AccessControlDataBuilder) AsAccessControlDataInvalidAccessRequest() AccessControlDataInvalidAccessRequestBuilder {
+	if cb, ok := b.childBuilder.(AccessControlDataInvalidAccessRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAccessControlDataInvalidAccessRequestBuilder().(*_AccessControlDataInvalidAccessRequestBuilder)
@@ -242,14 +206,8 @@ func (b *_AccessControlDataBuilder) AsAccessControlDataInvalidAccessRequest() in
 	return cb
 }
 
-func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointLeftOpen() interface {
-	AccessControlDataAccessPointLeftOpenBuilder
-	Done() AccessControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AccessControlDataAccessPointLeftOpenBuilder
-		Done() AccessControlDataBuilder
-	}); ok {
+func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointLeftOpen() AccessControlDataAccessPointLeftOpenBuilder {
+	if cb, ok := b.childBuilder.(AccessControlDataAccessPointLeftOpenBuilder); ok {
 		return cb
 	}
 	cb := NewAccessControlDataAccessPointLeftOpenBuilder().(*_AccessControlDataAccessPointLeftOpenBuilder)
@@ -258,14 +216,8 @@ func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointLeftOpen() int
 	return cb
 }
 
-func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointForcedOpen() interface {
-	AccessControlDataAccessPointForcedOpenBuilder
-	Done() AccessControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AccessControlDataAccessPointForcedOpenBuilder
-		Done() AccessControlDataBuilder
-	}); ok {
+func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointForcedOpen() AccessControlDataAccessPointForcedOpenBuilder {
+	if cb, ok := b.childBuilder.(AccessControlDataAccessPointForcedOpenBuilder); ok {
 		return cb
 	}
 	cb := NewAccessControlDataAccessPointForcedOpenBuilder().(*_AccessControlDataAccessPointForcedOpenBuilder)
@@ -274,14 +226,8 @@ func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointForcedOpen() i
 	return cb
 }
 
-func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointClosed() interface {
-	AccessControlDataAccessPointClosedBuilder
-	Done() AccessControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AccessControlDataAccessPointClosedBuilder
-		Done() AccessControlDataBuilder
-	}); ok {
+func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointClosed() AccessControlDataAccessPointClosedBuilder {
+	if cb, ok := b.childBuilder.(AccessControlDataAccessPointClosedBuilder); ok {
 		return cb
 	}
 	cb := NewAccessControlDataAccessPointClosedBuilder().(*_AccessControlDataAccessPointClosedBuilder)
@@ -290,14 +236,8 @@ func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointClosed() inter
 	return cb
 }
 
-func (b *_AccessControlDataBuilder) AsAccessControlDataRequestToExit() interface {
-	AccessControlDataRequestToExitBuilder
-	Done() AccessControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AccessControlDataRequestToExitBuilder
-		Done() AccessControlDataBuilder
-	}); ok {
+func (b *_AccessControlDataBuilder) AsAccessControlDataRequestToExit() AccessControlDataRequestToExitBuilder {
+	if cb, ok := b.childBuilder.(AccessControlDataRequestToExitBuilder); ok {
 		return cb
 	}
 	cb := NewAccessControlDataRequestToExitBuilder().(*_AccessControlDataRequestToExitBuilder)
@@ -306,14 +246,8 @@ func (b *_AccessControlDataBuilder) AsAccessControlDataRequestToExit() interface
 	return cb
 }
 
-func (b *_AccessControlDataBuilder) AsAccessControlDataCloseAccessPoint() interface {
-	AccessControlDataCloseAccessPointBuilder
-	Done() AccessControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AccessControlDataCloseAccessPointBuilder
-		Done() AccessControlDataBuilder
-	}); ok {
+func (b *_AccessControlDataBuilder) AsAccessControlDataCloseAccessPoint() AccessControlDataCloseAccessPointBuilder {
+	if cb, ok := b.childBuilder.(AccessControlDataCloseAccessPointBuilder); ok {
 		return cb
 	}
 	cb := NewAccessControlDataCloseAccessPointBuilder().(*_AccessControlDataCloseAccessPointBuilder)
@@ -322,14 +256,8 @@ func (b *_AccessControlDataBuilder) AsAccessControlDataCloseAccessPoint() interf
 	return cb
 }
 
-func (b *_AccessControlDataBuilder) AsAccessControlDataLockAccessPoint() interface {
-	AccessControlDataLockAccessPointBuilder
-	Done() AccessControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AccessControlDataLockAccessPointBuilder
-		Done() AccessControlDataBuilder
-	}); ok {
+func (b *_AccessControlDataBuilder) AsAccessControlDataLockAccessPoint() AccessControlDataLockAccessPointBuilder {
+	if cb, ok := b.childBuilder.(AccessControlDataLockAccessPointBuilder); ok {
 		return cb
 	}
 	cb := NewAccessControlDataLockAccessPointBuilder().(*_AccessControlDataLockAccessPointBuilder)

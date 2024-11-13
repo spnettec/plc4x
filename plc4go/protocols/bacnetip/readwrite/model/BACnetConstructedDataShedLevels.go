@@ -89,6 +89,8 @@ type BACnetConstructedDataShedLevelsBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataShedLevelsBuilder
 	// WithShedLevels adds ShedLevels (property field)
 	WithShedLevels(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataShedLevels or returns an error if something is wrong
 	Build() (BACnetConstructedDataShedLevels, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataShedLevelsBuilder) = (*_BACnetConstructedDataShedLev
 
 func (b *_BACnetConstructedDataShedLevelsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataShedLevels
 }
 
 func (b *_BACnetConstructedDataShedLevelsBuilder) WithMandatoryFields(shedLevels []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelsBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataShedLevelsBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataShedLevelsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataShedLevels) deepCopy() *_BACnetConstructedDataShe
 	}
 	_BACnetConstructedDataShedLevelsCopy := &_BACnetConstructedDataShedLevels{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ShedLevels),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataShedLevelsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataShedLevelsCopy
 }
 

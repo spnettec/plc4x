@@ -84,6 +84,8 @@ type BACnetHostAddressIpAddressBuilder interface {
 	WithIpAddress(BACnetContextTagOctetString) BACnetHostAddressIpAddressBuilder
 	// WithIpAddressBuilder adds IpAddress (property field) which is build by the builder
 	WithIpAddressBuilder(func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetHostAddressIpAddressBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetHostAddressBuilder
 	// Build builds the BACnetHostAddressIpAddress or returns an error if something is wrong
 	Build() (BACnetHostAddressIpAddress, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetHostAddressIpAddressBuilder) = (*_BACnetHostAddressIpAddressBuilder
 
 func (b *_BACnetHostAddressIpAddressBuilder) setParent(contract BACnetHostAddressContract) {
 	b.BACnetHostAddressContract = contract
+	contract.(*_BACnetHostAddress)._SubType = b._BACnetHostAddressIpAddress
 }
 
 func (b *_BACnetHostAddressIpAddressBuilder) WithMandatoryFields(ipAddress BACnetContextTagOctetString) BACnetHostAddressIpAddressBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetHostAddressIpAddressBuilder) MustBuild() BACnetHostAddressIpAddr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetHostAddressIpAddressBuilder) Done() BACnetHostAddressBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetHostAddressBuilder().(*_BACnetHostAddressBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetHostAddressIpAddress) deepCopy() *_BACnetHostAddressIpAddress {
 	}
 	_BACnetHostAddressIpAddressCopy := &_BACnetHostAddressIpAddress{
 		m.BACnetHostAddressContract.(*_BACnetHostAddress).deepCopy(),
-		m.IpAddress.DeepCopy().(BACnetContextTagOctetString),
+		utils.DeepCopy[BACnetContextTagOctetString](m.IpAddress),
 	}
-	m.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m
+	_BACnetHostAddressIpAddressCopy.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m
 	return _BACnetHostAddressIpAddressCopy
 }
 

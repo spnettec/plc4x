@@ -84,6 +84,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder interface {
 	WithTimeValue(BACnetApplicationTagTime) BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
 	// WithTimeValueBuilder adds TimeValue (property field) which is build by the builder
 	WithTimeValueBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
 	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryTime or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultExtendedParametersEntryTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder) = (*_BACnetF
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
 	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
+	contract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = b._BACnetFaultParameterFaultExtendedParametersEntryTime
 }
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder) MustBuild
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterFaultExtendedParametersEntryBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) deepCopy() *_BAC
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryTimeCopy := &_BACnetFaultParameterFaultExtendedParametersEntryTime{
 		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
-		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+		utils.DeepCopy[BACnetApplicationTagTime](m.TimeValue),
 	}
-	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	_BACnetFaultParameterFaultExtendedParametersEntryTimeCopy.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
 	return _BACnetFaultParameterFaultExtendedParametersEntryTimeCopy
 }
 

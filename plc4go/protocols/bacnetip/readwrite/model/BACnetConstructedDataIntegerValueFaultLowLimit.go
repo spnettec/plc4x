@@ -86,6 +86,8 @@ type BACnetConstructedDataIntegerValueFaultLowLimitBuilder interface {
 	WithFaultLowLimit(BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueFaultLowLimitBuilder
 	// WithFaultLowLimitBuilder adds FaultLowLimit (property field) which is build by the builder
 	WithFaultLowLimitBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueFaultLowLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIntegerValueFaultLowLimit or returns an error if something is wrong
 	Build() (BACnetConstructedDataIntegerValueFaultLowLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIntegerValueFaultLowLimitBuilder) = (*_BACnetConstru
 
 func (b *_BACnetConstructedDataIntegerValueFaultLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIntegerValueFaultLowLimit
 }
 
 func (b *_BACnetConstructedDataIntegerValueFaultLowLimitBuilder) WithMandatoryFields(faultLowLimit BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueFaultLowLimitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIntegerValueFaultLowLimitBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIntegerValueFaultLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataIntegerValueFaultLowLimit) deepCopy() *_BACnetCon
 	}
 	_BACnetConstructedDataIntegerValueFaultLowLimitCopy := &_BACnetConstructedDataIntegerValueFaultLowLimit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.FaultLowLimit.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.FaultLowLimit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIntegerValueFaultLowLimitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIntegerValueFaultLowLimitCopy
 }
 

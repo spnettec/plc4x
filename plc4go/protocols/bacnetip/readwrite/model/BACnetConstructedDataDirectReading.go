@@ -86,6 +86,8 @@ type BACnetConstructedDataDirectReadingBuilder interface {
 	WithDirectReading(BACnetApplicationTagReal) BACnetConstructedDataDirectReadingBuilder
 	// WithDirectReadingBuilder adds DirectReading (property field) which is build by the builder
 	WithDirectReadingBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDirectReadingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDirectReading or returns an error if something is wrong
 	Build() (BACnetConstructedDataDirectReading, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDirectReadingBuilder) = (*_BACnetConstructedDataDire
 
 func (b *_BACnetConstructedDataDirectReadingBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDirectReading
 }
 
 func (b *_BACnetConstructedDataDirectReadingBuilder) WithMandatoryFields(directReading BACnetApplicationTagReal) BACnetConstructedDataDirectReadingBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDirectReadingBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDirectReadingBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDirectReading) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataDirectReadingCopy := &_BACnetConstructedDataDirectReading{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DirectReading.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.DirectReading),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDirectReadingCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDirectReadingCopy
 }
 

@@ -106,35 +106,17 @@ type COTPPacketBuilder interface {
 	// WithOptionalPayloadBuilder adds Payload (property field) which is build by the builder
 	WithOptionalPayloadBuilder(func(S7MessageBuilder) S7MessageBuilder) COTPPacketBuilder
 	// AsCOTPPacketData converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
-	AsCOTPPacketData() interface {
-		COTPPacketDataBuilder
-		Done() COTPPacketBuilder
-	}
+	AsCOTPPacketData() COTPPacketDataBuilder
 	// AsCOTPPacketConnectionRequest converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
-	AsCOTPPacketConnectionRequest() interface {
-		COTPPacketConnectionRequestBuilder
-		Done() COTPPacketBuilder
-	}
+	AsCOTPPacketConnectionRequest() COTPPacketConnectionRequestBuilder
 	// AsCOTPPacketConnectionResponse converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
-	AsCOTPPacketConnectionResponse() interface {
-		COTPPacketConnectionResponseBuilder
-		Done() COTPPacketBuilder
-	}
+	AsCOTPPacketConnectionResponse() COTPPacketConnectionResponseBuilder
 	// AsCOTPPacketDisconnectRequest converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
-	AsCOTPPacketDisconnectRequest() interface {
-		COTPPacketDisconnectRequestBuilder
-		Done() COTPPacketBuilder
-	}
+	AsCOTPPacketDisconnectRequest() COTPPacketDisconnectRequestBuilder
 	// AsCOTPPacketDisconnectResponse converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
-	AsCOTPPacketDisconnectResponse() interface {
-		COTPPacketDisconnectResponseBuilder
-		Done() COTPPacketBuilder
-	}
+	AsCOTPPacketDisconnectResponse() COTPPacketDisconnectResponseBuilder
 	// AsCOTPPacketTpduError converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
-	AsCOTPPacketTpduError() interface {
-		COTPPacketTpduErrorBuilder
-		Done() COTPPacketBuilder
-	}
+	AsCOTPPacketTpduError() COTPPacketTpduErrorBuilder
 	// Build builds the COTPPacket or returns an error if something is wrong
 	PartialBuild() (COTPPacketContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -208,14 +190,8 @@ func (b *_COTPPacketBuilder) PartialMustBuild() COTPPacketContract {
 	return build
 }
 
-func (b *_COTPPacketBuilder) AsCOTPPacketData() interface {
-	COTPPacketDataBuilder
-	Done() COTPPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPPacketDataBuilder
-		Done() COTPPacketBuilder
-	}); ok {
+func (b *_COTPPacketBuilder) AsCOTPPacketData() COTPPacketDataBuilder {
+	if cb, ok := b.childBuilder.(COTPPacketDataBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPPacketDataBuilder().(*_COTPPacketDataBuilder)
@@ -224,14 +200,8 @@ func (b *_COTPPacketBuilder) AsCOTPPacketData() interface {
 	return cb
 }
 
-func (b *_COTPPacketBuilder) AsCOTPPacketConnectionRequest() interface {
-	COTPPacketConnectionRequestBuilder
-	Done() COTPPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPPacketConnectionRequestBuilder
-		Done() COTPPacketBuilder
-	}); ok {
+func (b *_COTPPacketBuilder) AsCOTPPacketConnectionRequest() COTPPacketConnectionRequestBuilder {
+	if cb, ok := b.childBuilder.(COTPPacketConnectionRequestBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPPacketConnectionRequestBuilder().(*_COTPPacketConnectionRequestBuilder)
@@ -240,14 +210,8 @@ func (b *_COTPPacketBuilder) AsCOTPPacketConnectionRequest() interface {
 	return cb
 }
 
-func (b *_COTPPacketBuilder) AsCOTPPacketConnectionResponse() interface {
-	COTPPacketConnectionResponseBuilder
-	Done() COTPPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPPacketConnectionResponseBuilder
-		Done() COTPPacketBuilder
-	}); ok {
+func (b *_COTPPacketBuilder) AsCOTPPacketConnectionResponse() COTPPacketConnectionResponseBuilder {
+	if cb, ok := b.childBuilder.(COTPPacketConnectionResponseBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPPacketConnectionResponseBuilder().(*_COTPPacketConnectionResponseBuilder)
@@ -256,14 +220,8 @@ func (b *_COTPPacketBuilder) AsCOTPPacketConnectionResponse() interface {
 	return cb
 }
 
-func (b *_COTPPacketBuilder) AsCOTPPacketDisconnectRequest() interface {
-	COTPPacketDisconnectRequestBuilder
-	Done() COTPPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPPacketDisconnectRequestBuilder
-		Done() COTPPacketBuilder
-	}); ok {
+func (b *_COTPPacketBuilder) AsCOTPPacketDisconnectRequest() COTPPacketDisconnectRequestBuilder {
+	if cb, ok := b.childBuilder.(COTPPacketDisconnectRequestBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPPacketDisconnectRequestBuilder().(*_COTPPacketDisconnectRequestBuilder)
@@ -272,14 +230,8 @@ func (b *_COTPPacketBuilder) AsCOTPPacketDisconnectRequest() interface {
 	return cb
 }
 
-func (b *_COTPPacketBuilder) AsCOTPPacketDisconnectResponse() interface {
-	COTPPacketDisconnectResponseBuilder
-	Done() COTPPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPPacketDisconnectResponseBuilder
-		Done() COTPPacketBuilder
-	}); ok {
+func (b *_COTPPacketBuilder) AsCOTPPacketDisconnectResponse() COTPPacketDisconnectResponseBuilder {
+	if cb, ok := b.childBuilder.(COTPPacketDisconnectResponseBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPPacketDisconnectResponseBuilder().(*_COTPPacketDisconnectResponseBuilder)
@@ -288,14 +240,8 @@ func (b *_COTPPacketBuilder) AsCOTPPacketDisconnectResponse() interface {
 	return cb
 }
 
-func (b *_COTPPacketBuilder) AsCOTPPacketTpduError() interface {
-	COTPPacketTpduErrorBuilder
-	Done() COTPPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPPacketTpduErrorBuilder
-		Done() COTPPacketBuilder
-	}); ok {
+func (b *_COTPPacketBuilder) AsCOTPPacketTpduError() COTPPacketTpduErrorBuilder {
+	if cb, ok := b.childBuilder.(COTPPacketTpduErrorBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPPacketTpduErrorBuilder().(*_COTPPacketTpduErrorBuilder)
@@ -578,7 +524,7 @@ func (m *_COTPPacket) deepCopy() *_COTPPacket {
 	_COTPPacketCopy := &_COTPPacket{
 		nil, // will be set by child
 		utils.DeepCopySlice[COTPParameter, COTPParameter](m.Parameters),
-		m.Payload.DeepCopy().(S7Message),
+		utils.DeepCopy[S7Message](m.Payload),
 		m.CotpLen,
 	}
 	return _COTPPacketCopy

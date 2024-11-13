@@ -71,6 +71,8 @@ type BACnetConstructedDataLargeAnalogValueAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataLargeAnalogValueAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLargeAnalogValueAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataLargeAnalogValueAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataLargeAnalogValueAllBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataLargeAnalogValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLargeAnalogValueAll
 }
 
 func (b *_BACnetConstructedDataLargeAnalogValueAllBuilder) WithMandatoryFields() BACnetConstructedDataLargeAnalogValueAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataLargeAnalogValueAllBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLargeAnalogValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueAll) deepCopy() *_BACnetConstruct
 	_BACnetConstructedDataLargeAnalogValueAllCopy := &_BACnetConstructedDataLargeAnalogValueAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLargeAnalogValueAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLargeAnalogValueAllCopy
 }
 

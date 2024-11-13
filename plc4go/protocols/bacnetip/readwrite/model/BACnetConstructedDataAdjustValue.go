@@ -86,6 +86,8 @@ type BACnetConstructedDataAdjustValueBuilder interface {
 	WithAdjustValue(BACnetApplicationTagSignedInteger) BACnetConstructedDataAdjustValueBuilder
 	// WithAdjustValueBuilder adds AdjustValue (property field) which is build by the builder
 	WithAdjustValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataAdjustValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAdjustValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataAdjustValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAdjustValueBuilder) = (*_BACnetConstructedDataAdjust
 
 func (b *_BACnetConstructedDataAdjustValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAdjustValue
 }
 
 func (b *_BACnetConstructedDataAdjustValueBuilder) WithMandatoryFields(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAdjustValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAdjustValueBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAdjustValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataAdjustValue) deepCopy() *_BACnetConstructedDataAd
 	}
 	_BACnetConstructedDataAdjustValueCopy := &_BACnetConstructedDataAdjustValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AdjustValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.AdjustValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAdjustValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAdjustValueCopy
 }
 

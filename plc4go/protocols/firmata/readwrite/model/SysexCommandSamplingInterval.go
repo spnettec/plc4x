@@ -71,6 +71,8 @@ type SysexCommandSamplingIntervalBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SysexCommandSamplingIntervalBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandSamplingInterval or returns an error if something is wrong
 	Build() (SysexCommandSamplingInterval, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SysexCommandSamplingIntervalBuilder) = (*_SysexCommandSamplingIntervalBui
 
 func (b *_SysexCommandSamplingIntervalBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandSamplingInterval
 }
 
 func (b *_SysexCommandSamplingIntervalBuilder) WithMandatoryFields() SysexCommandSamplingIntervalBuilder {
@@ -115,8 +118,10 @@ func (b *_SysexCommandSamplingIntervalBuilder) MustBuild() SysexCommandSamplingI
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandSamplingIntervalBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -249,7 +254,7 @@ func (m *_SysexCommandSamplingInterval) deepCopy() *_SysexCommandSamplingInterva
 	_SysexCommandSamplingIntervalCopy := &_SysexCommandSamplingInterval{
 		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandSamplingIntervalCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandSamplingIntervalCopy
 }
 

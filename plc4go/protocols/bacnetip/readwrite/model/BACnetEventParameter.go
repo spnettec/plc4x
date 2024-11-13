@@ -101,100 +101,43 @@ type BACnetEventParameterBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventParameterBuilder
 	// AsBACnetEventParameterChangeOfBitstring converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterChangeOfBitstring() interface {
-		BACnetEventParameterChangeOfBitstringBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterChangeOfBitstring() BACnetEventParameterChangeOfBitstringBuilder
 	// AsBACnetEventParameterChangeOfState converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterChangeOfState() interface {
-		BACnetEventParameterChangeOfStateBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterChangeOfState() BACnetEventParameterChangeOfStateBuilder
 	// AsBACnetEventParameterChangeOfValue converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterChangeOfValue() interface {
-		BACnetEventParameterChangeOfValueBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterChangeOfValue() BACnetEventParameterChangeOfValueBuilder
 	// AsBACnetEventParameterCommandFailure converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterCommandFailure() interface {
-		BACnetEventParameterCommandFailureBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterCommandFailure() BACnetEventParameterCommandFailureBuilder
 	// AsBACnetEventParameterFloatingLimit converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterFloatingLimit() interface {
-		BACnetEventParameterFloatingLimitBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterFloatingLimit() BACnetEventParameterFloatingLimitBuilder
 	// AsBACnetEventParameterOutOfRange converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterOutOfRange() interface {
-		BACnetEventParameterOutOfRangeBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterOutOfRange() BACnetEventParameterOutOfRangeBuilder
 	// AsBACnetEventParameterChangeOfLifeSavety converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterChangeOfLifeSavety() interface {
-		BACnetEventParameterChangeOfLifeSavetyBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterChangeOfLifeSavety() BACnetEventParameterChangeOfLifeSavetyBuilder
 	// AsBACnetEventParameterExtended converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterExtended() interface {
-		BACnetEventParameterExtendedBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterExtended() BACnetEventParameterExtendedBuilder
 	// AsBACnetEventParameterBufferReady converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterBufferReady() interface {
-		BACnetEventParameterBufferReadyBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterBufferReady() BACnetEventParameterBufferReadyBuilder
 	// AsBACnetEventParameterUnsignedRange converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterUnsignedRange() interface {
-		BACnetEventParameterUnsignedRangeBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterUnsignedRange() BACnetEventParameterUnsignedRangeBuilder
 	// AsBACnetEventParameterAccessEvent converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterAccessEvent() interface {
-		BACnetEventParameterAccessEventBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterAccessEvent() BACnetEventParameterAccessEventBuilder
 	// AsBACnetEventParameterDoubleOutOfRange converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterDoubleOutOfRange() interface {
-		BACnetEventParameterDoubleOutOfRangeBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterDoubleOutOfRange() BACnetEventParameterDoubleOutOfRangeBuilder
 	// AsBACnetEventParameterSignedOutOfRange converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterSignedOutOfRange() interface {
-		BACnetEventParameterSignedOutOfRangeBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterSignedOutOfRange() BACnetEventParameterSignedOutOfRangeBuilder
 	// AsBACnetEventParameterUnsignedOutOfRange converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterUnsignedOutOfRange() interface {
-		BACnetEventParameterUnsignedOutOfRangeBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterUnsignedOutOfRange() BACnetEventParameterUnsignedOutOfRangeBuilder
 	// AsBACnetEventParameterChangeOfCharacterString converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterChangeOfCharacterString() interface {
-		BACnetEventParameterChangeOfCharacterStringBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterChangeOfCharacterString() BACnetEventParameterChangeOfCharacterStringBuilder
 	// AsBACnetEventParameterChangeOfStatusFlags converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterChangeOfStatusFlags() interface {
-		BACnetEventParameterChangeOfStatusFlagsBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterChangeOfStatusFlags() BACnetEventParameterChangeOfStatusFlagsBuilder
 	// AsBACnetEventParameterNone converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterNone() interface {
-		BACnetEventParameterNoneBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterNone() BACnetEventParameterNoneBuilder
 	// AsBACnetEventParameterChangeOfDiscreteValue converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterChangeOfDiscreteValue() interface {
-		BACnetEventParameterChangeOfDiscreteValueBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterChangeOfDiscreteValue() BACnetEventParameterChangeOfDiscreteValueBuilder
 	// AsBACnetEventParameterChangeOfTimer converts this build to a subType of BACnetEventParameter. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterChangeOfTimer() interface {
-		BACnetEventParameterChangeOfTimerBuilder
-		Done() BACnetEventParameterBuilder
-	}
+	AsBACnetEventParameterChangeOfTimer() BACnetEventParameterChangeOfTimerBuilder
 	// Build builds the BACnetEventParameter or returns an error if something is wrong
 	PartialBuild() (BACnetEventParameterContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -269,14 +212,8 @@ func (b *_BACnetEventParameterBuilder) PartialMustBuild() BACnetEventParameterCo
 	return build
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfBitstring() interface {
-	BACnetEventParameterChangeOfBitstringBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterChangeOfBitstringBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfBitstring() BACnetEventParameterChangeOfBitstringBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterChangeOfBitstringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterChangeOfBitstringBuilder().(*_BACnetEventParameterChangeOfBitstringBuilder)
@@ -285,14 +222,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfBitstring()
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfState() interface {
-	BACnetEventParameterChangeOfStateBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterChangeOfStateBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfState() BACnetEventParameterChangeOfStateBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterChangeOfStateBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterChangeOfStateBuilder().(*_BACnetEventParameterChangeOfStateBuilder)
@@ -301,14 +232,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfState() int
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfValue() interface {
-	BACnetEventParameterChangeOfValueBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterChangeOfValueBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfValue() BACnetEventParameterChangeOfValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterChangeOfValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterChangeOfValueBuilder().(*_BACnetEventParameterChangeOfValueBuilder)
@@ -317,14 +242,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfValue() int
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterCommandFailure() interface {
-	BACnetEventParameterCommandFailureBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterCommandFailureBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterCommandFailure() BACnetEventParameterCommandFailureBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterCommandFailureBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterCommandFailureBuilder().(*_BACnetEventParameterCommandFailureBuilder)
@@ -333,14 +252,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterCommandFailure() in
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterFloatingLimit() interface {
-	BACnetEventParameterFloatingLimitBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterFloatingLimitBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterFloatingLimit() BACnetEventParameterFloatingLimitBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterFloatingLimitBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterFloatingLimitBuilder().(*_BACnetEventParameterFloatingLimitBuilder)
@@ -349,14 +262,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterFloatingLimit() int
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterOutOfRange() interface {
-	BACnetEventParameterOutOfRangeBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterOutOfRangeBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterOutOfRange() BACnetEventParameterOutOfRangeBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterOutOfRangeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterOutOfRangeBuilder().(*_BACnetEventParameterOutOfRangeBuilder)
@@ -365,14 +272,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterOutOfRange() interf
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfLifeSavety() interface {
-	BACnetEventParameterChangeOfLifeSavetyBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterChangeOfLifeSavetyBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfLifeSavety() BACnetEventParameterChangeOfLifeSavetyBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterChangeOfLifeSavetyBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterChangeOfLifeSavetyBuilder().(*_BACnetEventParameterChangeOfLifeSavetyBuilder)
@@ -381,14 +282,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfLifeSavety(
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterExtended() interface {
-	BACnetEventParameterExtendedBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterExtendedBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterExtended() BACnetEventParameterExtendedBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterExtendedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterExtendedBuilder().(*_BACnetEventParameterExtendedBuilder)
@@ -397,14 +292,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterExtended() interfac
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterBufferReady() interface {
-	BACnetEventParameterBufferReadyBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterBufferReadyBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterBufferReady() BACnetEventParameterBufferReadyBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterBufferReadyBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterBufferReadyBuilder().(*_BACnetEventParameterBufferReadyBuilder)
@@ -413,14 +302,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterBufferReady() inter
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterUnsignedRange() interface {
-	BACnetEventParameterUnsignedRangeBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterUnsignedRangeBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterUnsignedRange() BACnetEventParameterUnsignedRangeBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterUnsignedRangeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterUnsignedRangeBuilder().(*_BACnetEventParameterUnsignedRangeBuilder)
@@ -429,14 +312,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterUnsignedRange() int
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterAccessEvent() interface {
-	BACnetEventParameterAccessEventBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterAccessEventBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterAccessEvent() BACnetEventParameterAccessEventBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterAccessEventBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterAccessEventBuilder().(*_BACnetEventParameterAccessEventBuilder)
@@ -445,14 +322,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterAccessEvent() inter
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterDoubleOutOfRange() interface {
-	BACnetEventParameterDoubleOutOfRangeBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterDoubleOutOfRangeBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterDoubleOutOfRange() BACnetEventParameterDoubleOutOfRangeBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterDoubleOutOfRangeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterDoubleOutOfRangeBuilder().(*_BACnetEventParameterDoubleOutOfRangeBuilder)
@@ -461,14 +332,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterDoubleOutOfRange() 
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterSignedOutOfRange() interface {
-	BACnetEventParameterSignedOutOfRangeBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterSignedOutOfRangeBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterSignedOutOfRange() BACnetEventParameterSignedOutOfRangeBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterSignedOutOfRangeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterSignedOutOfRangeBuilder().(*_BACnetEventParameterSignedOutOfRangeBuilder)
@@ -477,14 +342,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterSignedOutOfRange() 
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterUnsignedOutOfRange() interface {
-	BACnetEventParameterUnsignedOutOfRangeBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterUnsignedOutOfRangeBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterUnsignedOutOfRange() BACnetEventParameterUnsignedOutOfRangeBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterUnsignedOutOfRangeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterUnsignedOutOfRangeBuilder().(*_BACnetEventParameterUnsignedOutOfRangeBuilder)
@@ -493,14 +352,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterUnsignedOutOfRange(
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfCharacterString() interface {
-	BACnetEventParameterChangeOfCharacterStringBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterChangeOfCharacterStringBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfCharacterString() BACnetEventParameterChangeOfCharacterStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterChangeOfCharacterStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterChangeOfCharacterStringBuilder().(*_BACnetEventParameterChangeOfCharacterStringBuilder)
@@ -509,14 +362,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfCharacterSt
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfStatusFlags() interface {
-	BACnetEventParameterChangeOfStatusFlagsBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterChangeOfStatusFlagsBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfStatusFlags() BACnetEventParameterChangeOfStatusFlagsBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterChangeOfStatusFlagsBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterChangeOfStatusFlagsBuilder().(*_BACnetEventParameterChangeOfStatusFlagsBuilder)
@@ -525,14 +372,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfStatusFlags
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterNone() interface {
-	BACnetEventParameterNoneBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterNoneBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterNone() BACnetEventParameterNoneBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterNoneBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterNoneBuilder().(*_BACnetEventParameterNoneBuilder)
@@ -541,14 +382,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterNone() interface {
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfDiscreteValue() interface {
-	BACnetEventParameterChangeOfDiscreteValueBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterChangeOfDiscreteValueBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfDiscreteValue() BACnetEventParameterChangeOfDiscreteValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterChangeOfDiscreteValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterChangeOfDiscreteValueBuilder().(*_BACnetEventParameterChangeOfDiscreteValueBuilder)
@@ -557,14 +392,8 @@ func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfDiscreteVal
 	return cb
 }
 
-func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfTimer() interface {
-	BACnetEventParameterChangeOfTimerBuilder
-	Done() BACnetEventParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterChangeOfTimerBuilder
-		Done() BACnetEventParameterBuilder
-	}); ok {
+func (b *_BACnetEventParameterBuilder) AsBACnetEventParameterChangeOfTimer() BACnetEventParameterChangeOfTimerBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterChangeOfTimerBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterChangeOfTimerBuilder().(*_BACnetEventParameterChangeOfTimerBuilder)
@@ -858,7 +687,7 @@ func (m *_BACnetEventParameter) deepCopy() *_BACnetEventParameter {
 	}
 	_BACnetEventParameterCopy := &_BACnetEventParameter{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetEventParameterCopy
 }

@@ -333,7 +333,7 @@ func (m *_BACnetNotifyTypeTagged) deepCopy() *_BACnetNotifyTypeTagged {
 		return nil
 	}
 	_BACnetNotifyTypeTaggedCopy := &_BACnetNotifyTypeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

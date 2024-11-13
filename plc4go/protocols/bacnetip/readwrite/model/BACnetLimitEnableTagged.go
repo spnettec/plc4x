@@ -410,8 +410,8 @@ func (m *_BACnetLimitEnableTagged) deepCopy() *_BACnetLimitEnableTagged {
 		return nil
 	}
 	_BACnetLimitEnableTaggedCopy := &_BACnetLimitEnableTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
-		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
+		utils.DeepCopy[BACnetTagPayloadBitString](m.Payload),
 		m.TagNumber,
 		m.TagClass,
 	}

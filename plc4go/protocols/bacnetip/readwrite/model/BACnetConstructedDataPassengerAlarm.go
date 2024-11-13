@@ -86,6 +86,8 @@ type BACnetConstructedDataPassengerAlarmBuilder interface {
 	WithPassengerAlarm(BACnetApplicationTagBoolean) BACnetConstructedDataPassengerAlarmBuilder
 	// WithPassengerAlarmBuilder adds PassengerAlarm (property field) which is build by the builder
 	WithPassengerAlarmBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataPassengerAlarmBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPassengerAlarm or returns an error if something is wrong
 	Build() (BACnetConstructedDataPassengerAlarm, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPassengerAlarmBuilder) = (*_BACnetConstructedDataPas
 
 func (b *_BACnetConstructedDataPassengerAlarmBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPassengerAlarm
 }
 
 func (b *_BACnetConstructedDataPassengerAlarmBuilder) WithMandatoryFields(passengerAlarm BACnetApplicationTagBoolean) BACnetConstructedDataPassengerAlarmBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPassengerAlarmBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPassengerAlarmBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataPassengerAlarm) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataPassengerAlarmCopy := &_BACnetConstructedDataPassengerAlarm{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PassengerAlarm.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.PassengerAlarm),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPassengerAlarmCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPassengerAlarmCopy
 }
 

@@ -91,80 +91,35 @@ type SysexCommandBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SysexCommandBuilder
 	// AsSysexCommandExtendedId converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandExtendedId() interface {
-		SysexCommandExtendedIdBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandExtendedId() SysexCommandExtendedIdBuilder
 	// AsSysexCommandAnalogMappingQueryRequest converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandAnalogMappingQueryRequest() interface {
-		SysexCommandAnalogMappingQueryRequestBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandAnalogMappingQueryRequest() SysexCommandAnalogMappingQueryRequestBuilder
 	// AsSysexCommandAnalogMappingQueryResponse converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandAnalogMappingQueryResponse() interface {
-		SysexCommandAnalogMappingQueryResponseBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandAnalogMappingQueryResponse() SysexCommandAnalogMappingQueryResponseBuilder
 	// AsSysexCommandAnalogMappingResponse converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandAnalogMappingResponse() interface {
-		SysexCommandAnalogMappingResponseBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandAnalogMappingResponse() SysexCommandAnalogMappingResponseBuilder
 	// AsSysexCommandCapabilityQuery converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandCapabilityQuery() interface {
-		SysexCommandCapabilityQueryBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandCapabilityQuery() SysexCommandCapabilityQueryBuilder
 	// AsSysexCommandCapabilityResponse converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandCapabilityResponse() interface {
-		SysexCommandCapabilityResponseBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandCapabilityResponse() SysexCommandCapabilityResponseBuilder
 	// AsSysexCommandPinStateQuery converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandPinStateQuery() interface {
-		SysexCommandPinStateQueryBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandPinStateQuery() SysexCommandPinStateQueryBuilder
 	// AsSysexCommandPinStateResponse converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandPinStateResponse() interface {
-		SysexCommandPinStateResponseBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandPinStateResponse() SysexCommandPinStateResponseBuilder
 	// AsSysexCommandExtendedAnalog converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandExtendedAnalog() interface {
-		SysexCommandExtendedAnalogBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandExtendedAnalog() SysexCommandExtendedAnalogBuilder
 	// AsSysexCommandStringData converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandStringData() interface {
-		SysexCommandStringDataBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandStringData() SysexCommandStringDataBuilder
 	// AsSysexCommandReportFirmwareRequest converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandReportFirmwareRequest() interface {
-		SysexCommandReportFirmwareRequestBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandReportFirmwareRequest() SysexCommandReportFirmwareRequestBuilder
 	// AsSysexCommandReportFirmwareResponse converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandReportFirmwareResponse() interface {
-		SysexCommandReportFirmwareResponseBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandReportFirmwareResponse() SysexCommandReportFirmwareResponseBuilder
 	// AsSysexCommandSamplingInterval converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandSamplingInterval() interface {
-		SysexCommandSamplingIntervalBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandSamplingInterval() SysexCommandSamplingIntervalBuilder
 	// AsSysexCommandSysexNonRealtime converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandSysexNonRealtime() interface {
-		SysexCommandSysexNonRealtimeBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandSysexNonRealtime() SysexCommandSysexNonRealtimeBuilder
 	// AsSysexCommandSysexRealtime converts this build to a subType of SysexCommand. It is always possible to return to current builder using Done()
-	AsSysexCommandSysexRealtime() interface {
-		SysexCommandSysexRealtimeBuilder
-		Done() SysexCommandBuilder
-	}
+	AsSysexCommandSysexRealtime() SysexCommandSysexRealtimeBuilder
 	// Build builds the SysexCommand or returns an error if something is wrong
 	PartialBuild() (SysexCommandContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -215,14 +170,8 @@ func (b *_SysexCommandBuilder) PartialMustBuild() SysexCommandContract {
 	return build
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandExtendedId() interface {
-	SysexCommandExtendedIdBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandExtendedIdBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandExtendedId() SysexCommandExtendedIdBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandExtendedIdBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandExtendedIdBuilder().(*_SysexCommandExtendedIdBuilder)
@@ -231,14 +180,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandExtendedId() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandAnalogMappingQueryRequest() interface {
-	SysexCommandAnalogMappingQueryRequestBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandAnalogMappingQueryRequestBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandAnalogMappingQueryRequest() SysexCommandAnalogMappingQueryRequestBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandAnalogMappingQueryRequestBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandAnalogMappingQueryRequestBuilder().(*_SysexCommandAnalogMappingQueryRequestBuilder)
@@ -247,14 +190,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandAnalogMappingQueryRequest() interfa
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandAnalogMappingQueryResponse() interface {
-	SysexCommandAnalogMappingQueryResponseBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandAnalogMappingQueryResponseBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandAnalogMappingQueryResponse() SysexCommandAnalogMappingQueryResponseBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandAnalogMappingQueryResponseBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandAnalogMappingQueryResponseBuilder().(*_SysexCommandAnalogMappingQueryResponseBuilder)
@@ -263,14 +200,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandAnalogMappingQueryResponse() interf
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandAnalogMappingResponse() interface {
-	SysexCommandAnalogMappingResponseBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandAnalogMappingResponseBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandAnalogMappingResponse() SysexCommandAnalogMappingResponseBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandAnalogMappingResponseBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandAnalogMappingResponseBuilder().(*_SysexCommandAnalogMappingResponseBuilder)
@@ -279,14 +210,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandAnalogMappingResponse() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandCapabilityQuery() interface {
-	SysexCommandCapabilityQueryBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandCapabilityQueryBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandCapabilityQuery() SysexCommandCapabilityQueryBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandCapabilityQueryBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandCapabilityQueryBuilder().(*_SysexCommandCapabilityQueryBuilder)
@@ -295,14 +220,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandCapabilityQuery() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandCapabilityResponse() interface {
-	SysexCommandCapabilityResponseBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandCapabilityResponseBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandCapabilityResponse() SysexCommandCapabilityResponseBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandCapabilityResponseBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandCapabilityResponseBuilder().(*_SysexCommandCapabilityResponseBuilder)
@@ -311,14 +230,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandCapabilityResponse() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandPinStateQuery() interface {
-	SysexCommandPinStateQueryBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandPinStateQueryBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandPinStateQuery() SysexCommandPinStateQueryBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandPinStateQueryBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandPinStateQueryBuilder().(*_SysexCommandPinStateQueryBuilder)
@@ -327,14 +240,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandPinStateQuery() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandPinStateResponse() interface {
-	SysexCommandPinStateResponseBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandPinStateResponseBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandPinStateResponse() SysexCommandPinStateResponseBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandPinStateResponseBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandPinStateResponseBuilder().(*_SysexCommandPinStateResponseBuilder)
@@ -343,14 +250,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandPinStateResponse() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandExtendedAnalog() interface {
-	SysexCommandExtendedAnalogBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandExtendedAnalogBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandExtendedAnalog() SysexCommandExtendedAnalogBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandExtendedAnalogBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandExtendedAnalogBuilder().(*_SysexCommandExtendedAnalogBuilder)
@@ -359,14 +260,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandExtendedAnalog() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandStringData() interface {
-	SysexCommandStringDataBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandStringDataBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandStringData() SysexCommandStringDataBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandStringDataBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandStringDataBuilder().(*_SysexCommandStringDataBuilder)
@@ -375,14 +270,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandStringData() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandReportFirmwareRequest() interface {
-	SysexCommandReportFirmwareRequestBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandReportFirmwareRequestBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandReportFirmwareRequest() SysexCommandReportFirmwareRequestBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandReportFirmwareRequestBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandReportFirmwareRequestBuilder().(*_SysexCommandReportFirmwareRequestBuilder)
@@ -391,14 +280,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandReportFirmwareRequest() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandReportFirmwareResponse() interface {
-	SysexCommandReportFirmwareResponseBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandReportFirmwareResponseBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandReportFirmwareResponse() SysexCommandReportFirmwareResponseBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandReportFirmwareResponseBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandReportFirmwareResponseBuilder().(*_SysexCommandReportFirmwareResponseBuilder)
@@ -407,14 +290,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandReportFirmwareResponse() interface 
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandSamplingInterval() interface {
-	SysexCommandSamplingIntervalBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandSamplingIntervalBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandSamplingInterval() SysexCommandSamplingIntervalBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandSamplingIntervalBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandSamplingIntervalBuilder().(*_SysexCommandSamplingIntervalBuilder)
@@ -423,14 +300,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandSamplingInterval() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandSysexNonRealtime() interface {
-	SysexCommandSysexNonRealtimeBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandSysexNonRealtimeBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandSysexNonRealtime() SysexCommandSysexNonRealtimeBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandSysexNonRealtimeBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandSysexNonRealtimeBuilder().(*_SysexCommandSysexNonRealtimeBuilder)
@@ -439,14 +310,8 @@ func (b *_SysexCommandBuilder) AsSysexCommandSysexNonRealtime() interface {
 	return cb
 }
 
-func (b *_SysexCommandBuilder) AsSysexCommandSysexRealtime() interface {
-	SysexCommandSysexRealtimeBuilder
-	Done() SysexCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SysexCommandSysexRealtimeBuilder
-		Done() SysexCommandBuilder
-	}); ok {
+func (b *_SysexCommandBuilder) AsSysexCommandSysexRealtime() SysexCommandSysexRealtimeBuilder {
+	if cb, ok := b.childBuilder.(SysexCommandSysexRealtimeBuilder); ok {
 		return cb
 	}
 	cb := NewSysexCommandSysexRealtimeBuilder().(*_SysexCommandSysexRealtimeBuilder)

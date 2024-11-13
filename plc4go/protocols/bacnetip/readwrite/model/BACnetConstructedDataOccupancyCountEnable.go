@@ -86,6 +86,8 @@ type BACnetConstructedDataOccupancyCountEnableBuilder interface {
 	WithOccupancyCountEnable(BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyCountEnableBuilder
 	// WithOccupancyCountEnableBuilder adds OccupancyCountEnable (property field) which is build by the builder
 	WithOccupancyCountEnableBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyCountEnableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataOccupancyCountEnable or returns an error if something is wrong
 	Build() (BACnetConstructedDataOccupancyCountEnable, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataOccupancyCountEnableBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataOccupancyCountEnableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataOccupancyCountEnable
 }
 
 func (b *_BACnetConstructedDataOccupancyCountEnableBuilder) WithMandatoryFields(occupancyCountEnable BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyCountEnableBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataOccupancyCountEnableBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataOccupancyCountEnableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataOccupancyCountEnable) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataOccupancyCountEnableCopy := &_BACnetConstructedDataOccupancyCountEnable{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.OccupancyCountEnable.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.OccupancyCountEnable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataOccupancyCountEnableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataOccupancyCountEnableCopy
 }
 

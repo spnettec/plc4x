@@ -122,6 +122,8 @@ type BACnetConfirmedServiceRequestAtomicWriteFileBuilder interface {
 	WithOptionalClosingTag(BACnetClosingTag) BACnetConfirmedServiceRequestAtomicWriteFileBuilder
 	// WithOptionalClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithOptionalClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestAtomicWriteFileBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestAtomicWriteFile or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestAtomicWriteFile, error)
 	// MustBuild does the same as Build but panics on error
@@ -145,6 +147,7 @@ var _ (BACnetConfirmedServiceRequestAtomicWriteFileBuilder) = (*_BACnetConfirmed
 
 func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestAtomicWriteFile
 }
 
 func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) WithMandatoryFields(deviceIdentifier BACnetApplicationTagObjectIdentifier, fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString) BACnetConfirmedServiceRequestAtomicWriteFileBuilder {
@@ -274,8 +277,10 @@ func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestAtomicWriteFileBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -511,13 +516,13 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) deepCopy() *_BACnetConfi
 	}
 	_BACnetConfirmedServiceRequestAtomicWriteFileCopy := &_BACnetConfirmedServiceRequestAtomicWriteFile{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.FileStartPosition.DeepCopy().(BACnetApplicationTagSignedInteger),
-		m.FileData.DeepCopy().(BACnetApplicationTagOctetString),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.DeviceIdentifier),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.FileStartPosition),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.FileData),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestAtomicWriteFileCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestAtomicWriteFileCopy
 }
 

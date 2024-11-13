@@ -79,6 +79,8 @@ type SysexCommandExtendedIdBuilder interface {
 	WithMandatoryFields(id []int8) SysexCommandExtendedIdBuilder
 	// WithId adds Id (property field)
 	WithId(...int8) SysexCommandExtendedIdBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandExtendedId or returns an error if something is wrong
 	Build() (SysexCommandExtendedId, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (SysexCommandExtendedIdBuilder) = (*_SysexCommandExtendedIdBuilder)(nil)
 
 func (b *_SysexCommandExtendedIdBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandExtendedId
 }
 
 func (b *_SysexCommandExtendedIdBuilder) WithMandatoryFields(id []int8) SysexCommandExtendedIdBuilder {
@@ -128,8 +131,10 @@ func (b *_SysexCommandExtendedIdBuilder) MustBuild() SysexCommandExtendedId {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandExtendedIdBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -292,7 +297,7 @@ func (m *_SysexCommandExtendedId) deepCopy() *_SysexCommandExtendedId {
 		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 		utils.DeepCopySlice[int8, int8](m.Id),
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandExtendedIdCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandExtendedIdCopy
 }
 

@@ -381,9 +381,9 @@ func (m *_BACnetEventTimestamps) deepCopy() *_BACnetEventTimestamps {
 		return nil
 	}
 	_BACnetEventTimestampsCopy := &_BACnetEventTimestamps{
-		m.ToOffnormal.DeepCopy().(BACnetTimeStamp),
-		m.ToFault.DeepCopy().(BACnetTimeStamp),
-		m.ToNormal.DeepCopy().(BACnetTimeStamp),
+		utils.DeepCopy[BACnetTimeStamp](m.ToOffnormal),
+		utils.DeepCopy[BACnetTimeStamp](m.ToFault),
+		utils.DeepCopy[BACnetTimeStamp](m.ToNormal),
 	}
 	return _BACnetEventTimestampsCopy
 }

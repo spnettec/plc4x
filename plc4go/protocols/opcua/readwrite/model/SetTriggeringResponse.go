@@ -108,6 +108,8 @@ type SetTriggeringResponseBuilder interface {
 	WithRemoveResults(...StatusCode) SetTriggeringResponseBuilder
 	// WithRemoveDiagnosticInfos adds RemoveDiagnosticInfos (property field)
 	WithRemoveDiagnosticInfos(...DiagnosticInfo) SetTriggeringResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SetTriggeringResponse or returns an error if something is wrong
 	Build() (SetTriggeringResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -131,6 +133,7 @@ var _ (SetTriggeringResponseBuilder) = (*_SetTriggeringResponseBuilder)(nil)
 
 func (b *_SetTriggeringResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SetTriggeringResponse
 }
 
 func (b *_SetTriggeringResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, addResults []StatusCode, addDiagnosticInfos []DiagnosticInfo, removeResults []StatusCode, removeDiagnosticInfos []DiagnosticInfo) SetTriggeringResponseBuilder {
@@ -196,8 +199,10 @@ func (b *_SetTriggeringResponseBuilder) MustBuild() SetTriggeringResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SetTriggeringResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -500,13 +505,13 @@ func (m *_SetTriggeringResponse) deepCopy() *_SetTriggeringResponse {
 	}
 	_SetTriggeringResponseCopy := &_SetTriggeringResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.AddResults),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.AddDiagnosticInfos),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.RemoveResults),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.RemoveDiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SetTriggeringResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SetTriggeringResponseCopy
 }
 

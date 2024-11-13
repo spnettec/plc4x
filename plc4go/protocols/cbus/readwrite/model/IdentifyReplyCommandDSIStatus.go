@@ -133,6 +133,8 @@ type IdentifyReplyCommandDSIStatusBuilder interface {
 	WithUnitStatus(UnitStatus) IdentifyReplyCommandDSIStatusBuilder
 	// WithDimmingUCRevisionNumber adds DimmingUCRevisionNumber (property field)
 	WithDimmingUCRevisionNumber(byte) IdentifyReplyCommandDSIStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() IdentifyReplyCommandBuilder
 	// Build builds the IdentifyReplyCommandDSIStatus or returns an error if something is wrong
 	Build() (IdentifyReplyCommandDSIStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -156,6 +158,7 @@ var _ (IdentifyReplyCommandDSIStatusBuilder) = (*_IdentifyReplyCommandDSIStatusB
 
 func (b *_IdentifyReplyCommandDSIStatusBuilder) setParent(contract IdentifyReplyCommandContract) {
 	b.IdentifyReplyCommandContract = contract
+	contract.(*_IdentifyReplyCommand)._SubType = b._IdentifyReplyCommandDSIStatus
 }
 
 func (b *_IdentifyReplyCommandDSIStatusBuilder) WithMandatoryFields(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte) IdentifyReplyCommandDSIStatusBuilder {
@@ -227,8 +230,10 @@ func (b *_IdentifyReplyCommandDSIStatusBuilder) MustBuild() IdentifyReplyCommand
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentifyReplyCommandDSIStatusBuilder) Done() IdentifyReplyCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -547,7 +552,7 @@ func (m *_IdentifyReplyCommandDSIStatus) deepCopy() *_IdentifyReplyCommandDSISta
 		m.UnitStatus,
 		m.DimmingUCRevisionNumber,
 	}
-	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	_IdentifyReplyCommandDSIStatusCopy.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
 	return _IdentifyReplyCommandDSIStatusCopy
 }
 

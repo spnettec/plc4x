@@ -94,20 +94,11 @@ type DF1SymbolBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DF1SymbolBuilder
 	// AsDF1SymbolMessageFrame converts this build to a subType of DF1Symbol. It is always possible to return to current builder using Done()
-	AsDF1SymbolMessageFrame() interface {
-		DF1SymbolMessageFrameBuilder
-		Done() DF1SymbolBuilder
-	}
+	AsDF1SymbolMessageFrame() DF1SymbolMessageFrameBuilder
 	// AsDF1SymbolMessageFrameACK converts this build to a subType of DF1Symbol. It is always possible to return to current builder using Done()
-	AsDF1SymbolMessageFrameACK() interface {
-		DF1SymbolMessageFrameACKBuilder
-		Done() DF1SymbolBuilder
-	}
+	AsDF1SymbolMessageFrameACK() DF1SymbolMessageFrameACKBuilder
 	// AsDF1SymbolMessageFrameNAK converts this build to a subType of DF1Symbol. It is always possible to return to current builder using Done()
-	AsDF1SymbolMessageFrameNAK() interface {
-		DF1SymbolMessageFrameNAKBuilder
-		Done() DF1SymbolBuilder
-	}
+	AsDF1SymbolMessageFrameNAK() DF1SymbolMessageFrameNAKBuilder
 	// Build builds the DF1Symbol or returns an error if something is wrong
 	PartialBuild() (DF1SymbolContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -158,14 +149,8 @@ func (b *_DF1SymbolBuilder) PartialMustBuild() DF1SymbolContract {
 	return build
 }
 
-func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrame() interface {
-	DF1SymbolMessageFrameBuilder
-	Done() DF1SymbolBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DF1SymbolMessageFrameBuilder
-		Done() DF1SymbolBuilder
-	}); ok {
+func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrame() DF1SymbolMessageFrameBuilder {
+	if cb, ok := b.childBuilder.(DF1SymbolMessageFrameBuilder); ok {
 		return cb
 	}
 	cb := NewDF1SymbolMessageFrameBuilder().(*_DF1SymbolMessageFrameBuilder)
@@ -174,14 +159,8 @@ func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrame() interface {
 	return cb
 }
 
-func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrameACK() interface {
-	DF1SymbolMessageFrameACKBuilder
-	Done() DF1SymbolBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DF1SymbolMessageFrameACKBuilder
-		Done() DF1SymbolBuilder
-	}); ok {
+func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrameACK() DF1SymbolMessageFrameACKBuilder {
+	if cb, ok := b.childBuilder.(DF1SymbolMessageFrameACKBuilder); ok {
 		return cb
 	}
 	cb := NewDF1SymbolMessageFrameACKBuilder().(*_DF1SymbolMessageFrameACKBuilder)
@@ -190,14 +169,8 @@ func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrameACK() interface {
 	return cb
 }
 
-func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrameNAK() interface {
-	DF1SymbolMessageFrameNAKBuilder
-	Done() DF1SymbolBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DF1SymbolMessageFrameNAKBuilder
-		Done() DF1SymbolBuilder
-	}); ok {
+func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrameNAK() DF1SymbolMessageFrameNAKBuilder {
+	if cb, ok := b.childBuilder.(DF1SymbolMessageFrameNAKBuilder); ok {
 		return cb
 	}
 	cb := NewDF1SymbolMessageFrameNAKBuilder().(*_DF1SymbolMessageFrameNAKBuilder)

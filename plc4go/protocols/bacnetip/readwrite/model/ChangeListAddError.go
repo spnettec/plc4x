@@ -95,6 +95,8 @@ type ChangeListAddErrorBuilder interface {
 	WithFirstFailedElementNumber(BACnetContextTagUnsignedInteger) ChangeListAddErrorBuilder
 	// WithFirstFailedElementNumberBuilder adds FirstFailedElementNumber (property field) which is build by the builder
 	WithFirstFailedElementNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) ChangeListAddErrorBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetErrorBuilder
 	// Build builds the ChangeListAddError or returns an error if something is wrong
 	Build() (ChangeListAddError, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (ChangeListAddErrorBuilder) = (*_ChangeListAddErrorBuilder)(nil)
 
 func (b *_ChangeListAddErrorBuilder) setParent(contract BACnetErrorContract) {
 	b.BACnetErrorContract = contract
+	contract.(*_BACnetError)._SubType = b._ChangeListAddError
 }
 
 func (b *_ChangeListAddErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) ChangeListAddErrorBuilder {
@@ -187,8 +190,10 @@ func (b *_ChangeListAddErrorBuilder) MustBuild() ChangeListAddError {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ChangeListAddErrorBuilder) Done() BACnetErrorBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetErrorBuilder().(*_BACnetErrorBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_ChangeListAddError) deepCopy() *_ChangeListAddError {
 	}
 	_ChangeListAddErrorCopy := &_ChangeListAddError{
 		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
-		m.ErrorType.DeepCopy().(ErrorEnclosed),
-		m.FirstFailedElementNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[ErrorEnclosed](m.ErrorType),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.FirstFailedElementNumber),
 	}
-	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	_ChangeListAddErrorCopy.BACnetErrorContract.(*_BACnetError)._SubType = m
 	return _ChangeListAddErrorCopy
 }
 

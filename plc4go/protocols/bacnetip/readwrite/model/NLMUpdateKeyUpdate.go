@@ -144,6 +144,8 @@ type NLMUpdateKeyUpdateBuilder interface {
 	WithOptionalSet2KeyCount(uint8) NLMUpdateKeyUpdateBuilder
 	// WithSet2Keys adds Set2Keys (property field)
 	WithSet2Keys(...NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMUpdateKeyUpdate or returns an error if something is wrong
 	Build() (NLMUpdateKeyUpdate, error)
 	// MustBuild does the same as Build but panics on error
@@ -167,6 +169,7 @@ var _ (NLMUpdateKeyUpdateBuilder) = (*_NLMUpdateKeyUpdateBuilder)(nil)
 
 func (b *_NLMUpdateKeyUpdateBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMUpdateKeyUpdate
 }
 
 func (b *_NLMUpdateKeyUpdateBuilder) WithMandatoryFields(controlFlags NLMUpdateKeyUpdateControlFlags, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2Keys []NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder {
@@ -262,8 +265,10 @@ func (b *_NLMUpdateKeyUpdateBuilder) MustBuild() NLMUpdateKeyUpdate {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMUpdateKeyUpdateBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -626,7 +631,7 @@ func (m *_NLMUpdateKeyUpdate) deepCopy() *_NLMUpdateKeyUpdate {
 	}
 	_NLMUpdateKeyUpdateCopy := &_NLMUpdateKeyUpdate{
 		m.NLMContract.(*_NLM).deepCopy(),
-		m.ControlFlags.DeepCopy().(NLMUpdateKeyUpdateControlFlags),
+		utils.DeepCopy[NLMUpdateKeyUpdateControlFlags](m.ControlFlags),
 		utils.CopyPtr[byte](m.Set1KeyRevision),
 		utils.CopyPtr[uint32](m.Set1ActivationTime),
 		utils.CopyPtr[uint32](m.Set1ExpirationTime),
@@ -638,7 +643,7 @@ func (m *_NLMUpdateKeyUpdate) deepCopy() *_NLMUpdateKeyUpdate {
 		utils.CopyPtr[uint8](m.Set2KeyCount),
 		utils.DeepCopySlice[NLMUpdateKeyUpdateKeyEntry, NLMUpdateKeyUpdateKeyEntry](m.Set2Keys),
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMUpdateKeyUpdateCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMUpdateKeyUpdateCopy
 }
 

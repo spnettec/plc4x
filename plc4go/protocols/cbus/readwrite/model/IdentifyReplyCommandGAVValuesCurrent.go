@@ -79,6 +79,8 @@ type IdentifyReplyCommandGAVValuesCurrentBuilder interface {
 	WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesCurrentBuilder
 	// WithValues adds Values (property field)
 	WithValues(...byte) IdentifyReplyCommandGAVValuesCurrentBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() IdentifyReplyCommandBuilder
 	// Build builds the IdentifyReplyCommandGAVValuesCurrent or returns an error if something is wrong
 	Build() (IdentifyReplyCommandGAVValuesCurrent, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (IdentifyReplyCommandGAVValuesCurrentBuilder) = (*_IdentifyReplyCommandGAV
 
 func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) setParent(contract IdentifyReplyCommandContract) {
 	b.IdentifyReplyCommandContract = contract
+	contract.(*_IdentifyReplyCommand)._SubType = b._IdentifyReplyCommandGAVValuesCurrent
 }
 
 func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesCurrentBuilder {
@@ -128,8 +131,10 @@ func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) MustBuild() IdentifyReply
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) Done() IdentifyReplyCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -288,7 +293,7 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) deepCopy() *_IdentifyReplyComman
 		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Values),
 	}
-	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	_IdentifyReplyCommandGAVValuesCurrentCopy.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
 	return _IdentifyReplyCommandGAVValuesCurrentCopy
 }
 

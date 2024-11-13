@@ -96,70 +96,31 @@ type BVLCBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BVLCBuilder
 	// AsBVLCResult converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCResult() interface {
-		BVLCResultBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCResult() BVLCResultBuilder
 	// AsBVLCWriteBroadcastDistributionTable converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCWriteBroadcastDistributionTable() interface {
-		BVLCWriteBroadcastDistributionTableBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCWriteBroadcastDistributionTable() BVLCWriteBroadcastDistributionTableBuilder
 	// AsBVLCReadBroadcastDistributionTable converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCReadBroadcastDistributionTable() interface {
-		BVLCReadBroadcastDistributionTableBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCReadBroadcastDistributionTable() BVLCReadBroadcastDistributionTableBuilder
 	// AsBVLCReadBroadcastDistributionTableAck converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCReadBroadcastDistributionTableAck() interface {
-		BVLCReadBroadcastDistributionTableAckBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCReadBroadcastDistributionTableAck() BVLCReadBroadcastDistributionTableAckBuilder
 	// AsBVLCForwardedNPDU converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCForwardedNPDU() interface {
-		BVLCForwardedNPDUBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCForwardedNPDU() BVLCForwardedNPDUBuilder
 	// AsBVLCRegisterForeignDevice converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCRegisterForeignDevice() interface {
-		BVLCRegisterForeignDeviceBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCRegisterForeignDevice() BVLCRegisterForeignDeviceBuilder
 	// AsBVLCReadForeignDeviceTable converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCReadForeignDeviceTable() interface {
-		BVLCReadForeignDeviceTableBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCReadForeignDeviceTable() BVLCReadForeignDeviceTableBuilder
 	// AsBVLCReadForeignDeviceTableAck converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCReadForeignDeviceTableAck() interface {
-		BVLCReadForeignDeviceTableAckBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCReadForeignDeviceTableAck() BVLCReadForeignDeviceTableAckBuilder
 	// AsBVLCDeleteForeignDeviceTableEntry converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCDeleteForeignDeviceTableEntry() interface {
-		BVLCDeleteForeignDeviceTableEntryBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCDeleteForeignDeviceTableEntry() BVLCDeleteForeignDeviceTableEntryBuilder
 	// AsBVLCDistributeBroadcastToNetwork converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCDistributeBroadcastToNetwork() interface {
-		BVLCDistributeBroadcastToNetworkBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCDistributeBroadcastToNetwork() BVLCDistributeBroadcastToNetworkBuilder
 	// AsBVLCOriginalUnicastNPDU converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCOriginalUnicastNPDU() interface {
-		BVLCOriginalUnicastNPDUBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCOriginalUnicastNPDU() BVLCOriginalUnicastNPDUBuilder
 	// AsBVLCOriginalBroadcastNPDU converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCOriginalBroadcastNPDU() interface {
-		BVLCOriginalBroadcastNPDUBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCOriginalBroadcastNPDU() BVLCOriginalBroadcastNPDUBuilder
 	// AsBVLCSecureBVLL converts this build to a subType of BVLC. It is always possible to return to current builder using Done()
-	AsBVLCSecureBVLL() interface {
-		BVLCSecureBVLLBuilder
-		Done() BVLCBuilder
-	}
+	AsBVLCSecureBVLL() BVLCSecureBVLLBuilder
 	// Build builds the BVLC or returns an error if something is wrong
 	PartialBuild() (BVLCContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -210,14 +171,8 @@ func (b *_BVLCBuilder) PartialMustBuild() BVLCContract {
 	return build
 }
 
-func (b *_BVLCBuilder) AsBVLCResult() interface {
-	BVLCResultBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCResultBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCResult() BVLCResultBuilder {
+	if cb, ok := b.childBuilder.(BVLCResultBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCResultBuilder().(*_BVLCResultBuilder)
@@ -226,14 +181,8 @@ func (b *_BVLCBuilder) AsBVLCResult() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCWriteBroadcastDistributionTable() interface {
-	BVLCWriteBroadcastDistributionTableBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCWriteBroadcastDistributionTableBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCWriteBroadcastDistributionTable() BVLCWriteBroadcastDistributionTableBuilder {
+	if cb, ok := b.childBuilder.(BVLCWriteBroadcastDistributionTableBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCWriteBroadcastDistributionTableBuilder().(*_BVLCWriteBroadcastDistributionTableBuilder)
@@ -242,14 +191,8 @@ func (b *_BVLCBuilder) AsBVLCWriteBroadcastDistributionTable() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCReadBroadcastDistributionTable() interface {
-	BVLCReadBroadcastDistributionTableBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCReadBroadcastDistributionTableBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCReadBroadcastDistributionTable() BVLCReadBroadcastDistributionTableBuilder {
+	if cb, ok := b.childBuilder.(BVLCReadBroadcastDistributionTableBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCReadBroadcastDistributionTableBuilder().(*_BVLCReadBroadcastDistributionTableBuilder)
@@ -258,14 +201,8 @@ func (b *_BVLCBuilder) AsBVLCReadBroadcastDistributionTable() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCReadBroadcastDistributionTableAck() interface {
-	BVLCReadBroadcastDistributionTableAckBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCReadBroadcastDistributionTableAckBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCReadBroadcastDistributionTableAck() BVLCReadBroadcastDistributionTableAckBuilder {
+	if cb, ok := b.childBuilder.(BVLCReadBroadcastDistributionTableAckBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCReadBroadcastDistributionTableAckBuilder().(*_BVLCReadBroadcastDistributionTableAckBuilder)
@@ -274,14 +211,8 @@ func (b *_BVLCBuilder) AsBVLCReadBroadcastDistributionTableAck() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCForwardedNPDU() interface {
-	BVLCForwardedNPDUBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCForwardedNPDUBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCForwardedNPDU() BVLCForwardedNPDUBuilder {
+	if cb, ok := b.childBuilder.(BVLCForwardedNPDUBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCForwardedNPDUBuilder().(*_BVLCForwardedNPDUBuilder)
@@ -290,14 +221,8 @@ func (b *_BVLCBuilder) AsBVLCForwardedNPDU() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCRegisterForeignDevice() interface {
-	BVLCRegisterForeignDeviceBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCRegisterForeignDeviceBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCRegisterForeignDevice() BVLCRegisterForeignDeviceBuilder {
+	if cb, ok := b.childBuilder.(BVLCRegisterForeignDeviceBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCRegisterForeignDeviceBuilder().(*_BVLCRegisterForeignDeviceBuilder)
@@ -306,14 +231,8 @@ func (b *_BVLCBuilder) AsBVLCRegisterForeignDevice() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCReadForeignDeviceTable() interface {
-	BVLCReadForeignDeviceTableBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCReadForeignDeviceTableBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCReadForeignDeviceTable() BVLCReadForeignDeviceTableBuilder {
+	if cb, ok := b.childBuilder.(BVLCReadForeignDeviceTableBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCReadForeignDeviceTableBuilder().(*_BVLCReadForeignDeviceTableBuilder)
@@ -322,14 +241,8 @@ func (b *_BVLCBuilder) AsBVLCReadForeignDeviceTable() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCReadForeignDeviceTableAck() interface {
-	BVLCReadForeignDeviceTableAckBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCReadForeignDeviceTableAckBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCReadForeignDeviceTableAck() BVLCReadForeignDeviceTableAckBuilder {
+	if cb, ok := b.childBuilder.(BVLCReadForeignDeviceTableAckBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCReadForeignDeviceTableAckBuilder().(*_BVLCReadForeignDeviceTableAckBuilder)
@@ -338,14 +251,8 @@ func (b *_BVLCBuilder) AsBVLCReadForeignDeviceTableAck() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCDeleteForeignDeviceTableEntry() interface {
-	BVLCDeleteForeignDeviceTableEntryBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCDeleteForeignDeviceTableEntryBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCDeleteForeignDeviceTableEntry() BVLCDeleteForeignDeviceTableEntryBuilder {
+	if cb, ok := b.childBuilder.(BVLCDeleteForeignDeviceTableEntryBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCDeleteForeignDeviceTableEntryBuilder().(*_BVLCDeleteForeignDeviceTableEntryBuilder)
@@ -354,14 +261,8 @@ func (b *_BVLCBuilder) AsBVLCDeleteForeignDeviceTableEntry() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCDistributeBroadcastToNetwork() interface {
-	BVLCDistributeBroadcastToNetworkBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCDistributeBroadcastToNetworkBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCDistributeBroadcastToNetwork() BVLCDistributeBroadcastToNetworkBuilder {
+	if cb, ok := b.childBuilder.(BVLCDistributeBroadcastToNetworkBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCDistributeBroadcastToNetworkBuilder().(*_BVLCDistributeBroadcastToNetworkBuilder)
@@ -370,14 +271,8 @@ func (b *_BVLCBuilder) AsBVLCDistributeBroadcastToNetwork() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCOriginalUnicastNPDU() interface {
-	BVLCOriginalUnicastNPDUBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCOriginalUnicastNPDUBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCOriginalUnicastNPDU() BVLCOriginalUnicastNPDUBuilder {
+	if cb, ok := b.childBuilder.(BVLCOriginalUnicastNPDUBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCOriginalUnicastNPDUBuilder().(*_BVLCOriginalUnicastNPDUBuilder)
@@ -386,14 +281,8 @@ func (b *_BVLCBuilder) AsBVLCOriginalUnicastNPDU() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCOriginalBroadcastNPDU() interface {
-	BVLCOriginalBroadcastNPDUBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCOriginalBroadcastNPDUBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCOriginalBroadcastNPDU() BVLCOriginalBroadcastNPDUBuilder {
+	if cb, ok := b.childBuilder.(BVLCOriginalBroadcastNPDUBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCOriginalBroadcastNPDUBuilder().(*_BVLCOriginalBroadcastNPDUBuilder)
@@ -402,14 +291,8 @@ func (b *_BVLCBuilder) AsBVLCOriginalBroadcastNPDU() interface {
 	return cb
 }
 
-func (b *_BVLCBuilder) AsBVLCSecureBVLL() interface {
-	BVLCSecureBVLLBuilder
-	Done() BVLCBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BVLCSecureBVLLBuilder
-		Done() BVLCBuilder
-	}); ok {
+func (b *_BVLCBuilder) AsBVLCSecureBVLL() BVLCSecureBVLLBuilder {
+	if cb, ok := b.childBuilder.(BVLCSecureBVLLBuilder); ok {
 		return cb
 	}
 	cb := NewBVLCSecureBVLLBuilder().(*_BVLCSecureBVLLBuilder)

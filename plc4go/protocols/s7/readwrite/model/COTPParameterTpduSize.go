@@ -79,6 +79,8 @@ type COTPParameterTpduSizeBuilder interface {
 	WithMandatoryFields(tpduSize COTPTpduSize) COTPParameterTpduSizeBuilder
 	// WithTpduSize adds TpduSize (property field)
 	WithTpduSize(COTPTpduSize) COTPParameterTpduSizeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() COTPParameterBuilder
 	// Build builds the COTPParameterTpduSize or returns an error if something is wrong
 	Build() (COTPParameterTpduSize, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (COTPParameterTpduSizeBuilder) = (*_COTPParameterTpduSizeBuilder)(nil)
 
 func (b *_COTPParameterTpduSizeBuilder) setParent(contract COTPParameterContract) {
 	b.COTPParameterContract = contract
+	contract.(*_COTPParameter)._SubType = b._COTPParameterTpduSize
 }
 
 func (b *_COTPParameterTpduSizeBuilder) WithMandatoryFields(tpduSize COTPTpduSize) COTPParameterTpduSizeBuilder {
@@ -128,8 +131,10 @@ func (b *_COTPParameterTpduSizeBuilder) MustBuild() COTPParameterTpduSize {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_COTPParameterTpduSizeBuilder) Done() COTPParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCOTPParameterBuilder().(*_COTPParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_COTPParameterTpduSize) deepCopy() *_COTPParameterTpduSize {
 		m.COTPParameterContract.(*_COTPParameter).deepCopy(),
 		m.TpduSize,
 	}
-	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	_COTPParameterTpduSizeCopy.COTPParameterContract.(*_COTPParameter)._SubType = m
 	return _COTPParameterTpduSizeCopy
 }
 

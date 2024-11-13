@@ -85,6 +85,8 @@ type JsonDataSetReaderMessageDataTypeBuilder interface {
 	WithNetworkMessageContentMask(JsonNetworkMessageContentMask) JsonDataSetReaderMessageDataTypeBuilder
 	// WithDataSetMessageContentMask adds DataSetMessageContentMask (property field)
 	WithDataSetMessageContentMask(JsonDataSetMessageContentMask) JsonDataSetReaderMessageDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the JsonDataSetReaderMessageDataType or returns an error if something is wrong
 	Build() (JsonDataSetReaderMessageDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (JsonDataSetReaderMessageDataTypeBuilder) = (*_JsonDataSetReaderMessageDat
 
 func (b *_JsonDataSetReaderMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._JsonDataSetReaderMessageDataType
 }
 
 func (b *_JsonDataSetReaderMessageDataTypeBuilder) WithMandatoryFields(networkMessageContentMask JsonNetworkMessageContentMask, dataSetMessageContentMask JsonDataSetMessageContentMask) JsonDataSetReaderMessageDataTypeBuilder {
@@ -139,8 +142,10 @@ func (b *_JsonDataSetReaderMessageDataTypeBuilder) MustBuild() JsonDataSetReader
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_JsonDataSetReaderMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_JsonDataSetReaderMessageDataType) deepCopy() *_JsonDataSetReaderMessag
 		m.NetworkMessageContentMask,
 		m.DataSetMessageContentMask,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_JsonDataSetReaderMessageDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _JsonDataSetReaderMessageDataTypeCopy
 }
 

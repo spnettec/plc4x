@@ -79,6 +79,8 @@ type IdentifyReplyCommandTerminalLevelsBuilder interface {
 	WithMandatoryFields(terminalLevels []byte) IdentifyReplyCommandTerminalLevelsBuilder
 	// WithTerminalLevels adds TerminalLevels (property field)
 	WithTerminalLevels(...byte) IdentifyReplyCommandTerminalLevelsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() IdentifyReplyCommandBuilder
 	// Build builds the IdentifyReplyCommandTerminalLevels or returns an error if something is wrong
 	Build() (IdentifyReplyCommandTerminalLevels, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (IdentifyReplyCommandTerminalLevelsBuilder) = (*_IdentifyReplyCommandTermi
 
 func (b *_IdentifyReplyCommandTerminalLevelsBuilder) setParent(contract IdentifyReplyCommandContract) {
 	b.IdentifyReplyCommandContract = contract
+	contract.(*_IdentifyReplyCommand)._SubType = b._IdentifyReplyCommandTerminalLevels
 }
 
 func (b *_IdentifyReplyCommandTerminalLevelsBuilder) WithMandatoryFields(terminalLevels []byte) IdentifyReplyCommandTerminalLevelsBuilder {
@@ -128,8 +131,10 @@ func (b *_IdentifyReplyCommandTerminalLevelsBuilder) MustBuild() IdentifyReplyCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentifyReplyCommandTerminalLevelsBuilder) Done() IdentifyReplyCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -288,7 +293,7 @@ func (m *_IdentifyReplyCommandTerminalLevels) deepCopy() *_IdentifyReplyCommandT
 		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.TerminalLevels),
 	}
-	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	_IdentifyReplyCommandTerminalLevelsCopy.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
 	return _IdentifyReplyCommandTerminalLevelsCopy
 }
 

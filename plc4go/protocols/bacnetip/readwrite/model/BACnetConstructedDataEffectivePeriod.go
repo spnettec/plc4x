@@ -86,6 +86,8 @@ type BACnetConstructedDataEffectivePeriodBuilder interface {
 	WithDateRange(BACnetDateRange) BACnetConstructedDataEffectivePeriodBuilder
 	// WithDateRangeBuilder adds DateRange (property field) which is build by the builder
 	WithDateRangeBuilder(func(BACnetDateRangeBuilder) BACnetDateRangeBuilder) BACnetConstructedDataEffectivePeriodBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEffectivePeriod or returns an error if something is wrong
 	Build() (BACnetConstructedDataEffectivePeriod, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataEffectivePeriodBuilder) = (*_BACnetConstructedDataEf
 
 func (b *_BACnetConstructedDataEffectivePeriodBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEffectivePeriod
 }
 
 func (b *_BACnetConstructedDataEffectivePeriodBuilder) WithMandatoryFields(dateRange BACnetDateRange) BACnetConstructedDataEffectivePeriodBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataEffectivePeriodBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEffectivePeriodBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataEffectivePeriod) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataEffectivePeriodCopy := &_BACnetConstructedDataEffectivePeriod{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DateRange.DeepCopy().(BACnetDateRange),
+		utils.DeepCopy[BACnetDateRange](m.DateRange),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEffectivePeriodCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEffectivePeriodCopy
 }
 

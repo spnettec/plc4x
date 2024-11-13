@@ -71,6 +71,8 @@ type SecurityDataGasAlarmClearedBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataGasAlarmClearedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataGasAlarmCleared or returns an error if something is wrong
 	Build() (SecurityDataGasAlarmCleared, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataGasAlarmClearedBuilder) = (*_SecurityDataGasAlarmClearedBuild
 
 func (b *_SecurityDataGasAlarmClearedBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataGasAlarmCleared
 }
 
 func (b *_SecurityDataGasAlarmClearedBuilder) WithMandatoryFields() SecurityDataGasAlarmClearedBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataGasAlarmClearedBuilder) MustBuild() SecurityDataGasAlarmCl
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataGasAlarmClearedBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataGasAlarmCleared) deepCopy() *_SecurityDataGasAlarmCleared 
 	_SecurityDataGasAlarmClearedCopy := &_SecurityDataGasAlarmCleared{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataGasAlarmClearedCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataGasAlarmClearedCopy
 }
 

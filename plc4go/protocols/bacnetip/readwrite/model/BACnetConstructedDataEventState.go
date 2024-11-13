@@ -86,6 +86,8 @@ type BACnetConstructedDataEventStateBuilder interface {
 	WithEventState(BACnetEventStateTagged) BACnetConstructedDataEventStateBuilder
 	// WithEventStateBuilder adds EventState (property field) which is build by the builder
 	WithEventStateBuilder(func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetConstructedDataEventStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEventState or returns an error if something is wrong
 	Build() (BACnetConstructedDataEventState, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataEventStateBuilder) = (*_BACnetConstructedDataEventSt
 
 func (b *_BACnetConstructedDataEventStateBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEventState
 }
 
 func (b *_BACnetConstructedDataEventStateBuilder) WithMandatoryFields(eventState BACnetEventStateTagged) BACnetConstructedDataEventStateBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataEventStateBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEventStateBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataEventState) deepCopy() *_BACnetConstructedDataEve
 	}
 	_BACnetConstructedDataEventStateCopy := &_BACnetConstructedDataEventState{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.EventState.DeepCopy().(BACnetEventStateTagged),
+		utils.DeepCopy[BACnetEventStateTagged](m.EventState),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEventStateCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEventStateCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataPositiveIntegerValueLowLimitBuilder interface {
 	WithLowLimit(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueLowLimitBuilder
 	// WithLowLimitBuilder adds LowLimit (property field) which is build by the builder
 	WithLowLimitBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueLowLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPositiveIntegerValueLowLimit or returns an error if something is wrong
 	Build() (BACnetConstructedDataPositiveIntegerValueLowLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPositiveIntegerValueLowLimitBuilder) = (*_BACnetCons
 
 func (b *_BACnetConstructedDataPositiveIntegerValueLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPositiveIntegerValueLowLimit
 }
 
 func (b *_BACnetConstructedDataPositiveIntegerValueLowLimitBuilder) WithMandatoryFields(lowLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueLowLimitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPositiveIntegerValueLowLimitBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPositiveIntegerValueLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) deepCopy() *_BACnet
 	}
 	_BACnetConstructedDataPositiveIntegerValueLowLimitCopy := &_BACnetConstructedDataPositiveIntegerValueLowLimit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LowLimit.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.LowLimit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPositiveIntegerValueLowLimitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPositiveIntegerValueLowLimitCopy
 }
 

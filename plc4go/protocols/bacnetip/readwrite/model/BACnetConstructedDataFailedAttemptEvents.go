@@ -79,6 +79,8 @@ type BACnetConstructedDataFailedAttemptEventsBuilder interface {
 	WithMandatoryFields(failedAttemptEvents []BACnetAccessEventTagged) BACnetConstructedDataFailedAttemptEventsBuilder
 	// WithFailedAttemptEvents adds FailedAttemptEvents (property field)
 	WithFailedAttemptEvents(...BACnetAccessEventTagged) BACnetConstructedDataFailedAttemptEventsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataFailedAttemptEvents or returns an error if something is wrong
 	Build() (BACnetConstructedDataFailedAttemptEvents, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataFailedAttemptEventsBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataFailedAttemptEventsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataFailedAttemptEvents
 }
 
 func (b *_BACnetConstructedDataFailedAttemptEventsBuilder) WithMandatoryFields(failedAttemptEvents []BACnetAccessEventTagged) BACnetConstructedDataFailedAttemptEventsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataFailedAttemptEventsBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataFailedAttemptEventsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataFailedAttemptEvents) deepCopy() *_BACnetConstruct
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAccessEventTagged, BACnetAccessEventTagged](m.FailedAttemptEvents),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataFailedAttemptEventsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataFailedAttemptEventsCopy
 }
 

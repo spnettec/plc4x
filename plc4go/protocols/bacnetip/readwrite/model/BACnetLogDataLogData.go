@@ -101,6 +101,8 @@ type BACnetLogDataLogDataBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetLogDataLogDataBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataLogDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogDataBuilder
 	// Build builds the BACnetLogDataLogData or returns an error if something is wrong
 	Build() (BACnetLogDataLogData, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (BACnetLogDataLogDataBuilder) = (*_BACnetLogDataLogDataBuilder)(nil)
 
 func (b *_BACnetLogDataLogDataBuilder) setParent(contract BACnetLogDataContract) {
 	b.BACnetLogDataContract = contract
+	contract.(*_BACnetLogData)._SubType = b._BACnetLogDataLogData
 }
 
 func (b *_BACnetLogDataLogDataBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag) BACnetLogDataLogDataBuilder {
@@ -198,8 +201,10 @@ func (b *_BACnetLogDataLogDataBuilder) MustBuild() BACnetLogDataLogData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogDataLogDataBuilder) Done() BACnetLogDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogDataBuilder().(*_BACnetLogDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -388,11 +393,11 @@ func (m *_BACnetLogDataLogData) deepCopy() *_BACnetLogDataLogData {
 	}
 	_BACnetLogDataLogDataCopy := &_BACnetLogDataLogData{
 		m.BACnetLogDataContract.(*_BACnetLogData).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
 		utils.DeepCopySlice[BACnetLogDataLogDataEntry, BACnetLogDataLogDataEntry](m.LogData),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
+	_BACnetLogDataLogDataCopy.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
 	return _BACnetLogDataLogDataCopy
 }
 

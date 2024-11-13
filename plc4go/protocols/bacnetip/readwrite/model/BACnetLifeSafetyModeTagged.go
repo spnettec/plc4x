@@ -393,7 +393,7 @@ func (m *_BACnetLifeSafetyModeTagged) deepCopy() *_BACnetLifeSafetyModeTagged {
 		return nil
 	}
 	_BACnetLifeSafetyModeTaggedCopy := &_BACnetLifeSafetyModeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

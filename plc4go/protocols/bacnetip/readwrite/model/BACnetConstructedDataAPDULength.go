@@ -86,6 +86,8 @@ type BACnetConstructedDataAPDULengthBuilder interface {
 	WithApduLength(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDULengthBuilder
 	// WithApduLengthBuilder adds ApduLength (property field) which is build by the builder
 	WithApduLengthBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAPDULengthBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAPDULength or returns an error if something is wrong
 	Build() (BACnetConstructedDataAPDULength, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAPDULengthBuilder) = (*_BACnetConstructedDataAPDULen
 
 func (b *_BACnetConstructedDataAPDULengthBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAPDULength
 }
 
 func (b *_BACnetConstructedDataAPDULengthBuilder) WithMandatoryFields(apduLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDULengthBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAPDULengthBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAPDULengthBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataAPDULength) deepCopy() *_BACnetConstructedDataAPD
 	}
 	_BACnetConstructedDataAPDULengthCopy := &_BACnetConstructedDataAPDULength{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ApduLength.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ApduLength),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAPDULengthCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAPDULengthCopy
 }
 

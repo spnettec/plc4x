@@ -86,6 +86,8 @@ type BACnetConstructedDataBACnetIPv6UDPPortBuilder interface {
 	WithIpv6UdpPort(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBACnetIPv6UDPPortBuilder
 	// WithIpv6UdpPortBuilder adds Ipv6UdpPort (property field) which is build by the builder
 	WithIpv6UdpPortBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBACnetIPv6UDPPortBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBACnetIPv6UDPPort or returns an error if something is wrong
 	Build() (BACnetConstructedDataBACnetIPv6UDPPort, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBACnetIPv6UDPPortBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataBACnetIPv6UDPPortBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBACnetIPv6UDPPort
 }
 
 func (b *_BACnetConstructedDataBACnetIPv6UDPPortBuilder) WithMandatoryFields(ipv6UdpPort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBACnetIPv6UDPPortBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBACnetIPv6UDPPortBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBACnetIPv6UDPPortBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataBACnetIPv6UDPPortCopy := &_BACnetConstructedDataBACnetIPv6UDPPort{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Ipv6UdpPort.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.Ipv6UdpPort),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBACnetIPv6UDPPortCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBACnetIPv6UDPPortCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataDoorOpenTooLongTimeBuilder interface {
 	WithDoorOpenTooLongTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorOpenTooLongTimeBuilder
 	// WithDoorOpenTooLongTimeBuilder adds DoorOpenTooLongTime (property field) which is build by the builder
 	WithDoorOpenTooLongTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorOpenTooLongTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDoorOpenTooLongTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataDoorOpenTooLongTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDoorOpenTooLongTimeBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDoorOpenTooLongTime
 }
 
 func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) WithMandatoryFields(doorOpenTooLongTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorOpenTooLongTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDoorOpenTooLongTime) deepCopy() *_BACnetConstruct
 	}
 	_BACnetConstructedDataDoorOpenTooLongTimeCopy := &_BACnetConstructedDataDoorOpenTooLongTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DoorOpenTooLongTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.DoorOpenTooLongTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDoorOpenTooLongTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDoorOpenTooLongTimeCopy
 }
 

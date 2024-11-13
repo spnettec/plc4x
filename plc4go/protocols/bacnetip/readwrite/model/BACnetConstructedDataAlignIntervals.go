@@ -86,6 +86,8 @@ type BACnetConstructedDataAlignIntervalsBuilder interface {
 	WithAlignIntervals(BACnetApplicationTagBoolean) BACnetConstructedDataAlignIntervalsBuilder
 	// WithAlignIntervalsBuilder adds AlignIntervals (property field) which is build by the builder
 	WithAlignIntervalsBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAlignIntervalsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAlignIntervals or returns an error if something is wrong
 	Build() (BACnetConstructedDataAlignIntervals, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAlignIntervalsBuilder) = (*_BACnetConstructedDataAli
 
 func (b *_BACnetConstructedDataAlignIntervalsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAlignIntervals
 }
 
 func (b *_BACnetConstructedDataAlignIntervalsBuilder) WithMandatoryFields(alignIntervals BACnetApplicationTagBoolean) BACnetConstructedDataAlignIntervalsBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAlignIntervalsBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAlignIntervalsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataAlignIntervals) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataAlignIntervalsCopy := &_BACnetConstructedDataAlignIntervals{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AlignIntervals.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.AlignIntervals),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAlignIntervalsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAlignIntervalsCopy
 }
 

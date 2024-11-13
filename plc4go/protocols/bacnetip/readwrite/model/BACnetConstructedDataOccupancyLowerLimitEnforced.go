@@ -86,6 +86,8 @@ type BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder interface {
 	WithOccupancyLowerLimitEnforced(BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
 	// WithOccupancyLowerLimitEnforcedBuilder adds OccupancyLowerLimitEnforced (property field) which is build by the builder
 	WithOccupancyLowerLimitEnforcedBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataOccupancyLowerLimitEnforced or returns an error if something is wrong
 	Build() (BACnetConstructedDataOccupancyLowerLimitEnforced, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) = (*_BACnetConst
 
 func (b *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataOccupancyLowerLimitEnforced
 }
 
 func (b *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) WithMandatoryFields(occupancyLowerLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) MustBuild() B
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) deepCopy() *_BACnetC
 	}
 	_BACnetConstructedDataOccupancyLowerLimitEnforcedCopy := &_BACnetConstructedDataOccupancyLowerLimitEnforced{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.OccupancyLowerLimitEnforced.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.OccupancyLowerLimitEnforced),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataOccupancyLowerLimitEnforcedCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataOccupancyLowerLimitEnforcedCopy
 }
 

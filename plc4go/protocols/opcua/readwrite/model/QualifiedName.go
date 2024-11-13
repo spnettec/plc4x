@@ -307,7 +307,7 @@ func (m *_QualifiedName) deepCopy() *_QualifiedName {
 	}
 	_QualifiedNameCopy := &_QualifiedName{
 		m.NamespaceIndex,
-		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Name),
 	}
 	return _QualifiedNameCopy
 }

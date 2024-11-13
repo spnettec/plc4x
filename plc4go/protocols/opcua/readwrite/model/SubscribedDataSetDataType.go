@@ -71,6 +71,8 @@ type SubscribedDataSetDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SubscribedDataSetDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SubscribedDataSetDataType or returns an error if something is wrong
 	Build() (SubscribedDataSetDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SubscribedDataSetDataTypeBuilder) = (*_SubscribedDataSetDataTypeBuilder)(
 
 func (b *_SubscribedDataSetDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SubscribedDataSetDataType
 }
 
 func (b *_SubscribedDataSetDataTypeBuilder) WithMandatoryFields() SubscribedDataSetDataTypeBuilder {
@@ -115,8 +118,10 @@ func (b *_SubscribedDataSetDataTypeBuilder) MustBuild() SubscribedDataSetDataTyp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SubscribedDataSetDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_SubscribedDataSetDataType) deepCopy() *_SubscribedDataSetDataType {
 	_SubscribedDataSetDataTypeCopy := &_SubscribedDataSetDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SubscribedDataSetDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SubscribedDataSetDataTypeCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataBufferSizeBuilder interface {
 	WithBufferSize(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBufferSizeBuilder
 	// WithBufferSizeBuilder adds BufferSize (property field) which is build by the builder
 	WithBufferSizeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBufferSizeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBufferSize or returns an error if something is wrong
 	Build() (BACnetConstructedDataBufferSize, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBufferSizeBuilder) = (*_BACnetConstructedDataBufferS
 
 func (b *_BACnetConstructedDataBufferSizeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBufferSize
 }
 
 func (b *_BACnetConstructedDataBufferSizeBuilder) WithMandatoryFields(bufferSize BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBufferSizeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBufferSizeBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBufferSizeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataBufferSize) deepCopy() *_BACnetConstructedDataBuf
 	}
 	_BACnetConstructedDataBufferSizeCopy := &_BACnetConstructedDataBufferSize{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.BufferSize.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.BufferSize),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBufferSizeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBufferSizeCopy
 }
 

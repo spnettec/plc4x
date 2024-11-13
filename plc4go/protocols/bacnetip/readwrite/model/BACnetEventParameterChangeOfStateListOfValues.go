@@ -375,9 +375,9 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) deepCopy() *_BACnetEven
 		return nil
 	}
 	_BACnetEventParameterChangeOfStateListOfValuesCopy := &_BACnetEventParameterChangeOfStateListOfValues{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetPropertyStates, BACnetPropertyStates](m.ListOfValues),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetEventParameterChangeOfStateListOfValuesCopy

@@ -84,6 +84,8 @@ type CBusMessageToServerBuilder interface {
 	WithRequest(Request) CBusMessageToServerBuilder
 	// WithRequestBuilder adds Request (property field) which is build by the builder
 	WithRequestBuilder(func(RequestBuilder) RequestBuilder) CBusMessageToServerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CBusMessageBuilder
 	// Build builds the CBusMessageToServer or returns an error if something is wrong
 	Build() (CBusMessageToServer, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (CBusMessageToServerBuilder) = (*_CBusMessageToServerBuilder)(nil)
 
 func (b *_CBusMessageToServerBuilder) setParent(contract CBusMessageContract) {
 	b.CBusMessageContract = contract
+	contract.(*_CBusMessage)._SubType = b._CBusMessageToServer
 }
 
 func (b *_CBusMessageToServerBuilder) WithMandatoryFields(request Request) CBusMessageToServerBuilder {
@@ -152,8 +155,10 @@ func (b *_CBusMessageToServerBuilder) MustBuild() CBusMessageToServer {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CBusMessageToServerBuilder) Done() CBusMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCBusMessageBuilder().(*_CBusMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_CBusMessageToServer) deepCopy() *_CBusMessageToServer {
 	}
 	_CBusMessageToServerCopy := &_CBusMessageToServer{
 		m.CBusMessageContract.(*_CBusMessage).deepCopy(),
-		m.Request.DeepCopy().(Request),
+		utils.DeepCopy[Request](m.Request),
 	}
-	m.CBusMessageContract.(*_CBusMessage)._SubType = m
+	_CBusMessageToServerCopy.CBusMessageContract.(*_CBusMessage)._SubType = m
 	return _CBusMessageToServerCopy
 }
 

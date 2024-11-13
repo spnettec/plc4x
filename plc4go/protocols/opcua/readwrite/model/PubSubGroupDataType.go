@@ -127,6 +127,8 @@ type PubSubGroupDataTypeBuilder interface {
 	WithMaxNetworkMessageSize(uint32) PubSubGroupDataTypeBuilder
 	// WithGroupProperties adds GroupProperties (property field)
 	WithGroupProperties(...KeyValuePair) PubSubGroupDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PubSubGroupDataType or returns an error if something is wrong
 	Build() (PubSubGroupDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -150,6 +152,7 @@ var _ (PubSubGroupDataTypeBuilder) = (*_PubSubGroupDataTypeBuilder)(nil)
 
 func (b *_PubSubGroupDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PubSubGroupDataType
 }
 
 func (b *_PubSubGroupDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, securityKeyServices []EndpointDescription, maxNetworkMessageSize uint32, groupProperties []KeyValuePair) PubSubGroupDataTypeBuilder {
@@ -244,8 +247,10 @@ func (b *_PubSubGroupDataTypeBuilder) MustBuild() PubSubGroupDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PubSubGroupDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -555,16 +560,16 @@ func (m *_PubSubGroupDataType) deepCopy() *_PubSubGroupDataType {
 	}
 	_PubSubGroupDataTypeCopy := &_PubSubGroupDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Name),
 		m.Enabled,
 		m.SecurityMode,
-		m.SecurityGroupId.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.SecurityGroupId),
 		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.SecurityKeyServices),
 		m.MaxNetworkMessageSize,
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.GroupProperties),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PubSubGroupDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PubSubGroupDataTypeCopy
 }
 

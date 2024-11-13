@@ -132,6 +132,8 @@ type StructureFieldBuilder interface {
 	WithMaxStringLength(uint32) StructureFieldBuilder
 	// WithIsOptional adds IsOptional (property field)
 	WithIsOptional(bool) StructureFieldBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the StructureField or returns an error if something is wrong
 	Build() (StructureField, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,7 @@ var _ (StructureFieldBuilder) = (*_StructureFieldBuilder)(nil)
 
 func (b *_StructureFieldBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._StructureField
 }
 
 func (b *_StructureFieldBuilder) WithMandatoryFields(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) StructureFieldBuilder {
@@ -268,8 +271,10 @@ func (b *_StructureFieldBuilder) MustBuild() StructureField {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_StructureFieldBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -554,16 +559,16 @@ func (m *_StructureField) deepCopy() *_StructureField {
 	}
 	_StructureFieldCopy := &_StructureField{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
-		m.Description.DeepCopy().(LocalizedText),
-		m.DataType.DeepCopy().(NodeId),
+		utils.DeepCopy[PascalString](m.Name),
+		utils.DeepCopy[LocalizedText](m.Description),
+		utils.DeepCopy[NodeId](m.DataType),
 		m.ValueRank,
 		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
 		m.MaxStringLength,
 		m.IsOptional,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_StructureFieldCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _StructureFieldCopy
 }
 

@@ -110,25 +110,13 @@ type CBusCommandBuilder interface {
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(CBusHeaderBuilder) CBusHeaderBuilder) CBusCommandBuilder
 	// AsCBusCommandDeviceManagement converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
-	AsCBusCommandDeviceManagement() interface {
-		CBusCommandDeviceManagementBuilder
-		Done() CBusCommandBuilder
-	}
+	AsCBusCommandDeviceManagement() CBusCommandDeviceManagementBuilder
 	// AsCBusCommandPointToPointToMultiPoint converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
-	AsCBusCommandPointToPointToMultiPoint() interface {
-		CBusCommandPointToPointToMultiPointBuilder
-		Done() CBusCommandBuilder
-	}
+	AsCBusCommandPointToPointToMultiPoint() CBusCommandPointToPointToMultiPointBuilder
 	// AsCBusCommandPointToMultiPoint converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
-	AsCBusCommandPointToMultiPoint() interface {
-		CBusCommandPointToMultiPointBuilder
-		Done() CBusCommandBuilder
-	}
+	AsCBusCommandPointToMultiPoint() CBusCommandPointToMultiPointBuilder
 	// AsCBusCommandPointToPoint converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
-	AsCBusCommandPointToPoint() interface {
-		CBusCommandPointToPointBuilder
-		Done() CBusCommandBuilder
-	}
+	AsCBusCommandPointToPoint() CBusCommandPointToPointBuilder
 	// Build builds the CBusCommand or returns an error if something is wrong
 	PartialBuild() (CBusCommandContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -203,14 +191,8 @@ func (b *_CBusCommandBuilder) PartialMustBuild() CBusCommandContract {
 	return build
 }
 
-func (b *_CBusCommandBuilder) AsCBusCommandDeviceManagement() interface {
-	CBusCommandDeviceManagementBuilder
-	Done() CBusCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CBusCommandDeviceManagementBuilder
-		Done() CBusCommandBuilder
-	}); ok {
+func (b *_CBusCommandBuilder) AsCBusCommandDeviceManagement() CBusCommandDeviceManagementBuilder {
+	if cb, ok := b.childBuilder.(CBusCommandDeviceManagementBuilder); ok {
 		return cb
 	}
 	cb := NewCBusCommandDeviceManagementBuilder().(*_CBusCommandDeviceManagementBuilder)
@@ -219,14 +201,8 @@ func (b *_CBusCommandBuilder) AsCBusCommandDeviceManagement() interface {
 	return cb
 }
 
-func (b *_CBusCommandBuilder) AsCBusCommandPointToPointToMultiPoint() interface {
-	CBusCommandPointToPointToMultiPointBuilder
-	Done() CBusCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CBusCommandPointToPointToMultiPointBuilder
-		Done() CBusCommandBuilder
-	}); ok {
+func (b *_CBusCommandBuilder) AsCBusCommandPointToPointToMultiPoint() CBusCommandPointToPointToMultiPointBuilder {
+	if cb, ok := b.childBuilder.(CBusCommandPointToPointToMultiPointBuilder); ok {
 		return cb
 	}
 	cb := NewCBusCommandPointToPointToMultiPointBuilder().(*_CBusCommandPointToPointToMultiPointBuilder)
@@ -235,14 +211,8 @@ func (b *_CBusCommandBuilder) AsCBusCommandPointToPointToMultiPoint() interface 
 	return cb
 }
 
-func (b *_CBusCommandBuilder) AsCBusCommandPointToMultiPoint() interface {
-	CBusCommandPointToMultiPointBuilder
-	Done() CBusCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CBusCommandPointToMultiPointBuilder
-		Done() CBusCommandBuilder
-	}); ok {
+func (b *_CBusCommandBuilder) AsCBusCommandPointToMultiPoint() CBusCommandPointToMultiPointBuilder {
+	if cb, ok := b.childBuilder.(CBusCommandPointToMultiPointBuilder); ok {
 		return cb
 	}
 	cb := NewCBusCommandPointToMultiPointBuilder().(*_CBusCommandPointToMultiPointBuilder)
@@ -251,14 +221,8 @@ func (b *_CBusCommandBuilder) AsCBusCommandPointToMultiPoint() interface {
 	return cb
 }
 
-func (b *_CBusCommandBuilder) AsCBusCommandPointToPoint() interface {
-	CBusCommandPointToPointBuilder
-	Done() CBusCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CBusCommandPointToPointBuilder
-		Done() CBusCommandBuilder
-	}); ok {
+func (b *_CBusCommandBuilder) AsCBusCommandPointToPoint() CBusCommandPointToPointBuilder {
+	if cb, ok := b.childBuilder.(CBusCommandPointToPointBuilder); ok {
 		return cb
 	}
 	cb := NewCBusCommandPointToPointBuilder().(*_CBusCommandPointToPointBuilder)
@@ -530,7 +494,7 @@ func (m *_CBusCommand) deepCopy() *_CBusCommand {
 	}
 	_CBusCommandCopy := &_CBusCommand{
 		nil, // will be set by child
-		m.Header.DeepCopy().(CBusHeader),
+		utils.DeepCopy[CBusHeader](m.Header),
 		m.CBusOptions,
 	}
 	return _CBusCommandCopy

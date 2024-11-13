@@ -95,6 +95,8 @@ type SubscribeCOVPropertyMultipleErrorBuilder interface {
 	WithFirstFailedSubscription(SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) SubscribeCOVPropertyMultipleErrorBuilder
 	// WithFirstFailedSubscriptionBuilder adds FirstFailedSubscription (property field) which is build by the builder
 	WithFirstFailedSubscriptionBuilder(func(SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) SubscribeCOVPropertyMultipleErrorBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetErrorBuilder
 	// Build builds the SubscribeCOVPropertyMultipleError or returns an error if something is wrong
 	Build() (SubscribeCOVPropertyMultipleError, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (SubscribeCOVPropertyMultipleErrorBuilder) = (*_SubscribeCOVPropertyMultip
 
 func (b *_SubscribeCOVPropertyMultipleErrorBuilder) setParent(contract BACnetErrorContract) {
 	b.BACnetErrorContract = contract
+	contract.(*_BACnetError)._SubType = b._SubscribeCOVPropertyMultipleError
 }
 
 func (b *_SubscribeCOVPropertyMultipleErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) SubscribeCOVPropertyMultipleErrorBuilder {
@@ -187,8 +190,10 @@ func (b *_SubscribeCOVPropertyMultipleErrorBuilder) MustBuild() SubscribeCOVProp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SubscribeCOVPropertyMultipleErrorBuilder) Done() BACnetErrorBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetErrorBuilder().(*_BACnetErrorBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_SubscribeCOVPropertyMultipleError) deepCopy() *_SubscribeCOVPropertyMu
 	}
 	_SubscribeCOVPropertyMultipleErrorCopy := &_SubscribeCOVPropertyMultipleError{
 		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
-		m.ErrorType.DeepCopy().(ErrorEnclosed),
-		m.FirstFailedSubscription.DeepCopy().(SubscribeCOVPropertyMultipleErrorFirstFailedSubscription),
+		utils.DeepCopy[ErrorEnclosed](m.ErrorType),
+		utils.DeepCopy[SubscribeCOVPropertyMultipleErrorFirstFailedSubscription](m.FirstFailedSubscription),
 	}
-	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	_SubscribeCOVPropertyMultipleErrorCopy.BACnetErrorContract.(*_BACnetError)._SubType = m
 	return _SubscribeCOVPropertyMultipleErrorCopy
 }
 

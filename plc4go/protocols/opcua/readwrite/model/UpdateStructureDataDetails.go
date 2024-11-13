@@ -96,6 +96,8 @@ type UpdateStructureDataDetailsBuilder interface {
 	WithPerformInsertReplace(PerformUpdateType) UpdateStructureDataDetailsBuilder
 	// WithUpdateValues adds UpdateValues (property field)
 	WithUpdateValues(...DataValue) UpdateStructureDataDetailsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the UpdateStructureDataDetails or returns an error if something is wrong
 	Build() (UpdateStructureDataDetails, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (UpdateStructureDataDetailsBuilder) = (*_UpdateStructureDataDetailsBuilder
 
 func (b *_UpdateStructureDataDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._UpdateStructureDataDetails
 }
 
 func (b *_UpdateStructureDataDetailsBuilder) WithMandatoryFields(nodeId NodeId, performInsertReplace PerformUpdateType, updateValues []DataValue) UpdateStructureDataDetailsBuilder {
@@ -174,8 +177,10 @@ func (b *_UpdateStructureDataDetailsBuilder) MustBuild() UpdateStructureDataDeta
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_UpdateStructureDataDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -384,11 +389,11 @@ func (m *_UpdateStructureDataDetails) deepCopy() *_UpdateStructureDataDetails {
 	}
 	_UpdateStructureDataDetailsCopy := &_UpdateStructureDataDetails{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.NodeId),
 		m.PerformInsertReplace,
 		utils.DeepCopySlice[DataValue, DataValue](m.UpdateValues),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_UpdateStructureDataDetailsCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UpdateStructureDataDetailsCopy
 }
 

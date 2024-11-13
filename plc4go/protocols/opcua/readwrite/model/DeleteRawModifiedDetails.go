@@ -104,6 +104,8 @@ type DeleteRawModifiedDetailsBuilder interface {
 	WithStartTime(int64) DeleteRawModifiedDetailsBuilder
 	// WithEndTime adds EndTime (property field)
 	WithEndTime(int64) DeleteRawModifiedDetailsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DeleteRawModifiedDetails or returns an error if something is wrong
 	Build() (DeleteRawModifiedDetails, error)
 	// MustBuild does the same as Build but panics on error
@@ -127,6 +129,7 @@ var _ (DeleteRawModifiedDetailsBuilder) = (*_DeleteRawModifiedDetailsBuilder)(ni
 
 func (b *_DeleteRawModifiedDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DeleteRawModifiedDetails
 }
 
 func (b *_DeleteRawModifiedDetailsBuilder) WithMandatoryFields(nodeId NodeId, isDeleteModified bool, startTime int64, endTime int64) DeleteRawModifiedDetailsBuilder {
@@ -187,8 +190,10 @@ func (b *_DeleteRawModifiedDetailsBuilder) MustBuild() DeleteRawModifiedDetails 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeleteRawModifiedDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -407,13 +412,13 @@ func (m *_DeleteRawModifiedDetails) deepCopy() *_DeleteRawModifiedDetails {
 	}
 	_DeleteRawModifiedDetailsCopy := &_DeleteRawModifiedDetails{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.NodeId),
 		m.IsDeleteModified,
 		m.StartTime,
 		m.EndTime,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DeleteRawModifiedDetailsCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteRawModifiedDetailsCopy
 }
 

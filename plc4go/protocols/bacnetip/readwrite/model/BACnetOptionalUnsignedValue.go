@@ -84,6 +84,8 @@ type BACnetOptionalUnsignedValueBuilder interface {
 	WithUnsignedValue(BACnetApplicationTagUnsignedInteger) BACnetOptionalUnsignedValueBuilder
 	// WithUnsignedValueBuilder adds UnsignedValue (property field) which is build by the builder
 	WithUnsignedValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetOptionalUnsignedValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetOptionalUnsignedBuilder
 	// Build builds the BACnetOptionalUnsignedValue or returns an error if something is wrong
 	Build() (BACnetOptionalUnsignedValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetOptionalUnsignedValueBuilder) = (*_BACnetOptionalUnsignedValueBuild
 
 func (b *_BACnetOptionalUnsignedValueBuilder) setParent(contract BACnetOptionalUnsignedContract) {
 	b.BACnetOptionalUnsignedContract = contract
+	contract.(*_BACnetOptionalUnsigned)._SubType = b._BACnetOptionalUnsignedValue
 }
 
 func (b *_BACnetOptionalUnsignedValueBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetOptionalUnsignedValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetOptionalUnsignedValueBuilder) MustBuild() BACnetOptionalUnsigned
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetOptionalUnsignedValueBuilder) Done() BACnetOptionalUnsignedBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetOptionalUnsignedBuilder().(*_BACnetOptionalUnsignedBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetOptionalUnsignedValue) deepCopy() *_BACnetOptionalUnsignedValue 
 	}
 	_BACnetOptionalUnsignedValueCopy := &_BACnetOptionalUnsignedValue{
 		m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned).deepCopy(),
-		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.UnsignedValue),
 	}
-	m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = m
+	_BACnetOptionalUnsignedValueCopy.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = m
 	return _BACnetOptionalUnsignedValueCopy
 }
 

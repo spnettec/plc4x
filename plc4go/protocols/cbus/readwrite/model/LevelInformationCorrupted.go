@@ -97,6 +97,8 @@ type LevelInformationCorruptedBuilder interface {
 	WithCorruptedNibble3(uint8) LevelInformationCorruptedBuilder
 	// WithCorruptedNibble4 adds CorruptedNibble4 (property field)
 	WithCorruptedNibble4(uint8) LevelInformationCorruptedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LevelInformationBuilder
 	// Build builds the LevelInformationCorrupted or returns an error if something is wrong
 	Build() (LevelInformationCorrupted, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (LevelInformationCorruptedBuilder) = (*_LevelInformationCorruptedBuilder)(
 
 func (b *_LevelInformationCorruptedBuilder) setParent(contract LevelInformationContract) {
 	b.LevelInformationContract = contract
+	contract.(*_LevelInformation)._SubType = b._LevelInformationCorrupted
 }
 
 func (b *_LevelInformationCorruptedBuilder) WithMandatoryFields(corruptedNibble1 uint8, corruptedNibble2 uint8, corruptedNibble3 uint8, corruptedNibble4 uint8) LevelInformationCorruptedBuilder {
@@ -161,8 +164,10 @@ func (b *_LevelInformationCorruptedBuilder) MustBuild() LevelInformationCorrupte
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LevelInformationCorruptedBuilder) Done() LevelInformationBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLevelInformationBuilder().(*_LevelInformationBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -369,7 +374,7 @@ func (m *_LevelInformationCorrupted) deepCopy() *_LevelInformationCorrupted {
 		m.CorruptedNibble3,
 		m.CorruptedNibble4,
 	}
-	m.LevelInformationContract.(*_LevelInformation)._SubType = m
+	_LevelInformationCorruptedCopy.LevelInformationContract.(*_LevelInformation)._SubType = m
 	return _LevelInformationCorruptedCopy
 }
 

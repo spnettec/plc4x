@@ -79,6 +79,8 @@ type IdentifyReplyCommandNetworkTerminalLevelsBuilder interface {
 	WithMandatoryFields(networkTerminalLevels []byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder
 	// WithNetworkTerminalLevels adds NetworkTerminalLevels (property field)
 	WithNetworkTerminalLevels(...byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() IdentifyReplyCommandBuilder
 	// Build builds the IdentifyReplyCommandNetworkTerminalLevels or returns an error if something is wrong
 	Build() (IdentifyReplyCommandNetworkTerminalLevels, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (IdentifyReplyCommandNetworkTerminalLevelsBuilder) = (*_IdentifyReplyComma
 
 func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) setParent(contract IdentifyReplyCommandContract) {
 	b.IdentifyReplyCommandContract = contract
+	contract.(*_IdentifyReplyCommand)._SubType = b._IdentifyReplyCommandNetworkTerminalLevels
 }
 
 func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) WithMandatoryFields(networkTerminalLevels []byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder {
@@ -128,8 +131,10 @@ func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) MustBuild() Identify
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) Done() IdentifyReplyCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -288,7 +293,7 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) deepCopy() *_IdentifyReplyC
 		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.NetworkTerminalLevels),
 	}
-	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	_IdentifyReplyCommandNetworkTerminalLevelsCopy.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
 	return _IdentifyReplyCommandNetworkTerminalLevelsCopy
 }
 

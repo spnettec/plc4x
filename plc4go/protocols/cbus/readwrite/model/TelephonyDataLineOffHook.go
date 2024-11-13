@@ -85,6 +85,8 @@ type TelephonyDataLineOffHookBuilder interface {
 	WithReason(LineOffHookReason) TelephonyDataLineOffHookBuilder
 	// WithNumber adds Number (property field)
 	WithNumber(string) TelephonyDataLineOffHookBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TelephonyDataBuilder
 	// Build builds the TelephonyDataLineOffHook or returns an error if something is wrong
 	Build() (TelephonyDataLineOffHook, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (TelephonyDataLineOffHookBuilder) = (*_TelephonyDataLineOffHookBuilder)(ni
 
 func (b *_TelephonyDataLineOffHookBuilder) setParent(contract TelephonyDataContract) {
 	b.TelephonyDataContract = contract
+	contract.(*_TelephonyData)._SubType = b._TelephonyDataLineOffHook
 }
 
 func (b *_TelephonyDataLineOffHookBuilder) WithMandatoryFields(reason LineOffHookReason, number string) TelephonyDataLineOffHookBuilder {
@@ -139,8 +142,10 @@ func (b *_TelephonyDataLineOffHookBuilder) MustBuild() TelephonyDataLineOffHook 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TelephonyDataLineOffHookBuilder) Done() TelephonyDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTelephonyDataBuilder().(*_TelephonyDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -311,7 +316,7 @@ func (m *_TelephonyDataLineOffHook) deepCopy() *_TelephonyDataLineOffHook {
 		m.Reason,
 		m.Number,
 	}
-	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	_TelephonyDataLineOffHookCopy.TelephonyDataContract.(*_TelephonyData)._SubType = m
 	return _TelephonyDataLineOffHookCopy
 }
 

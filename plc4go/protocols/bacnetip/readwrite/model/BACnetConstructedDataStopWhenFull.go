@@ -86,6 +86,8 @@ type BACnetConstructedDataStopWhenFullBuilder interface {
 	WithStopWhenFull(BACnetApplicationTagBoolean) BACnetConstructedDataStopWhenFullBuilder
 	// WithStopWhenFullBuilder adds StopWhenFull (property field) which is build by the builder
 	WithStopWhenFullBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataStopWhenFullBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataStopWhenFull or returns an error if something is wrong
 	Build() (BACnetConstructedDataStopWhenFull, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataStopWhenFullBuilder) = (*_BACnetConstructedDataStopW
 
 func (b *_BACnetConstructedDataStopWhenFullBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataStopWhenFull
 }
 
 func (b *_BACnetConstructedDataStopWhenFullBuilder) WithMandatoryFields(stopWhenFull BACnetApplicationTagBoolean) BACnetConstructedDataStopWhenFullBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataStopWhenFullBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataStopWhenFullBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataStopWhenFull) deepCopy() *_BACnetConstructedDataS
 	}
 	_BACnetConstructedDataStopWhenFullCopy := &_BACnetConstructedDataStopWhenFull{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.StopWhenFull.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.StopWhenFull),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataStopWhenFullCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataStopWhenFullCopy
 }
 

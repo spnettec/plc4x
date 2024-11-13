@@ -333,7 +333,7 @@ func (m *_BACnetPolarityTagged) deepCopy() *_BACnetPolarityTagged {
 		return nil
 	}
 	_BACnetPolarityTaggedCopy := &_BACnetPolarityTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

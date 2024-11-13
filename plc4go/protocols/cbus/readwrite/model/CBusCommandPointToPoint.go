@@ -84,6 +84,8 @@ type CBusCommandPointToPointBuilder interface {
 	WithCommand(CBusPointToPointCommand) CBusCommandPointToPointBuilder
 	// WithCommandBuilder adds Command (property field) which is build by the builder
 	WithCommandBuilder(func(CBusPointToPointCommandBuilder) CBusPointToPointCommandBuilder) CBusCommandPointToPointBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CBusCommandBuilder
 	// Build builds the CBusCommandPointToPoint or returns an error if something is wrong
 	Build() (CBusCommandPointToPoint, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (CBusCommandPointToPointBuilder) = (*_CBusCommandPointToPointBuilder)(nil)
 
 func (b *_CBusCommandPointToPointBuilder) setParent(contract CBusCommandContract) {
 	b.CBusCommandContract = contract
+	contract.(*_CBusCommand)._SubType = b._CBusCommandPointToPoint
 }
 
 func (b *_CBusCommandPointToPointBuilder) WithMandatoryFields(command CBusPointToPointCommand) CBusCommandPointToPointBuilder {
@@ -152,8 +155,10 @@ func (b *_CBusCommandPointToPointBuilder) MustBuild() CBusCommandPointToPoint {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CBusCommandPointToPointBuilder) Done() CBusCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCBusCommandBuilder().(*_CBusCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_CBusCommandPointToPoint) deepCopy() *_CBusCommandPointToPoint {
 	}
 	_CBusCommandPointToPointCopy := &_CBusCommandPointToPoint{
 		m.CBusCommandContract.(*_CBusCommand).deepCopy(),
-		m.Command.DeepCopy().(CBusPointToPointCommand),
+		utils.DeepCopy[CBusPointToPointCommand](m.Command),
 	}
-	m.CBusCommandContract.(*_CBusCommand)._SubType = m
+	_CBusCommandPointToPointCopy.CBusCommandContract.(*_CBusCommand)._SubType = m
 	return _CBusCommandPointToPointCopy
 }
 

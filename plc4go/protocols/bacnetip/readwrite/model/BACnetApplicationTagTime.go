@@ -84,6 +84,8 @@ type BACnetApplicationTagTimeBuilder interface {
 	WithPayload(BACnetTagPayloadTime) BACnetApplicationTagTimeBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadTimeBuilder) BACnetTagPayloadTimeBuilder) BACnetApplicationTagTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetApplicationTagBuilder
 	// Build builds the BACnetApplicationTagTime or returns an error if something is wrong
 	Build() (BACnetApplicationTagTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetApplicationTagTimeBuilder) = (*_BACnetApplicationTagTimeBuilder)(ni
 
 func (b *_BACnetApplicationTagTimeBuilder) setParent(contract BACnetApplicationTagContract) {
 	b.BACnetApplicationTagContract = contract
+	contract.(*_BACnetApplicationTag)._SubType = b._BACnetApplicationTagTime
 }
 
 func (b *_BACnetApplicationTagTimeBuilder) WithMandatoryFields(payload BACnetTagPayloadTime) BACnetApplicationTagTimeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetApplicationTagTimeBuilder) MustBuild() BACnetApplicationTagTime 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetApplicationTagTimeBuilder) Done() BACnetApplicationTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetApplicationTagBuilder().(*_BACnetApplicationTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetApplicationTagTime) deepCopy() *_BACnetApplicationTagTime {
 	}
 	_BACnetApplicationTagTimeCopy := &_BACnetApplicationTagTime{
 		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadTime),
+		utils.DeepCopy[BACnetTagPayloadTime](m.Payload),
 	}
-	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	_BACnetApplicationTagTimeCopy.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
 	return _BACnetApplicationTagTimeCopy
 }
 

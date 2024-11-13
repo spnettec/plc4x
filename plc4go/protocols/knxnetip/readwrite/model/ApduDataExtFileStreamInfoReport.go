@@ -71,6 +71,8 @@ type ApduDataExtFileStreamInfoReportBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtFileStreamInfoReportBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtFileStreamInfoReport or returns an error if something is wrong
 	Build() (ApduDataExtFileStreamInfoReport, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataExtFileStreamInfoReportBuilder) = (*_ApduDataExtFileStreamInfoRep
 
 func (b *_ApduDataExtFileStreamInfoReportBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtFileStreamInfoReport
 }
 
 func (b *_ApduDataExtFileStreamInfoReportBuilder) WithMandatoryFields() ApduDataExtFileStreamInfoReportBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataExtFileStreamInfoReportBuilder) MustBuild() ApduDataExtFileStr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtFileStreamInfoReportBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataExtFileStreamInfoReport) deepCopy() *_ApduDataExtFileStreamInf
 	_ApduDataExtFileStreamInfoReportCopy := &_ApduDataExtFileStreamInfoReport{
 		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtFileStreamInfoReportCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtFileStreamInfoReportCopy
 }
 

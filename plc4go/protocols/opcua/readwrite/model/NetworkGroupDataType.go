@@ -90,6 +90,8 @@ type NetworkGroupDataTypeBuilder interface {
 	WithServerUriBuilder(func(PascalStringBuilder) PascalStringBuilder) NetworkGroupDataTypeBuilder
 	// WithNetworkPaths adds NetworkPaths (property field)
 	WithNetworkPaths(...EndpointUrlListDataType) NetworkGroupDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the NetworkGroupDataType or returns an error if something is wrong
 	Build() (NetworkGroupDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (NetworkGroupDataTypeBuilder) = (*_NetworkGroupDataTypeBuilder)(nil)
 
 func (b *_NetworkGroupDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._NetworkGroupDataType
 }
 
 func (b *_NetworkGroupDataTypeBuilder) WithMandatoryFields(serverUri PascalString, networkPaths []EndpointUrlListDataType) NetworkGroupDataTypeBuilder {
@@ -163,8 +166,10 @@ func (b *_NetworkGroupDataTypeBuilder) MustBuild() NetworkGroupDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NetworkGroupDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_NetworkGroupDataType) deepCopy() *_NetworkGroupDataType {
 	}
 	_NetworkGroupDataTypeCopy := &_NetworkGroupDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ServerUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.ServerUri),
 		utils.DeepCopySlice[EndpointUrlListDataType, EndpointUrlListDataType](m.NetworkPaths),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_NetworkGroupDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _NetworkGroupDataTypeCopy
 }
 

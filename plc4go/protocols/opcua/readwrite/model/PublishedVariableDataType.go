@@ -136,6 +136,8 @@ type PublishedVariableDataTypeBuilder interface {
 	WithSubstituteValueBuilder(func(VariantBuilder) VariantBuilder) PublishedVariableDataTypeBuilder
 	// WithMetaDataProperties adds MetaDataProperties (property field)
 	WithMetaDataProperties(...QualifiedName) PublishedVariableDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PublishedVariableDataType or returns an error if something is wrong
 	Build() (PublishedVariableDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -159,6 +161,7 @@ var _ (PublishedVariableDataTypeBuilder) = (*_PublishedVariableDataTypeBuilder)(
 
 func (b *_PublishedVariableDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PublishedVariableDataType
 }
 
 func (b *_PublishedVariableDataTypeBuilder) WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder {
@@ -277,8 +280,10 @@ func (b *_PublishedVariableDataTypeBuilder) MustBuild() PublishedVariableDataTyp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PublishedVariableDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -572,16 +577,16 @@ func (m *_PublishedVariableDataType) deepCopy() *_PublishedVariableDataType {
 	}
 	_PublishedVariableDataTypeCopy := &_PublishedVariableDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.PublishedVariable.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.PublishedVariable),
 		m.AttributeId,
 		m.SamplingIntervalHint,
 		m.DeadbandType,
 		m.DeadbandValue,
-		m.IndexRange.DeepCopy().(PascalString),
-		m.SubstituteValue.DeepCopy().(Variant),
+		utils.DeepCopy[PascalString](m.IndexRange),
+		utils.DeepCopy[Variant](m.SubstituteValue),
 		utils.DeepCopySlice[QualifiedName, QualifiedName](m.MetaDataProperties),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PublishedVariableDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PublishedVariableDataTypeCopy
 }
 

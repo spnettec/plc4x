@@ -128,6 +128,8 @@ type BACnetEventParameterChangeOfTimerBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfTimerBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfTimerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterBuilder
 	// Build builds the BACnetEventParameterChangeOfTimer or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfTimer, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,6 +153,7 @@ var _ (BACnetEventParameterChangeOfTimerBuilder) = (*_BACnetEventParameterChange
 
 func (b *_BACnetEventParameterChangeOfTimerBuilder) setParent(contract BACnetEventParameterContract) {
 	b.BACnetEventParameterContract = contract
+	contract.(*_BACnetEventParameter)._SubType = b._BACnetEventParameterChangeOfTimer
 }
 
 func (b *_BACnetEventParameterChangeOfTimerBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, alarmValues BACnetEventParameterChangeOfTimerAlarmValue, updateTimeReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) BACnetEventParameterChangeOfTimerBuilder {
@@ -292,8 +295,10 @@ func (b *_BACnetEventParameterChangeOfTimerBuilder) MustBuild() BACnetEventParam
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterChangeOfTimerBuilder) Done() BACnetEventParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -512,13 +517,13 @@ func (m *_BACnetEventParameterChangeOfTimer) deepCopy() *_BACnetEventParameterCh
 	}
 	_BACnetEventParameterChangeOfTimerCopy := &_BACnetEventParameterChangeOfTimer{
 		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.AlarmValues.DeepCopy().(BACnetEventParameterChangeOfTimerAlarmValue),
-		m.UpdateTimeReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeDelay),
+		utils.DeepCopy[BACnetEventParameterChangeOfTimerAlarmValue](m.AlarmValues),
+		utils.DeepCopy[BACnetDeviceObjectPropertyReferenceEnclosed](m.UpdateTimeReference),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	_BACnetEventParameterChangeOfTimerCopy.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
 	return _BACnetEventParameterChangeOfTimerCopy
 }
 

@@ -139,6 +139,8 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder interface {
 	WithTimeOfAcknowledgment(BACnetTimeStampEnclosed) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
 	// WithTimeOfAcknowledgmentBuilder adds TimeOfAcknowledgment (property field) which is build by the builder
 	WithTimeOfAcknowledgmentBuilder(func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestAcknowledgeAlarm or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestAcknowledgeAlarm, error)
 	// MustBuild does the same as Build but panics on error
@@ -162,6 +164,7 @@ var _ (BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) = (*_BACnetConfirme
 
 func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestAcknowledgeAlarm
 }
 
 func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithMandatoryFields(acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger, eventObjectIdentifier BACnetContextTagObjectIdentifier, eventStateAcknowledged BACnetEventStateTagged, timestamp BACnetTimeStampEnclosed, acknowledgmentSource BACnetContextTagCharacterString, timeOfAcknowledgment BACnetTimeStampEnclosed) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
@@ -327,8 +330,10 @@ func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -569,14 +574,14 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) deepCopy() *_BACnetConf
 	}
 	_BACnetConfirmedServiceRequestAcknowledgeAlarmCopy := &_BACnetConfirmedServiceRequestAcknowledgeAlarm{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.AcknowledgingProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.EventObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.EventStateAcknowledged.DeepCopy().(BACnetEventStateTagged),
-		m.Timestamp.DeepCopy().(BACnetTimeStampEnclosed),
-		m.AcknowledgmentSource.DeepCopy().(BACnetContextTagCharacterString),
-		m.TimeOfAcknowledgment.DeepCopy().(BACnetTimeStampEnclosed),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.AcknowledgingProcessIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.EventObjectIdentifier),
+		utils.DeepCopy[BACnetEventStateTagged](m.EventStateAcknowledged),
+		utils.DeepCopy[BACnetTimeStampEnclosed](m.Timestamp),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.AcknowledgmentSource),
+		utils.DeepCopy[BACnetTimeStampEnclosed](m.TimeOfAcknowledgment),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestAcknowledgeAlarmCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestAcknowledgeAlarmCopy
 }
 

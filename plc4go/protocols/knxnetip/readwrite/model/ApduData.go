@@ -94,85 +94,37 @@ type ApduDataBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataBuilder
 	// AsApduDataGroupValueRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataGroupValueRead() interface {
-		ApduDataGroupValueReadBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataGroupValueRead() ApduDataGroupValueReadBuilder
 	// AsApduDataGroupValueResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataGroupValueResponse() interface {
-		ApduDataGroupValueResponseBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataGroupValueResponse() ApduDataGroupValueResponseBuilder
 	// AsApduDataGroupValueWrite converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataGroupValueWrite() interface {
-		ApduDataGroupValueWriteBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataGroupValueWrite() ApduDataGroupValueWriteBuilder
 	// AsApduDataIndividualAddressWrite converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataIndividualAddressWrite() interface {
-		ApduDataIndividualAddressWriteBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataIndividualAddressWrite() ApduDataIndividualAddressWriteBuilder
 	// AsApduDataIndividualAddressRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataIndividualAddressRead() interface {
-		ApduDataIndividualAddressReadBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataIndividualAddressRead() ApduDataIndividualAddressReadBuilder
 	// AsApduDataIndividualAddressResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataIndividualAddressResponse() interface {
-		ApduDataIndividualAddressResponseBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataIndividualAddressResponse() ApduDataIndividualAddressResponseBuilder
 	// AsApduDataAdcRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataAdcRead() interface {
-		ApduDataAdcReadBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataAdcRead() ApduDataAdcReadBuilder
 	// AsApduDataAdcResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataAdcResponse() interface {
-		ApduDataAdcResponseBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataAdcResponse() ApduDataAdcResponseBuilder
 	// AsApduDataMemoryRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataMemoryRead() interface {
-		ApduDataMemoryReadBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataMemoryRead() ApduDataMemoryReadBuilder
 	// AsApduDataMemoryResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataMemoryResponse() interface {
-		ApduDataMemoryResponseBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataMemoryResponse() ApduDataMemoryResponseBuilder
 	// AsApduDataMemoryWrite converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataMemoryWrite() interface {
-		ApduDataMemoryWriteBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataMemoryWrite() ApduDataMemoryWriteBuilder
 	// AsApduDataUserMessage converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataUserMessage() interface {
-		ApduDataUserMessageBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataUserMessage() ApduDataUserMessageBuilder
 	// AsApduDataDeviceDescriptorRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataDeviceDescriptorRead() interface {
-		ApduDataDeviceDescriptorReadBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataDeviceDescriptorRead() ApduDataDeviceDescriptorReadBuilder
 	// AsApduDataDeviceDescriptorResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataDeviceDescriptorResponse() interface {
-		ApduDataDeviceDescriptorResponseBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataDeviceDescriptorResponse() ApduDataDeviceDescriptorResponseBuilder
 	// AsApduDataRestart converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataRestart() interface {
-		ApduDataRestartBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataRestart() ApduDataRestartBuilder
 	// AsApduDataOther converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
-	AsApduDataOther() interface {
-		ApduDataOtherBuilder
-		Done() ApduDataBuilder
-	}
+	AsApduDataOther() ApduDataOtherBuilder
 	// Build builds the ApduData or returns an error if something is wrong
 	PartialBuild() (ApduDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -223,14 +175,8 @@ func (b *_ApduDataBuilder) PartialMustBuild() ApduDataContract {
 	return build
 }
 
-func (b *_ApduDataBuilder) AsApduDataGroupValueRead() interface {
-	ApduDataGroupValueReadBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataGroupValueReadBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataGroupValueRead() ApduDataGroupValueReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataGroupValueReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataGroupValueReadBuilder().(*_ApduDataGroupValueReadBuilder)
@@ -239,14 +185,8 @@ func (b *_ApduDataBuilder) AsApduDataGroupValueRead() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataGroupValueResponse() interface {
-	ApduDataGroupValueResponseBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataGroupValueResponseBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataGroupValueResponse() ApduDataGroupValueResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataGroupValueResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataGroupValueResponseBuilder().(*_ApduDataGroupValueResponseBuilder)
@@ -255,14 +195,8 @@ func (b *_ApduDataBuilder) AsApduDataGroupValueResponse() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataGroupValueWrite() interface {
-	ApduDataGroupValueWriteBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataGroupValueWriteBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataGroupValueWrite() ApduDataGroupValueWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataGroupValueWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataGroupValueWriteBuilder().(*_ApduDataGroupValueWriteBuilder)
@@ -271,14 +205,8 @@ func (b *_ApduDataBuilder) AsApduDataGroupValueWrite() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataIndividualAddressWrite() interface {
-	ApduDataIndividualAddressWriteBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataIndividualAddressWriteBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataIndividualAddressWrite() ApduDataIndividualAddressWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataIndividualAddressWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataIndividualAddressWriteBuilder().(*_ApduDataIndividualAddressWriteBuilder)
@@ -287,14 +215,8 @@ func (b *_ApduDataBuilder) AsApduDataIndividualAddressWrite() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataIndividualAddressRead() interface {
-	ApduDataIndividualAddressReadBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataIndividualAddressReadBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataIndividualAddressRead() ApduDataIndividualAddressReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataIndividualAddressReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataIndividualAddressReadBuilder().(*_ApduDataIndividualAddressReadBuilder)
@@ -303,14 +225,8 @@ func (b *_ApduDataBuilder) AsApduDataIndividualAddressRead() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataIndividualAddressResponse() interface {
-	ApduDataIndividualAddressResponseBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataIndividualAddressResponseBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataIndividualAddressResponse() ApduDataIndividualAddressResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataIndividualAddressResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataIndividualAddressResponseBuilder().(*_ApduDataIndividualAddressResponseBuilder)
@@ -319,14 +235,8 @@ func (b *_ApduDataBuilder) AsApduDataIndividualAddressResponse() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataAdcRead() interface {
-	ApduDataAdcReadBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataAdcReadBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataAdcRead() ApduDataAdcReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataAdcReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataAdcReadBuilder().(*_ApduDataAdcReadBuilder)
@@ -335,14 +245,8 @@ func (b *_ApduDataBuilder) AsApduDataAdcRead() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataAdcResponse() interface {
-	ApduDataAdcResponseBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataAdcResponseBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataAdcResponse() ApduDataAdcResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataAdcResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataAdcResponseBuilder().(*_ApduDataAdcResponseBuilder)
@@ -351,14 +255,8 @@ func (b *_ApduDataBuilder) AsApduDataAdcResponse() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataMemoryRead() interface {
-	ApduDataMemoryReadBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataMemoryReadBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataMemoryRead() ApduDataMemoryReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataMemoryReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataMemoryReadBuilder().(*_ApduDataMemoryReadBuilder)
@@ -367,14 +265,8 @@ func (b *_ApduDataBuilder) AsApduDataMemoryRead() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataMemoryResponse() interface {
-	ApduDataMemoryResponseBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataMemoryResponseBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataMemoryResponse() ApduDataMemoryResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataMemoryResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataMemoryResponseBuilder().(*_ApduDataMemoryResponseBuilder)
@@ -383,14 +275,8 @@ func (b *_ApduDataBuilder) AsApduDataMemoryResponse() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataMemoryWrite() interface {
-	ApduDataMemoryWriteBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataMemoryWriteBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataMemoryWrite() ApduDataMemoryWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataMemoryWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataMemoryWriteBuilder().(*_ApduDataMemoryWriteBuilder)
@@ -399,14 +285,8 @@ func (b *_ApduDataBuilder) AsApduDataMemoryWrite() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataUserMessage() interface {
-	ApduDataUserMessageBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataUserMessageBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataUserMessage() ApduDataUserMessageBuilder {
+	if cb, ok := b.childBuilder.(ApduDataUserMessageBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataUserMessageBuilder().(*_ApduDataUserMessageBuilder)
@@ -415,14 +295,8 @@ func (b *_ApduDataBuilder) AsApduDataUserMessage() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataDeviceDescriptorRead() interface {
-	ApduDataDeviceDescriptorReadBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataDeviceDescriptorReadBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataDeviceDescriptorRead() ApduDataDeviceDescriptorReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataDeviceDescriptorReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataDeviceDescriptorReadBuilder().(*_ApduDataDeviceDescriptorReadBuilder)
@@ -431,14 +305,8 @@ func (b *_ApduDataBuilder) AsApduDataDeviceDescriptorRead() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataDeviceDescriptorResponse() interface {
-	ApduDataDeviceDescriptorResponseBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataDeviceDescriptorResponseBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataDeviceDescriptorResponse() ApduDataDeviceDescriptorResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataDeviceDescriptorResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataDeviceDescriptorResponseBuilder().(*_ApduDataDeviceDescriptorResponseBuilder)
@@ -447,14 +315,8 @@ func (b *_ApduDataBuilder) AsApduDataDeviceDescriptorResponse() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataRestart() interface {
-	ApduDataRestartBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataRestartBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataRestart() ApduDataRestartBuilder {
+	if cb, ok := b.childBuilder.(ApduDataRestartBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataRestartBuilder().(*_ApduDataRestartBuilder)
@@ -463,14 +325,8 @@ func (b *_ApduDataBuilder) AsApduDataRestart() interface {
 	return cb
 }
 
-func (b *_ApduDataBuilder) AsApduDataOther() interface {
-	ApduDataOtherBuilder
-	Done() ApduDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataOtherBuilder
-		Done() ApduDataBuilder
-	}); ok {
+func (b *_ApduDataBuilder) AsApduDataOther() ApduDataOtherBuilder {
+	if cb, ok := b.childBuilder.(ApduDataOtherBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataOtherBuilder().(*_ApduDataOtherBuilder)

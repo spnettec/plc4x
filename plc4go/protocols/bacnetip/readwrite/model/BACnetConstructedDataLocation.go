@@ -86,6 +86,8 @@ type BACnetConstructedDataLocationBuilder interface {
 	WithLocation(BACnetApplicationTagCharacterString) BACnetConstructedDataLocationBuilder
 	// WithLocationBuilder adds Location (property field) which is build by the builder
 	WithLocationBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataLocationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLocation or returns an error if something is wrong
 	Build() (BACnetConstructedDataLocation, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLocationBuilder) = (*_BACnetConstructedDataLocationB
 
 func (b *_BACnetConstructedDataLocationBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLocation
 }
 
 func (b *_BACnetConstructedDataLocationBuilder) WithMandatoryFields(location BACnetApplicationTagCharacterString) BACnetConstructedDataLocationBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLocationBuilder) MustBuild() BACnetConstructedDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLocationBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLocation) deepCopy() *_BACnetConstructedDataLocat
 	}
 	_BACnetConstructedDataLocationCopy := &_BACnetConstructedDataLocation{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Location.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.Location),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLocationCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLocationCopy
 }
 

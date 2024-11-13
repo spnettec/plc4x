@@ -79,6 +79,8 @@ type SecurityDataZoneUnsealedBuilder interface {
 	WithMandatoryFields(zoneNumber uint8) SecurityDataZoneUnsealedBuilder
 	// WithZoneNumber adds ZoneNumber (property field)
 	WithZoneNumber(uint8) SecurityDataZoneUnsealedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataZoneUnsealed or returns an error if something is wrong
 	Build() (SecurityDataZoneUnsealed, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (SecurityDataZoneUnsealedBuilder) = (*_SecurityDataZoneUnsealedBuilder)(ni
 
 func (b *_SecurityDataZoneUnsealedBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataZoneUnsealed
 }
 
 func (b *_SecurityDataZoneUnsealedBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataZoneUnsealedBuilder {
@@ -128,8 +131,10 @@ func (b *_SecurityDataZoneUnsealedBuilder) MustBuild() SecurityDataZoneUnsealed 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataZoneUnsealedBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -282,7 +287,7 @@ func (m *_SecurityDataZoneUnsealed) deepCopy() *_SecurityDataZoneUnsealed {
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		m.ZoneNumber,
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataZoneUnsealedCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataZoneUnsealedCopy
 }
 

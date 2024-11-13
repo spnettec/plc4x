@@ -89,6 +89,8 @@ type BACnetConstructedDataMakingCarCallBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMakingCarCallBuilder
 	// WithMakingCarCall adds MakingCarCall (property field)
 	WithMakingCarCall(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMakingCarCallBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMakingCarCall or returns an error if something is wrong
 	Build() (BACnetConstructedDataMakingCarCall, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataMakingCarCallBuilder) = (*_BACnetConstructedDataMaki
 
 func (b *_BACnetConstructedDataMakingCarCallBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMakingCarCall
 }
 
 func (b *_BACnetConstructedDataMakingCarCallBuilder) WithMandatoryFields(makingCarCall []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMakingCarCallBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataMakingCarCallBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMakingCarCallBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataMakingCarCall) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataMakingCarCallCopy := &_BACnetConstructedDataMakingCarCall{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.MakingCarCall),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMakingCarCallCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMakingCarCallCopy
 }
 

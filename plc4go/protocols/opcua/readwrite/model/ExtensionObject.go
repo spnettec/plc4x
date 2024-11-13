@@ -105,15 +105,9 @@ type ExtensionObjectBuilder interface {
 	// WithTypeIdBuilder adds TypeId (property field) which is build by the builder
 	WithTypeIdBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ExtensionObjectBuilder
 	// AsRootExtensionObject converts this build to a subType of ExtensionObject. It is always possible to return to current builder using Done()
-	AsRootExtensionObject() interface {
-		RootExtensionObjectBuilder
-		Done() ExtensionObjectBuilder
-	}
+	AsRootExtensionObject() RootExtensionObjectBuilder
 	// AsExtensionObjectWithMask converts this build to a subType of ExtensionObject. It is always possible to return to current builder using Done()
-	AsExtensionObjectWithMask() interface {
-		ExtensionObjectWithMaskBuilder
-		Done() ExtensionObjectBuilder
-	}
+	AsExtensionObjectWithMask() ExtensionObjectWithMaskBuilder
 	// Build builds the ExtensionObject or returns an error if something is wrong
 	PartialBuild() (ExtensionObjectContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -188,14 +182,8 @@ func (b *_ExtensionObjectBuilder) PartialMustBuild() ExtensionObjectContract {
 	return build
 }
 
-func (b *_ExtensionObjectBuilder) AsRootExtensionObject() interface {
-	RootExtensionObjectBuilder
-	Done() ExtensionObjectBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		RootExtensionObjectBuilder
-		Done() ExtensionObjectBuilder
-	}); ok {
+func (b *_ExtensionObjectBuilder) AsRootExtensionObject() RootExtensionObjectBuilder {
+	if cb, ok := b.childBuilder.(RootExtensionObjectBuilder); ok {
 		return cb
 	}
 	cb := NewRootExtensionObjectBuilder().(*_RootExtensionObjectBuilder)
@@ -204,14 +192,8 @@ func (b *_ExtensionObjectBuilder) AsRootExtensionObject() interface {
 	return cb
 }
 
-func (b *_ExtensionObjectBuilder) AsExtensionObjectWithMask() interface {
-	ExtensionObjectWithMaskBuilder
-	Done() ExtensionObjectBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ExtensionObjectWithMaskBuilder
-		Done() ExtensionObjectBuilder
-	}); ok {
+func (b *_ExtensionObjectBuilder) AsExtensionObjectWithMask() ExtensionObjectWithMaskBuilder {
+	if cb, ok := b.childBuilder.(ExtensionObjectWithMaskBuilder); ok {
 		return cb
 	}
 	cb := NewExtensionObjectWithMaskBuilder().(*_ExtensionObjectWithMaskBuilder)
@@ -457,7 +439,7 @@ func (m *_ExtensionObject) deepCopy() *_ExtensionObject {
 	}
 	_ExtensionObjectCopy := &_ExtensionObject{
 		nil, // will be set by child
-		m.TypeId.DeepCopy().(ExpandedNodeId),
+		utils.DeepCopy[ExpandedNodeId](m.TypeId),
 	}
 	return _ExtensionObjectCopy
 }

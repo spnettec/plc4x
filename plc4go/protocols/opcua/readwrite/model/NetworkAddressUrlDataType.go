@@ -95,6 +95,8 @@ type NetworkAddressUrlDataTypeBuilder interface {
 	WithUrl(PascalString) NetworkAddressUrlDataTypeBuilder
 	// WithUrlBuilder adds Url (property field) which is build by the builder
 	WithUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) NetworkAddressUrlDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the NetworkAddressUrlDataType or returns an error if something is wrong
 	Build() (NetworkAddressUrlDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (NetworkAddressUrlDataTypeBuilder) = (*_NetworkAddressUrlDataTypeBuilder)(
 
 func (b *_NetworkAddressUrlDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._NetworkAddressUrlDataType
 }
 
 func (b *_NetworkAddressUrlDataTypeBuilder) WithMandatoryFields(networkInterface PascalString, url PascalString) NetworkAddressUrlDataTypeBuilder {
@@ -187,8 +190,10 @@ func (b *_NetworkAddressUrlDataTypeBuilder) MustBuild() NetworkAddressUrlDataTyp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NetworkAddressUrlDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_NetworkAddressUrlDataType) deepCopy() *_NetworkAddressUrlDataType {
 	}
 	_NetworkAddressUrlDataTypeCopy := &_NetworkAddressUrlDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NetworkInterface.DeepCopy().(PascalString),
-		m.Url.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.NetworkInterface),
+		utils.DeepCopy[PascalString](m.Url),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_NetworkAddressUrlDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _NetworkAddressUrlDataTypeCopy
 }
 

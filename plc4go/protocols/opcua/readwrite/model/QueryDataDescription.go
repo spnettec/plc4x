@@ -101,6 +101,8 @@ type QueryDataDescriptionBuilder interface {
 	WithIndexRange(PascalString) QueryDataDescriptionBuilder
 	// WithIndexRangeBuilder adds IndexRange (property field) which is build by the builder
 	WithIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) QueryDataDescriptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the QueryDataDescription or returns an error if something is wrong
 	Build() (QueryDataDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (QueryDataDescriptionBuilder) = (*_QueryDataDescriptionBuilder)(nil)
 
 func (b *_QueryDataDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._QueryDataDescription
 }
 
 func (b *_QueryDataDescriptionBuilder) WithMandatoryFields(relativePath RelativePath, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder {
@@ -198,8 +201,10 @@ func (b *_QueryDataDescriptionBuilder) MustBuild() QueryDataDescription {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_QueryDataDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -388,11 +393,11 @@ func (m *_QueryDataDescription) deepCopy() *_QueryDataDescription {
 	}
 	_QueryDataDescriptionCopy := &_QueryDataDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RelativePath.DeepCopy().(RelativePath),
+		utils.DeepCopy[RelativePath](m.RelativePath),
 		m.AttributeId,
-		m.IndexRange.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.IndexRange),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_QueryDataDescriptionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _QueryDataDescriptionCopy
 }
 

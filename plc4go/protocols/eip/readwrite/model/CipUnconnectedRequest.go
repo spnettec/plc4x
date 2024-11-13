@@ -123,6 +123,8 @@ type CipUnconnectedRequestBuilder interface {
 	WithBackPlane(int8) CipUnconnectedRequestBuilder
 	// WithSlot adds Slot (property field)
 	WithSlot(int8) CipUnconnectedRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the CipUnconnectedRequest or returns an error if something is wrong
 	Build() (CipUnconnectedRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -146,6 +148,7 @@ var _ (CipUnconnectedRequestBuilder) = (*_CipUnconnectedRequestBuilder)(nil)
 
 func (b *_CipUnconnectedRequestBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._CipUnconnectedRequest
 }
 
 func (b *_CipUnconnectedRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8) CipUnconnectedRequestBuilder {
@@ -249,8 +252,10 @@ func (b *_CipUnconnectedRequestBuilder) MustBuild() CipUnconnectedRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipUnconnectedRequestBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -546,14 +551,14 @@ func (m *_CipUnconnectedRequest) deepCopy() *_CipUnconnectedRequest {
 	}
 	_CipUnconnectedRequestCopy := &_CipUnconnectedRequest{
 		m.CipServiceContract.(*_CipService).deepCopy(),
-		m.ClassSegment.DeepCopy().(PathSegment),
-		m.InstanceSegment.DeepCopy().(PathSegment),
-		m.UnconnectedService.DeepCopy().(CipService),
+		utils.DeepCopy[PathSegment](m.ClassSegment),
+		utils.DeepCopy[PathSegment](m.InstanceSegment),
+		utils.DeepCopy[CipService](m.UnconnectedService),
 		m.BackPlane,
 		m.Slot,
 		m.reservedField0,
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_CipUnconnectedRequestCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _CipUnconnectedRequestCopy
 }
 

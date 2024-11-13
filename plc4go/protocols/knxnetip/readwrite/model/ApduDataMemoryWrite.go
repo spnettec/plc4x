@@ -71,6 +71,8 @@ type ApduDataMemoryWriteBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataMemoryWriteBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataMemoryWrite or returns an error if something is wrong
 	Build() (ApduDataMemoryWrite, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataMemoryWriteBuilder) = (*_ApduDataMemoryWriteBuilder)(nil)
 
 func (b *_ApduDataMemoryWriteBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataMemoryWrite
 }
 
 func (b *_ApduDataMemoryWriteBuilder) WithMandatoryFields() ApduDataMemoryWriteBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataMemoryWriteBuilder) MustBuild() ApduDataMemoryWrite {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataMemoryWriteBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataMemoryWrite) deepCopy() *_ApduDataMemoryWrite {
 	_ApduDataMemoryWriteCopy := &_ApduDataMemoryWrite{
 		m.ApduDataContract.(*_ApduData).deepCopy(),
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataMemoryWriteCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataMemoryWriteCopy
 }
 

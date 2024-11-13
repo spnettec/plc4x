@@ -91,6 +91,8 @@ type DataChangeFilterBuilder interface {
 	WithDeadbandType(uint32) DataChangeFilterBuilder
 	// WithDeadbandValue adds DeadbandValue (property field)
 	WithDeadbandValue(float64) DataChangeFilterBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataChangeFilter or returns an error if something is wrong
 	Build() (DataChangeFilter, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (DataChangeFilterBuilder) = (*_DataChangeFilterBuilder)(nil)
 
 func (b *_DataChangeFilterBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataChangeFilter
 }
 
 func (b *_DataChangeFilterBuilder) WithMandatoryFields(trigger DataChangeTrigger, deadbandType uint32, deadbandValue float64) DataChangeFilterBuilder {
@@ -150,8 +153,10 @@ func (b *_DataChangeFilterBuilder) MustBuild() DataChangeFilter {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataChangeFilterBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,7 +349,7 @@ func (m *_DataChangeFilter) deepCopy() *_DataChangeFilter {
 		m.DeadbandType,
 		m.DeadbandValue,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataChangeFilterCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataChangeFilterCopy
 }
 

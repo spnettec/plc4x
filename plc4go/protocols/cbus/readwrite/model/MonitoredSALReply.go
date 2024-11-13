@@ -84,6 +84,8 @@ type MonitoredSALReplyBuilder interface {
 	WithMonitoredSAL(MonitoredSAL) MonitoredSALReplyBuilder
 	// WithMonitoredSALBuilder adds MonitoredSAL (property field) which is build by the builder
 	WithMonitoredSALBuilder(func(MonitoredSALBuilder) MonitoredSALBuilder) MonitoredSALReplyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EncodedReplyBuilder
 	// Build builds the MonitoredSALReply or returns an error if something is wrong
 	Build() (MonitoredSALReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (MonitoredSALReplyBuilder) = (*_MonitoredSALReplyBuilder)(nil)
 
 func (b *_MonitoredSALReplyBuilder) setParent(contract EncodedReplyContract) {
 	b.EncodedReplyContract = contract
+	contract.(*_EncodedReply)._SubType = b._MonitoredSALReply
 }
 
 func (b *_MonitoredSALReplyBuilder) WithMandatoryFields(monitoredSAL MonitoredSAL) MonitoredSALReplyBuilder {
@@ -152,8 +155,10 @@ func (b *_MonitoredSALReplyBuilder) MustBuild() MonitoredSALReply {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MonitoredSALReplyBuilder) Done() EncodedReplyBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEncodedReplyBuilder().(*_EncodedReplyBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_MonitoredSALReply) deepCopy() *_MonitoredSALReply {
 	}
 	_MonitoredSALReplyCopy := &_MonitoredSALReply{
 		m.EncodedReplyContract.(*_EncodedReply).deepCopy(),
-		m.MonitoredSAL.DeepCopy().(MonitoredSAL),
+		utils.DeepCopy[MonitoredSAL](m.MonitoredSAL),
 	}
-	m.EncodedReplyContract.(*_EncodedReply)._SubType = m
+	_MonitoredSALReplyCopy.EncodedReplyContract.(*_EncodedReply)._SubType = m
 	return _MonitoredSALReplyCopy
 }
 

@@ -298,7 +298,7 @@ func (m *_OpcuaAPU) deepCopy() *_OpcuaAPU {
 		return nil
 	}
 	_OpcuaAPUCopy := &_OpcuaAPU{
-		m.Message.DeepCopy().(MessagePDU),
+		utils.DeepCopy[MessagePDU](m.Message),
 		m.Response,
 		m.BinaryEncoding,
 	}

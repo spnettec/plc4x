@@ -330,8 +330,8 @@ func (m *_Error) deepCopy() *_Error {
 		return nil
 	}
 	_ErrorCopy := &_Error{
-		m.ErrorClass.DeepCopy().(ErrorClassTagged),
-		m.ErrorCode.DeepCopy().(ErrorCodeTagged),
+		utils.DeepCopy[ErrorClassTagged](m.ErrorClass),
+		utils.DeepCopy[ErrorCodeTagged](m.ErrorCode),
 	}
 	return _ErrorCopy
 }

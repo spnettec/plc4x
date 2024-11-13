@@ -121,6 +121,8 @@ type QuantityDimensionBuilder interface {
 	WithAbsoluteTemperatureExponent(int8) QuantityDimensionBuilder
 	// WithDimensionlessExponent adds DimensionlessExponent (property field)
 	WithDimensionlessExponent(int8) QuantityDimensionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the QuantityDimension or returns an error if something is wrong
 	Build() (QuantityDimension, error)
 	// MustBuild does the same as Build but panics on error
@@ -144,6 +146,7 @@ var _ (QuantityDimensionBuilder) = (*_QuantityDimensionBuilder)(nil)
 
 func (b *_QuantityDimensionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._QuantityDimension
 }
 
 func (b *_QuantityDimensionBuilder) WithMandatoryFields(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) QuantityDimensionBuilder {
@@ -205,8 +208,10 @@ func (b *_QuantityDimensionBuilder) MustBuild() QuantityDimension {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_QuantityDimensionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -489,7 +494,7 @@ func (m *_QuantityDimension) deepCopy() *_QuantityDimension {
 		m.AbsoluteTemperatureExponent,
 		m.DimensionlessExponent,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_QuantityDimensionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _QuantityDimensionCopy
 }
 

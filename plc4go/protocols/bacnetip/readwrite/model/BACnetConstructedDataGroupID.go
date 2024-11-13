@@ -86,6 +86,8 @@ type BACnetConstructedDataGroupIDBuilder interface {
 	WithGroupId(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGroupIDBuilder
 	// WithGroupIdBuilder adds GroupId (property field) which is build by the builder
 	WithGroupIdBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGroupIDBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataGroupID or returns an error if something is wrong
 	Build() (BACnetConstructedDataGroupID, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataGroupIDBuilder) = (*_BACnetConstructedDataGroupIDBui
 
 func (b *_BACnetConstructedDataGroupIDBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataGroupID
 }
 
 func (b *_BACnetConstructedDataGroupIDBuilder) WithMandatoryFields(groupId BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGroupIDBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataGroupIDBuilder) MustBuild() BACnetConstructedData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataGroupIDBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataGroupID) deepCopy() *_BACnetConstructedDataGroupI
 	}
 	_BACnetConstructedDataGroupIDCopy := &_BACnetConstructedDataGroupID{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.GroupId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.GroupId),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataGroupIDCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataGroupIDCopy
 }
 

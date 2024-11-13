@@ -90,6 +90,8 @@ type ConnectedDataItemBuilder interface {
 	WithService(CipService) ConnectedDataItemBuilder
 	// WithServiceBuilder adds Service (property field) which is build by the builder
 	WithServiceBuilder(func(CipServiceBuilder) CipServiceBuilder) ConnectedDataItemBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TypeIdBuilder
 	// Build builds the ConnectedDataItem or returns an error if something is wrong
 	Build() (ConnectedDataItem, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (ConnectedDataItemBuilder) = (*_ConnectedDataItemBuilder)(nil)
 
 func (b *_ConnectedDataItemBuilder) setParent(contract TypeIdContract) {
 	b.TypeIdContract = contract
+	contract.(*_TypeId)._SubType = b._ConnectedDataItem
 }
 
 func (b *_ConnectedDataItemBuilder) WithMandatoryFields(sequenceCount uint16, service CipService) ConnectedDataItemBuilder {
@@ -163,8 +166,10 @@ func (b *_ConnectedDataItemBuilder) MustBuild() ConnectedDataItem {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ConnectedDataItemBuilder) Done() TypeIdBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTypeIdBuilder().(*_TypeIdBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -350,9 +355,9 @@ func (m *_ConnectedDataItem) deepCopy() *_ConnectedDataItem {
 	_ConnectedDataItemCopy := &_ConnectedDataItem{
 		m.TypeIdContract.(*_TypeId).deepCopy(),
 		m.SequenceCount,
-		m.Service.DeepCopy().(CipService),
+		utils.DeepCopy[CipService](m.Service),
 	}
-	m.TypeIdContract.(*_TypeId)._SubType = m
+	_ConnectedDataItemCopy.TypeIdContract.(*_TypeId)._SubType = m
 	return _ConnectedDataItemCopy
 }
 

@@ -79,6 +79,8 @@ type BACnetConstructedDataVirtualMACAddressTableBuilder interface {
 	WithMandatoryFields(virtualMacAddressTable []BACnetVMACEntry) BACnetConstructedDataVirtualMACAddressTableBuilder
 	// WithVirtualMacAddressTable adds VirtualMacAddressTable (property field)
 	WithVirtualMacAddressTable(...BACnetVMACEntry) BACnetConstructedDataVirtualMACAddressTableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataVirtualMACAddressTable or returns an error if something is wrong
 	Build() (BACnetConstructedDataVirtualMACAddressTable, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataVirtualMACAddressTableBuilder) = (*_BACnetConstructe
 
 func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataVirtualMACAddressTable
 }
 
 func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) WithMandatoryFields(virtualMacAddressTable []BACnetVMACEntry) BACnetConstructedDataVirtualMACAddressTableBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataVirtualMACAddressTableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) deepCopy() *_BACnetConstr
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetVMACEntry, BACnetVMACEntry](m.VirtualMacAddressTable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataVirtualMACAddressTableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataVirtualMACAddressTableCopy
 }
 

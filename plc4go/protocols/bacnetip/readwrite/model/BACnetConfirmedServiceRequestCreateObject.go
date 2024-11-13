@@ -92,6 +92,8 @@ type BACnetConfirmedServiceRequestCreateObjectBuilder interface {
 	WithOptionalListOfValues(BACnetPropertyValues) BACnetConfirmedServiceRequestCreateObjectBuilder
 	// WithOptionalListOfValuesBuilder adds ListOfValues (property field) which is build by the builder
 	WithOptionalListOfValuesBuilder(func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetConfirmedServiceRequestCreateObjectBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestCreateObject or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestCreateObject, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,6 +117,7 @@ var _ (BACnetConfirmedServiceRequestCreateObjectBuilder) = (*_BACnetConfirmedSer
 
 func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestCreateObject
 }
 
 func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) WithMandatoryFields(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) BACnetConfirmedServiceRequestCreateObjectBuilder {
@@ -178,8 +181,10 @@ func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestCreateObjectBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -357,10 +362,10 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) deepCopy() *_BACnetConfirme
 	}
 	_BACnetConfirmedServiceRequestCreateObjectCopy := &_BACnetConfirmedServiceRequestCreateObject{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.ObjectSpecifier.DeepCopy().(BACnetConfirmedServiceRequestCreateObjectObjectSpecifier),
-		m.ListOfValues.DeepCopy().(BACnetPropertyValues),
+		utils.DeepCopy[BACnetConfirmedServiceRequestCreateObjectObjectSpecifier](m.ObjectSpecifier),
+		utils.DeepCopy[BACnetPropertyValues](m.ListOfValues),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestCreateObjectCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestCreateObjectCopy
 }
 

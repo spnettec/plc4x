@@ -71,6 +71,8 @@ type ApduDataIndividualAddressWriteBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataIndividualAddressWriteBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataIndividualAddressWrite or returns an error if something is wrong
 	Build() (ApduDataIndividualAddressWrite, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataIndividualAddressWriteBuilder) = (*_ApduDataIndividualAddressWrit
 
 func (b *_ApduDataIndividualAddressWriteBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataIndividualAddressWrite
 }
 
 func (b *_ApduDataIndividualAddressWriteBuilder) WithMandatoryFields() ApduDataIndividualAddressWriteBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataIndividualAddressWriteBuilder) MustBuild() ApduDataIndividualA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataIndividualAddressWriteBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataIndividualAddressWrite) deepCopy() *_ApduDataIndividualAddress
 	_ApduDataIndividualAddressWriteCopy := &_ApduDataIndividualAddressWrite{
 		m.ApduDataContract.(*_ApduData).deepCopy(),
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataIndividualAddressWriteCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataIndividualAddressWriteCopy
 }
 

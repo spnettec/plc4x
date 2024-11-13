@@ -84,6 +84,8 @@ type SALDataAccessControlBuilder interface {
 	WithAccessControlData(AccessControlData) SALDataAccessControlBuilder
 	// WithAccessControlDataBuilder adds AccessControlData (property field) which is build by the builder
 	WithAccessControlDataBuilder(func(AccessControlDataBuilder) AccessControlDataBuilder) SALDataAccessControlBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataAccessControl or returns an error if something is wrong
 	Build() (SALDataAccessControl, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (SALDataAccessControlBuilder) = (*_SALDataAccessControlBuilder)(nil)
 
 func (b *_SALDataAccessControlBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataAccessControl
 }
 
 func (b *_SALDataAccessControlBuilder) WithMandatoryFields(accessControlData AccessControlData) SALDataAccessControlBuilder {
@@ -152,8 +155,10 @@ func (b *_SALDataAccessControlBuilder) MustBuild() SALDataAccessControl {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataAccessControlBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_SALDataAccessControl) deepCopy() *_SALDataAccessControl {
 	}
 	_SALDataAccessControlCopy := &_SALDataAccessControl{
 		m.SALDataContract.(*_SALData).deepCopy(),
-		m.AccessControlData.DeepCopy().(AccessControlData),
+		utils.DeepCopy[AccessControlData](m.AccessControlData),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataAccessControlCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataAccessControlCopy
 }
 

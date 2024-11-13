@@ -86,6 +86,8 @@ type BACnetConstructedDataMaxMasterBuilder interface {
 	WithMaxMaster(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxMasterBuilder
 	// WithMaxMasterBuilder adds MaxMaster (property field) which is build by the builder
 	WithMaxMasterBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxMasterBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMaxMaster or returns an error if something is wrong
 	Build() (BACnetConstructedDataMaxMaster, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMaxMasterBuilder) = (*_BACnetConstructedDataMaxMaste
 
 func (b *_BACnetConstructedDataMaxMasterBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMaxMaster
 }
 
 func (b *_BACnetConstructedDataMaxMasterBuilder) WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxMasterBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMaxMasterBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMaxMasterBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataMaxMaster) deepCopy() *_BACnetConstructedDataMaxM
 	}
 	_BACnetConstructedDataMaxMasterCopy := &_BACnetConstructedDataMaxMaster{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MaxMaster.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.MaxMaster),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMaxMasterCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMaxMasterCopy
 }
 

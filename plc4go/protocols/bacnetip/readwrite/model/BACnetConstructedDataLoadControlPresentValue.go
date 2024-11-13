@@ -86,6 +86,8 @@ type BACnetConstructedDataLoadControlPresentValueBuilder interface {
 	WithPresentValue(BACnetShedStateTagged) BACnetConstructedDataLoadControlPresentValueBuilder
 	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
 	WithPresentValueBuilder(func(BACnetShedStateTaggedBuilder) BACnetShedStateTaggedBuilder) BACnetConstructedDataLoadControlPresentValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLoadControlPresentValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataLoadControlPresentValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLoadControlPresentValueBuilder) = (*_BACnetConstruct
 
 func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLoadControlPresentValue
 }
 
 func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) WithMandatoryFields(presentValue BACnetShedStateTagged) BACnetConstructedDataLoadControlPresentValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLoadControlPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLoadControlPresentValue) deepCopy() *_BACnetConst
 	}
 	_BACnetConstructedDataLoadControlPresentValueCopy := &_BACnetConstructedDataLoadControlPresentValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PresentValue.DeepCopy().(BACnetShedStateTagged),
+		utils.DeepCopy[BACnetShedStateTagged](m.PresentValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLoadControlPresentValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLoadControlPresentValueCopy
 }
 

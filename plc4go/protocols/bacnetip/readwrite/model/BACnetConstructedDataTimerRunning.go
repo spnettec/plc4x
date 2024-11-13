@@ -86,6 +86,8 @@ type BACnetConstructedDataTimerRunningBuilder interface {
 	WithTimerRunning(BACnetApplicationTagBoolean) BACnetConstructedDataTimerRunningBuilder
 	// WithTimerRunningBuilder adds TimerRunning (property field) which is build by the builder
 	WithTimerRunningBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataTimerRunningBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTimerRunning or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimerRunning, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTimerRunningBuilder) = (*_BACnetConstructedDataTimer
 
 func (b *_BACnetConstructedDataTimerRunningBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTimerRunning
 }
 
 func (b *_BACnetConstructedDataTimerRunningBuilder) WithMandatoryFields(timerRunning BACnetApplicationTagBoolean) BACnetConstructedDataTimerRunningBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTimerRunningBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTimerRunningBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataTimerRunning) deepCopy() *_BACnetConstructedDataT
 	}
 	_BACnetConstructedDataTimerRunningCopy := &_BACnetConstructedDataTimerRunning{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.TimerRunning.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.TimerRunning),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTimerRunningCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimerRunningCopy
 }
 

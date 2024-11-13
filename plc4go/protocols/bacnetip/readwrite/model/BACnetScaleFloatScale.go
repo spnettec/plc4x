@@ -84,6 +84,8 @@ type BACnetScaleFloatScaleBuilder interface {
 	WithFloatScale(BACnetContextTagReal) BACnetScaleFloatScaleBuilder
 	// WithFloatScaleBuilder adds FloatScale (property field) which is build by the builder
 	WithFloatScaleBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetScaleFloatScaleBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetScaleBuilder
 	// Build builds the BACnetScaleFloatScale or returns an error if something is wrong
 	Build() (BACnetScaleFloatScale, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetScaleFloatScaleBuilder) = (*_BACnetScaleFloatScaleBuilder)(nil)
 
 func (b *_BACnetScaleFloatScaleBuilder) setParent(contract BACnetScaleContract) {
 	b.BACnetScaleContract = contract
+	contract.(*_BACnetScale)._SubType = b._BACnetScaleFloatScale
 }
 
 func (b *_BACnetScaleFloatScaleBuilder) WithMandatoryFields(floatScale BACnetContextTagReal) BACnetScaleFloatScaleBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetScaleFloatScaleBuilder) MustBuild() BACnetScaleFloatScale {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetScaleFloatScaleBuilder) Done() BACnetScaleBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetScaleBuilder().(*_BACnetScaleBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetScaleFloatScale) deepCopy() *_BACnetScaleFloatScale {
 	}
 	_BACnetScaleFloatScaleCopy := &_BACnetScaleFloatScale{
 		m.BACnetScaleContract.(*_BACnetScale).deepCopy(),
-		m.FloatScale.DeepCopy().(BACnetContextTagReal),
+		utils.DeepCopy[BACnetContextTagReal](m.FloatScale),
 	}
-	m.BACnetScaleContract.(*_BACnetScale)._SubType = m
+	_BACnetScaleFloatScaleCopy.BACnetScaleContract.(*_BACnetScale)._SubType = m
 	return _BACnetScaleFloatScaleCopy
 }
 

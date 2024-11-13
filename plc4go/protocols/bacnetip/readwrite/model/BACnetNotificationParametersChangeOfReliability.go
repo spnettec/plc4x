@@ -128,6 +128,8 @@ type BACnetNotificationParametersChangeOfReliabilityBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersChangeOfReliabilityBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfReliabilityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersBuilder
 	// Build builds the BACnetNotificationParametersChangeOfReliability or returns an error if something is wrong
 	Build() (BACnetNotificationParametersChangeOfReliability, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,6 +153,7 @@ var _ (BACnetNotificationParametersChangeOfReliabilityBuilder) = (*_BACnetNotifi
 
 func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) setParent(contract BACnetNotificationParametersContract) {
 	b.BACnetNotificationParametersContract = contract
+	contract.(*_BACnetNotificationParameters)._SubType = b._BACnetNotificationParametersChangeOfReliability
 }
 
 func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, reliability BACnetReliabilityTagged, statusFlags BACnetStatusFlagsTagged, propertyValues BACnetPropertyValues, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfReliabilityBuilder {
@@ -292,8 +295,10 @@ func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) MustBuild() BA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersChangeOfReliabilityBuilder) Done() BACnetNotificationParametersBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -513,13 +518,13 @@ func (m *_BACnetNotificationParametersChangeOfReliability) deepCopy() *_BACnetNo
 	}
 	_BACnetNotificationParametersChangeOfReliabilityCopy := &_BACnetNotificationParametersChangeOfReliability{
 		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.Reliability.DeepCopy().(BACnetReliabilityTagged),
-		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
-		m.PropertyValues.DeepCopy().(BACnetPropertyValues),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
+		utils.DeepCopy[BACnetReliabilityTagged](m.Reliability),
+		utils.DeepCopy[BACnetStatusFlagsTagged](m.StatusFlags),
+		utils.DeepCopy[BACnetPropertyValues](m.PropertyValues),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	_BACnetNotificationParametersChangeOfReliabilityCopy.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
 	return _BACnetNotificationParametersChangeOfReliabilityCopy
 }
 

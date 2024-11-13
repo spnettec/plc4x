@@ -94,30 +94,15 @@ type FirmataCommandBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() FirmataCommandBuilder
 	// AsFirmataCommandSysex converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
-	AsFirmataCommandSysex() interface {
-		FirmataCommandSysexBuilder
-		Done() FirmataCommandBuilder
-	}
+	AsFirmataCommandSysex() FirmataCommandSysexBuilder
 	// AsFirmataCommandSetPinMode converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
-	AsFirmataCommandSetPinMode() interface {
-		FirmataCommandSetPinModeBuilder
-		Done() FirmataCommandBuilder
-	}
+	AsFirmataCommandSetPinMode() FirmataCommandSetPinModeBuilder
 	// AsFirmataCommandSetDigitalPinValue converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
-	AsFirmataCommandSetDigitalPinValue() interface {
-		FirmataCommandSetDigitalPinValueBuilder
-		Done() FirmataCommandBuilder
-	}
+	AsFirmataCommandSetDigitalPinValue() FirmataCommandSetDigitalPinValueBuilder
 	// AsFirmataCommandProtocolVersion converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
-	AsFirmataCommandProtocolVersion() interface {
-		FirmataCommandProtocolVersionBuilder
-		Done() FirmataCommandBuilder
-	}
+	AsFirmataCommandProtocolVersion() FirmataCommandProtocolVersionBuilder
 	// AsFirmataCommandSystemReset converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
-	AsFirmataCommandSystemReset() interface {
-		FirmataCommandSystemResetBuilder
-		Done() FirmataCommandBuilder
-	}
+	AsFirmataCommandSystemReset() FirmataCommandSystemResetBuilder
 	// Build builds the FirmataCommand or returns an error if something is wrong
 	PartialBuild() (FirmataCommandContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -168,14 +153,8 @@ func (b *_FirmataCommandBuilder) PartialMustBuild() FirmataCommandContract {
 	return build
 }
 
-func (b *_FirmataCommandBuilder) AsFirmataCommandSysex() interface {
-	FirmataCommandSysexBuilder
-	Done() FirmataCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		FirmataCommandSysexBuilder
-		Done() FirmataCommandBuilder
-	}); ok {
+func (b *_FirmataCommandBuilder) AsFirmataCommandSysex() FirmataCommandSysexBuilder {
+	if cb, ok := b.childBuilder.(FirmataCommandSysexBuilder); ok {
 		return cb
 	}
 	cb := NewFirmataCommandSysexBuilder().(*_FirmataCommandSysexBuilder)
@@ -184,14 +163,8 @@ func (b *_FirmataCommandBuilder) AsFirmataCommandSysex() interface {
 	return cb
 }
 
-func (b *_FirmataCommandBuilder) AsFirmataCommandSetPinMode() interface {
-	FirmataCommandSetPinModeBuilder
-	Done() FirmataCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		FirmataCommandSetPinModeBuilder
-		Done() FirmataCommandBuilder
-	}); ok {
+func (b *_FirmataCommandBuilder) AsFirmataCommandSetPinMode() FirmataCommandSetPinModeBuilder {
+	if cb, ok := b.childBuilder.(FirmataCommandSetPinModeBuilder); ok {
 		return cb
 	}
 	cb := NewFirmataCommandSetPinModeBuilder().(*_FirmataCommandSetPinModeBuilder)
@@ -200,14 +173,8 @@ func (b *_FirmataCommandBuilder) AsFirmataCommandSetPinMode() interface {
 	return cb
 }
 
-func (b *_FirmataCommandBuilder) AsFirmataCommandSetDigitalPinValue() interface {
-	FirmataCommandSetDigitalPinValueBuilder
-	Done() FirmataCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		FirmataCommandSetDigitalPinValueBuilder
-		Done() FirmataCommandBuilder
-	}); ok {
+func (b *_FirmataCommandBuilder) AsFirmataCommandSetDigitalPinValue() FirmataCommandSetDigitalPinValueBuilder {
+	if cb, ok := b.childBuilder.(FirmataCommandSetDigitalPinValueBuilder); ok {
 		return cb
 	}
 	cb := NewFirmataCommandSetDigitalPinValueBuilder().(*_FirmataCommandSetDigitalPinValueBuilder)
@@ -216,14 +183,8 @@ func (b *_FirmataCommandBuilder) AsFirmataCommandSetDigitalPinValue() interface 
 	return cb
 }
 
-func (b *_FirmataCommandBuilder) AsFirmataCommandProtocolVersion() interface {
-	FirmataCommandProtocolVersionBuilder
-	Done() FirmataCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		FirmataCommandProtocolVersionBuilder
-		Done() FirmataCommandBuilder
-	}); ok {
+func (b *_FirmataCommandBuilder) AsFirmataCommandProtocolVersion() FirmataCommandProtocolVersionBuilder {
+	if cb, ok := b.childBuilder.(FirmataCommandProtocolVersionBuilder); ok {
 		return cb
 	}
 	cb := NewFirmataCommandProtocolVersionBuilder().(*_FirmataCommandProtocolVersionBuilder)
@@ -232,14 +193,8 @@ func (b *_FirmataCommandBuilder) AsFirmataCommandProtocolVersion() interface {
 	return cb
 }
 
-func (b *_FirmataCommandBuilder) AsFirmataCommandSystemReset() interface {
-	FirmataCommandSystemResetBuilder
-	Done() FirmataCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		FirmataCommandSystemResetBuilder
-		Done() FirmataCommandBuilder
-	}); ok {
+func (b *_FirmataCommandBuilder) AsFirmataCommandSystemReset() FirmataCommandSystemResetBuilder {
+	if cb, ok := b.childBuilder.(FirmataCommandSystemResetBuilder); ok {
 		return cb
 	}
 	cb := NewFirmataCommandSystemResetBuilder().(*_FirmataCommandSystemResetBuilder)

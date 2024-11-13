@@ -86,6 +86,8 @@ type BACnetConstructedDataEscalatorModeBuilder interface {
 	WithEscalatorMode(BACnetEscalatorModeTagged) BACnetConstructedDataEscalatorModeBuilder
 	// WithEscalatorModeBuilder adds EscalatorMode (property field) which is build by the builder
 	WithEscalatorModeBuilder(func(BACnetEscalatorModeTaggedBuilder) BACnetEscalatorModeTaggedBuilder) BACnetConstructedDataEscalatorModeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEscalatorMode or returns an error if something is wrong
 	Build() (BACnetConstructedDataEscalatorMode, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataEscalatorModeBuilder) = (*_BACnetConstructedDataEsca
 
 func (b *_BACnetConstructedDataEscalatorModeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEscalatorMode
 }
 
 func (b *_BACnetConstructedDataEscalatorModeBuilder) WithMandatoryFields(escalatorMode BACnetEscalatorModeTagged) BACnetConstructedDataEscalatorModeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataEscalatorModeBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEscalatorModeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataEscalatorMode) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataEscalatorModeCopy := &_BACnetConstructedDataEscalatorMode{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.EscalatorMode.DeepCopy().(BACnetEscalatorModeTagged),
+		utils.DeepCopy[BACnetEscalatorModeTagged](m.EscalatorMode),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEscalatorModeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEscalatorModeCopy
 }
 

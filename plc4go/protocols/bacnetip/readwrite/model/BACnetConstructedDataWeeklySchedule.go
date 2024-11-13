@@ -89,6 +89,8 @@ type BACnetConstructedDataWeeklyScheduleBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataWeeklyScheduleBuilder
 	// WithWeeklySchedule adds WeeklySchedule (property field)
 	WithWeeklySchedule(...BACnetDailySchedule) BACnetConstructedDataWeeklyScheduleBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataWeeklySchedule or returns an error if something is wrong
 	Build() (BACnetConstructedDataWeeklySchedule, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataWeeklyScheduleBuilder) = (*_BACnetConstructedDataWee
 
 func (b *_BACnetConstructedDataWeeklyScheduleBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataWeeklySchedule
 }
 
 func (b *_BACnetConstructedDataWeeklyScheduleBuilder) WithMandatoryFields(weeklySchedule []BACnetDailySchedule) BACnetConstructedDataWeeklyScheduleBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataWeeklyScheduleBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataWeeklyScheduleBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -379,10 +384,10 @@ func (m *_BACnetConstructedDataWeeklySchedule) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataWeeklyScheduleCopy := &_BACnetConstructedDataWeeklySchedule{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetDailySchedule, BACnetDailySchedule](m.WeeklySchedule),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataWeeklyScheduleCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataWeeklyScheduleCopy
 }
 

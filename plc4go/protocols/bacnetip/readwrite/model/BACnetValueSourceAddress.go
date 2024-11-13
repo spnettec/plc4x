@@ -84,6 +84,8 @@ type BACnetValueSourceAddressBuilder interface {
 	WithAddress(BACnetAddressEnclosed) BACnetValueSourceAddressBuilder
 	// WithAddressBuilder adds Address (property field) which is build by the builder
 	WithAddressBuilder(func(BACnetAddressEnclosedBuilder) BACnetAddressEnclosedBuilder) BACnetValueSourceAddressBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetValueSourceBuilder
 	// Build builds the BACnetValueSourceAddress or returns an error if something is wrong
 	Build() (BACnetValueSourceAddress, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetValueSourceAddressBuilder) = (*_BACnetValueSourceAddressBuilder)(ni
 
 func (b *_BACnetValueSourceAddressBuilder) setParent(contract BACnetValueSourceContract) {
 	b.BACnetValueSourceContract = contract
+	contract.(*_BACnetValueSource)._SubType = b._BACnetValueSourceAddress
 }
 
 func (b *_BACnetValueSourceAddressBuilder) WithMandatoryFields(address BACnetAddressEnclosed) BACnetValueSourceAddressBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetValueSourceAddressBuilder) MustBuild() BACnetValueSourceAddress 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetValueSourceAddressBuilder) Done() BACnetValueSourceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetValueSourceBuilder().(*_BACnetValueSourceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetValueSourceAddress) deepCopy() *_BACnetValueSourceAddress {
 	}
 	_BACnetValueSourceAddressCopy := &_BACnetValueSourceAddress{
 		m.BACnetValueSourceContract.(*_BACnetValueSource).deepCopy(),
-		m.Address.DeepCopy().(BACnetAddressEnclosed),
+		utils.DeepCopy[BACnetAddressEnclosed](m.Address),
 	}
-	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	_BACnetValueSourceAddressCopy.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
 	return _BACnetValueSourceAddressCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetPropertyStatesNodeTypeBuilder interface {
 	WithNodeType(BACnetNodeTypeTagged) BACnetPropertyStatesNodeTypeBuilder
 	// WithNodeTypeBuilder adds NodeType (property field) which is build by the builder
 	WithNodeTypeBuilder(func(BACnetNodeTypeTaggedBuilder) BACnetNodeTypeTaggedBuilder) BACnetPropertyStatesNodeTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesNodeType or returns an error if something is wrong
 	Build() (BACnetPropertyStatesNodeType, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesNodeTypeBuilder) = (*_BACnetPropertyStatesNodeTypeBui
 
 func (b *_BACnetPropertyStatesNodeTypeBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesNodeType
 }
 
 func (b *_BACnetPropertyStatesNodeTypeBuilder) WithMandatoryFields(nodeType BACnetNodeTypeTagged) BACnetPropertyStatesNodeTypeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesNodeTypeBuilder) MustBuild() BACnetPropertyStatesN
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesNodeTypeBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesNodeType) deepCopy() *_BACnetPropertyStatesNodeTyp
 	}
 	_BACnetPropertyStatesNodeTypeCopy := &_BACnetPropertyStatesNodeType{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.NodeType.DeepCopy().(BACnetNodeTypeTagged),
+		utils.DeepCopy[BACnetNodeTypeTagged](m.NodeType),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesNodeTypeCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesNodeTypeCopy
 }
 

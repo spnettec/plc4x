@@ -86,6 +86,8 @@ type BACnetConstructedDataNetworkPortMaxInfoFramesBuilder interface {
 	WithMaxInfoFrames(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkPortMaxInfoFramesBuilder
 	// WithMaxInfoFramesBuilder adds MaxInfoFrames (property field) which is build by the builder
 	WithMaxInfoFramesBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkPortMaxInfoFramesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNetworkPortMaxInfoFrames or returns an error if something is wrong
 	Build() (BACnetConstructedDataNetworkPortMaxInfoFrames, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataNetworkPortMaxInfoFramesBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataNetworkPortMaxInfoFramesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNetworkPortMaxInfoFrames
 }
 
 func (b *_BACnetConstructedDataNetworkPortMaxInfoFramesBuilder) WithMandatoryFields(maxInfoFrames BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkPortMaxInfoFramesBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataNetworkPortMaxInfoFramesBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNetworkPortMaxInfoFramesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) deepCopy() *_BACnetCons
 	}
 	_BACnetConstructedDataNetworkPortMaxInfoFramesCopy := &_BACnetConstructedDataNetworkPortMaxInfoFrames{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MaxInfoFrames.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.MaxInfoFrames),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNetworkPortMaxInfoFramesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNetworkPortMaxInfoFramesCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetPriorityValueEnumeratedBuilder interface {
 	WithEnumeratedValue(BACnetApplicationTagEnumerated) BACnetPriorityValueEnumeratedBuilder
 	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
 	WithEnumeratedValueBuilder(func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetPriorityValueEnumeratedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPriorityValueBuilder
 	// Build builds the BACnetPriorityValueEnumerated or returns an error if something is wrong
 	Build() (BACnetPriorityValueEnumerated, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPriorityValueEnumeratedBuilder) = (*_BACnetPriorityValueEnumeratedB
 
 func (b *_BACnetPriorityValueEnumeratedBuilder) setParent(contract BACnetPriorityValueContract) {
 	b.BACnetPriorityValueContract = contract
+	contract.(*_BACnetPriorityValue)._SubType = b._BACnetPriorityValueEnumerated
 }
 
 func (b *_BACnetPriorityValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetPriorityValueEnumeratedBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPriorityValueEnumeratedBuilder) MustBuild() BACnetPriorityValueE
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPriorityValueEnumeratedBuilder) Done() BACnetPriorityValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPriorityValueEnumerated) deepCopy() *_BACnetPriorityValueEnumera
 	}
 	_BACnetPriorityValueEnumeratedCopy := &_BACnetPriorityValueEnumerated{
 		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
-		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+		utils.DeepCopy[BACnetApplicationTagEnumerated](m.EnumeratedValue),
 	}
-	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	_BACnetPriorityValueEnumeratedCopy.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
 	return _BACnetPriorityValueEnumeratedCopy
 }
 

@@ -95,6 +95,8 @@ type CipReadResponseBuilder interface {
 	WithOptionalData(CIPData) CipReadResponseBuilder
 	// WithOptionalDataBuilder adds Data (property field) which is build by the builder
 	WithOptionalDataBuilder(func(CIPDataBuilder) CIPDataBuilder) CipReadResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the CipReadResponse or returns an error if something is wrong
 	Build() (CipReadResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (CipReadResponseBuilder) = (*_CipReadResponseBuilder)(nil)
 
 func (b *_CipReadResponseBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._CipReadResponse
 }
 
 func (b *_CipReadResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) CipReadResponseBuilder {
@@ -167,8 +170,10 @@ func (b *_CipReadResponseBuilder) MustBuild() CipReadResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipReadResponseBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -386,10 +391,10 @@ func (m *_CipReadResponse) deepCopy() *_CipReadResponse {
 		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.Status,
 		m.ExtStatus,
-		m.Data.DeepCopy().(CIPData),
+		utils.DeepCopy[CIPData](m.Data),
 		m.reservedField0,
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_CipReadResponseCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _CipReadResponseCopy
 }
 

@@ -105,75 +105,33 @@ type BACnetFaultParameterFaultExtendedParametersEntryBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultParameterFaultExtendedParametersEntryBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryNull converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryNull() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryNull() BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryReal converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryReal() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryReal() BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryUnsigned converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryUnsigned() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryUnsigned() BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryBoolean converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryBoolean() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryBoolean() BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryInteger converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryInteger() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryInteger() BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryDouble converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryDouble() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryDouble() BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryOctetString converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryOctetString() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryOctetString() BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryCharacterString converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryCharacterString() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryCharacterString() BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryBitString converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryBitString() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryBitString() BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryEnumerated converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryEnumerated() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryEnumerated() BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryDate converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryDate() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryDate() BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryTime converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryTime() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryTime() BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
 	// AsBACnetFaultParameterFaultExtendedParametersEntryReference converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtendedParametersEntryReference() interface {
-		BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}
+	AsBACnetFaultParameterFaultExtendedParametersEntryReference() BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
 	// Build builds the BACnetFaultParameterFaultExtendedParametersEntry or returns an error if something is wrong
 	PartialBuild() (BACnetFaultParameterFaultExtendedParametersEntryContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -248,14 +206,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) PartialMustBu
 	return build
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryNull() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryNull() BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryNullBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder)
@@ -264,14 +216,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryReal() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryReal() BACnetFaultParameterFaultExtendedParametersEntryRealBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryRealBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryRealBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder)
@@ -280,14 +226,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryUnsigned() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryUnsigned() BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder)
@@ -296,14 +236,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryBoolean() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryBoolean() BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder)
@@ -312,14 +246,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryInteger() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryInteger() BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder)
@@ -328,14 +256,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryDouble() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryDouble() BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder)
@@ -344,14 +266,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryOctetString() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryOctetString() BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder)
@@ -360,14 +276,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryCharacterString() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryCharacterString() BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder)
@@ -376,14 +286,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryBitString() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryBitString() BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder)
@@ -392,14 +296,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryEnumerated() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryEnumerated() BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder)
@@ -408,14 +306,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryDate() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryDate() BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryDateBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryDateBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder)
@@ -424,14 +316,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryTime() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryTime() BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryTimeBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder)
@@ -440,14 +326,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder)
@@ -456,14 +336,8 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFault
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryReference() interface {
-	BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
-	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
-		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryReference() BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder)
@@ -764,7 +638,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) deepCopy() *_BACnetF
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryCopy := &_BACnetFaultParameterFaultExtendedParametersEntry{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetFaultParameterFaultExtendedParametersEntryCopy
 }

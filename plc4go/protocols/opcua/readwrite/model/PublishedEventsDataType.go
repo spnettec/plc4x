@@ -101,6 +101,8 @@ type PublishedEventsDataTypeBuilder interface {
 	WithFilter(ContentFilter) PublishedEventsDataTypeBuilder
 	// WithFilterBuilder adds Filter (property field) which is build by the builder
 	WithFilterBuilder(func(ContentFilterBuilder) ContentFilterBuilder) PublishedEventsDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PublishedEventsDataType or returns an error if something is wrong
 	Build() (PublishedEventsDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (PublishedEventsDataTypeBuilder) = (*_PublishedEventsDataTypeBuilder)(nil)
 
 func (b *_PublishedEventsDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PublishedEventsDataType
 }
 
 func (b *_PublishedEventsDataTypeBuilder) WithMandatoryFields(eventNotifier NodeId, selectedFields []SimpleAttributeOperand, filter ContentFilter) PublishedEventsDataTypeBuilder {
@@ -198,8 +201,10 @@ func (b *_PublishedEventsDataTypeBuilder) MustBuild() PublishedEventsDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PublishedEventsDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -408,11 +413,11 @@ func (m *_PublishedEventsDataType) deepCopy() *_PublishedEventsDataType {
 	}
 	_PublishedEventsDataTypeCopy := &_PublishedEventsDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.EventNotifier.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.EventNotifier),
 		utils.DeepCopySlice[SimpleAttributeOperand, SimpleAttributeOperand](m.SelectedFields),
-		m.Filter.DeepCopy().(ContentFilter),
+		utils.DeepCopy[ContentFilter](m.Filter),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PublishedEventsDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PublishedEventsDataTypeCopy
 }
 

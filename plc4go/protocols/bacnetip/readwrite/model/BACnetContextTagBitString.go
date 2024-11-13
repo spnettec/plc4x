@@ -84,6 +84,8 @@ type BACnetContextTagBitStringBuilder interface {
 	WithPayload(BACnetTagPayloadBitString) BACnetContextTagBitStringBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetContextTagBitStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetContextTagBuilder
 	// Build builds the BACnetContextTagBitString or returns an error if something is wrong
 	Build() (BACnetContextTagBitString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetContextTagBitStringBuilder) = (*_BACnetContextTagBitStringBuilder)(
 
 func (b *_BACnetContextTagBitStringBuilder) setParent(contract BACnetContextTagContract) {
 	b.BACnetContextTagContract = contract
+	contract.(*_BACnetContextTag)._SubType = b._BACnetContextTagBitString
 }
 
 func (b *_BACnetContextTagBitStringBuilder) WithMandatoryFields(payload BACnetTagPayloadBitString) BACnetContextTagBitStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetContextTagBitStringBuilder) MustBuild() BACnetContextTagBitStrin
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetContextTagBitStringBuilder) Done() BACnetContextTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetContextTagBuilder().(*_BACnetContextTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_BACnetContextTagBitString) deepCopy() *_BACnetContextTagBitString {
 	}
 	_BACnetContextTagBitStringCopy := &_BACnetContextTagBitString{
 		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		utils.DeepCopy[BACnetTagPayloadBitString](m.Payload),
 	}
-	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	_BACnetContextTagBitStringCopy.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
 	return _BACnetContextTagBitStringCopy
 }
 

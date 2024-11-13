@@ -379,9 +379,9 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 		return nil
 	}
 	_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryCopy := &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry{
-		m.MonitoredProperty.DeepCopy().(BACnetPropertyReferenceEnclosed),
-		m.CovIncrement.DeepCopy().(BACnetContextTagReal),
-		m.Timestamped.DeepCopy().(BACnetContextTagBoolean),
+		utils.DeepCopy[BACnetPropertyReferenceEnclosed](m.MonitoredProperty),
+		utils.DeepCopy[BACnetContextTagReal](m.CovIncrement),
+		utils.DeepCopy[BACnetContextTagBoolean](m.Timestamped),
 	}
 	return _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryCopy
 }

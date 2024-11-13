@@ -89,6 +89,8 @@ type BACnetConstructedDataAuthenticationFactorsBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAuthenticationFactorsBuilder
 	// WithAuthenticationFactors adds AuthenticationFactors (property field)
 	WithAuthenticationFactors(...BACnetCredentialAuthenticationFactor) BACnetConstructedDataAuthenticationFactorsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAuthenticationFactors or returns an error if something is wrong
 	Build() (BACnetConstructedDataAuthenticationFactors, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataAuthenticationFactorsBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAuthenticationFactors
 }
 
 func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) WithMandatoryFields(authenticationFactors []BACnetCredentialAuthenticationFactor) BACnetConstructedDataAuthenticationFactorsBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAuthenticationFactorsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,10 +380,10 @@ func (m *_BACnetConstructedDataAuthenticationFactors) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataAuthenticationFactorsCopy := &_BACnetConstructedDataAuthenticationFactors{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetCredentialAuthenticationFactor, BACnetCredentialAuthenticationFactor](m.AuthenticationFactors),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAuthenticationFactorsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAuthenticationFactorsCopy
 }
 

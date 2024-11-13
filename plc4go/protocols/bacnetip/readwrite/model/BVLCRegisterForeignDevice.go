@@ -81,6 +81,8 @@ type BVLCRegisterForeignDeviceBuilder interface {
 	WithMandatoryFields(ttl uint16) BVLCRegisterForeignDeviceBuilder
 	// WithTtl adds Ttl (property field)
 	WithTtl(uint16) BVLCRegisterForeignDeviceBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BVLCBuilder
 	// Build builds the BVLCRegisterForeignDevice or returns an error if something is wrong
 	Build() (BVLCRegisterForeignDevice, error)
 	// MustBuild does the same as Build but panics on error
@@ -104,6 +106,7 @@ var _ (BVLCRegisterForeignDeviceBuilder) = (*_BVLCRegisterForeignDeviceBuilder)(
 
 func (b *_BVLCRegisterForeignDeviceBuilder) setParent(contract BVLCContract) {
 	b.BVLCContract = contract
+	contract.(*_BVLC)._SubType = b._BVLCRegisterForeignDevice
 }
 
 func (b *_BVLCRegisterForeignDeviceBuilder) WithMandatoryFields(ttl uint16) BVLCRegisterForeignDeviceBuilder {
@@ -130,8 +133,10 @@ func (b *_BVLCRegisterForeignDeviceBuilder) MustBuild() BVLCRegisterForeignDevic
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BVLCRegisterForeignDeviceBuilder) Done() BVLCBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBVLCBuilder().(*_BVLCBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -288,7 +293,7 @@ func (m *_BVLCRegisterForeignDevice) deepCopy() *_BVLCRegisterForeignDevice {
 		m.BVLCContract.(*_BVLC).deepCopy(),
 		m.Ttl,
 	}
-	m.BVLCContract.(*_BVLC)._SubType = m
+	_BVLCRegisterForeignDeviceCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCRegisterForeignDeviceCopy
 }
 

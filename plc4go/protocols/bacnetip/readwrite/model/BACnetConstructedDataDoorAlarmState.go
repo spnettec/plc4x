@@ -86,6 +86,8 @@ type BACnetConstructedDataDoorAlarmStateBuilder interface {
 	WithDoorAlarmState(BACnetDoorAlarmStateTagged) BACnetConstructedDataDoorAlarmStateBuilder
 	// WithDoorAlarmStateBuilder adds DoorAlarmState (property field) which is build by the builder
 	WithDoorAlarmStateBuilder(func(BACnetDoorAlarmStateTaggedBuilder) BACnetDoorAlarmStateTaggedBuilder) BACnetConstructedDataDoorAlarmStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDoorAlarmState or returns an error if something is wrong
 	Build() (BACnetConstructedDataDoorAlarmState, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDoorAlarmStateBuilder) = (*_BACnetConstructedDataDoo
 
 func (b *_BACnetConstructedDataDoorAlarmStateBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDoorAlarmState
 }
 
 func (b *_BACnetConstructedDataDoorAlarmStateBuilder) WithMandatoryFields(doorAlarmState BACnetDoorAlarmStateTagged) BACnetConstructedDataDoorAlarmStateBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDoorAlarmStateBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDoorAlarmStateBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDoorAlarmState) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataDoorAlarmStateCopy := &_BACnetConstructedDataDoorAlarmState{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DoorAlarmState.DeepCopy().(BACnetDoorAlarmStateTagged),
+		utils.DeepCopy[BACnetDoorAlarmStateTagged](m.DoorAlarmState),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDoorAlarmStateCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDoorAlarmStateCopy
 }
 

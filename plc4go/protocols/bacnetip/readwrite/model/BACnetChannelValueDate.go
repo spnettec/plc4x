@@ -84,6 +84,8 @@ type BACnetChannelValueDateBuilder interface {
 	WithDateValue(BACnetApplicationTagDate) BACnetChannelValueDateBuilder
 	// WithDateValueBuilder adds DateValue (property field) which is build by the builder
 	WithDateValueBuilder(func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetChannelValueDateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueDate or returns an error if something is wrong
 	Build() (BACnetChannelValueDate, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueDateBuilder) = (*_BACnetChannelValueDateBuilder)(nil)
 
 func (b *_BACnetChannelValueDateBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueDate
 }
 
 func (b *_BACnetChannelValueDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetChannelValueDateBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueDateBuilder) MustBuild() BACnetChannelValueDate {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueDateBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueDate) deepCopy() *_BACnetChannelValueDate {
 	}
 	_BACnetChannelValueDateCopy := &_BACnetChannelValueDate{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+		utils.DeepCopy[BACnetApplicationTagDate](m.DateValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueDateCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueDateCopy
 }
 

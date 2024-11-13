@@ -89,15 +89,9 @@ type CommandSpecificDataItemBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CommandSpecificDataItemBuilder
 	// AsCipIdentity converts this build to a subType of CommandSpecificDataItem. It is always possible to return to current builder using Done()
-	AsCipIdentity() interface {
-		CipIdentityBuilder
-		Done() CommandSpecificDataItemBuilder
-	}
+	AsCipIdentity() CipIdentityBuilder
 	// AsCipSecurityInformation converts this build to a subType of CommandSpecificDataItem. It is always possible to return to current builder using Done()
-	AsCipSecurityInformation() interface {
-		CipSecurityInformationBuilder
-		Done() CommandSpecificDataItemBuilder
-	}
+	AsCipSecurityInformation() CipSecurityInformationBuilder
 	// Build builds the CommandSpecificDataItem or returns an error if something is wrong
 	PartialBuild() (CommandSpecificDataItemContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -148,14 +142,8 @@ func (b *_CommandSpecificDataItemBuilder) PartialMustBuild() CommandSpecificData
 	return build
 }
 
-func (b *_CommandSpecificDataItemBuilder) AsCipIdentity() interface {
-	CipIdentityBuilder
-	Done() CommandSpecificDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipIdentityBuilder
-		Done() CommandSpecificDataItemBuilder
-	}); ok {
+func (b *_CommandSpecificDataItemBuilder) AsCipIdentity() CipIdentityBuilder {
+	if cb, ok := b.childBuilder.(CipIdentityBuilder); ok {
 		return cb
 	}
 	cb := NewCipIdentityBuilder().(*_CipIdentityBuilder)
@@ -164,14 +152,8 @@ func (b *_CommandSpecificDataItemBuilder) AsCipIdentity() interface {
 	return cb
 }
 
-func (b *_CommandSpecificDataItemBuilder) AsCipSecurityInformation() interface {
-	CipSecurityInformationBuilder
-	Done() CommandSpecificDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipSecurityInformationBuilder
-		Done() CommandSpecificDataItemBuilder
-	}); ok {
+func (b *_CommandSpecificDataItemBuilder) AsCipSecurityInformation() CipSecurityInformationBuilder {
+	if cb, ok := b.childBuilder.(CipSecurityInformationBuilder); ok {
 		return cb
 	}
 	cb := NewCipSecurityInformationBuilder().(*_CipSecurityInformationBuilder)

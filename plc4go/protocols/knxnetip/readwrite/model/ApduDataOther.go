@@ -84,6 +84,8 @@ type ApduDataOtherBuilder interface {
 	WithExtendedApdu(ApduDataExt) ApduDataOtherBuilder
 	// WithExtendedApduBuilder adds ExtendedApdu (property field) which is build by the builder
 	WithExtendedApduBuilder(func(ApduDataExtBuilder) ApduDataExtBuilder) ApduDataOtherBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataOther or returns an error if something is wrong
 	Build() (ApduDataOther, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (ApduDataOtherBuilder) = (*_ApduDataOtherBuilder)(nil)
 
 func (b *_ApduDataOtherBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataOther
 }
 
 func (b *_ApduDataOtherBuilder) WithMandatoryFields(extendedApdu ApduDataExt) ApduDataOtherBuilder {
@@ -152,8 +155,10 @@ func (b *_ApduDataOtherBuilder) MustBuild() ApduDataOther {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataOtherBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_ApduDataOther) deepCopy() *_ApduDataOther {
 	}
 	_ApduDataOtherCopy := &_ApduDataOther{
 		m.ApduDataContract.(*_ApduData).deepCopy(),
-		m.ExtendedApdu.DeepCopy().(ApduDataExt),
+		utils.DeepCopy[ApduDataExt](m.ExtendedApdu),
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataOtherCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataOtherCopy
 }
 

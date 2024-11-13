@@ -84,6 +84,8 @@ type SALDataSecurityBuilder interface {
 	WithSecurityData(SecurityData) SALDataSecurityBuilder
 	// WithSecurityDataBuilder adds SecurityData (property field) which is build by the builder
 	WithSecurityDataBuilder(func(SecurityDataBuilder) SecurityDataBuilder) SALDataSecurityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataSecurity or returns an error if something is wrong
 	Build() (SALDataSecurity, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (SALDataSecurityBuilder) = (*_SALDataSecurityBuilder)(nil)
 
 func (b *_SALDataSecurityBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataSecurity
 }
 
 func (b *_SALDataSecurityBuilder) WithMandatoryFields(securityData SecurityData) SALDataSecurityBuilder {
@@ -152,8 +155,10 @@ func (b *_SALDataSecurityBuilder) MustBuild() SALDataSecurity {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataSecurityBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_SALDataSecurity) deepCopy() *_SALDataSecurity {
 	}
 	_SALDataSecurityCopy := &_SALDataSecurity{
 		m.SALDataContract.(*_SALData).deepCopy(),
-		m.SecurityData.DeepCopy().(SecurityData),
+		utils.DeepCopy[SecurityData](m.SecurityData),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataSecurityCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataSecurityCopy
 }
 

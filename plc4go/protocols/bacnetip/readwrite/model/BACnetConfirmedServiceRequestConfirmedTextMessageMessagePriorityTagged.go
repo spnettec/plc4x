@@ -334,7 +334,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 		return nil
 	}
 	_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

@@ -88,6 +88,8 @@ type BACnetApplicationTagObjectIdentifierBuilder interface {
 	WithPayload(BACnetTagPayloadObjectIdentifier) BACnetApplicationTagObjectIdentifierBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadObjectIdentifierBuilder) BACnetTagPayloadObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetApplicationTagBuilder
 	// Build builds the BACnetApplicationTagObjectIdentifier or returns an error if something is wrong
 	Build() (BACnetApplicationTagObjectIdentifier, error)
 	// MustBuild does the same as Build but panics on error
@@ -111,6 +113,7 @@ var _ (BACnetApplicationTagObjectIdentifierBuilder) = (*_BACnetApplicationTagObj
 
 func (b *_BACnetApplicationTagObjectIdentifierBuilder) setParent(contract BACnetApplicationTagContract) {
 	b.BACnetApplicationTagContract = contract
+	contract.(*_BACnetApplicationTag)._SubType = b._BACnetApplicationTagObjectIdentifier
 }
 
 func (b *_BACnetApplicationTagObjectIdentifierBuilder) WithMandatoryFields(payload BACnetTagPayloadObjectIdentifier) BACnetApplicationTagObjectIdentifierBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetApplicationTagObjectIdentifierBuilder) MustBuild() BACnetApplica
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetApplicationTagObjectIdentifierBuilder) Done() BACnetApplicationTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetApplicationTagBuilder().(*_BACnetApplicationTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -357,9 +362,9 @@ func (m *_BACnetApplicationTagObjectIdentifier) deepCopy() *_BACnetApplicationTa
 	}
 	_BACnetApplicationTagObjectIdentifierCopy := &_BACnetApplicationTagObjectIdentifier{
 		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadObjectIdentifier),
+		utils.DeepCopy[BACnetTagPayloadObjectIdentifier](m.Payload),
 	}
-	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	_BACnetApplicationTagObjectIdentifierCopy.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
 	return _BACnetApplicationTagObjectIdentifierCopy
 }
 

@@ -99,15 +99,9 @@ type MonitoredSALBuilder interface {
 	// WithSalType adds SalType (property field)
 	WithSalType(byte) MonitoredSALBuilder
 	// AsMonitoredSALLongFormSmartMode converts this build to a subType of MonitoredSAL. It is always possible to return to current builder using Done()
-	AsMonitoredSALLongFormSmartMode() interface {
-		MonitoredSALLongFormSmartModeBuilder
-		Done() MonitoredSALBuilder
-	}
+	AsMonitoredSALLongFormSmartMode() MonitoredSALLongFormSmartModeBuilder
 	// AsMonitoredSALShortFormBasicMode converts this build to a subType of MonitoredSAL. It is always possible to return to current builder using Done()
-	AsMonitoredSALShortFormBasicMode() interface {
-		MonitoredSALShortFormBasicModeBuilder
-		Done() MonitoredSALBuilder
-	}
+	AsMonitoredSALShortFormBasicMode() MonitoredSALShortFormBasicModeBuilder
 	// Build builds the MonitoredSAL or returns an error if something is wrong
 	PartialBuild() (MonitoredSALContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -163,14 +157,8 @@ func (b *_MonitoredSALBuilder) PartialMustBuild() MonitoredSALContract {
 	return build
 }
 
-func (b *_MonitoredSALBuilder) AsMonitoredSALLongFormSmartMode() interface {
-	MonitoredSALLongFormSmartModeBuilder
-	Done() MonitoredSALBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MonitoredSALLongFormSmartModeBuilder
-		Done() MonitoredSALBuilder
-	}); ok {
+func (b *_MonitoredSALBuilder) AsMonitoredSALLongFormSmartMode() MonitoredSALLongFormSmartModeBuilder {
+	if cb, ok := b.childBuilder.(MonitoredSALLongFormSmartModeBuilder); ok {
 		return cb
 	}
 	cb := NewMonitoredSALLongFormSmartModeBuilder().(*_MonitoredSALLongFormSmartModeBuilder)
@@ -179,14 +167,8 @@ func (b *_MonitoredSALBuilder) AsMonitoredSALLongFormSmartMode() interface {
 	return cb
 }
 
-func (b *_MonitoredSALBuilder) AsMonitoredSALShortFormBasicMode() interface {
-	MonitoredSALShortFormBasicModeBuilder
-	Done() MonitoredSALBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MonitoredSALShortFormBasicModeBuilder
-		Done() MonitoredSALBuilder
-	}); ok {
+func (b *_MonitoredSALBuilder) AsMonitoredSALShortFormBasicMode() MonitoredSALShortFormBasicModeBuilder {
+	if cb, ok := b.childBuilder.(MonitoredSALShortFormBasicModeBuilder); ok {
 		return cb
 	}
 	cb := NewMonitoredSALShortFormBasicModeBuilder().(*_MonitoredSALShortFormBasicModeBuilder)

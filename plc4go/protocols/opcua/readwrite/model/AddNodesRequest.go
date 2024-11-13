@@ -90,6 +90,8 @@ type AddNodesRequestBuilder interface {
 	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) AddNodesRequestBuilder
 	// WithNodesToAdd adds NodesToAdd (property field)
 	WithNodesToAdd(...AddNodesItem) AddNodesRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AddNodesRequest or returns an error if something is wrong
 	Build() (AddNodesRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (AddNodesRequestBuilder) = (*_AddNodesRequestBuilder)(nil)
 
 func (b *_AddNodesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AddNodesRequest
 }
 
 func (b *_AddNodesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, nodesToAdd []AddNodesItem) AddNodesRequestBuilder {
@@ -163,8 +166,10 @@ func (b *_AddNodesRequestBuilder) MustBuild() AddNodesRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AddNodesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_AddNodesRequest) deepCopy() *_AddNodesRequest {
 	}
 	_AddNodesRequestCopy := &_AddNodesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		utils.DeepCopySlice[AddNodesItem, AddNodesItem](m.NodesToAdd),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AddNodesRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AddNodesRequestCopy
 }
 

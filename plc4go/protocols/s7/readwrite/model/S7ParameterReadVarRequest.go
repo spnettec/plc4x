@@ -79,6 +79,8 @@ type S7ParameterReadVarRequestBuilder interface {
 	WithMandatoryFields(items []S7VarRequestParameterItem) S7ParameterReadVarRequestBuilder
 	// WithItems adds Items (property field)
 	WithItems(...S7VarRequestParameterItem) S7ParameterReadVarRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7ParameterBuilder
 	// Build builds the S7ParameterReadVarRequest or returns an error if something is wrong
 	Build() (S7ParameterReadVarRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (S7ParameterReadVarRequestBuilder) = (*_S7ParameterReadVarRequestBuilder)(
 
 func (b *_S7ParameterReadVarRequestBuilder) setParent(contract S7ParameterContract) {
 	b.S7ParameterContract = contract
+	contract.(*_S7Parameter)._SubType = b._S7ParameterReadVarRequest
 }
 
 func (b *_S7ParameterReadVarRequestBuilder) WithMandatoryFields(items []S7VarRequestParameterItem) S7ParameterReadVarRequestBuilder {
@@ -128,8 +131,10 @@ func (b *_S7ParameterReadVarRequestBuilder) MustBuild() S7ParameterReadVarReques
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7ParameterReadVarRequestBuilder) Done() S7ParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7ParameterBuilder().(*_S7ParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -310,7 +315,7 @@ func (m *_S7ParameterReadVarRequest) deepCopy() *_S7ParameterReadVarRequest {
 		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
 		utils.DeepCopySlice[S7VarRequestParameterItem, S7VarRequestParameterItem](m.Items),
 	}
-	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	_S7ParameterReadVarRequestCopy.S7ParameterContract.(*_S7Parameter)._SubType = m
 	return _S7ParameterReadVarRequestCopy
 }
 

@@ -85,6 +85,8 @@ type AccessControlDataInvalidAccessRequestBuilder interface {
 	WithAccessControlDirection(AccessControlDirection) AccessControlDataInvalidAccessRequestBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) AccessControlDataInvalidAccessRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AccessControlDataBuilder
 	// Build builds the AccessControlDataInvalidAccessRequest or returns an error if something is wrong
 	Build() (AccessControlDataInvalidAccessRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (AccessControlDataInvalidAccessRequestBuilder) = (*_AccessControlDataInval
 
 func (b *_AccessControlDataInvalidAccessRequestBuilder) setParent(contract AccessControlDataContract) {
 	b.AccessControlDataContract = contract
+	contract.(*_AccessControlData)._SubType = b._AccessControlDataInvalidAccessRequest
 }
 
 func (b *_AccessControlDataInvalidAccessRequestBuilder) WithMandatoryFields(accessControlDirection AccessControlDirection, data []byte) AccessControlDataInvalidAccessRequestBuilder {
@@ -139,8 +142,10 @@ func (b *_AccessControlDataInvalidAccessRequestBuilder) MustBuild() AccessContro
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AccessControlDataInvalidAccessRequestBuilder) Done() AccessControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAccessControlDataBuilder().(*_AccessControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -313,7 +318,7 @@ func (m *_AccessControlDataInvalidAccessRequest) deepCopy() *_AccessControlDataI
 		m.AccessControlDirection,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	_AccessControlDataInvalidAccessRequestCopy.AccessControlDataContract.(*_AccessControlData)._SubType = m
 	return _AccessControlDataInvalidAccessRequestCopy
 }
 

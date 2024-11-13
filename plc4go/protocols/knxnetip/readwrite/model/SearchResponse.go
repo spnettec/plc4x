@@ -108,6 +108,8 @@ type SearchResponseBuilder interface {
 	WithDibSuppSvcFamilies(DIBSuppSvcFamilies) SearchResponseBuilder
 	// WithDibSuppSvcFamiliesBuilder adds DibSuppSvcFamilies (property field) which is build by the builder
 	WithDibSuppSvcFamiliesBuilder(func(DIBSuppSvcFamiliesBuilder) DIBSuppSvcFamiliesBuilder) SearchResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the SearchResponse or returns an error if something is wrong
 	Build() (SearchResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -131,6 +133,7 @@ var _ (SearchResponseBuilder) = (*_SearchResponseBuilder)(nil)
 
 func (b *_SearchResponseBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._SearchResponse
 }
 
 func (b *_SearchResponseBuilder) WithMandatoryFields(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) SearchResponseBuilder {
@@ -224,8 +227,10 @@ func (b *_SearchResponseBuilder) MustBuild() SearchResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SearchResponseBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -414,11 +419,11 @@ func (m *_SearchResponse) deepCopy() *_SearchResponse {
 	}
 	_SearchResponseCopy := &_SearchResponse{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
-		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
-		m.DibDeviceInfo.DeepCopy().(DIBDeviceInfo),
-		m.DibSuppSvcFamilies.DeepCopy().(DIBSuppSvcFamilies),
+		utils.DeepCopy[HPAIControlEndpoint](m.HpaiControlEndpoint),
+		utils.DeepCopy[DIBDeviceInfo](m.DibDeviceInfo),
+		utils.DeepCopy[DIBSuppSvcFamilies](m.DibSuppSvcFamilies),
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_SearchResponseCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _SearchResponseCopy
 }
 

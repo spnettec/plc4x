@@ -279,7 +279,7 @@ func (m *_BACnetLandingDoorStatus) deepCopy() *_BACnetLandingDoorStatus {
 		return nil
 	}
 	_BACnetLandingDoorStatusCopy := &_BACnetLandingDoorStatus{
-		m.LandingDoors.DeepCopy().(BACnetLandingDoorStatusLandingDoorsList),
+		utils.DeepCopy[BACnetLandingDoorStatusLandingDoorsList](m.LandingDoors),
 	}
 	return _BACnetLandingDoorStatusCopy
 }

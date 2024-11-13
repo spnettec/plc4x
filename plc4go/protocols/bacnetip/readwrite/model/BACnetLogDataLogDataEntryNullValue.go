@@ -84,6 +84,8 @@ type BACnetLogDataLogDataEntryNullValueBuilder interface {
 	WithNullValue(BACnetContextTagNull) BACnetLogDataLogDataEntryNullValueBuilder
 	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
 	WithNullValueBuilder(func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetLogDataLogDataEntryNullValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogDataLogDataEntryBuilder
 	// Build builds the BACnetLogDataLogDataEntryNullValue or returns an error if something is wrong
 	Build() (BACnetLogDataLogDataEntryNullValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogDataLogDataEntryNullValueBuilder) = (*_BACnetLogDataLogDataEntry
 
 func (b *_BACnetLogDataLogDataEntryNullValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
 	b.BACnetLogDataLogDataEntryContract = contract
+	contract.(*_BACnetLogDataLogDataEntry)._SubType = b._BACnetLogDataLogDataEntryNullValue
 }
 
 func (b *_BACnetLogDataLogDataEntryNullValueBuilder) WithMandatoryFields(nullValue BACnetContextTagNull) BACnetLogDataLogDataEntryNullValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogDataLogDataEntryNullValueBuilder) MustBuild() BACnetLogDataLo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogDataLogDataEntryNullValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogDataLogDataEntryBuilder().(*_BACnetLogDataLogDataEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogDataLogDataEntryNullValue) deepCopy() *_BACnetLogDataLogDataE
 	}
 	_BACnetLogDataLogDataEntryNullValueCopy := &_BACnetLogDataLogDataEntryNullValue{
 		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
-		m.NullValue.DeepCopy().(BACnetContextTagNull),
+		utils.DeepCopy[BACnetContextTagNull](m.NullValue),
 	}
-	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	_BACnetLogDataLogDataEntryNullValueCopy.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
 	return _BACnetLogDataLogDataEntryNullValueCopy
 }
 

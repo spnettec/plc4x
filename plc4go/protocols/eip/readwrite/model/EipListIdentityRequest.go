@@ -71,6 +71,8 @@ type EipListIdentityRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() EipListIdentityRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EipPacketBuilder
 	// Build builds the EipListIdentityRequest or returns an error if something is wrong
 	Build() (EipListIdentityRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (EipListIdentityRequestBuilder) = (*_EipListIdentityRequestBuilder)(nil)
 
 func (b *_EipListIdentityRequestBuilder) setParent(contract EipPacketContract) {
 	b.EipPacketContract = contract
+	contract.(*_EipPacket)._SubType = b._EipListIdentityRequest
 }
 
 func (b *_EipListIdentityRequestBuilder) WithMandatoryFields() EipListIdentityRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_EipListIdentityRequestBuilder) MustBuild() EipListIdentityRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EipListIdentityRequestBuilder) Done() EipPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEipPacketBuilder().(*_EipPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -253,7 +258,7 @@ func (m *_EipListIdentityRequest) deepCopy() *_EipListIdentityRequest {
 	_EipListIdentityRequestCopy := &_EipListIdentityRequest{
 		m.EipPacketContract.(*_EipPacket).deepCopy(),
 	}
-	m.EipPacketContract.(*_EipPacket)._SubType = m
+	_EipListIdentityRequestCopy.EipPacketContract.(*_EipPacket)._SubType = m
 	return _EipListIdentityRequestCopy
 }
 

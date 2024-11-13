@@ -84,6 +84,8 @@ type AdsDiscoveryBlockRouteNameBuilder interface {
 	WithRouteName(AmsString) AdsDiscoveryBlockRouteNameBuilder
 	// WithRouteNameBuilder adds RouteName (property field) which is build by the builder
 	WithRouteNameBuilder(func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockRouteNameBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AdsDiscoveryBlockBuilder
 	// Build builds the AdsDiscoveryBlockRouteName or returns an error if something is wrong
 	Build() (AdsDiscoveryBlockRouteName, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (AdsDiscoveryBlockRouteNameBuilder) = (*_AdsDiscoveryBlockRouteNameBuilder
 
 func (b *_AdsDiscoveryBlockRouteNameBuilder) setParent(contract AdsDiscoveryBlockContract) {
 	b.AdsDiscoveryBlockContract = contract
+	contract.(*_AdsDiscoveryBlock)._SubType = b._AdsDiscoveryBlockRouteName
 }
 
 func (b *_AdsDiscoveryBlockRouteNameBuilder) WithMandatoryFields(routeName AmsString) AdsDiscoveryBlockRouteNameBuilder {
@@ -152,8 +155,10 @@ func (b *_AdsDiscoveryBlockRouteNameBuilder) MustBuild() AdsDiscoveryBlockRouteN
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsDiscoveryBlockRouteNameBuilder) Done() AdsDiscoveryBlockBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAdsDiscoveryBlockBuilder().(*_AdsDiscoveryBlockBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_AdsDiscoveryBlockRouteName) deepCopy() *_AdsDiscoveryBlockRouteName {
 	}
 	_AdsDiscoveryBlockRouteNameCopy := &_AdsDiscoveryBlockRouteName{
 		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
-		m.RouteName.DeepCopy().(AmsString),
+		utils.DeepCopy[AmsString](m.RouteName),
 	}
-	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	_AdsDiscoveryBlockRouteNameCopy.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
 	return _AdsDiscoveryBlockRouteNameCopy
 }
 

@@ -79,6 +79,8 @@ type AirConditioningDataSetZoneGroupOnBuilder interface {
 	WithMandatoryFields(zoneGroup byte) AirConditioningDataSetZoneGroupOnBuilder
 	// WithZoneGroup adds ZoneGroup (property field)
 	WithZoneGroup(byte) AirConditioningDataSetZoneGroupOnBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AirConditioningDataBuilder
 	// Build builds the AirConditioningDataSetZoneGroupOn or returns an error if something is wrong
 	Build() (AirConditioningDataSetZoneGroupOn, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (AirConditioningDataSetZoneGroupOnBuilder) = (*_AirConditioningDataSetZone
 
 func (b *_AirConditioningDataSetZoneGroupOnBuilder) setParent(contract AirConditioningDataContract) {
 	b.AirConditioningDataContract = contract
+	contract.(*_AirConditioningData)._SubType = b._AirConditioningDataSetZoneGroupOn
 }
 
 func (b *_AirConditioningDataSetZoneGroupOnBuilder) WithMandatoryFields(zoneGroup byte) AirConditioningDataSetZoneGroupOnBuilder {
@@ -128,8 +131,10 @@ func (b *_AirConditioningDataSetZoneGroupOnBuilder) MustBuild() AirConditioningD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AirConditioningDataSetZoneGroupOnBuilder) Done() AirConditioningDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAirConditioningDataBuilder().(*_AirConditioningDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -282,7 +287,7 @@ func (m *_AirConditioningDataSetZoneGroupOn) deepCopy() *_AirConditioningDataSet
 		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
 		m.ZoneGroup,
 	}
-	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	_AirConditioningDataSetZoneGroupOnCopy.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
 	return _AirConditioningDataSetZoneGroupOnCopy
 }
 

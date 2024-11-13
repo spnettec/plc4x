@@ -84,6 +84,8 @@ type BACnetLogDataLogDataTimeChangeBuilder interface {
 	WithTimeChange(BACnetContextTagReal) BACnetLogDataLogDataTimeChangeBuilder
 	// WithTimeChangeBuilder adds TimeChange (property field) which is build by the builder
 	WithTimeChangeBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLogDataLogDataTimeChangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogDataBuilder
 	// Build builds the BACnetLogDataLogDataTimeChange or returns an error if something is wrong
 	Build() (BACnetLogDataLogDataTimeChange, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogDataLogDataTimeChangeBuilder) = (*_BACnetLogDataLogDataTimeChang
 
 func (b *_BACnetLogDataLogDataTimeChangeBuilder) setParent(contract BACnetLogDataContract) {
 	b.BACnetLogDataContract = contract
+	contract.(*_BACnetLogData)._SubType = b._BACnetLogDataLogDataTimeChange
 }
 
 func (b *_BACnetLogDataLogDataTimeChangeBuilder) WithMandatoryFields(timeChange BACnetContextTagReal) BACnetLogDataLogDataTimeChangeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogDataLogDataTimeChangeBuilder) MustBuild() BACnetLogDataLogDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogDataLogDataTimeChangeBuilder) Done() BACnetLogDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogDataBuilder().(*_BACnetLogDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogDataLogDataTimeChange) deepCopy() *_BACnetLogDataLogDataTimeC
 	}
 	_BACnetLogDataLogDataTimeChangeCopy := &_BACnetLogDataLogDataTimeChange{
 		m.BACnetLogDataContract.(*_BACnetLogData).deepCopy(),
-		m.TimeChange.DeepCopy().(BACnetContextTagReal),
+		utils.DeepCopy[BACnetContextTagReal](m.TimeChange),
 	}
-	m.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
+	_BACnetLogDataLogDataTimeChangeCopy.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
 	return _BACnetLogDataLogDataTimeChangeCopy
 }
 

@@ -88,6 +88,8 @@ type SendUnitDataBuilder interface {
 	WithTimeout(uint16) SendUnitDataBuilder
 	// WithTypeIds adds TypeIds (property field)
 	WithTypeIds(...TypeId) SendUnitDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EipPacketBuilder
 	// Build builds the SendUnitData or returns an error if something is wrong
 	Build() (SendUnitData, error)
 	// MustBuild does the same as Build but panics on error
@@ -111,6 +113,7 @@ var _ (SendUnitDataBuilder) = (*_SendUnitDataBuilder)(nil)
 
 func (b *_SendUnitDataBuilder) setParent(contract EipPacketContract) {
 	b.EipPacketContract = contract
+	contract.(*_EipPacket)._SubType = b._SendUnitData
 }
 
 func (b *_SendUnitDataBuilder) WithMandatoryFields(timeout uint16, typeIds []TypeId) SendUnitDataBuilder {
@@ -142,8 +145,10 @@ func (b *_SendUnitDataBuilder) MustBuild() SendUnitData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SendUnitDataBuilder) Done() EipPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEipPacketBuilder().(*_EipPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -372,7 +377,7 @@ func (m *_SendUnitData) deepCopy() *_SendUnitData {
 		m.Timeout,
 		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
 	}
-	m.EipPacketContract.(*_EipPacket)._SubType = m
+	_SendUnitDataCopy.EipPacketContract.(*_EipPacket)._SubType = m
 	return _SendUnitDataCopy
 }
 

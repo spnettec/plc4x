@@ -86,6 +86,8 @@ type BACnetConstructedDataElapsedActiveTimeBuilder interface {
 	WithElapsedActiveTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataElapsedActiveTimeBuilder
 	// WithElapsedActiveTimeBuilder adds ElapsedActiveTime (property field) which is build by the builder
 	WithElapsedActiveTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataElapsedActiveTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataElapsedActiveTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataElapsedActiveTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataElapsedActiveTimeBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataElapsedActiveTime
 }
 
 func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) WithMandatoryFields(elapsedActiveTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataElapsedActiveTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataElapsedActiveTime) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataElapsedActiveTimeCopy := &_BACnetConstructedDataElapsedActiveTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ElapsedActiveTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ElapsedActiveTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataElapsedActiveTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataElapsedActiveTimeCopy
 }
 

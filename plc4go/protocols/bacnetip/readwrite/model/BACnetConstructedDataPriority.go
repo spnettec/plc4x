@@ -89,6 +89,8 @@ type BACnetConstructedDataPriorityBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPriorityBuilder
 	// WithPriority adds Priority (property field)
 	WithPriority(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPriority or returns an error if something is wrong
 	Build() (BACnetConstructedDataPriority, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataPriorityBuilder) = (*_BACnetConstructedDataPriorityB
 
 func (b *_BACnetConstructedDataPriorityBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPriority
 }
 
 func (b *_BACnetConstructedDataPriorityBuilder) WithMandatoryFields(priority []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataPriorityBuilder) MustBuild() BACnetConstructedDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPriorityBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -379,10 +384,10 @@ func (m *_BACnetConstructedDataPriority) deepCopy() *_BACnetConstructedDataPrior
 	}
 	_BACnetConstructedDataPriorityCopy := &_BACnetConstructedDataPriority{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.Priority),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPriorityCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPriorityCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataBackupPreparationTimeBuilder interface {
 	WithBackupPreparationTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupPreparationTimeBuilder
 	// WithBackupPreparationTimeBuilder adds BackupPreparationTime (property field) which is build by the builder
 	WithBackupPreparationTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBackupPreparationTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBackupPreparationTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataBackupPreparationTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBackupPreparationTimeBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBackupPreparationTime
 }
 
 func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) WithMandatoryFields(backupPreparationTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupPreparationTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBackupPreparationTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBackupPreparationTime) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataBackupPreparationTimeCopy := &_BACnetConstructedDataBackupPreparationTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.BackupPreparationTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.BackupPreparationTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBackupPreparationTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBackupPreparationTimeCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBu
 	WithObjectidentifierValue(BACnetApplicationTagObjectIdentifier) BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder
 	// WithObjectidentifierValueBuilder adds ObjectidentifierValue (property field) which is build by the builder
 	WithObjectidentifierValueBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
 	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier or returns an error if something is wrong
 	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
 
 func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder) setParent(contract BACnetNotificationParametersChangeOfDiscreteValueNewValueContract) {
 	b.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = contract
+	contract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = b._BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
 }
 
 func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentif
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder) Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentif
 	}
 	_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier{
 		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).deepCopy(),
-		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectidentifierValue),
 	}
-	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierCopy.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
 	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataFullDutyBaselineBuilder interface {
 	WithFullDutyBaseLine(BACnetApplicationTagReal) BACnetConstructedDataFullDutyBaselineBuilder
 	// WithFullDutyBaseLineBuilder adds FullDutyBaseLine (property field) which is build by the builder
 	WithFullDutyBaseLineBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataFullDutyBaselineBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataFullDutyBaseline or returns an error if something is wrong
 	Build() (BACnetConstructedDataFullDutyBaseline, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataFullDutyBaselineBuilder) = (*_BACnetConstructedDataF
 
 func (b *_BACnetConstructedDataFullDutyBaselineBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataFullDutyBaseline
 }
 
 func (b *_BACnetConstructedDataFullDutyBaselineBuilder) WithMandatoryFields(fullDutyBaseLine BACnetApplicationTagReal) BACnetConstructedDataFullDutyBaselineBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataFullDutyBaselineBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataFullDutyBaselineBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataFullDutyBaseline) deepCopy() *_BACnetConstructedD
 	}
 	_BACnetConstructedDataFullDutyBaselineCopy := &_BACnetConstructedDataFullDutyBaseline{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.FullDutyBaseLine.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.FullDutyBaseLine),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataFullDutyBaselineCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataFullDutyBaselineCopy
 }
 

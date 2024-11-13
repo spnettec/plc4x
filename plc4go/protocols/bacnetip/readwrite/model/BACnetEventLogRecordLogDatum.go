@@ -126,20 +126,11 @@ type BACnetEventLogRecordLogDatumBuilder interface {
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventLogRecordLogDatumBuilder
 	// AsBACnetEventLogRecordLogDatumLogStatus converts this build to a subType of BACnetEventLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetEventLogRecordLogDatumLogStatus() interface {
-		BACnetEventLogRecordLogDatumLogStatusBuilder
-		Done() BACnetEventLogRecordLogDatumBuilder
-	}
+	AsBACnetEventLogRecordLogDatumLogStatus() BACnetEventLogRecordLogDatumLogStatusBuilder
 	// AsBACnetEventLogRecordLogDatumNotification converts this build to a subType of BACnetEventLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetEventLogRecordLogDatumNotification() interface {
-		BACnetEventLogRecordLogDatumNotificationBuilder
-		Done() BACnetEventLogRecordLogDatumBuilder
-	}
+	AsBACnetEventLogRecordLogDatumNotification() BACnetEventLogRecordLogDatumNotificationBuilder
 	// AsBACnetEventLogRecordLogDatumTimeChange converts this build to a subType of BACnetEventLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetEventLogRecordLogDatumTimeChange() interface {
-		BACnetEventLogRecordLogDatumTimeChangeBuilder
-		Done() BACnetEventLogRecordLogDatumBuilder
-	}
+	AsBACnetEventLogRecordLogDatumTimeChange() BACnetEventLogRecordLogDatumTimeChangeBuilder
 	// Build builds the BACnetEventLogRecordLogDatum or returns an error if something is wrong
 	PartialBuild() (BACnetEventLogRecordLogDatumContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -262,14 +253,8 @@ func (b *_BACnetEventLogRecordLogDatumBuilder) PartialMustBuild() BACnetEventLog
 	return build
 }
 
-func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumLogStatus() interface {
-	BACnetEventLogRecordLogDatumLogStatusBuilder
-	Done() BACnetEventLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventLogRecordLogDatumLogStatusBuilder
-		Done() BACnetEventLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumLogStatus() BACnetEventLogRecordLogDatumLogStatusBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventLogRecordLogDatumLogStatusBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventLogRecordLogDatumLogStatusBuilder().(*_BACnetEventLogRecordLogDatumLogStatusBuilder)
@@ -278,14 +263,8 @@ func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumLog
 	return cb
 }
 
-func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumNotification() interface {
-	BACnetEventLogRecordLogDatumNotificationBuilder
-	Done() BACnetEventLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventLogRecordLogDatumNotificationBuilder
-		Done() BACnetEventLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumNotification() BACnetEventLogRecordLogDatumNotificationBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventLogRecordLogDatumNotificationBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventLogRecordLogDatumNotificationBuilder().(*_BACnetEventLogRecordLogDatumNotificationBuilder)
@@ -294,14 +273,8 @@ func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumNot
 	return cb
 }
 
-func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumTimeChange() interface {
-	BACnetEventLogRecordLogDatumTimeChangeBuilder
-	Done() BACnetEventLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventLogRecordLogDatumTimeChangeBuilder
-		Done() BACnetEventLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumTimeChange() BACnetEventLogRecordLogDatumTimeChangeBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventLogRecordLogDatumTimeChangeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventLogRecordLogDatumTimeChangeBuilder().(*_BACnetEventLogRecordLogDatumTimeChangeBuilder)
@@ -575,9 +548,9 @@ func (m *_BACnetEventLogRecordLogDatum) deepCopy() *_BACnetEventLogRecordLogDatu
 	}
 	_BACnetEventLogRecordLogDatumCopy := &_BACnetEventLogRecordLogDatum{
 		nil, // will be set by child
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetEventLogRecordLogDatumCopy

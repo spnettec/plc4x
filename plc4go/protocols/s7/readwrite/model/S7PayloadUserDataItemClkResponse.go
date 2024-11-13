@@ -96,6 +96,8 @@ type S7PayloadUserDataItemClkResponseBuilder interface {
 	WithTimeStamp(DateAndTime) S7PayloadUserDataItemClkResponseBuilder
 	// WithTimeStampBuilder adds TimeStamp (property field) which is build by the builder
 	WithTimeStampBuilder(func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadUserDataItemClkResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadUserDataItemClkResponse or returns an error if something is wrong
 	Build() (S7PayloadUserDataItemClkResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (S7PayloadUserDataItemClkResponseBuilder) = (*_S7PayloadUserDataItemClkRes
 
 func (b *_S7PayloadUserDataItemClkResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemClkResponse
 }
 
 func (b *_S7PayloadUserDataItemClkResponseBuilder) WithMandatoryFields(res uint8, year1 uint8, timeStamp DateAndTime) S7PayloadUserDataItemClkResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_S7PayloadUserDataItemClkResponseBuilder) MustBuild() S7PayloadUserData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataItemClkResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,9 +379,9 @@ func (m *_S7PayloadUserDataItemClkResponse) deepCopy() *_S7PayloadUserDataItemCl
 		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.Res,
 		m.Year1,
-		m.TimeStamp.DeepCopy().(DateAndTime),
+		utils.DeepCopy[DateAndTime](m.TimeStamp),
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadUserDataItemClkResponseCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemClkResponseCopy
 }
 

@@ -79,6 +79,8 @@ type BACnetConstructedDataSupportedSecurityAlgorithmsBuilder interface {
 	WithMandatoryFields(supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
 	// WithSupportedSecurityAlgorithms adds SupportedSecurityAlgorithms (property field)
 	WithSupportedSecurityAlgorithms(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataSupportedSecurityAlgorithms or returns an error if something is wrong
 	Build() (BACnetConstructedDataSupportedSecurityAlgorithms, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) = (*_BACnetConst
 
 func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataSupportedSecurityAlgorithms
 }
 
 func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) WithMandatoryFields(supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) MustBuild() B
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) deepCopy() *_BACnetC
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.SupportedSecurityAlgorithms),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataSupportedSecurityAlgorithmsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataSupportedSecurityAlgorithmsCopy
 }
 

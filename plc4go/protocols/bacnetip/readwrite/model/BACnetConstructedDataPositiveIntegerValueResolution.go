@@ -86,6 +86,8 @@ type BACnetConstructedDataPositiveIntegerValueResolutionBuilder interface {
 	WithResolution(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueResolutionBuilder
 	// WithResolutionBuilder adds Resolution (property field) which is build by the builder
 	WithResolutionBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueResolutionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPositiveIntegerValueResolution or returns an error if something is wrong
 	Build() (BACnetConstructedDataPositiveIntegerValueResolution, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPositiveIntegerValueResolutionBuilder) = (*_BACnetCo
 
 func (b *_BACnetConstructedDataPositiveIntegerValueResolutionBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPositiveIntegerValueResolution
 }
 
 func (b *_BACnetConstructedDataPositiveIntegerValueResolutionBuilder) WithMandatoryFields(resolution BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueResolutionBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPositiveIntegerValueResolutionBuilder) MustBuild(
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPositiveIntegerValueResolutionBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) deepCopy() *_BACn
 	}
 	_BACnetConstructedDataPositiveIntegerValueResolutionCopy := &_BACnetConstructedDataPositiveIntegerValueResolution{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Resolution.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.Resolution),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPositiveIntegerValueResolutionCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPositiveIntegerValueResolutionCopy
 }
 

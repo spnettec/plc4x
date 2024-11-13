@@ -84,6 +84,8 @@ type RegisterServerResponseBuilder interface {
 	WithResponseHeader(ResponseHeader) RegisterServerResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
 	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterServerResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RegisterServerResponse or returns an error if something is wrong
 	Build() (RegisterServerResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (RegisterServerResponseBuilder) = (*_RegisterServerResponseBuilder)(nil)
 
 func (b *_RegisterServerResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RegisterServerResponse
 }
 
 func (b *_RegisterServerResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader) RegisterServerResponseBuilder {
@@ -152,8 +155,10 @@ func (b *_RegisterServerResponseBuilder) MustBuild() RegisterServerResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RegisterServerResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_RegisterServerResponse) deepCopy() *_RegisterServerResponse {
 	}
 	_RegisterServerResponseCopy := &_RegisterServerResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RegisterServerResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RegisterServerResponseCopy
 }
 

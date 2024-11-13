@@ -86,6 +86,8 @@ type BACnetConstructedDataLightingOutputFeedbackValueBuilder interface {
 	WithFeedbackValue(BACnetApplicationTagReal) BACnetConstructedDataLightingOutputFeedbackValueBuilder
 	// WithFeedbackValueBuilder adds FeedbackValue (property field) which is build by the builder
 	WithFeedbackValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputFeedbackValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLightingOutputFeedbackValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataLightingOutputFeedbackValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLightingOutputFeedbackValueBuilder) = (*_BACnetConst
 
 func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLightingOutputFeedbackValue
 }
 
 func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) WithMandatoryFields(feedbackValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputFeedbackValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) MustBuild() B
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLightingOutputFeedbackValue) deepCopy() *_BACnetC
 	}
 	_BACnetConstructedDataLightingOutputFeedbackValueCopy := &_BACnetConstructedDataLightingOutputFeedbackValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.FeedbackValue.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.FeedbackValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLightingOutputFeedbackValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLightingOutputFeedbackValueCopy
 }
 

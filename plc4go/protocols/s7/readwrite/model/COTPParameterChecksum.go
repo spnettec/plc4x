@@ -79,6 +79,8 @@ type COTPParameterChecksumBuilder interface {
 	WithMandatoryFields(crc uint8) COTPParameterChecksumBuilder
 	// WithCrc adds Crc (property field)
 	WithCrc(uint8) COTPParameterChecksumBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() COTPParameterBuilder
 	// Build builds the COTPParameterChecksum or returns an error if something is wrong
 	Build() (COTPParameterChecksum, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (COTPParameterChecksumBuilder) = (*_COTPParameterChecksumBuilder)(nil)
 
 func (b *_COTPParameterChecksumBuilder) setParent(contract COTPParameterContract) {
 	b.COTPParameterContract = contract
+	contract.(*_COTPParameter)._SubType = b._COTPParameterChecksum
 }
 
 func (b *_COTPParameterChecksumBuilder) WithMandatoryFields(crc uint8) COTPParameterChecksumBuilder {
@@ -128,8 +131,10 @@ func (b *_COTPParameterChecksumBuilder) MustBuild() COTPParameterChecksum {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_COTPParameterChecksumBuilder) Done() COTPParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCOTPParameterBuilder().(*_COTPParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_COTPParameterChecksum) deepCopy() *_COTPParameterChecksum {
 		m.COTPParameterContract.(*_COTPParameter).deepCopy(),
 		m.Crc,
 	}
-	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	_COTPParameterChecksumCopy.COTPParameterContract.(*_COTPParameter)._SubType = m
 	return _COTPParameterChecksumCopy
 }
 

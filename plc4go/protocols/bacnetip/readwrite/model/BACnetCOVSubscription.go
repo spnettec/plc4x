@@ -480,11 +480,11 @@ func (m *_BACnetCOVSubscription) deepCopy() *_BACnetCOVSubscription {
 		return nil
 	}
 	_BACnetCOVSubscriptionCopy := &_BACnetCOVSubscription{
-		m.Recipient.DeepCopy().(BACnetRecipientProcessEnclosed),
-		m.MonitoredPropertyReference.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
-		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),
-		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.CovIncrement.DeepCopy().(BACnetContextTagReal),
+		utils.DeepCopy[BACnetRecipientProcessEnclosed](m.Recipient),
+		utils.DeepCopy[BACnetObjectPropertyReferenceEnclosed](m.MonitoredPropertyReference),
+		utils.DeepCopy[BACnetContextTagBoolean](m.IssueConfirmedNotifications),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeRemaining),
+		utils.DeepCopy[BACnetContextTagReal](m.CovIncrement),
 	}
 	return _BACnetCOVSubscriptionCopy
 }

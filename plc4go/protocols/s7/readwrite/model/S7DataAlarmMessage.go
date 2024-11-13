@@ -93,15 +93,9 @@ type S7DataAlarmMessageBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7DataAlarmMessageBuilder
 	// AsS7MessageObjectRequest converts this build to a subType of S7DataAlarmMessage. It is always possible to return to current builder using Done()
-	AsS7MessageObjectRequest() interface {
-		S7MessageObjectRequestBuilder
-		Done() S7DataAlarmMessageBuilder
-	}
+	AsS7MessageObjectRequest() S7MessageObjectRequestBuilder
 	// AsS7MessageObjectResponse converts this build to a subType of S7DataAlarmMessage. It is always possible to return to current builder using Done()
-	AsS7MessageObjectResponse() interface {
-		S7MessageObjectResponseBuilder
-		Done() S7DataAlarmMessageBuilder
-	}
+	AsS7MessageObjectResponse() S7MessageObjectResponseBuilder
 	// Build builds the S7DataAlarmMessage or returns an error if something is wrong
 	PartialBuild() (S7DataAlarmMessageContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,14 +146,8 @@ func (b *_S7DataAlarmMessageBuilder) PartialMustBuild() S7DataAlarmMessageContra
 	return build
 }
 
-func (b *_S7DataAlarmMessageBuilder) AsS7MessageObjectRequest() interface {
-	S7MessageObjectRequestBuilder
-	Done() S7DataAlarmMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7MessageObjectRequestBuilder
-		Done() S7DataAlarmMessageBuilder
-	}); ok {
+func (b *_S7DataAlarmMessageBuilder) AsS7MessageObjectRequest() S7MessageObjectRequestBuilder {
+	if cb, ok := b.childBuilder.(S7MessageObjectRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7MessageObjectRequestBuilder().(*_S7MessageObjectRequestBuilder)
@@ -168,14 +156,8 @@ func (b *_S7DataAlarmMessageBuilder) AsS7MessageObjectRequest() interface {
 	return cb
 }
 
-func (b *_S7DataAlarmMessageBuilder) AsS7MessageObjectResponse() interface {
-	S7MessageObjectResponseBuilder
-	Done() S7DataAlarmMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7MessageObjectResponseBuilder
-		Done() S7DataAlarmMessageBuilder
-	}); ok {
+func (b *_S7DataAlarmMessageBuilder) AsS7MessageObjectResponse() S7MessageObjectResponseBuilder {
+	if cb, ok := b.childBuilder.(S7MessageObjectResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7MessageObjectResponseBuilder().(*_S7MessageObjectResponseBuilder)

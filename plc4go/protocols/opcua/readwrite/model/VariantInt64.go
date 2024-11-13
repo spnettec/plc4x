@@ -85,6 +85,8 @@ type VariantInt64Builder interface {
 	WithOptionalArrayLength(int32) VariantInt64Builder
 	// WithValue adds Value (property field)
 	WithValue(...int64) VariantInt64Builder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantInt64 or returns an error if something is wrong
 	Build() (VariantInt64, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantInt64Builder) = (*_VariantInt64Builder)(nil)
 
 func (b *_VariantInt64Builder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantInt64
 }
 
 func (b *_VariantInt64Builder) WithMandatoryFields(value []int64) VariantInt64Builder {
@@ -139,8 +142,10 @@ func (b *_VariantInt64Builder) MustBuild() VariantInt64 {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantInt64Builder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -320,7 +325,7 @@ func (m *_VariantInt64) deepCopy() *_VariantInt64 {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[int64, int64](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantInt64Copy.VariantContract.(*_Variant)._SubType = m
 	return _VariantInt64Copy
 }
 

@@ -91,6 +91,8 @@ type CALDataStatusBuilder interface {
 	WithBlockStart(uint8) CALDataStatusBuilder
 	// WithStatusBytes adds StatusBytes (property field)
 	WithStatusBytes(...StatusByte) CALDataStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CALDataBuilder
 	// Build builds the CALDataStatus or returns an error if something is wrong
 	Build() (CALDataStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (CALDataStatusBuilder) = (*_CALDataStatusBuilder)(nil)
 
 func (b *_CALDataStatusBuilder) setParent(contract CALDataContract) {
 	b.CALDataContract = contract
+	contract.(*_CALData)._SubType = b._CALDataStatus
 }
 
 func (b *_CALDataStatusBuilder) WithMandatoryFields(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte) CALDataStatusBuilder {
@@ -150,8 +153,10 @@ func (b *_CALDataStatusBuilder) MustBuild() CALDataStatus {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CALDataStatusBuilder) Done() CALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCALDataBuilder().(*_CALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -347,7 +352,7 @@ func (m *_CALDataStatus) deepCopy() *_CALDataStatus {
 		m.BlockStart,
 		utils.DeepCopySlice[StatusByte, StatusByte](m.StatusBytes),
 	}
-	m.CALDataContract.(*_CALData)._SubType = m
+	_CALDataStatusCopy.CALDataContract.(*_CALData)._SubType = m
 	return _CALDataStatusCopy
 }
 

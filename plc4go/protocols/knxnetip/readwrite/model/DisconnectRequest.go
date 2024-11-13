@@ -94,6 +94,8 @@ type DisconnectRequestBuilder interface {
 	WithHpaiControlEndpoint(HPAIControlEndpoint) DisconnectRequestBuilder
 	// WithHpaiControlEndpointBuilder adds HpaiControlEndpoint (property field) which is build by the builder
 	WithHpaiControlEndpointBuilder(func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) DisconnectRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the DisconnectRequest or returns an error if something is wrong
 	Build() (DisconnectRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,6 +119,7 @@ var _ (DisconnectRequestBuilder) = (*_DisconnectRequestBuilder)(nil)
 
 func (b *_DisconnectRequestBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._DisconnectRequest
 }
 
 func (b *_DisconnectRequestBuilder) WithMandatoryFields(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) DisconnectRequestBuilder {
@@ -167,8 +170,10 @@ func (b *_DisconnectRequestBuilder) MustBuild() DisconnectRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DisconnectRequestBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -354,10 +359,10 @@ func (m *_DisconnectRequest) deepCopy() *_DisconnectRequest {
 	_DisconnectRequestCopy := &_DisconnectRequest{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.CommunicationChannelId,
-		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+		utils.DeepCopy[HPAIControlEndpoint](m.HpaiControlEndpoint),
 		m.reservedField0,
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_DisconnectRequestCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _DisconnectRequestCopy
 }
 

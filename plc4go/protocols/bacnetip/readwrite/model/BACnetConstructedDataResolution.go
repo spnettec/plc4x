@@ -86,6 +86,8 @@ type BACnetConstructedDataResolutionBuilder interface {
 	WithResolution(BACnetApplicationTagReal) BACnetConstructedDataResolutionBuilder
 	// WithResolutionBuilder adds Resolution (property field) which is build by the builder
 	WithResolutionBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataResolutionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataResolution or returns an error if something is wrong
 	Build() (BACnetConstructedDataResolution, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataResolutionBuilder) = (*_BACnetConstructedDataResolut
 
 func (b *_BACnetConstructedDataResolutionBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataResolution
 }
 
 func (b *_BACnetConstructedDataResolutionBuilder) WithMandatoryFields(resolution BACnetApplicationTagReal) BACnetConstructedDataResolutionBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataResolutionBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataResolutionBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataResolution) deepCopy() *_BACnetConstructedDataRes
 	}
 	_BACnetConstructedDataResolutionCopy := &_BACnetConstructedDataResolution{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Resolution.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.Resolution),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataResolutionCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataResolutionCopy
 }
 

@@ -128,6 +128,8 @@ type BACnetNotificationParametersExtendedBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersExtendedBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersExtendedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersBuilder
 	// Build builds the BACnetNotificationParametersExtended or returns an error if something is wrong
 	Build() (BACnetNotificationParametersExtended, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,6 +153,7 @@ var _ (BACnetNotificationParametersExtendedBuilder) = (*_BACnetNotificationParam
 
 func (b *_BACnetNotificationParametersExtendedBuilder) setParent(contract BACnetNotificationParametersContract) {
 	b.BACnetNotificationParametersContract = contract
+	contract.(*_BACnetNotificationParameters)._SubType = b._BACnetNotificationParametersExtended
 }
 
 func (b *_BACnetNotificationParametersExtendedBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetNotificationParametersExtendedParameters, innerClosingTag BACnetClosingTag) BACnetNotificationParametersExtendedBuilder {
@@ -292,8 +295,10 @@ func (b *_BACnetNotificationParametersExtendedBuilder) MustBuild() BACnetNotific
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersExtendedBuilder) Done() BACnetNotificationParametersBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -512,13 +517,13 @@ func (m *_BACnetNotificationParametersExtended) deepCopy() *_BACnetNotificationP
 	}
 	_BACnetNotificationParametersExtendedCopy := &_BACnetNotificationParametersExtended{
 		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
-		m.ExtendedEventType.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Parameters.DeepCopy().(BACnetNotificationParametersExtendedParameters),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
+		utils.DeepCopy[BACnetVendorIdTagged](m.VendorId),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ExtendedEventType),
+		utils.DeepCopy[BACnetNotificationParametersExtendedParameters](m.Parameters),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	_BACnetNotificationParametersExtendedCopy.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
 	return _BACnetNotificationParametersExtendedCopy
 }
 

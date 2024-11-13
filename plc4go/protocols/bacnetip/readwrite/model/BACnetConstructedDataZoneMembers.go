@@ -79,6 +79,8 @@ type BACnetConstructedDataZoneMembersBuilder interface {
 	WithMandatoryFields(members []BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder
 	// WithMembers adds Members (property field)
 	WithMembers(...BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataZoneMembers or returns an error if something is wrong
 	Build() (BACnetConstructedDataZoneMembers, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataZoneMembersBuilder) = (*_BACnetConstructedDataZoneMe
 
 func (b *_BACnetConstructedDataZoneMembersBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataZoneMembers
 }
 
 func (b *_BACnetConstructedDataZoneMembersBuilder) WithMandatoryFields(members []BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataZoneMembersBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataZoneMembersBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataZoneMembers) deepCopy() *_BACnetConstructedDataZo
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.Members),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataZoneMembersCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataZoneMembersCopy
 }
 

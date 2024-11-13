@@ -86,6 +86,8 @@ type SearchRequestBuilder interface {
 	WithHpaiIDiscoveryEndpoint(HPAIDiscoveryEndpoint) SearchRequestBuilder
 	// WithHpaiIDiscoveryEndpointBuilder adds HpaiIDiscoveryEndpoint (property field) which is build by the builder
 	WithHpaiIDiscoveryEndpointBuilder(func(HPAIDiscoveryEndpointBuilder) HPAIDiscoveryEndpointBuilder) SearchRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the SearchRequest or returns an error if something is wrong
 	Build() (SearchRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (SearchRequestBuilder) = (*_SearchRequestBuilder)(nil)
 
 func (b *_SearchRequestBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._SearchRequest
 }
 
 func (b *_SearchRequestBuilder) WithMandatoryFields(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) SearchRequestBuilder {
@@ -154,8 +157,10 @@ func (b *_SearchRequestBuilder) MustBuild() SearchRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SearchRequestBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -310,9 +315,9 @@ func (m *_SearchRequest) deepCopy() *_SearchRequest {
 	}
 	_SearchRequestCopy := &_SearchRequest{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
-		m.HpaiIDiscoveryEndpoint.DeepCopy().(HPAIDiscoveryEndpoint),
+		utils.DeepCopy[HPAIDiscoveryEndpoint](m.HpaiIDiscoveryEndpoint),
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_SearchRequestCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _SearchRequestCopy
 }
 

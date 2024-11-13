@@ -89,15 +89,9 @@ type ConnectionRequestInformationBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ConnectionRequestInformationBuilder
 	// AsConnectionRequestInformationDeviceManagement converts this build to a subType of ConnectionRequestInformation. It is always possible to return to current builder using Done()
-	AsConnectionRequestInformationDeviceManagement() interface {
-		ConnectionRequestInformationDeviceManagementBuilder
-		Done() ConnectionRequestInformationBuilder
-	}
+	AsConnectionRequestInformationDeviceManagement() ConnectionRequestInformationDeviceManagementBuilder
 	// AsConnectionRequestInformationTunnelConnection converts this build to a subType of ConnectionRequestInformation. It is always possible to return to current builder using Done()
-	AsConnectionRequestInformationTunnelConnection() interface {
-		ConnectionRequestInformationTunnelConnectionBuilder
-		Done() ConnectionRequestInformationBuilder
-	}
+	AsConnectionRequestInformationTunnelConnection() ConnectionRequestInformationTunnelConnectionBuilder
 	// Build builds the ConnectionRequestInformation or returns an error if something is wrong
 	PartialBuild() (ConnectionRequestInformationContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -148,14 +142,8 @@ func (b *_ConnectionRequestInformationBuilder) PartialMustBuild() ConnectionRequ
 	return build
 }
 
-func (b *_ConnectionRequestInformationBuilder) AsConnectionRequestInformationDeviceManagement() interface {
-	ConnectionRequestInformationDeviceManagementBuilder
-	Done() ConnectionRequestInformationBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConnectionRequestInformationDeviceManagementBuilder
-		Done() ConnectionRequestInformationBuilder
-	}); ok {
+func (b *_ConnectionRequestInformationBuilder) AsConnectionRequestInformationDeviceManagement() ConnectionRequestInformationDeviceManagementBuilder {
+	if cb, ok := b.childBuilder.(ConnectionRequestInformationDeviceManagementBuilder); ok {
 		return cb
 	}
 	cb := NewConnectionRequestInformationDeviceManagementBuilder().(*_ConnectionRequestInformationDeviceManagementBuilder)
@@ -164,14 +152,8 @@ func (b *_ConnectionRequestInformationBuilder) AsConnectionRequestInformationDev
 	return cb
 }
 
-func (b *_ConnectionRequestInformationBuilder) AsConnectionRequestInformationTunnelConnection() interface {
-	ConnectionRequestInformationTunnelConnectionBuilder
-	Done() ConnectionRequestInformationBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConnectionRequestInformationTunnelConnectionBuilder
-		Done() ConnectionRequestInformationBuilder
-	}); ok {
+func (b *_ConnectionRequestInformationBuilder) AsConnectionRequestInformationTunnelConnection() ConnectionRequestInformationTunnelConnectionBuilder {
+	if cb, ok := b.childBuilder.(ConnectionRequestInformationTunnelConnectionBuilder); ok {
 		return cb
 	}
 	cb := NewConnectionRequestInformationTunnelConnectionBuilder().(*_ConnectionRequestInformationTunnelConnectionBuilder)

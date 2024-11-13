@@ -157,6 +157,8 @@ type CipIdentityBuilder interface {
 	WithProductName(string) CipIdentityBuilder
 	// WithState adds State (property field)
 	WithState(uint8) CipIdentityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CommandSpecificDataItemBuilder
 	// Build builds the CipIdentity or returns an error if something is wrong
 	Build() (CipIdentity, error)
 	// MustBuild does the same as Build but panics on error
@@ -180,6 +182,7 @@ var _ (CipIdentityBuilder) = (*_CipIdentityBuilder)(nil)
 
 func (b *_CipIdentityBuilder) setParent(contract CommandSpecificDataItemContract) {
 	b.CommandSpecificDataItemContract = contract
+	contract.(*_CommandSpecificDataItem)._SubType = b._CipIdentity
 }
 
 func (b *_CipIdentityBuilder) WithMandatoryFields(encapsulationProtocolVersion uint16, socketAddressFamily uint16, socketAddressPort uint16, socketAddressAddress []uint8, vendorId uint16, deviceType uint16, productCode uint16, revisionMajor uint8, revisionMinor uint8, status uint16, serialNumber uint32, productName string, state uint8) CipIdentityBuilder {
@@ -266,8 +269,10 @@ func (b *_CipIdentityBuilder) MustBuild() CipIdentity {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipIdentityBuilder) Done() CommandSpecificDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCommandSpecificDataItemBuilder().(*_CommandSpecificDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -711,7 +716,7 @@ func (m *_CipIdentity) deepCopy() *_CipIdentity {
 		m.ProductName,
 		m.State,
 	}
-	m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = m
+	_CipIdentityCopy.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = m
 	return _CipIdentityCopy
 }
 

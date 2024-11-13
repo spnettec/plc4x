@@ -110,175 +110,73 @@ type S7PayloadUserDataItemBuilder interface {
 	// WithDataLength adds DataLength (property field)
 	WithDataLength(uint16) S7PayloadUserDataItemBuilder
 	// AsS7PayloadUserDataItemCyclicServicesPush converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCyclicServicesPush() interface {
-		S7PayloadUserDataItemCyclicServicesPushBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCyclicServicesPush() S7PayloadUserDataItemCyclicServicesPushBuilder
 	// AsS7PayloadUserDataItemCyclicServicesChangeDrivenPush converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCyclicServicesChangeDrivenPush() interface {
-		S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCyclicServicesChangeDrivenPush() S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
 	// AsS7PayloadUserDataItemCyclicServicesSubscribeRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCyclicServicesSubscribeRequest() interface {
-		S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCyclicServicesSubscribeRequest() S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
 	// AsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() interface {
-		S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
 	// AsS7PayloadUserDataItemCyclicServicesSubscribeResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCyclicServicesSubscribeResponse() interface {
-		S7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCyclicServicesSubscribeResponse() S7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder
 	// AsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse() interface {
-		S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder
 	// AsS7PayloadUserDataItemCyclicServicesErrorResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCyclicServicesErrorResponse() interface {
-		S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCyclicServicesErrorResponse() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
 	// AsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse() interface {
-		S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse() S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder
 	// AsS7PayloadDiagnosticMessage converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadDiagnosticMessage() interface {
-		S7PayloadDiagnosticMessageBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadDiagnosticMessage() S7PayloadDiagnosticMessageBuilder
 	// AsS7PayloadAlarm8 converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadAlarm8() interface {
-		S7PayloadAlarm8Builder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadAlarm8() S7PayloadAlarm8Builder
 	// AsS7PayloadNotify converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadNotify() interface {
-		S7PayloadNotifyBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadNotify() S7PayloadNotifyBuilder
 	// AsS7PayloadAlarmAckInd converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadAlarmAckInd() interface {
-		S7PayloadAlarmAckIndBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadAlarmAckInd() S7PayloadAlarmAckIndBuilder
 	// AsS7PayloadAlarmSQ converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadAlarmSQ() interface {
-		S7PayloadAlarmSQBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadAlarmSQ() S7PayloadAlarmSQBuilder
 	// AsS7PayloadAlarmS converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadAlarmS() interface {
-		S7PayloadAlarmSBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadAlarmS() S7PayloadAlarmSBuilder
 	// AsS7PayloadAlarmSC converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadAlarmSC() interface {
-		S7PayloadAlarmSCBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadAlarmSC() S7PayloadAlarmSCBuilder
 	// AsS7PayloadNotify8 converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadNotify8() interface {
-		S7PayloadNotify8Builder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadNotify8() S7PayloadNotify8Builder
 	// AsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest() interface {
-		S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest() S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder
 	// AsS7PayloadUserDataItemCpuFunctionReadSzlRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionReadSzlRequest() interface {
-		S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionReadSzlRequest() S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
 	// AsS7PayloadUserDataItemCpuFunctionReadSzlResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionReadSzlResponse() interface {
-		S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionReadSzlResponse() S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
 	// AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest() interface {
-		S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest() S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
 	// AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse() interface {
-		S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse() S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder
 	// AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() interface {
-		S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
 	// AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse() interface {
-		S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse() S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
 	// AsS7PayloadUserDataItemCpuFunctionAlarmAckRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionAlarmAckRequest() interface {
-		S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionAlarmAckRequest() S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder
 	// AsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse() interface {
-		S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
 	// AsS7PayloadUserDataItemCpuFunctionAlarmAckResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionAlarmAckResponse() interface {
-		S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionAlarmAckResponse() S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder
 	// AsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest() interface {
-		S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest() S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
 	// AsS7PayloadUserDataItemCpuFunctionAlarmQueryResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() interface {
-		S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder
 	// AsS7PayloadUserDataItemClkRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemClkRequest() interface {
-		S7PayloadUserDataItemClkRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemClkRequest() S7PayloadUserDataItemClkRequestBuilder
 	// AsS7PayloadUserDataItemClkResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemClkResponse() interface {
-		S7PayloadUserDataItemClkResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemClkResponse() S7PayloadUserDataItemClkResponseBuilder
 	// AsS7PayloadUserDataItemClkFRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemClkFRequest() interface {
-		S7PayloadUserDataItemClkFRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemClkFRequest() S7PayloadUserDataItemClkFRequestBuilder
 	// AsS7PayloadUserDataItemClkFResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemClkFResponse() interface {
-		S7PayloadUserDataItemClkFResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemClkFResponse() S7PayloadUserDataItemClkFResponseBuilder
 	// AsS7PayloadUserDataItemClkSetRequest converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemClkSetRequest() interface {
-		S7PayloadUserDataItemClkSetRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemClkSetRequest() S7PayloadUserDataItemClkSetRequestBuilder
 	// AsS7PayloadUserDataItemClkSetResponse converts this build to a subType of S7PayloadUserDataItem. It is always possible to return to current builder using Done()
-	AsS7PayloadUserDataItemClkSetResponse() interface {
-		S7PayloadUserDataItemClkSetResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}
+	AsS7PayloadUserDataItemClkSetResponse() S7PayloadUserDataItemClkSetResponseBuilder
 	// Build builds the S7PayloadUserDataItem or returns an error if something is wrong
 	PartialBuild() (S7PayloadUserDataItemContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -344,14 +242,8 @@ func (b *_S7PayloadUserDataItemBuilder) PartialMustBuild() S7PayloadUserDataItem
 	return build
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesPush() interface {
-	S7PayloadUserDataItemCyclicServicesPushBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCyclicServicesPushBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesPush() S7PayloadUserDataItemCyclicServicesPushBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCyclicServicesPushBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCyclicServicesPushBuilder().(*_S7PayloadUserDataItemCyclicServicesPushBuilder)
@@ -360,14 +252,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesPus
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesChangeDrivenPush() interface {
-	S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesChangeDrivenPush() S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder().(*_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder)
@@ -376,14 +262,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesCha
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesSubscribeRequest() interface {
-	S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesSubscribeRequest() S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder().(*_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder)
@@ -392,14 +272,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesSub
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() interface {
-	S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder().(*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder)
@@ -408,14 +282,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesUns
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesSubscribeResponse() interface {
-	S7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesSubscribeResponse() S7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder().(*_S7PayloadUserDataItemCyclicServicesSubscribeResponseBuilder)
@@ -424,14 +292,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesSub
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse() interface {
-	S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder().(*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder)
@@ -440,14 +302,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesUns
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesErrorResponse() interface {
-	S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesErrorResponse() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCyclicServicesErrorResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCyclicServicesErrorResponseBuilder().(*_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder)
@@ -456,14 +312,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesErr
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse() interface {
-	S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse() S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder().(*_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder)
@@ -472,14 +322,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCyclicServicesCha
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadDiagnosticMessage() interface {
-	S7PayloadDiagnosticMessageBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadDiagnosticMessageBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadDiagnosticMessage() S7PayloadDiagnosticMessageBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadDiagnosticMessageBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadDiagnosticMessageBuilder().(*_S7PayloadDiagnosticMessageBuilder)
@@ -488,14 +332,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadDiagnosticMessage() interface
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarm8() interface {
-	S7PayloadAlarm8Builder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadAlarm8Builder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarm8() S7PayloadAlarm8Builder {
+	if cb, ok := b.childBuilder.(S7PayloadAlarm8Builder); ok {
 		return cb
 	}
 	cb := NewS7PayloadAlarm8Builder().(*_S7PayloadAlarm8Builder)
@@ -504,14 +342,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarm8() interface {
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadNotify() interface {
-	S7PayloadNotifyBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadNotifyBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadNotify() S7PayloadNotifyBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadNotifyBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadNotifyBuilder().(*_S7PayloadNotifyBuilder)
@@ -520,14 +352,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadNotify() interface {
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmAckInd() interface {
-	S7PayloadAlarmAckIndBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadAlarmAckIndBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmAckInd() S7PayloadAlarmAckIndBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadAlarmAckIndBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadAlarmAckIndBuilder().(*_S7PayloadAlarmAckIndBuilder)
@@ -536,14 +362,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmAckInd() interface {
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmSQ() interface {
-	S7PayloadAlarmSQBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadAlarmSQBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmSQ() S7PayloadAlarmSQBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadAlarmSQBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadAlarmSQBuilder().(*_S7PayloadAlarmSQBuilder)
@@ -552,14 +372,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmSQ() interface {
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmS() interface {
-	S7PayloadAlarmSBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadAlarmSBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmS() S7PayloadAlarmSBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadAlarmSBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadAlarmSBuilder().(*_S7PayloadAlarmSBuilder)
@@ -568,14 +382,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmS() interface {
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmSC() interface {
-	S7PayloadAlarmSCBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadAlarmSCBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmSC() S7PayloadAlarmSCBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadAlarmSCBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadAlarmSCBuilder().(*_S7PayloadAlarmSCBuilder)
@@ -584,14 +392,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadAlarmSC() interface {
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadNotify8() interface {
-	S7PayloadNotify8Builder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadNotify8Builder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadNotify8() S7PayloadNotify8Builder {
+	if cb, ok := b.childBuilder.(S7PayloadNotify8Builder); ok {
 		return cb
 	}
 	cb := NewS7PayloadNotify8Builder().(*_S7PayloadNotify8Builder)
@@ -600,14 +402,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadNotify8() interface {
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest() interface {
-	S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest() S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder)
@@ -616,14 +412,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionReadSz
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionReadSzlRequest() interface {
-	S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionReadSzlRequest() S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder)
@@ -632,14 +422,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionReadSz
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionReadSzlResponse() interface {
-	S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionReadSzlResponse() S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder)
@@ -648,14 +432,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionReadSz
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest() interface {
-	S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest() S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder)
@@ -664,14 +442,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSub
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse() interface {
-	S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse() S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder)
@@ -680,14 +452,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSub
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() interface {
-	S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder)
@@ -696,14 +462,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSub
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse() interface {
-	S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse() S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder)
@@ -712,14 +472,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionMsgSub
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmAckRequest() interface {
-	S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmAckRequest() S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmAckRequestBuilder)
@@ -728,14 +482,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmA
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse() interface {
-	S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder)
@@ -744,14 +492,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmA
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmAckResponse() interface {
-	S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmAckResponse() S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder)
@@ -760,14 +502,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmA
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest() interface {
-	S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest() S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder)
@@ -776,14 +512,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmQ
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() interface {
-	S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder)
@@ -792,14 +522,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemCpuFunctionAlarmQ
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkRequest() interface {
-	S7PayloadUserDataItemClkRequestBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemClkRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkRequest() S7PayloadUserDataItemClkRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemClkRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemClkRequestBuilder().(*_S7PayloadUserDataItemClkRequestBuilder)
@@ -808,14 +532,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkRequest() inte
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkResponse() interface {
-	S7PayloadUserDataItemClkResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemClkResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkResponse() S7PayloadUserDataItemClkResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemClkResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemClkResponseBuilder().(*_S7PayloadUserDataItemClkResponseBuilder)
@@ -824,14 +542,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkResponse() int
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkFRequest() interface {
-	S7PayloadUserDataItemClkFRequestBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemClkFRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkFRequest() S7PayloadUserDataItemClkFRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemClkFRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemClkFRequestBuilder().(*_S7PayloadUserDataItemClkFRequestBuilder)
@@ -840,14 +552,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkFRequest() int
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkFResponse() interface {
-	S7PayloadUserDataItemClkFResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemClkFResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkFResponse() S7PayloadUserDataItemClkFResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemClkFResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemClkFResponseBuilder().(*_S7PayloadUserDataItemClkFResponseBuilder)
@@ -856,14 +562,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkFResponse() in
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkSetRequest() interface {
-	S7PayloadUserDataItemClkSetRequestBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemClkSetRequestBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkSetRequest() S7PayloadUserDataItemClkSetRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemClkSetRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemClkSetRequestBuilder().(*_S7PayloadUserDataItemClkSetRequestBuilder)
@@ -872,14 +572,8 @@ func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkSetRequest() i
 	return cb
 }
 
-func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkSetResponse() interface {
-	S7PayloadUserDataItemClkSetResponseBuilder
-	Done() S7PayloadUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataItemClkSetResponseBuilder
-		Done() S7PayloadUserDataItemBuilder
-	}); ok {
+func (b *_S7PayloadUserDataItemBuilder) AsS7PayloadUserDataItemClkSetResponse() S7PayloadUserDataItemClkSetResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataItemClkSetResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataItemClkSetResponseBuilder().(*_S7PayloadUserDataItemClkSetResponseBuilder)

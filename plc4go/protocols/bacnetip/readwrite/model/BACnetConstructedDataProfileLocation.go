@@ -86,6 +86,8 @@ type BACnetConstructedDataProfileLocationBuilder interface {
 	WithProfileLocation(BACnetApplicationTagCharacterString) BACnetConstructedDataProfileLocationBuilder
 	// WithProfileLocationBuilder adds ProfileLocation (property field) which is build by the builder
 	WithProfileLocationBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataProfileLocationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataProfileLocation or returns an error if something is wrong
 	Build() (BACnetConstructedDataProfileLocation, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataProfileLocationBuilder) = (*_BACnetConstructedDataPr
 
 func (b *_BACnetConstructedDataProfileLocationBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataProfileLocation
 }
 
 func (b *_BACnetConstructedDataProfileLocationBuilder) WithMandatoryFields(profileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataProfileLocationBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataProfileLocationBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataProfileLocationBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataProfileLocation) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataProfileLocationCopy := &_BACnetConstructedDataProfileLocation{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ProfileLocation.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.ProfileLocation),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataProfileLocationCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataProfileLocationCopy
 }
 

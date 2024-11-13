@@ -84,6 +84,8 @@ type BACnetLogRecordLogDatumNullValueBuilder interface {
 	WithNullValue(BACnetContextTagNull) BACnetLogRecordLogDatumNullValueBuilder
 	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
 	WithNullValueBuilder(func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetLogRecordLogDatumNullValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogRecordLogDatumBuilder
 	// Build builds the BACnetLogRecordLogDatumNullValue or returns an error if something is wrong
 	Build() (BACnetLogRecordLogDatumNullValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogRecordLogDatumNullValueBuilder) = (*_BACnetLogRecordLogDatumNull
 
 func (b *_BACnetLogRecordLogDatumNullValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
 	b.BACnetLogRecordLogDatumContract = contract
+	contract.(*_BACnetLogRecordLogDatum)._SubType = b._BACnetLogRecordLogDatumNullValue
 }
 
 func (b *_BACnetLogRecordLogDatumNullValueBuilder) WithMandatoryFields(nullValue BACnetContextTagNull) BACnetLogRecordLogDatumNullValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogRecordLogDatumNullValueBuilder) MustBuild() BACnetLogRecordLo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogRecordLogDatumNullValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogRecordLogDatumBuilder().(*_BACnetLogRecordLogDatumBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogRecordLogDatumNullValue) deepCopy() *_BACnetLogRecordLogDatum
 	}
 	_BACnetLogRecordLogDatumNullValueCopy := &_BACnetLogRecordLogDatumNullValue{
 		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
-		m.NullValue.DeepCopy().(BACnetContextTagNull),
+		utils.DeepCopy[BACnetContextTagNull](m.NullValue),
 	}
-	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	_BACnetLogRecordLogDatumNullValueCopy.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
 	return _BACnetLogRecordLogDatumNullValueCopy
 }
 

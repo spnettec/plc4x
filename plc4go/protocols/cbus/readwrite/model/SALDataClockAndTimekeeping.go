@@ -84,6 +84,8 @@ type SALDataClockAndTimekeepingBuilder interface {
 	WithClockAndTimekeepingData(ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder
 	// WithClockAndTimekeepingDataBuilder adds ClockAndTimekeepingData (property field) which is build by the builder
 	WithClockAndTimekeepingDataBuilder(func(ClockAndTimekeepingDataBuilder) ClockAndTimekeepingDataBuilder) SALDataClockAndTimekeepingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataClockAndTimekeeping or returns an error if something is wrong
 	Build() (SALDataClockAndTimekeeping, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (SALDataClockAndTimekeepingBuilder) = (*_SALDataClockAndTimekeepingBuilder
 
 func (b *_SALDataClockAndTimekeepingBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataClockAndTimekeeping
 }
 
 func (b *_SALDataClockAndTimekeepingBuilder) WithMandatoryFields(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder {
@@ -152,8 +155,10 @@ func (b *_SALDataClockAndTimekeepingBuilder) MustBuild() SALDataClockAndTimekeep
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataClockAndTimekeepingBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_SALDataClockAndTimekeeping) deepCopy() *_SALDataClockAndTimekeeping {
 	}
 	_SALDataClockAndTimekeepingCopy := &_SALDataClockAndTimekeeping{
 		m.SALDataContract.(*_SALData).deepCopy(),
-		m.ClockAndTimekeepingData.DeepCopy().(ClockAndTimekeepingData),
+		utils.DeepCopy[ClockAndTimekeepingData](m.ClockAndTimekeepingData),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataClockAndTimekeepingCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataClockAndTimekeepingCopy
 }
 

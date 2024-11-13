@@ -193,6 +193,8 @@ type IdentifyReplyCommandExtendedDiagnosticSummaryBuilder interface {
 	WithInternalStackOverflow(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
 	// WithMicroPowerReset adds MicroPowerReset (property field)
 	WithMicroPowerReset(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() IdentifyReplyCommandBuilder
 	// Build builds the IdentifyReplyCommandExtendedDiagnosticSummary or returns an error if something is wrong
 	Build() (IdentifyReplyCommandExtendedDiagnosticSummary, error)
 	// MustBuild does the same as Build but panics on error
@@ -216,6 +218,7 @@ var _ (IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) = (*_IdentifyReplyC
 
 func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) setParent(contract IdentifyReplyCommandContract) {
 	b.IdentifyReplyCommandContract = contract
+	contract.(*_IdentifyReplyCommand)._SubType = b._IdentifyReplyCommandExtendedDiagnosticSummary
 }
 
 func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithMandatoryFields(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, unitInLearnMode bool, networkVoltageLow bool, networkVoltageMarginal bool, enableChecksumAlarm bool, outputUnit bool, installationMMIError bool, EEWriteError bool, EEChecksumError bool, EEDataError bool, microReset bool, commsTxError bool, internalStackOverflow bool, microPowerReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
@@ -332,8 +335,10 @@ func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) MustBuild() Iden
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) Done() IdentifyReplyCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -886,7 +891,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) deepCopy() *_IdentifyRe
 		m.reservedField1,
 		m.reservedField2,
 	}
-	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	_IdentifyReplyCommandExtendedDiagnosticSummaryCopy.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
 	return _IdentifyReplyCommandExtendedDiagnosticSummaryCopy
 }
 

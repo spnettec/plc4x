@@ -429,10 +429,10 @@ func (m *_BACnetEventNotificationSubscription) deepCopy() *_BACnetEventNotificat
 		return nil
 	}
 	_BACnetEventNotificationSubscriptionCopy := &_BACnetEventNotificationSubscription{
-		m.Recipient.DeepCopy().(BACnetRecipientEnclosed),
-		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),
-		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetRecipientEnclosed](m.Recipient),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ProcessIdentifier),
+		utils.DeepCopy[BACnetContextTagBoolean](m.IssueConfirmedNotifications),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeRemaining),
 	}
 	return _BACnetEventNotificationSubscriptionCopy
 }

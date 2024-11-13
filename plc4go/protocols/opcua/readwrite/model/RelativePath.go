@@ -79,6 +79,8 @@ type RelativePathBuilder interface {
 	WithMandatoryFields(elements []RelativePathElement) RelativePathBuilder
 	// WithElements adds Elements (property field)
 	WithElements(...RelativePathElement) RelativePathBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RelativePath or returns an error if something is wrong
 	Build() (RelativePath, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (RelativePathBuilder) = (*_RelativePathBuilder)(nil)
 
 func (b *_RelativePathBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RelativePath
 }
 
 func (b *_RelativePathBuilder) WithMandatoryFields(elements []RelativePathElement) RelativePathBuilder {
@@ -128,8 +131,10 @@ func (b *_RelativePathBuilder) MustBuild() RelativePath {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RelativePathBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -306,7 +311,7 @@ func (m *_RelativePath) deepCopy() *_RelativePath {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		utils.DeepCopySlice[RelativePathElement, RelativePathElement](m.Elements),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RelativePathCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RelativePathCopy
 }
 

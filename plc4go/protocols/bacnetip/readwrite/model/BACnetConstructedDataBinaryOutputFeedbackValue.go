@@ -86,6 +86,8 @@ type BACnetConstructedDataBinaryOutputFeedbackValueBuilder interface {
 	WithFeedbackValue(BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputFeedbackValueBuilder
 	// WithFeedbackValueBuilder adds FeedbackValue (property field) which is build by the builder
 	WithFeedbackValueBuilder(func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryOutputFeedbackValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBinaryOutputFeedbackValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataBinaryOutputFeedbackValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBinaryOutputFeedbackValueBuilder) = (*_BACnetConstru
 
 func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBinaryOutputFeedbackValue
 }
 
 func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) WithMandatoryFields(feedbackValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputFeedbackValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) deepCopy() *_BACnetCon
 	}
 	_BACnetConstructedDataBinaryOutputFeedbackValueCopy := &_BACnetConstructedDataBinaryOutputFeedbackValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.FeedbackValue.DeepCopy().(BACnetBinaryPVTagged),
+		utils.DeepCopy[BACnetBinaryPVTagged](m.FeedbackValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBinaryOutputFeedbackValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBinaryOutputFeedbackValueCopy
 }
 

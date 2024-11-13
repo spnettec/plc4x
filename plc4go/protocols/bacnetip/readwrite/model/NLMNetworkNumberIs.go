@@ -87,6 +87,8 @@ type NLMNetworkNumberIsBuilder interface {
 	WithNetworkNumber(uint16) NLMNetworkNumberIsBuilder
 	// WithNetworkNumberConfigured adds NetworkNumberConfigured (property field)
 	WithNetworkNumberConfigured(bool) NLMNetworkNumberIsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMNetworkNumberIs or returns an error if something is wrong
 	Build() (NLMNetworkNumberIs, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (NLMNetworkNumberIsBuilder) = (*_NLMNetworkNumberIsBuilder)(nil)
 
 func (b *_NLMNetworkNumberIsBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMNetworkNumberIs
 }
 
 func (b *_NLMNetworkNumberIsBuilder) WithMandatoryFields(networkNumber uint16, networkNumberConfigured bool) NLMNetworkNumberIsBuilder {
@@ -141,8 +144,10 @@ func (b *_NLMNetworkNumberIsBuilder) MustBuild() NLMNetworkNumberIs {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMNetworkNumberIsBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -331,7 +336,7 @@ func (m *_NLMNetworkNumberIs) deepCopy() *_NLMNetworkNumberIs {
 		m.NetworkNumberConfigured,
 		m.reservedField0,
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMNetworkNumberIsCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMNetworkNumberIsCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetPriorityValueDateBuilder interface {
 	WithDateValue(BACnetApplicationTagDate) BACnetPriorityValueDateBuilder
 	// WithDateValueBuilder adds DateValue (property field) which is build by the builder
 	WithDateValueBuilder(func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetPriorityValueDateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPriorityValueBuilder
 	// Build builds the BACnetPriorityValueDate or returns an error if something is wrong
 	Build() (BACnetPriorityValueDate, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPriorityValueDateBuilder) = (*_BACnetPriorityValueDateBuilder)(nil)
 
 func (b *_BACnetPriorityValueDateBuilder) setParent(contract BACnetPriorityValueContract) {
 	b.BACnetPriorityValueContract = contract
+	contract.(*_BACnetPriorityValue)._SubType = b._BACnetPriorityValueDate
 }
 
 func (b *_BACnetPriorityValueDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetPriorityValueDateBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPriorityValueDateBuilder) MustBuild() BACnetPriorityValueDate {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPriorityValueDateBuilder) Done() BACnetPriorityValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPriorityValueDate) deepCopy() *_BACnetPriorityValueDate {
 	}
 	_BACnetPriorityValueDateCopy := &_BACnetPriorityValueDate{
 		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
-		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+		utils.DeepCopy[BACnetApplicationTagDate](m.DateValue),
 	}
-	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	_BACnetPriorityValueDateCopy.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
 	return _BACnetPriorityValueDateCopy
 }
 

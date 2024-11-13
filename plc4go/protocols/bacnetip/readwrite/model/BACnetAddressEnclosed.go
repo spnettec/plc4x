@@ -394,9 +394,9 @@ func (m *_BACnetAddressEnclosed) deepCopy() *_BACnetAddressEnclosed {
 		return nil
 	}
 	_BACnetAddressEnclosedCopy := &_BACnetAddressEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.Address.DeepCopy().(BACnetAddress),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetAddress](m.Address),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetAddressEnclosedCopy

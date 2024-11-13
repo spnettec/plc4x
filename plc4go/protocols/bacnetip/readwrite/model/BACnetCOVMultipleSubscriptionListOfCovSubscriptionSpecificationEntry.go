@@ -331,8 +331,8 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) 
 		return nil
 	}
 	_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryCopy := &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry{
-		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.ListOfCovReferences.DeepCopy().(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.MonitoredObjectIdentifier),
+		utils.DeepCopy[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences](m.ListOfCovReferences),
 	}
 	return _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryCopy
 }

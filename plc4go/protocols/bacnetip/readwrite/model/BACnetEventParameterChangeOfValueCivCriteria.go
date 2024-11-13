@@ -126,15 +126,9 @@ type BACnetEventParameterChangeOfValueCivCriteriaBuilder interface {
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfValueCivCriteriaBuilder
 	// AsBACnetEventParameterChangeOfValueCivCriteriaBitmask converts this build to a subType of BACnetEventParameterChangeOfValueCivCriteria. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterChangeOfValueCivCriteriaBitmask() interface {
-		BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
-		Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
-	}
+	AsBACnetEventParameterChangeOfValueCivCriteriaBitmask() BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
 	// AsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement converts this build to a subType of BACnetEventParameterChangeOfValueCivCriteria. It is always possible to return to current builder using Done()
-	AsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() interface {
-		BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
-		Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
-	}
+	AsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
 	// Build builds the BACnetEventParameterChangeOfValueCivCriteria or returns an error if something is wrong
 	PartialBuild() (BACnetEventParameterChangeOfValueCivCriteriaContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -257,14 +251,8 @@ func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) PartialMustBuild(
 	return build
 }
 
-func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) AsBACnetEventParameterChangeOfValueCivCriteriaBitmask() interface {
-	BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
-	Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
-		Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
-	}); ok {
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) AsBACnetEventParameterChangeOfValueCivCriteriaBitmask() BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder().(*_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder)
@@ -273,14 +261,8 @@ func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) AsBACnetEventPara
 	return cb
 }
 
-func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) AsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() interface {
-	BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
-	Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
-		Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
-	}); ok {
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) AsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder {
+	if cb, ok := b.childBuilder.(BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder().(*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder)
@@ -551,9 +533,9 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) deepCopy() *_BACnetEvent
 	}
 	_BACnetEventParameterChangeOfValueCivCriteriaCopy := &_BACnetEventParameterChangeOfValueCivCriteria{
 		nil, // will be set by child
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetEventParameterChangeOfValueCivCriteriaCopy

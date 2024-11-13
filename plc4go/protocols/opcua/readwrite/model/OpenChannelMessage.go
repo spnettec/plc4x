@@ -87,15 +87,9 @@ type OpenChannelMessageBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() OpenChannelMessageBuilder
 	// AsOpenChannelMessageRequest converts this build to a subType of OpenChannelMessage. It is always possible to return to current builder using Done()
-	AsOpenChannelMessageRequest() interface {
-		OpenChannelMessageRequestBuilder
-		Done() OpenChannelMessageBuilder
-	}
+	AsOpenChannelMessageRequest() OpenChannelMessageRequestBuilder
 	// AsOpenChannelMessageResponse converts this build to a subType of OpenChannelMessage. It is always possible to return to current builder using Done()
-	AsOpenChannelMessageResponse() interface {
-		OpenChannelMessageResponseBuilder
-		Done() OpenChannelMessageBuilder
-	}
+	AsOpenChannelMessageResponse() OpenChannelMessageResponseBuilder
 	// Build builds the OpenChannelMessage or returns an error if something is wrong
 	PartialBuild() (OpenChannelMessageContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -146,14 +140,8 @@ func (b *_OpenChannelMessageBuilder) PartialMustBuild() OpenChannelMessageContra
 	return build
 }
 
-func (b *_OpenChannelMessageBuilder) AsOpenChannelMessageRequest() interface {
-	OpenChannelMessageRequestBuilder
-	Done() OpenChannelMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		OpenChannelMessageRequestBuilder
-		Done() OpenChannelMessageBuilder
-	}); ok {
+func (b *_OpenChannelMessageBuilder) AsOpenChannelMessageRequest() OpenChannelMessageRequestBuilder {
+	if cb, ok := b.childBuilder.(OpenChannelMessageRequestBuilder); ok {
 		return cb
 	}
 	cb := NewOpenChannelMessageRequestBuilder().(*_OpenChannelMessageRequestBuilder)
@@ -162,14 +150,8 @@ func (b *_OpenChannelMessageBuilder) AsOpenChannelMessageRequest() interface {
 	return cb
 }
 
-func (b *_OpenChannelMessageBuilder) AsOpenChannelMessageResponse() interface {
-	OpenChannelMessageResponseBuilder
-	Done() OpenChannelMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		OpenChannelMessageResponseBuilder
-		Done() OpenChannelMessageBuilder
-	}); ok {
+func (b *_OpenChannelMessageBuilder) AsOpenChannelMessageResponse() OpenChannelMessageResponseBuilder {
+	if cb, ok := b.childBuilder.(OpenChannelMessageResponseBuilder); ok {
 		return cb
 	}
 	cb := NewOpenChannelMessageResponseBuilder().(*_OpenChannelMessageResponseBuilder)

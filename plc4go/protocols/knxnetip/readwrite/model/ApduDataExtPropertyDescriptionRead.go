@@ -91,6 +91,8 @@ type ApduDataExtPropertyDescriptionReadBuilder interface {
 	WithPropertyId(uint8) ApduDataExtPropertyDescriptionReadBuilder
 	// WithIndex adds Index (property field)
 	WithIndex(uint8) ApduDataExtPropertyDescriptionReadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtPropertyDescriptionRead or returns an error if something is wrong
 	Build() (ApduDataExtPropertyDescriptionRead, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (ApduDataExtPropertyDescriptionReadBuilder) = (*_ApduDataExtPropertyDescri
 
 func (b *_ApduDataExtPropertyDescriptionReadBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtPropertyDescriptionRead
 }
 
 func (b *_ApduDataExtPropertyDescriptionReadBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, index uint8) ApduDataExtPropertyDescriptionReadBuilder {
@@ -150,8 +153,10 @@ func (b *_ApduDataExtPropertyDescriptionReadBuilder) MustBuild() ApduDataExtProp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtPropertyDescriptionReadBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,7 +349,7 @@ func (m *_ApduDataExtPropertyDescriptionRead) deepCopy() *_ApduDataExtPropertyDe
 		m.PropertyId,
 		m.Index,
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtPropertyDescriptionReadCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtPropertyDescriptionReadCopy
 }
 

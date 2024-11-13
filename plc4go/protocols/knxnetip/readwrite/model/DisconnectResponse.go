@@ -87,6 +87,8 @@ type DisconnectResponseBuilder interface {
 	WithCommunicationChannelId(uint8) DisconnectResponseBuilder
 	// WithStatus adds Status (property field)
 	WithStatus(Status) DisconnectResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the DisconnectResponse or returns an error if something is wrong
 	Build() (DisconnectResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (DisconnectResponseBuilder) = (*_DisconnectResponseBuilder)(nil)
 
 func (b *_DisconnectResponseBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._DisconnectResponse
 }
 
 func (b *_DisconnectResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) DisconnectResponseBuilder {
@@ -141,8 +144,10 @@ func (b *_DisconnectResponseBuilder) MustBuild() DisconnectResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DisconnectResponseBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -317,7 +322,7 @@ func (m *_DisconnectResponse) deepCopy() *_DisconnectResponse {
 		m.CommunicationChannelId,
 		m.Status,
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_DisconnectResponseCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _DisconnectResponseCopy
 }
 

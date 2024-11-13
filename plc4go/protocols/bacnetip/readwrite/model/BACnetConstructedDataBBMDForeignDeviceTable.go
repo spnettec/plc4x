@@ -79,6 +79,8 @@ type BACnetConstructedDataBBMDForeignDeviceTableBuilder interface {
 	WithMandatoryFields(bbmdForeignDeviceTable []BACnetBDTEntry) BACnetConstructedDataBBMDForeignDeviceTableBuilder
 	// WithBbmdForeignDeviceTable adds BbmdForeignDeviceTable (property field)
 	WithBbmdForeignDeviceTable(...BACnetBDTEntry) BACnetConstructedDataBBMDForeignDeviceTableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBBMDForeignDeviceTable or returns an error if something is wrong
 	Build() (BACnetConstructedDataBBMDForeignDeviceTable, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataBBMDForeignDeviceTableBuilder) = (*_BACnetConstructe
 
 func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBBMDForeignDeviceTable
 }
 
 func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) WithMandatoryFields(bbmdForeignDeviceTable []BACnetBDTEntry) BACnetConstructedDataBBMDForeignDeviceTableBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBBMDForeignDeviceTableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) deepCopy() *_BACnetConstr
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetBDTEntry, BACnetBDTEntry](m.BbmdForeignDeviceTable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBBMDForeignDeviceTableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBBMDForeignDeviceTableCopy
 }
 

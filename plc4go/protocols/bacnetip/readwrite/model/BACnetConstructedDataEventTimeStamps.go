@@ -95,6 +95,8 @@ type BACnetConstructedDataEventTimeStampsBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataEventTimeStampsBuilder
 	// WithEventTimeStamps adds EventTimeStamps (property field)
 	WithEventTimeStamps(...BACnetTimeStamp) BACnetConstructedDataEventTimeStampsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEventTimeStamps or returns an error if something is wrong
 	Build() (BACnetConstructedDataEventTimeStamps, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (BACnetConstructedDataEventTimeStampsBuilder) = (*_BACnetConstructedDataEv
 
 func (b *_BACnetConstructedDataEventTimeStampsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEventTimeStamps
 }
 
 func (b *_BACnetConstructedDataEventTimeStampsBuilder) WithMandatoryFields(eventTimeStamps []BACnetTimeStamp) BACnetConstructedDataEventTimeStampsBuilder {
@@ -162,8 +165,10 @@ func (b *_BACnetConstructedDataEventTimeStampsBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEventTimeStampsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -451,10 +456,10 @@ func (m *_BACnetConstructedDataEventTimeStamps) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataEventTimeStampsCopy := &_BACnetConstructedDataEventTimeStamps{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetTimeStamp, BACnetTimeStamp](m.EventTimeStamps),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEventTimeStampsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEventTimeStampsCopy
 }
 

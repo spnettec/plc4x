@@ -90,6 +90,8 @@ type OpcuaMessageErrorBuilder interface {
 	WithReason(PascalString) OpcuaMessageErrorBuilder
 	// WithReasonBuilder adds Reason (property field) which is build by the builder
 	WithReasonBuilder(func(PascalStringBuilder) PascalStringBuilder) OpcuaMessageErrorBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MessagePDUBuilder
 	// Build builds the OpcuaMessageError or returns an error if something is wrong
 	Build() (OpcuaMessageError, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (OpcuaMessageErrorBuilder) = (*_OpcuaMessageErrorBuilder)(nil)
 
 func (b *_OpcuaMessageErrorBuilder) setParent(contract MessagePDUContract) {
 	b.MessagePDUContract = contract
+	contract.(*_MessagePDU)._SubType = b._OpcuaMessageError
 }
 
 func (b *_OpcuaMessageErrorBuilder) WithMandatoryFields(error OpcuaStatusCode, reason PascalString) OpcuaMessageErrorBuilder {
@@ -163,8 +166,10 @@ func (b *_OpcuaMessageErrorBuilder) MustBuild() OpcuaMessageError {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_OpcuaMessageErrorBuilder) Done() MessagePDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMessagePDUBuilder().(*_MessagePDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -341,9 +346,9 @@ func (m *_OpcuaMessageError) deepCopy() *_OpcuaMessageError {
 	_OpcuaMessageErrorCopy := &_OpcuaMessageError{
 		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
 		m.Error,
-		m.Reason.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Reason),
 	}
-	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	_OpcuaMessageErrorCopy.MessagePDUContract.(*_MessagePDU)._SubType = m
 	return _OpcuaMessageErrorCopy
 }
 

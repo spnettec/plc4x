@@ -86,6 +86,8 @@ type BACnetContextTagEnumeratedBuilder interface {
 	WithPayload(BACnetTagPayloadEnumerated) BACnetContextTagEnumeratedBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadEnumeratedBuilder) BACnetTagPayloadEnumeratedBuilder) BACnetContextTagEnumeratedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetContextTagBuilder
 	// Build builds the BACnetContextTagEnumerated or returns an error if something is wrong
 	Build() (BACnetContextTagEnumerated, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetContextTagEnumeratedBuilder) = (*_BACnetContextTagEnumeratedBuilder
 
 func (b *_BACnetContextTagEnumeratedBuilder) setParent(contract BACnetContextTagContract) {
 	b.BACnetContextTagContract = contract
+	contract.(*_BACnetContextTag)._SubType = b._BACnetContextTagEnumerated
 }
 
 func (b *_BACnetContextTagEnumeratedBuilder) WithMandatoryFields(payload BACnetTagPayloadEnumerated) BACnetContextTagEnumeratedBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetContextTagEnumeratedBuilder) MustBuild() BACnetContextTagEnumera
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetContextTagEnumeratedBuilder) Done() BACnetContextTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetContextTagBuilder().(*_BACnetContextTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -339,9 +344,9 @@ func (m *_BACnetContextTagEnumerated) deepCopy() *_BACnetContextTagEnumerated {
 	}
 	_BACnetContextTagEnumeratedCopy := &_BACnetContextTagEnumerated{
 		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadEnumerated),
+		utils.DeepCopy[BACnetTagPayloadEnumerated](m.Payload),
 	}
-	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	_BACnetContextTagEnumeratedCopy.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
 	return _BACnetContextTagEnumeratedCopy
 }
 

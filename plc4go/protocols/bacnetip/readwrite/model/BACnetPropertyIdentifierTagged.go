@@ -393,7 +393,7 @@ func (m *_BACnetPropertyIdentifierTagged) deepCopy() *_BACnetPropertyIdentifierT
 		return nil
 	}
 	_BACnetPropertyIdentifierTaggedCopy := &_BACnetPropertyIdentifierTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

@@ -86,6 +86,8 @@ type BACnetConstructedDataDateTimeValuePresentValueBuilder interface {
 	WithPresentValue(BACnetDateTime) BACnetConstructedDataDateTimeValuePresentValueBuilder
 	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
 	WithPresentValueBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataDateTimeValuePresentValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDateTimeValuePresentValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataDateTimeValuePresentValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDateTimeValuePresentValueBuilder) = (*_BACnetConstru
 
 func (b *_BACnetConstructedDataDateTimeValuePresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDateTimeValuePresentValue
 }
 
 func (b *_BACnetConstructedDataDateTimeValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetDateTime) BACnetConstructedDataDateTimeValuePresentValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDateTimeValuePresentValueBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDateTimeValuePresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataDateTimeValuePresentValue) deepCopy() *_BACnetCon
 	}
 	_BACnetConstructedDataDateTimeValuePresentValueCopy := &_BACnetConstructedDataDateTimeValuePresentValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PresentValue.DeepCopy().(BACnetDateTime),
+		utils.DeepCopy[BACnetDateTime](m.PresentValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDateTimeValuePresentValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDateTimeValuePresentValueCopy
 }
 

@@ -98,6 +98,8 @@ type LPollDataBuilder interface {
 	WithTargetAddress(...byte) LPollDataBuilder
 	// WithNumberExpectedPollData adds NumberExpectedPollData (property field)
 	WithNumberExpectedPollData(uint8) LPollDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LDataFrameBuilder
 	// Build builds the LPollData or returns an error if something is wrong
 	Build() (LPollData, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,6 +123,7 @@ var _ (LPollDataBuilder) = (*_LPollDataBuilder)(nil)
 
 func (b *_LPollDataBuilder) setParent(contract LDataFrameContract) {
 	b.LDataFrameContract = contract
+	contract.(*_LDataFrame)._SubType = b._LPollData
 }
 
 func (b *_LPollDataBuilder) WithMandatoryFields(sourceAddress KnxAddress, targetAddress []byte, numberExpectedPollData uint8) LPollDataBuilder {
@@ -176,8 +179,10 @@ func (b *_LPollDataBuilder) MustBuild() LPollData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LPollDataBuilder) Done() LDataFrameBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLDataFrameBuilder().(*_LDataFrameBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -385,12 +390,12 @@ func (m *_LPollData) deepCopy() *_LPollData {
 	}
 	_LPollDataCopy := &_LPollData{
 		m.LDataFrameContract.(*_LDataFrame).deepCopy(),
-		m.SourceAddress.DeepCopy().(KnxAddress),
+		utils.DeepCopy[KnxAddress](m.SourceAddress),
 		utils.DeepCopySlice[byte, byte](m.TargetAddress),
 		m.NumberExpectedPollData,
 		m.reservedField0,
 	}
-	m.LDataFrameContract.(*_LDataFrame)._SubType = m
+	_LPollDataCopy.LDataFrameContract.(*_LDataFrame)._SubType = m
 	return _LPollDataCopy
 }
 

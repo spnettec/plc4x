@@ -378,9 +378,9 @@ func (m *_BACnetLogRecord) deepCopy() *_BACnetLogRecord {
 		return nil
 	}
 	_BACnetLogRecordCopy := &_BACnetLogRecord{
-		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
-		m.LogDatum.DeepCopy().(BACnetLogRecordLogDatum),
-		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		utils.DeepCopy[BACnetDateTimeEnclosed](m.Timestamp),
+		utils.DeepCopy[BACnetLogRecordLogDatum](m.LogDatum),
+		utils.DeepCopy[BACnetStatusFlagsTagged](m.StatusFlags),
 	}
 	return _BACnetLogRecordCopy
 }

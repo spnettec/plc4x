@@ -394,9 +394,9 @@ func (m *_ErrorEnclosed) deepCopy() *_ErrorEnclosed {
 		return nil
 	}
 	_ErrorEnclosedCopy := &_ErrorEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.Error.DeepCopy().(Error),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[Error](m.Error),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _ErrorEnclosedCopy

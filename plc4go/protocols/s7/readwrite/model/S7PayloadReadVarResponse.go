@@ -79,6 +79,8 @@ type S7PayloadReadVarResponseBuilder interface {
 	WithMandatoryFields(items []S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder
 	// WithItems adds Items (property field)
 	WithItems(...S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadBuilder
 	// Build builds the S7PayloadReadVarResponse or returns an error if something is wrong
 	Build() (S7PayloadReadVarResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (S7PayloadReadVarResponseBuilder) = (*_S7PayloadReadVarResponseBuilder)(ni
 
 func (b *_S7PayloadReadVarResponseBuilder) setParent(contract S7PayloadContract) {
 	b.S7PayloadContract = contract
+	contract.(*_S7Payload)._SubType = b._S7PayloadReadVarResponse
 }
 
 func (b *_S7PayloadReadVarResponseBuilder) WithMandatoryFields(items []S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_S7PayloadReadVarResponseBuilder) MustBuild() S7PayloadReadVarResponse 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadReadVarResponseBuilder) Done() S7PayloadBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadBuilder().(*_S7PayloadBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -297,7 +302,7 @@ func (m *_S7PayloadReadVarResponse) deepCopy() *_S7PayloadReadVarResponse {
 		m.S7PayloadContract.(*_S7Payload).deepCopy(),
 		utils.DeepCopySlice[S7VarPayloadDataItem, S7VarPayloadDataItem](m.Items),
 	}
-	m.S7PayloadContract.(*_S7Payload)._SubType = m
+	_S7PayloadReadVarResponseCopy.S7PayloadContract.(*_S7Payload)._SubType = m
 	return _S7PayloadReadVarResponseCopy
 }
 

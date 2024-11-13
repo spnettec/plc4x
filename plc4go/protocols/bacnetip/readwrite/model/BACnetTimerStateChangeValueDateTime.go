@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueDateTimeBuilder interface {
 	WithDateTimeValue(BACnetDateTimeEnclosed) BACnetTimerStateChangeValueDateTimeBuilder
 	// WithDateTimeValueBuilder adds DateTimeValue (property field) which is build by the builder
 	WithDateTimeValueBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetTimerStateChangeValueDateTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueDateTime or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueDateTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueDateTimeBuilder) = (*_BACnetTimerStateChangeVa
 
 func (b *_BACnetTimerStateChangeValueDateTimeBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueDateTime
 }
 
 func (b *_BACnetTimerStateChangeValueDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetTimerStateChangeValueDateTimeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueDateTimeBuilder) MustBuild() BACnetTimerSta
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueDateTimeBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimerStateChangeValueDateTime) deepCopy() *_BACnetTimerStateChan
 	}
 	_BACnetTimerStateChangeValueDateTimeCopy := &_BACnetTimerStateChangeValueDateTime{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.DateTimeValue.DeepCopy().(BACnetDateTimeEnclosed),
+		utils.DeepCopy[BACnetDateTimeEnclosed](m.DateTimeValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueDateTimeCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueDateTimeCopy
 }
 

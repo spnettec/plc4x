@@ -86,6 +86,8 @@ type BACnetConstructedDataProportionalConstantBuilder interface {
 	WithProportionalConstant(BACnetApplicationTagReal) BACnetConstructedDataProportionalConstantBuilder
 	// WithProportionalConstantBuilder adds ProportionalConstant (property field) which is build by the builder
 	WithProportionalConstantBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataProportionalConstantBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataProportionalConstant or returns an error if something is wrong
 	Build() (BACnetConstructedDataProportionalConstant, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataProportionalConstantBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataProportionalConstantBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataProportionalConstant
 }
 
 func (b *_BACnetConstructedDataProportionalConstantBuilder) WithMandatoryFields(proportionalConstant BACnetApplicationTagReal) BACnetConstructedDataProportionalConstantBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataProportionalConstantBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataProportionalConstantBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataProportionalConstant) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataProportionalConstantCopy := &_BACnetConstructedDataProportionalConstant{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ProportionalConstant.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.ProportionalConstant),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataProportionalConstantCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataProportionalConstantCopy
 }
 

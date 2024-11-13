@@ -104,6 +104,8 @@ type RequestCommandBuilder interface {
 	WithOptionalAlpha(Alpha) RequestCommandBuilder
 	// WithOptionalAlphaBuilder adds Alpha (property field) which is build by the builder
 	WithOptionalAlphaBuilder(func(AlphaBuilder) AlphaBuilder) RequestCommandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() RequestBuilder
 	// Build builds the RequestCommand or returns an error if something is wrong
 	Build() (RequestCommand, error)
 	// MustBuild does the same as Build but panics on error
@@ -127,6 +129,7 @@ var _ (RequestCommandBuilder) = (*_RequestCommandBuilder)(nil)
 
 func (b *_RequestCommandBuilder) setParent(contract RequestContract) {
 	b.RequestContract = contract
+	contract.(*_Request)._SubType = b._RequestCommand
 }
 
 func (b *_RequestCommandBuilder) WithMandatoryFields(cbusCommand CBusCommand, chksum Checksum) RequestCommandBuilder {
@@ -214,8 +217,10 @@ func (b *_RequestCommandBuilder) MustBuild() RequestCommand {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RequestCommandBuilder) Done() RequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewRequestBuilder().(*_RequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -487,11 +492,11 @@ func (m *_RequestCommand) deepCopy() *_RequestCommand {
 	}
 	_RequestCommandCopy := &_RequestCommand{
 		m.RequestContract.(*_Request).deepCopy(),
-		m.CbusCommand.DeepCopy().(CBusCommand),
-		m.Chksum.DeepCopy().(Checksum),
-		m.Alpha.DeepCopy().(Alpha),
+		utils.DeepCopy[CBusCommand](m.CbusCommand),
+		utils.DeepCopy[Checksum](m.Chksum),
+		utils.DeepCopy[Alpha](m.Alpha),
 	}
-	m.RequestContract.(*_Request)._SubType = m
+	_RequestCommandCopy.RequestContract.(*_Request)._SubType = m
 	return _RequestCommandCopy
 }
 

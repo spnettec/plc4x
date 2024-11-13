@@ -103,6 +103,8 @@ type AdsReadWriteRequestBuilder interface {
 	WithItems(...AdsMultiRequestItem) AdsReadWriteRequestBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) AdsReadWriteRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AmsPacketBuilder
 	// Build builds the AdsReadWriteRequest or returns an error if something is wrong
 	Build() (AdsReadWriteRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (AdsReadWriteRequestBuilder) = (*_AdsReadWriteRequestBuilder)(nil)
 
 func (b *_AdsReadWriteRequestBuilder) setParent(contract AmsPacketContract) {
 	b.AmsPacketContract = contract
+	contract.(*_AmsPacket)._SubType = b._AdsReadWriteRequest
 }
 
 func (b *_AdsReadWriteRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) AdsReadWriteRequestBuilder {
@@ -172,8 +175,10 @@ func (b *_AdsReadWriteRequestBuilder) MustBuild() AdsReadWriteRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsReadWriteRequestBuilder) Done() AmsPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAmsPacketBuilder().(*_AmsPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -428,7 +433,7 @@ func (m *_AdsReadWriteRequest) deepCopy() *_AdsReadWriteRequest {
 		utils.DeepCopySlice[AdsMultiRequestItem, AdsMultiRequestItem](m.Items),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	_AdsReadWriteRequestCopy.AmsPacketContract.(*_AmsPacket)._SubType = m
 	return _AdsReadWriteRequestCopy
 }
 

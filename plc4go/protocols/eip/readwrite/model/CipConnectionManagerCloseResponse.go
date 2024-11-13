@@ -112,6 +112,8 @@ type CipConnectionManagerCloseResponseBuilder interface {
 	WithOriginatorSerialNumber(uint32) CipConnectionManagerCloseResponseBuilder
 	// WithApplicationReplySize adds ApplicationReplySize (property field)
 	WithApplicationReplySize(uint8) CipConnectionManagerCloseResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the CipConnectionManagerCloseResponse or returns an error if something is wrong
 	Build() (CipConnectionManagerCloseResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (CipConnectionManagerCloseResponseBuilder) = (*_CipConnectionManagerCloseR
 
 func (b *_CipConnectionManagerCloseResponseBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._CipConnectionManagerCloseResponse
 }
 
 func (b *_CipConnectionManagerCloseResponseBuilder) WithMandatoryFields(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8) CipConnectionManagerCloseResponseBuilder {
@@ -186,8 +189,10 @@ func (b *_CipConnectionManagerCloseResponseBuilder) MustBuild() CipConnectionMan
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipConnectionManagerCloseResponseBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -470,7 +475,7 @@ func (m *_CipConnectionManagerCloseResponse) deepCopy() *_CipConnectionManagerCl
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_CipConnectionManagerCloseResponseCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _CipConnectionManagerCloseResponseCopy
 }
 

@@ -85,6 +85,8 @@ type ModbusPDUReadInputRegistersRequestBuilder interface {
 	WithStartingAddress(uint16) ModbusPDUReadInputRegistersRequestBuilder
 	// WithQuantity adds Quantity (property field)
 	WithQuantity(uint16) ModbusPDUReadInputRegistersRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUReadInputRegistersRequest or returns an error if something is wrong
 	Build() (ModbusPDUReadInputRegistersRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (ModbusPDUReadInputRegistersRequestBuilder) = (*_ModbusPDUReadInputRegiste
 
 func (b *_ModbusPDUReadInputRegistersRequestBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUReadInputRegistersRequest
 }
 
 func (b *_ModbusPDUReadInputRegistersRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadInputRegistersRequestBuilder {
@@ -139,8 +142,10 @@ func (b *_ModbusPDUReadInputRegistersRequestBuilder) MustBuild() ModbusPDUReadIn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUReadInputRegistersRequestBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -323,7 +328,7 @@ func (m *_ModbusPDUReadInputRegistersRequest) deepCopy() *_ModbusPDUReadInputReg
 		m.StartingAddress,
 		m.Quantity,
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUReadInputRegistersRequestCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUReadInputRegistersRequestCopy
 }
 

@@ -128,6 +128,8 @@ type BACnetNotificationParametersCommandFailureBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersCommandFailureBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersCommandFailureBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersBuilder
 	// Build builds the BACnetNotificationParametersCommandFailure or returns an error if something is wrong
 	Build() (BACnetNotificationParametersCommandFailure, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,6 +153,7 @@ var _ (BACnetNotificationParametersCommandFailureBuilder) = (*_BACnetNotificatio
 
 func (b *_BACnetNotificationParametersCommandFailureBuilder) setParent(contract BACnetNotificationParametersContract) {
 	b.BACnetNotificationParametersContract = contract
+	contract.(*_BACnetNotificationParameters)._SubType = b._BACnetNotificationParametersCommandFailure
 }
 
 func (b *_BACnetNotificationParametersCommandFailureBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, commandValue BACnetConstructedData, statusFlags BACnetStatusFlagsTagged, feedbackValue BACnetConstructedData, innerClosingTag BACnetClosingTag) BACnetNotificationParametersCommandFailureBuilder {
@@ -292,8 +295,10 @@ func (b *_BACnetNotificationParametersCommandFailureBuilder) MustBuild() BACnetN
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersCommandFailureBuilder) Done() BACnetNotificationParametersBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -513,13 +518,13 @@ func (m *_BACnetNotificationParametersCommandFailure) deepCopy() *_BACnetNotific
 	}
 	_BACnetNotificationParametersCommandFailureCopy := &_BACnetNotificationParametersCommandFailure{
 		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.CommandValue.DeepCopy().(BACnetConstructedData),
-		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
-		m.FeedbackValue.DeepCopy().(BACnetConstructedData),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
+		utils.DeepCopy[BACnetConstructedData](m.CommandValue),
+		utils.DeepCopy[BACnetStatusFlagsTagged](m.StatusFlags),
+		utils.DeepCopy[BACnetConstructedData](m.FeedbackValue),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	_BACnetNotificationParametersCommandFailureCopy.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
 	return _BACnetNotificationParametersCommandFailureCopy
 }
 

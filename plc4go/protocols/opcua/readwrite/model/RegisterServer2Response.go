@@ -96,6 +96,8 @@ type RegisterServer2ResponseBuilder interface {
 	WithConfigurationResults(...StatusCode) RegisterServer2ResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) RegisterServer2ResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RegisterServer2Response or returns an error if something is wrong
 	Build() (RegisterServer2Response, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (RegisterServer2ResponseBuilder) = (*_RegisterServer2ResponseBuilder)(nil)
 
 func (b *_RegisterServer2ResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RegisterServer2Response
 }
 
 func (b *_RegisterServer2ResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, configurationResults []StatusCode, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_RegisterServer2ResponseBuilder) MustBuild() RegisterServer2Response {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RegisterServer2ResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_RegisterServer2Response) deepCopy() *_RegisterServer2Response {
 	}
 	_RegisterServer2ResponseCopy := &_RegisterServer2Response{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.ConfigurationResults),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RegisterServer2ResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RegisterServer2ResponseCopy
 }
 

@@ -89,6 +89,8 @@ type BACnetConstructedDataFloorTextBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFloorTextBuilder
 	// WithFloorText adds FloorText (property field)
 	WithFloorText(...BACnetApplicationTagCharacterString) BACnetConstructedDataFloorTextBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataFloorText or returns an error if something is wrong
 	Build() (BACnetConstructedDataFloorText, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataFloorTextBuilder) = (*_BACnetConstructedDataFloorTex
 
 func (b *_BACnetConstructedDataFloorTextBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataFloorText
 }
 
 func (b *_BACnetConstructedDataFloorTextBuilder) WithMandatoryFields(floorText []BACnetApplicationTagCharacterString) BACnetConstructedDataFloorTextBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataFloorTextBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataFloorTextBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataFloorText) deepCopy() *_BACnetConstructedDataFloo
 	}
 	_BACnetConstructedDataFloorTextCopy := &_BACnetConstructedDataFloorText{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.FloorText),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataFloorTextCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataFloorTextCopy
 }
 

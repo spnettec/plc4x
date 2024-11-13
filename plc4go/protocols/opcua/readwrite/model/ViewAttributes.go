@@ -127,6 +127,8 @@ type ViewAttributesBuilder interface {
 	WithContainsNoLoops(bool) ViewAttributesBuilder
 	// WithEventNotifier adds EventNotifier (property field)
 	WithEventNotifier(uint8) ViewAttributesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ViewAttributes or returns an error if something is wrong
 	Build() (ViewAttributes, error)
 	// MustBuild does the same as Build but panics on error
@@ -150,6 +152,7 @@ var _ (ViewAttributesBuilder) = (*_ViewAttributesBuilder)(nil)
 
 func (b *_ViewAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ViewAttributes
 }
 
 func (b *_ViewAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, containsNoLoops bool, eventNotifier uint8) ViewAttributesBuilder {
@@ -244,8 +247,10 @@ func (b *_ViewAttributesBuilder) MustBuild() ViewAttributes {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ViewAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -516,15 +521,15 @@ func (m *_ViewAttributes) deepCopy() *_ViewAttributes {
 	_ViewAttributesCopy := &_ViewAttributes{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedAttributes,
-		m.DisplayName.DeepCopy().(LocalizedText),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.DisplayName),
+		utils.DeepCopy[LocalizedText](m.Description),
 		m.WriteMask,
 		m.UserWriteMask,
 		m.ContainsNoLoops,
 		m.EventNotifier,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ViewAttributesCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ViewAttributesCopy
 }
 

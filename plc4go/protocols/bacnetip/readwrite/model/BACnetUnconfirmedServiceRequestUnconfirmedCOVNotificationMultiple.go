@@ -125,6 +125,8 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder in
 	WithListOfCovNotifications(ListOfCovNotificationsList) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder
 	// WithListOfCovNotificationsBuilder adds ListOfCovNotifications (property field) which is build by the builder
 	WithListOfCovNotificationsBuilder(func(ListOfCovNotificationsListBuilder) ListOfCovNotificationsListBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetUnconfirmedServiceRequestBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, error)
 	// MustBuild does the same as Build but panics on error
@@ -148,6 +150,7 @@ var _ (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder)
 
 func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
 	b.BACnetUnconfirmedServiceRequestContract = contract
+	contract.(*_BACnetUnconfirmedServiceRequest)._SubType = b._BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 }
 
 func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder) WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, timeRemaining BACnetContextTagUnsignedInteger, listOfCovNotifications ListOfCovNotificationsList) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder {
@@ -283,8 +286,10 @@ func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuild
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetUnconfirmedServiceRequestBuilder().(*_BACnetUnconfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -514,13 +519,13 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) dee
 	}
 	_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleCopy := &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
 		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
-		m.SubscriberProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Timestamp.DeepCopy().(BACnetTimeStampEnclosed),
-		m.ListOfCovNotifications.DeepCopy().(ListOfCovNotificationsList),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.SubscriberProcessIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.InitiatingDeviceIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeRemaining),
+		utils.DeepCopy[BACnetTimeStampEnclosed](m.Timestamp),
+		utils.DeepCopy[ListOfCovNotificationsList](m.ListOfCovNotifications),
 	}
-	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleCopy.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
 	return _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleCopy
 }
 

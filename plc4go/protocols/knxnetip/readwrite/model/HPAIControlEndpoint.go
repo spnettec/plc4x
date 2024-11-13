@@ -347,7 +347,7 @@ func (m *_HPAIControlEndpoint) deepCopy() *_HPAIControlEndpoint {
 	}
 	_HPAIControlEndpointCopy := &_HPAIControlEndpoint{
 		m.HostProtocolCode,
-		m.IpAddress.DeepCopy().(IPAddress),
+		utils.DeepCopy[IPAddress](m.IpAddress),
 		m.IpPort,
 	}
 	return _HPAIControlEndpointCopy

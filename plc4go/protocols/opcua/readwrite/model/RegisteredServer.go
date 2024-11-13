@@ -143,6 +143,8 @@ type RegisteredServerBuilder interface {
 	WithSemaphoreFilePathBuilder(func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder
 	// WithIsOnline adds IsOnline (property field)
 	WithIsOnline(bool) RegisteredServerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RegisteredServer or returns an error if something is wrong
 	Build() (RegisteredServer, error)
 	// MustBuild does the same as Build but panics on error
@@ -166,6 +168,7 @@ var _ (RegisteredServerBuilder) = (*_RegisteredServerBuilder)(nil)
 
 func (b *_RegisteredServerBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RegisteredServer
 }
 
 func (b *_RegisteredServerBuilder) WithMandatoryFields(serverUri PascalString, productUri PascalString, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder {
@@ -303,8 +306,10 @@ func (b *_RegisteredServerBuilder) MustBuild() RegisteredServer {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RegisteredServerBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -631,17 +636,17 @@ func (m *_RegisteredServer) deepCopy() *_RegisteredServer {
 	}
 	_RegisteredServerCopy := &_RegisteredServer{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ServerUri.DeepCopy().(PascalString),
-		m.ProductUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.ServerUri),
+		utils.DeepCopy[PascalString](m.ProductUri),
 		utils.DeepCopySlice[LocalizedText, LocalizedText](m.ServerNames),
 		m.ServerType,
-		m.GatewayServerUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.GatewayServerUri),
 		utils.DeepCopySlice[PascalString, PascalString](m.DiscoveryUrls),
-		m.SemaphoreFilePath.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.SemaphoreFilePath),
 		m.IsOnline,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RegisteredServerCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RegisteredServerCopy
 }
 

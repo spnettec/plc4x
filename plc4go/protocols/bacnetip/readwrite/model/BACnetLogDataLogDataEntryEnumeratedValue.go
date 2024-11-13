@@ -84,6 +84,8 @@ type BACnetLogDataLogDataEntryEnumeratedValueBuilder interface {
 	WithEnumeratedValue(BACnetContextTagEnumerated) BACnetLogDataLogDataEntryEnumeratedValueBuilder
 	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
 	WithEnumeratedValueBuilder(func(BACnetContextTagEnumeratedBuilder) BACnetContextTagEnumeratedBuilder) BACnetLogDataLogDataEntryEnumeratedValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogDataLogDataEntryBuilder
 	// Build builds the BACnetLogDataLogDataEntryEnumeratedValue or returns an error if something is wrong
 	Build() (BACnetLogDataLogDataEntryEnumeratedValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogDataLogDataEntryEnumeratedValueBuilder) = (*_BACnetLogDataLogDat
 
 func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
 	b.BACnetLogDataLogDataEntryContract = contract
+	contract.(*_BACnetLogDataLogDataEntry)._SubType = b._BACnetLogDataLogDataEntryEnumeratedValue
 }
 
 func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) WithMandatoryFields(enumeratedValue BACnetContextTagEnumerated) BACnetLogDataLogDataEntryEnumeratedValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) MustBuild() BACnetLog
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogDataLogDataEntryBuilder().(*_BACnetLogDataLogDataEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) deepCopy() *_BACnetLogDataLo
 	}
 	_BACnetLogDataLogDataEntryEnumeratedValueCopy := &_BACnetLogDataLogDataEntryEnumeratedValue{
 		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
-		m.EnumeratedValue.DeepCopy().(BACnetContextTagEnumerated),
+		utils.DeepCopy[BACnetContextTagEnumerated](m.EnumeratedValue),
 	}
-	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	_BACnetLogDataLogDataEntryEnumeratedValueCopy.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
 	return _BACnetLogDataLogDataEntryEnumeratedValueCopy
 }
 

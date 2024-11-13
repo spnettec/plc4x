@@ -89,6 +89,8 @@ type BACnetConstructedDataSupportedFormatClassesBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSupportedFormatClassesBuilder
 	// WithSupportedFormats adds SupportedFormats (property field)
 	WithSupportedFormats(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedFormatClassesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataSupportedFormatClasses or returns an error if something is wrong
 	Build() (BACnetConstructedDataSupportedFormatClasses, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataSupportedFormatClassesBuilder) = (*_BACnetConstructe
 
 func (b *_BACnetConstructedDataSupportedFormatClassesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataSupportedFormatClasses
 }
 
 func (b *_BACnetConstructedDataSupportedFormatClassesBuilder) WithMandatoryFields(supportedFormats []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedFormatClassesBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataSupportedFormatClassesBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataSupportedFormatClassesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,10 +380,10 @@ func (m *_BACnetConstructedDataSupportedFormatClasses) deepCopy() *_BACnetConstr
 	}
 	_BACnetConstructedDataSupportedFormatClassesCopy := &_BACnetConstructedDataSupportedFormatClasses{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.SupportedFormats),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataSupportedFormatClassesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataSupportedFormatClassesCopy
 }
 

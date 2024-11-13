@@ -71,6 +71,8 @@ type MediaTransportControlDataStatusRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() MediaTransportControlDataStatusRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataStatusRequest or returns an error if something is wrong
 	Build() (MediaTransportControlDataStatusRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (MediaTransportControlDataStatusRequestBuilder) = (*_MediaTransportControl
 
 func (b *_MediaTransportControlDataStatusRequestBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataStatusRequest
 }
 
 func (b *_MediaTransportControlDataStatusRequestBuilder) WithMandatoryFields() MediaTransportControlDataStatusRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_MediaTransportControlDataStatusRequestBuilder) MustBuild() MediaTransp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataStatusRequestBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_MediaTransportControlDataStatusRequest) deepCopy() *_MediaTransportCon
 	_MediaTransportControlDataStatusRequestCopy := &_MediaTransportControlDataStatusRequest{
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataStatusRequestCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataStatusRequestCopy
 }
 

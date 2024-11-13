@@ -85,6 +85,8 @@ type NLMSecurityPayloadBuilder interface {
 	WithPayloadLength(uint16) NLMSecurityPayloadBuilder
 	// WithPayload adds Payload (property field)
 	WithPayload(...byte) NLMSecurityPayloadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMSecurityPayload or returns an error if something is wrong
 	Build() (NLMSecurityPayload, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (NLMSecurityPayloadBuilder) = (*_NLMSecurityPayloadBuilder)(nil)
 
 func (b *_NLMSecurityPayloadBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMSecurityPayload
 }
 
 func (b *_NLMSecurityPayloadBuilder) WithMandatoryFields(payloadLength uint16, payload []byte) NLMSecurityPayloadBuilder {
@@ -139,8 +142,10 @@ func (b *_NLMSecurityPayloadBuilder) MustBuild() NLMSecurityPayload {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMSecurityPayloadBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -317,7 +322,7 @@ func (m *_NLMSecurityPayload) deepCopy() *_NLMSecurityPayload {
 		m.PayloadLength,
 		utils.DeepCopySlice[byte, byte](m.Payload),
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMSecurityPayloadCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMSecurityPayloadCopy
 }
 

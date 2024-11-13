@@ -101,6 +101,8 @@ type QueryDataSetBuilder interface {
 	WithTypeDefinitionNodeBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder
 	// WithValues adds Values (property field)
 	WithValues(...Variant) QueryDataSetBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the QueryDataSet or returns an error if something is wrong
 	Build() (QueryDataSet, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (QueryDataSetBuilder) = (*_QueryDataSetBuilder)(nil)
 
 func (b *_QueryDataSetBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._QueryDataSet
 }
 
 func (b *_QueryDataSetBuilder) WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, values []Variant) QueryDataSetBuilder {
@@ -198,8 +201,10 @@ func (b *_QueryDataSetBuilder) MustBuild() QueryDataSet {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_QueryDataSetBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -408,11 +413,11 @@ func (m *_QueryDataSet) deepCopy() *_QueryDataSet {
 	}
 	_QueryDataSetCopy := &_QueryDataSet{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(ExpandedNodeId),
-		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
+		utils.DeepCopy[ExpandedNodeId](m.NodeId),
+		utils.DeepCopy[ExpandedNodeId](m.TypeDefinitionNode),
 		utils.DeepCopySlice[Variant, Variant](m.Values),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_QueryDataSetCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _QueryDataSetCopy
 }
 

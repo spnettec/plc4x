@@ -86,6 +86,8 @@ type BACnetConstructedDataNetworkNumberQualityBuilder interface {
 	WithNetworkNumberQuality(BACnetNetworkNumberQualityTagged) BACnetConstructedDataNetworkNumberQualityBuilder
 	// WithNetworkNumberQualityBuilder adds NetworkNumberQuality (property field) which is build by the builder
 	WithNetworkNumberQualityBuilder(func(BACnetNetworkNumberQualityTaggedBuilder) BACnetNetworkNumberQualityTaggedBuilder) BACnetConstructedDataNetworkNumberQualityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNetworkNumberQuality or returns an error if something is wrong
 	Build() (BACnetConstructedDataNetworkNumberQuality, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataNetworkNumberQualityBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNetworkNumberQuality
 }
 
 func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) WithMandatoryFields(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetConstructedDataNetworkNumberQualityBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNetworkNumberQualityBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataNetworkNumberQuality) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataNetworkNumberQualityCopy := &_BACnetConstructedDataNetworkNumberQuality{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NetworkNumberQuality.DeepCopy().(BACnetNetworkNumberQualityTagged),
+		utils.DeepCopy[BACnetNetworkNumberQualityTagged](m.NetworkNumberQuality),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNetworkNumberQualityCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNetworkNumberQualityCopy
 }
 

@@ -393,7 +393,7 @@ func (m *_BACnetAuthorizationExemptionTagged) deepCopy() *_BACnetAuthorizationEx
 		return nil
 	}
 	_BACnetAuthorizationExemptionTaggedCopy := &_BACnetAuthorizationExemptionTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

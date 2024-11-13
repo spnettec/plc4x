@@ -84,6 +84,8 @@ type BACnetPriorityValueCharacterStringBuilder interface {
 	WithCharacterStringValue(BACnetApplicationTagCharacterString) BACnetPriorityValueCharacterStringBuilder
 	// WithCharacterStringValueBuilder adds CharacterStringValue (property field) which is build by the builder
 	WithCharacterStringValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetPriorityValueCharacterStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPriorityValueBuilder
 	// Build builds the BACnetPriorityValueCharacterString or returns an error if something is wrong
 	Build() (BACnetPriorityValueCharacterString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPriorityValueCharacterStringBuilder) = (*_BACnetPriorityValueCharac
 
 func (b *_BACnetPriorityValueCharacterStringBuilder) setParent(contract BACnetPriorityValueContract) {
 	b.BACnetPriorityValueContract = contract
+	contract.(*_BACnetPriorityValue)._SubType = b._BACnetPriorityValueCharacterString
 }
 
 func (b *_BACnetPriorityValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetPriorityValueCharacterStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPriorityValueCharacterStringBuilder) MustBuild() BACnetPriorityV
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPriorityValueCharacterStringBuilder) Done() BACnetPriorityValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPriorityValueCharacterString) deepCopy() *_BACnetPriorityValueCh
 	}
 	_BACnetPriorityValueCharacterStringCopy := &_BACnetPriorityValueCharacterString{
 		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
-		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.CharacterStringValue),
 	}
-	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	_BACnetPriorityValueCharacterStringCopy.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
 	return _BACnetPriorityValueCharacterStringCopy
 }
 

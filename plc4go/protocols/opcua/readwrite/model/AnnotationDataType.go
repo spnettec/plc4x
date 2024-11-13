@@ -106,6 +106,8 @@ type AnnotationDataTypeBuilder interface {
 	WithUri(PascalString) AnnotationDataTypeBuilder
 	// WithUriBuilder adds Uri (property field) which is build by the builder
 	WithUriBuilder(func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AnnotationDataType or returns an error if something is wrong
 	Build() (AnnotationDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (AnnotationDataTypeBuilder) = (*_AnnotationDataTypeBuilder)(nil)
 
 func (b *_AnnotationDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AnnotationDataType
 }
 
 func (b *_AnnotationDataTypeBuilder) WithMandatoryFields(annotation PascalString, discipline PascalString, uri PascalString) AnnotationDataTypeBuilder {
@@ -222,8 +225,10 @@ func (b *_AnnotationDataTypeBuilder) MustBuild() AnnotationDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AnnotationDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,11 +417,11 @@ func (m *_AnnotationDataType) deepCopy() *_AnnotationDataType {
 	}
 	_AnnotationDataTypeCopy := &_AnnotationDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Annotation.DeepCopy().(PascalString),
-		m.Discipline.DeepCopy().(PascalString),
-		m.Uri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Annotation),
+		utils.DeepCopy[PascalString](m.Discipline),
+		utils.DeepCopy[PascalString](m.Uri),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AnnotationDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AnnotationDataTypeCopy
 }
 

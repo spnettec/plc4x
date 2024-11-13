@@ -439,9 +439,9 @@ func (m *_BACnetReadAccessPropertyReadResult) deepCopy() *_BACnetReadAccessPrope
 		return nil
 	}
 	_BACnetReadAccessPropertyReadResultCopy := &_BACnetReadAccessPropertyReadResult{
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
-		m.PropertyValue.DeepCopy().(BACnetConstructedData),
-		m.PropertyAccessError.DeepCopy().(ErrorEnclosed),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
+		utils.DeepCopy[BACnetConstructedData](m.PropertyValue),
+		utils.DeepCopy[ErrorEnclosed](m.PropertyAccessError),
 		m.ObjectTypeArgument,
 		m.PropertyIdentifierArgument,
 		m.ArrayIndexArgument,

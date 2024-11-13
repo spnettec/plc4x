@@ -84,6 +84,8 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder interface {
 	WithIntegerValue(BACnetApplicationTagSignedInteger) BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder
 	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
 	WithIntegerValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
 	// Build builds the BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder) = (*_BAC
 
 func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder) setParent(contract BACnetFaultParameterFaultOutOfRangeMinNormalValueContract) {
 	b.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract = contract
+	contract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = b._BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger
 }
 
 func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder) WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder) MustB
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder) Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder().(*_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger) deepCopy() *
 	}
 	_BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerCopy := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger{
 		m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue).deepCopy(),
-		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.IntegerValue),
 	}
-	m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = m
+	_BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerCopy.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = m
 	return _BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerCopy
 }
 

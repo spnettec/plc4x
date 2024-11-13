@@ -130,6 +130,8 @@ type DatagramWriterGroupTransport2DataTypeBuilder interface {
 	WithTopic(PascalString) DatagramWriterGroupTransport2DataTypeBuilder
 	// WithTopicBuilder adds Topic (property field) which is build by the builder
 	WithTopicBuilder(func(PascalStringBuilder) PascalStringBuilder) DatagramWriterGroupTransport2DataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DatagramWriterGroupTransport2DataType or returns an error if something is wrong
 	Build() (DatagramWriterGroupTransport2DataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -153,6 +155,7 @@ var _ (DatagramWriterGroupTransport2DataTypeBuilder) = (*_DatagramWriterGroupTra
 
 func (b *_DatagramWriterGroupTransport2DataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DatagramWriterGroupTransport2DataType
 }
 
 func (b *_DatagramWriterGroupTransport2DataTypeBuilder) WithMandatoryFields(messageRepeatCount uint8, messageRepeatDelay float64, address ExtensionObject, qosCategory PascalString, datagramQos []ExtensionObject, discoveryAnnounceRate uint32, topic PascalString) DatagramWriterGroupTransport2DataTypeBuilder {
@@ -266,8 +269,10 @@ func (b *_DatagramWriterGroupTransport2DataTypeBuilder) MustBuild() DatagramWrit
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DatagramWriterGroupTransport2DataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -546,13 +551,13 @@ func (m *_DatagramWriterGroupTransport2DataType) deepCopy() *_DatagramWriterGrou
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.MessageRepeatCount,
 		m.MessageRepeatDelay,
-		m.Address.DeepCopy().(ExtensionObject),
-		m.QosCategory.DeepCopy().(PascalString),
+		utils.DeepCopy[ExtensionObject](m.Address),
+		utils.DeepCopy[PascalString](m.QosCategory),
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DatagramQos),
 		m.DiscoveryAnnounceRate,
-		m.Topic.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Topic),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DatagramWriterGroupTransport2DataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DatagramWriterGroupTransport2DataTypeCopy
 }
 

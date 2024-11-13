@@ -84,6 +84,8 @@ type ComObjectTableRealisationType6Builder interface {
 	WithComObjectDescriptors(GroupObjectDescriptorRealisationType6) ComObjectTableRealisationType6Builder
 	// WithComObjectDescriptorsBuilder adds ComObjectDescriptors (property field) which is build by the builder
 	WithComObjectDescriptorsBuilder(func(GroupObjectDescriptorRealisationType6Builder) GroupObjectDescriptorRealisationType6Builder) ComObjectTableRealisationType6Builder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ComObjectTableBuilder
 	// Build builds the ComObjectTableRealisationType6 or returns an error if something is wrong
 	Build() (ComObjectTableRealisationType6, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (ComObjectTableRealisationType6Builder) = (*_ComObjectTableRealisationType
 
 func (b *_ComObjectTableRealisationType6Builder) setParent(contract ComObjectTableContract) {
 	b.ComObjectTableContract = contract
+	contract.(*_ComObjectTable)._SubType = b._ComObjectTableRealisationType6
 }
 
 func (b *_ComObjectTableRealisationType6Builder) WithMandatoryFields(comObjectDescriptors GroupObjectDescriptorRealisationType6) ComObjectTableRealisationType6Builder {
@@ -152,8 +155,10 @@ func (b *_ComObjectTableRealisationType6Builder) MustBuild() ComObjectTableReali
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ComObjectTableRealisationType6Builder) Done() ComObjectTableBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewComObjectTableBuilder().(*_ComObjectTableBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_ComObjectTableRealisationType6) deepCopy() *_ComObjectTableRealisation
 	}
 	_ComObjectTableRealisationType6Copy := &_ComObjectTableRealisationType6{
 		m.ComObjectTableContract.(*_ComObjectTable).deepCopy(),
-		m.ComObjectDescriptors.DeepCopy().(GroupObjectDescriptorRealisationType6),
+		utils.DeepCopy[GroupObjectDescriptorRealisationType6](m.ComObjectDescriptors),
 	}
-	m.ComObjectTableContract.(*_ComObjectTable)._SubType = m
+	_ComObjectTableRealisationType6Copy.ComObjectTableContract.(*_ComObjectTable)._SubType = m
 	return _ComObjectTableRealisationType6Copy
 }
 

@@ -85,6 +85,8 @@ type VariantByteStringBuilder interface {
 	WithOptionalArrayLength(int32) VariantByteStringBuilder
 	// WithValue adds Value (property field)
 	WithValue(...ByteStringArray) VariantByteStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantByteString or returns an error if something is wrong
 	Build() (VariantByteString, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantByteStringBuilder) = (*_VariantByteStringBuilder)(nil)
 
 func (b *_VariantByteStringBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantByteString
 }
 
 func (b *_VariantByteStringBuilder) WithMandatoryFields(value []ByteStringArray) VariantByteStringBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantByteStringBuilder) MustBuild() VariantByteString {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantByteStringBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -325,7 +330,7 @@ func (m *_VariantByteString) deepCopy() *_VariantByteString {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[ByteStringArray, ByteStringArray](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantByteStringCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantByteStringCopy
 }
 

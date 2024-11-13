@@ -330,8 +330,8 @@ func (m *_BACnetDateRange) deepCopy() *_BACnetDateRange {
 		return nil
 	}
 	_BACnetDateRangeCopy := &_BACnetDateRange{
-		m.StartDate.DeepCopy().(BACnetApplicationTagDate),
-		m.EndDate.DeepCopy().(BACnetApplicationTagDate),
+		utils.DeepCopy[BACnetApplicationTagDate](m.StartDate),
+		utils.DeepCopy[BACnetApplicationTagDate](m.EndDate),
 	}
 	return _BACnetDateRangeCopy
 }

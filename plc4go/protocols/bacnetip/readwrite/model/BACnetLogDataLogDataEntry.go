@@ -101,50 +101,23 @@ type BACnetLogDataLogDataEntryBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogDataLogDataEntryBuilder
 	// AsBACnetLogDataLogDataEntryBooleanValue converts this build to a subType of BACnetLogDataLogDataEntry. It is always possible to return to current builder using Done()
-	AsBACnetLogDataLogDataEntryBooleanValue() interface {
-		BACnetLogDataLogDataEntryBooleanValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}
+	AsBACnetLogDataLogDataEntryBooleanValue() BACnetLogDataLogDataEntryBooleanValueBuilder
 	// AsBACnetLogDataLogDataEntryRealValue converts this build to a subType of BACnetLogDataLogDataEntry. It is always possible to return to current builder using Done()
-	AsBACnetLogDataLogDataEntryRealValue() interface {
-		BACnetLogDataLogDataEntryRealValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}
+	AsBACnetLogDataLogDataEntryRealValue() BACnetLogDataLogDataEntryRealValueBuilder
 	// AsBACnetLogDataLogDataEntryEnumeratedValue converts this build to a subType of BACnetLogDataLogDataEntry. It is always possible to return to current builder using Done()
-	AsBACnetLogDataLogDataEntryEnumeratedValue() interface {
-		BACnetLogDataLogDataEntryEnumeratedValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}
+	AsBACnetLogDataLogDataEntryEnumeratedValue() BACnetLogDataLogDataEntryEnumeratedValueBuilder
 	// AsBACnetLogDataLogDataEntryUnsignedValue converts this build to a subType of BACnetLogDataLogDataEntry. It is always possible to return to current builder using Done()
-	AsBACnetLogDataLogDataEntryUnsignedValue() interface {
-		BACnetLogDataLogDataEntryUnsignedValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}
+	AsBACnetLogDataLogDataEntryUnsignedValue() BACnetLogDataLogDataEntryUnsignedValueBuilder
 	// AsBACnetLogDataLogDataEntryIntegerValue converts this build to a subType of BACnetLogDataLogDataEntry. It is always possible to return to current builder using Done()
-	AsBACnetLogDataLogDataEntryIntegerValue() interface {
-		BACnetLogDataLogDataEntryIntegerValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}
+	AsBACnetLogDataLogDataEntryIntegerValue() BACnetLogDataLogDataEntryIntegerValueBuilder
 	// AsBACnetLogDataLogDataEntryBitStringValue converts this build to a subType of BACnetLogDataLogDataEntry. It is always possible to return to current builder using Done()
-	AsBACnetLogDataLogDataEntryBitStringValue() interface {
-		BACnetLogDataLogDataEntryBitStringValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}
+	AsBACnetLogDataLogDataEntryBitStringValue() BACnetLogDataLogDataEntryBitStringValueBuilder
 	// AsBACnetLogDataLogDataEntryNullValue converts this build to a subType of BACnetLogDataLogDataEntry. It is always possible to return to current builder using Done()
-	AsBACnetLogDataLogDataEntryNullValue() interface {
-		BACnetLogDataLogDataEntryNullValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}
+	AsBACnetLogDataLogDataEntryNullValue() BACnetLogDataLogDataEntryNullValueBuilder
 	// AsBACnetLogDataLogDataEntryFailure converts this build to a subType of BACnetLogDataLogDataEntry. It is always possible to return to current builder using Done()
-	AsBACnetLogDataLogDataEntryFailure() interface {
-		BACnetLogDataLogDataEntryFailureBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}
+	AsBACnetLogDataLogDataEntryFailure() BACnetLogDataLogDataEntryFailureBuilder
 	// AsBACnetLogDataLogDataEntryAnyValue converts this build to a subType of BACnetLogDataLogDataEntry. It is always possible to return to current builder using Done()
-	AsBACnetLogDataLogDataEntryAnyValue() interface {
-		BACnetLogDataLogDataEntryAnyValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}
+	AsBACnetLogDataLogDataEntryAnyValue() BACnetLogDataLogDataEntryAnyValueBuilder
 	// Build builds the BACnetLogDataLogDataEntry or returns an error if something is wrong
 	PartialBuild() (BACnetLogDataLogDataEntryContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -219,14 +192,8 @@ func (b *_BACnetLogDataLogDataEntryBuilder) PartialMustBuild() BACnetLogDataLogD
 	return build
 }
 
-func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryBooleanValue() interface {
-	BACnetLogDataLogDataEntryBooleanValueBuilder
-	Done() BACnetLogDataLogDataEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogDataLogDataEntryBooleanValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}); ok {
+func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryBooleanValue() BACnetLogDataLogDataEntryBooleanValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogDataLogDataEntryBooleanValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogDataLogDataEntryBooleanValueBuilder().(*_BACnetLogDataLogDataEntryBooleanValueBuilder)
@@ -235,14 +202,8 @@ func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryBooleanVa
 	return cb
 }
 
-func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryRealValue() interface {
-	BACnetLogDataLogDataEntryRealValueBuilder
-	Done() BACnetLogDataLogDataEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogDataLogDataEntryRealValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}); ok {
+func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryRealValue() BACnetLogDataLogDataEntryRealValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogDataLogDataEntryRealValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogDataLogDataEntryRealValueBuilder().(*_BACnetLogDataLogDataEntryRealValueBuilder)
@@ -251,14 +212,8 @@ func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryRealValue
 	return cb
 }
 
-func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryEnumeratedValue() interface {
-	BACnetLogDataLogDataEntryEnumeratedValueBuilder
-	Done() BACnetLogDataLogDataEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogDataLogDataEntryEnumeratedValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}); ok {
+func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryEnumeratedValue() BACnetLogDataLogDataEntryEnumeratedValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogDataLogDataEntryEnumeratedValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogDataLogDataEntryEnumeratedValueBuilder().(*_BACnetLogDataLogDataEntryEnumeratedValueBuilder)
@@ -267,14 +222,8 @@ func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryEnumerate
 	return cb
 }
 
-func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryUnsignedValue() interface {
-	BACnetLogDataLogDataEntryUnsignedValueBuilder
-	Done() BACnetLogDataLogDataEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogDataLogDataEntryUnsignedValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}); ok {
+func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryUnsignedValue() BACnetLogDataLogDataEntryUnsignedValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogDataLogDataEntryUnsignedValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogDataLogDataEntryUnsignedValueBuilder().(*_BACnetLogDataLogDataEntryUnsignedValueBuilder)
@@ -283,14 +232,8 @@ func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryUnsignedV
 	return cb
 }
 
-func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryIntegerValue() interface {
-	BACnetLogDataLogDataEntryIntegerValueBuilder
-	Done() BACnetLogDataLogDataEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogDataLogDataEntryIntegerValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}); ok {
+func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryIntegerValue() BACnetLogDataLogDataEntryIntegerValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogDataLogDataEntryIntegerValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogDataLogDataEntryIntegerValueBuilder().(*_BACnetLogDataLogDataEntryIntegerValueBuilder)
@@ -299,14 +242,8 @@ func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryIntegerVa
 	return cb
 }
 
-func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryBitStringValue() interface {
-	BACnetLogDataLogDataEntryBitStringValueBuilder
-	Done() BACnetLogDataLogDataEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogDataLogDataEntryBitStringValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}); ok {
+func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryBitStringValue() BACnetLogDataLogDataEntryBitStringValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogDataLogDataEntryBitStringValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogDataLogDataEntryBitStringValueBuilder().(*_BACnetLogDataLogDataEntryBitStringValueBuilder)
@@ -315,14 +252,8 @@ func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryBitString
 	return cb
 }
 
-func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryNullValue() interface {
-	BACnetLogDataLogDataEntryNullValueBuilder
-	Done() BACnetLogDataLogDataEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogDataLogDataEntryNullValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}); ok {
+func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryNullValue() BACnetLogDataLogDataEntryNullValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogDataLogDataEntryNullValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogDataLogDataEntryNullValueBuilder().(*_BACnetLogDataLogDataEntryNullValueBuilder)
@@ -331,14 +262,8 @@ func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryNullValue
 	return cb
 }
 
-func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryFailure() interface {
-	BACnetLogDataLogDataEntryFailureBuilder
-	Done() BACnetLogDataLogDataEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogDataLogDataEntryFailureBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}); ok {
+func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryFailure() BACnetLogDataLogDataEntryFailureBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogDataLogDataEntryFailureBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogDataLogDataEntryFailureBuilder().(*_BACnetLogDataLogDataEntryFailureBuilder)
@@ -347,14 +272,8 @@ func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryFailure()
 	return cb
 }
 
-func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryAnyValue() interface {
-	BACnetLogDataLogDataEntryAnyValueBuilder
-	Done() BACnetLogDataLogDataEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogDataLogDataEntryAnyValueBuilder
-		Done() BACnetLogDataLogDataEntryBuilder
-	}); ok {
+func (b *_BACnetLogDataLogDataEntryBuilder) AsBACnetLogDataLogDataEntryAnyValue() BACnetLogDataLogDataEntryAnyValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogDataLogDataEntryAnyValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogDataLogDataEntryAnyValueBuilder().(*_BACnetLogDataLogDataEntryAnyValueBuilder)
@@ -608,7 +527,7 @@ func (m *_BACnetLogDataLogDataEntry) deepCopy() *_BACnetLogDataLogDataEntry {
 	}
 	_BACnetLogDataLogDataEntryCopy := &_BACnetLogDataLogDataEntry{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetLogDataLogDataEntryCopy
 }

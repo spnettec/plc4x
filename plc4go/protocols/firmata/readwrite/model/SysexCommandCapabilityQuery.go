@@ -71,6 +71,8 @@ type SysexCommandCapabilityQueryBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SysexCommandCapabilityQueryBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandCapabilityQuery or returns an error if something is wrong
 	Build() (SysexCommandCapabilityQuery, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SysexCommandCapabilityQueryBuilder) = (*_SysexCommandCapabilityQueryBuild
 
 func (b *_SysexCommandCapabilityQueryBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandCapabilityQuery
 }
 
 func (b *_SysexCommandCapabilityQueryBuilder) WithMandatoryFields() SysexCommandCapabilityQueryBuilder {
@@ -115,8 +118,10 @@ func (b *_SysexCommandCapabilityQueryBuilder) MustBuild() SysexCommandCapability
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandCapabilityQueryBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -249,7 +254,7 @@ func (m *_SysexCommandCapabilityQuery) deepCopy() *_SysexCommandCapabilityQuery 
 	_SysexCommandCapabilityQueryCopy := &_SysexCommandCapabilityQuery{
 		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandCapabilityQueryCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandCapabilityQueryCopy
 }
 

@@ -79,6 +79,8 @@ type BACnetConstructedDataFaultSignalsBuilder interface {
 	WithMandatoryFields(faultSignals []BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder
 	// WithFaultSignals adds FaultSignals (property field)
 	WithFaultSignals(...BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataFaultSignals or returns an error if something is wrong
 	Build() (BACnetConstructedDataFaultSignals, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataFaultSignalsBuilder) = (*_BACnetConstructedDataFault
 
 func (b *_BACnetConstructedDataFaultSignalsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataFaultSignals
 }
 
 func (b *_BACnetConstructedDataFaultSignalsBuilder) WithMandatoryFields(faultSignals []BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataFaultSignalsBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataFaultSignalsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataFaultSignals) deepCopy() *_BACnetConstructedDataF
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetLiftFaultTagged, BACnetLiftFaultTagged](m.FaultSignals),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataFaultSignalsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataFaultSignalsCopy
 }
 

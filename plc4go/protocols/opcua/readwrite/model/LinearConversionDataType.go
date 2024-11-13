@@ -97,6 +97,8 @@ type LinearConversionDataTypeBuilder interface {
 	WithDivisor(float32) LinearConversionDataTypeBuilder
 	// WithFinalAddend adds FinalAddend (property field)
 	WithFinalAddend(float32) LinearConversionDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the LinearConversionDataType or returns an error if something is wrong
 	Build() (LinearConversionDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (LinearConversionDataTypeBuilder) = (*_LinearConversionDataTypeBuilder)(ni
 
 func (b *_LinearConversionDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._LinearConversionDataType
 }
 
 func (b *_LinearConversionDataTypeBuilder) WithMandatoryFields(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) LinearConversionDataTypeBuilder {
@@ -161,8 +164,10 @@ func (b *_LinearConversionDataTypeBuilder) MustBuild() LinearConversionDataType 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LinearConversionDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -373,7 +378,7 @@ func (m *_LinearConversionDataType) deepCopy() *_LinearConversionDataType {
 		m.Divisor,
 		m.FinalAddend,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_LinearConversionDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _LinearConversionDataTypeCopy
 }
 

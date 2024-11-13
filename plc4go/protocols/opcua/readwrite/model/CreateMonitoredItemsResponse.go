@@ -96,6 +96,8 @@ type CreateMonitoredItemsResponseBuilder interface {
 	WithResults(...MonitoredItemCreateResult) CreateMonitoredItemsResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) CreateMonitoredItemsResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CreateMonitoredItemsResponse or returns an error if something is wrong
 	Build() (CreateMonitoredItemsResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (CreateMonitoredItemsResponseBuilder) = (*_CreateMonitoredItemsResponseBui
 
 func (b *_CreateMonitoredItemsResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CreateMonitoredItemsResponse
 }
 
 func (b *_CreateMonitoredItemsResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []MonitoredItemCreateResult, diagnosticInfos []DiagnosticInfo) CreateMonitoredItemsResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_CreateMonitoredItemsResponseBuilder) MustBuild() CreateMonitoredItemsR
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CreateMonitoredItemsResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_CreateMonitoredItemsResponse) deepCopy() *_CreateMonitoredItemsRespons
 	}
 	_CreateMonitoredItemsResponseCopy := &_CreateMonitoredItemsResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[MonitoredItemCreateResult, MonitoredItemCreateResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CreateMonitoredItemsResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CreateMonitoredItemsResponseCopy
 }
 

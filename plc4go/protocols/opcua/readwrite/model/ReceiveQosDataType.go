@@ -71,6 +71,8 @@ type ReceiveQosDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ReceiveQosDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReceiveQosDataType or returns an error if something is wrong
 	Build() (ReceiveQosDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ReceiveQosDataTypeBuilder) = (*_ReceiveQosDataTypeBuilder)(nil)
 
 func (b *_ReceiveQosDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReceiveQosDataType
 }
 
 func (b *_ReceiveQosDataTypeBuilder) WithMandatoryFields() ReceiveQosDataTypeBuilder {
@@ -115,8 +118,10 @@ func (b *_ReceiveQosDataTypeBuilder) MustBuild() ReceiveQosDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReceiveQosDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ReceiveQosDataType) deepCopy() *_ReceiveQosDataType {
 	_ReceiveQosDataTypeCopy := &_ReceiveQosDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReceiveQosDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReceiveQosDataTypeCopy
 }
 

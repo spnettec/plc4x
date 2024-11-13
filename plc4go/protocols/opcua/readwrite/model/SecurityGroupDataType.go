@@ -142,6 +142,8 @@ type SecurityGroupDataTypeBuilder interface {
 	WithRolePermissions(...RolePermissionType) SecurityGroupDataTypeBuilder
 	// WithGroupProperties adds GroupProperties (property field)
 	WithGroupProperties(...KeyValuePair) SecurityGroupDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SecurityGroupDataType or returns an error if something is wrong
 	Build() (SecurityGroupDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -165,6 +167,7 @@ var _ (SecurityGroupDataTypeBuilder) = (*_SecurityGroupDataTypeBuilder)(nil)
 
 func (b *_SecurityGroupDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SecurityGroupDataType
 }
 
 func (b *_SecurityGroupDataTypeBuilder) WithMandatoryFields(name PascalString, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, rolePermissions []RolePermissionType, groupProperties []KeyValuePair) SecurityGroupDataTypeBuilder {
@@ -288,8 +291,10 @@ func (b *_SecurityGroupDataTypeBuilder) MustBuild() SecurityGroupDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityGroupDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -640,17 +645,17 @@ func (m *_SecurityGroupDataType) deepCopy() *_SecurityGroupDataType {
 	}
 	_SecurityGroupDataTypeCopy := &_SecurityGroupDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Name),
 		utils.DeepCopySlice[PascalString, PascalString](m.SecurityGroupFolder),
 		m.KeyLifetime,
-		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.SecurityPolicyUri),
 		m.MaxFutureKeyCount,
 		m.MaxPastKeyCount,
-		m.SecurityGroupId.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.SecurityGroupId),
 		utils.DeepCopySlice[RolePermissionType, RolePermissionType](m.RolePermissions),
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.GroupProperties),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SecurityGroupDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SecurityGroupDataTypeCopy
 }
 

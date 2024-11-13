@@ -72,6 +72,8 @@ type BVLCReadBroadcastDistributionTableBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BVLCReadBroadcastDistributionTableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BVLCBuilder
 	// Build builds the BVLCReadBroadcastDistributionTable or returns an error if something is wrong
 	Build() (BVLCReadBroadcastDistributionTable, error)
 	// MustBuild does the same as Build but panics on error
@@ -95,6 +97,7 @@ var _ (BVLCReadBroadcastDistributionTableBuilder) = (*_BVLCReadBroadcastDistribu
 
 func (b *_BVLCReadBroadcastDistributionTableBuilder) setParent(contract BVLCContract) {
 	b.BVLCContract = contract
+	contract.(*_BVLC)._SubType = b._BVLCReadBroadcastDistributionTable
 }
 
 func (b *_BVLCReadBroadcastDistributionTableBuilder) WithMandatoryFields() BVLCReadBroadcastDistributionTableBuilder {
@@ -116,8 +119,10 @@ func (b *_BVLCReadBroadcastDistributionTableBuilder) MustBuild() BVLCReadBroadca
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BVLCReadBroadcastDistributionTableBuilder) Done() BVLCBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBVLCBuilder().(*_BVLCBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -246,7 +251,7 @@ func (m *_BVLCReadBroadcastDistributionTable) deepCopy() *_BVLCReadBroadcastDist
 	_BVLCReadBroadcastDistributionTableCopy := &_BVLCReadBroadcastDistributionTable{
 		m.BVLCContract.(*_BVLC).deepCopy(),
 	}
-	m.BVLCContract.(*_BVLC)._SubType = m
+	_BVLCReadBroadcastDistributionTableCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCReadBroadcastDistributionTableCopy
 }
 

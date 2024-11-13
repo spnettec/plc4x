@@ -96,6 +96,8 @@ type UpdateDataDetailsBuilder interface {
 	WithPerformInsertReplace(PerformUpdateType) UpdateDataDetailsBuilder
 	// WithUpdateValues adds UpdateValues (property field)
 	WithUpdateValues(...DataValue) UpdateDataDetailsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the UpdateDataDetails or returns an error if something is wrong
 	Build() (UpdateDataDetails, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (UpdateDataDetailsBuilder) = (*_UpdateDataDetailsBuilder)(nil)
 
 func (b *_UpdateDataDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._UpdateDataDetails
 }
 
 func (b *_UpdateDataDetailsBuilder) WithMandatoryFields(nodeId NodeId, performInsertReplace PerformUpdateType, updateValues []DataValue) UpdateDataDetailsBuilder {
@@ -174,8 +177,10 @@ func (b *_UpdateDataDetailsBuilder) MustBuild() UpdateDataDetails {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_UpdateDataDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -384,11 +389,11 @@ func (m *_UpdateDataDetails) deepCopy() *_UpdateDataDetails {
 	}
 	_UpdateDataDetailsCopy := &_UpdateDataDetails{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.NodeId),
 		m.PerformInsertReplace,
 		utils.DeepCopySlice[DataValue, DataValue](m.UpdateValues),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_UpdateDataDetailsCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UpdateDataDetailsCopy
 }
 

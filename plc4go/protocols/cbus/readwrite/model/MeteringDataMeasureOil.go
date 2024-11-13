@@ -71,6 +71,8 @@ type MeteringDataMeasureOilBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() MeteringDataMeasureOilBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MeteringDataBuilder
 	// Build builds the MeteringDataMeasureOil or returns an error if something is wrong
 	Build() (MeteringDataMeasureOil, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (MeteringDataMeasureOilBuilder) = (*_MeteringDataMeasureOilBuilder)(nil)
 
 func (b *_MeteringDataMeasureOilBuilder) setParent(contract MeteringDataContract) {
 	b.MeteringDataContract = contract
+	contract.(*_MeteringData)._SubType = b._MeteringDataMeasureOil
 }
 
 func (b *_MeteringDataMeasureOilBuilder) WithMandatoryFields() MeteringDataMeasureOilBuilder {
@@ -115,8 +118,10 @@ func (b *_MeteringDataMeasureOilBuilder) MustBuild() MeteringDataMeasureOil {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MeteringDataMeasureOilBuilder) Done() MeteringDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMeteringDataBuilder().(*_MeteringDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_MeteringDataMeasureOil) deepCopy() *_MeteringDataMeasureOil {
 	_MeteringDataMeasureOilCopy := &_MeteringDataMeasureOil{
 		m.MeteringDataContract.(*_MeteringData).deepCopy(),
 	}
-	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	_MeteringDataMeasureOilCopy.MeteringDataContract.(*_MeteringData)._SubType = m
 	return _MeteringDataMeasureOilCopy
 }
 

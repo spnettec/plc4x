@@ -71,6 +71,8 @@ type MeteringDataMeasureGasBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() MeteringDataMeasureGasBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MeteringDataBuilder
 	// Build builds the MeteringDataMeasureGas or returns an error if something is wrong
 	Build() (MeteringDataMeasureGas, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (MeteringDataMeasureGasBuilder) = (*_MeteringDataMeasureGasBuilder)(nil)
 
 func (b *_MeteringDataMeasureGasBuilder) setParent(contract MeteringDataContract) {
 	b.MeteringDataContract = contract
+	contract.(*_MeteringData)._SubType = b._MeteringDataMeasureGas
 }
 
 func (b *_MeteringDataMeasureGasBuilder) WithMandatoryFields() MeteringDataMeasureGasBuilder {
@@ -115,8 +118,10 @@ func (b *_MeteringDataMeasureGasBuilder) MustBuild() MeteringDataMeasureGas {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MeteringDataMeasureGasBuilder) Done() MeteringDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMeteringDataBuilder().(*_MeteringDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_MeteringDataMeasureGas) deepCopy() *_MeteringDataMeasureGas {
 	_MeteringDataMeasureGasCopy := &_MeteringDataMeasureGas{
 		m.MeteringDataContract.(*_MeteringData).deepCopy(),
 	}
-	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	_MeteringDataMeasureGasCopy.MeteringDataContract.(*_MeteringData)._SubType = m
 	return _MeteringDataMeasureGasCopy
 }
 

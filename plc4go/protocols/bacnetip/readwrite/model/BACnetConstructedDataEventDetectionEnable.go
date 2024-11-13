@@ -86,6 +86,8 @@ type BACnetConstructedDataEventDetectionEnableBuilder interface {
 	WithEventDetectionEnable(BACnetApplicationTagBoolean) BACnetConstructedDataEventDetectionEnableBuilder
 	// WithEventDetectionEnableBuilder adds EventDetectionEnable (property field) which is build by the builder
 	WithEventDetectionEnableBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEventDetectionEnableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEventDetectionEnable or returns an error if something is wrong
 	Build() (BACnetConstructedDataEventDetectionEnable, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataEventDetectionEnableBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataEventDetectionEnableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEventDetectionEnable
 }
 
 func (b *_BACnetConstructedDataEventDetectionEnableBuilder) WithMandatoryFields(eventDetectionEnable BACnetApplicationTagBoolean) BACnetConstructedDataEventDetectionEnableBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataEventDetectionEnableBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEventDetectionEnableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataEventDetectionEnable) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataEventDetectionEnableCopy := &_BACnetConstructedDataEventDetectionEnable{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.EventDetectionEnable.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.EventDetectionEnable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEventDetectionEnableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEventDetectionEnableCopy
 }
 

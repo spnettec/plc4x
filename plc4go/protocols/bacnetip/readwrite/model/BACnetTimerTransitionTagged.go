@@ -333,7 +333,7 @@ func (m *_BACnetTimerTransitionTagged) deepCopy() *_BACnetTimerTransitionTagged 
 		return nil
 	}
 	_BACnetTimerTransitionTaggedCopy := &_BACnetTimerTransitionTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

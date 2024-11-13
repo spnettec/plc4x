@@ -798,7 +798,7 @@ func (m *_BACnetPriorityArray) deepCopy() *_BACnetPriorityArray {
 		return nil
 	}
 	_BACnetPriorityArrayCopy := &_BACnetPriorityArray{
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetPriorityValue, BACnetPriorityValue](m.Data),
 		m.ObjectTypeArgument,
 		m.TagNumber,

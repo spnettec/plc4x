@@ -71,6 +71,8 @@ type OrientationBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() OrientationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the Orientation or returns an error if something is wrong
 	Build() (Orientation, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (OrientationBuilder) = (*_OrientationBuilder)(nil)
 
 func (b *_OrientationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._Orientation
 }
 
 func (b *_OrientationBuilder) WithMandatoryFields() OrientationBuilder {
@@ -115,8 +118,10 @@ func (b *_OrientationBuilder) MustBuild() Orientation {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_OrientationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_Orientation) deepCopy() *_Orientation {
 	_OrientationCopy := &_Orientation{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_OrientationCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _OrientationCopy
 }
 

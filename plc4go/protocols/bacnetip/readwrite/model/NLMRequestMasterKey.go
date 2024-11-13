@@ -85,6 +85,8 @@ type NLMRequestMasterKeyBuilder interface {
 	WithNumberOfSupportedKeyAlgorithms(uint8) NLMRequestMasterKeyBuilder
 	// WithEncryptionAndSignatureAlgorithms adds EncryptionAndSignatureAlgorithms (property field)
 	WithEncryptionAndSignatureAlgorithms(...byte) NLMRequestMasterKeyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMRequestMasterKey or returns an error if something is wrong
 	Build() (NLMRequestMasterKey, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (NLMRequestMasterKeyBuilder) = (*_NLMRequestMasterKeyBuilder)(nil)
 
 func (b *_NLMRequestMasterKeyBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMRequestMasterKey
 }
 
 func (b *_NLMRequestMasterKeyBuilder) WithMandatoryFields(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte) NLMRequestMasterKeyBuilder {
@@ -139,8 +142,10 @@ func (b *_NLMRequestMasterKeyBuilder) MustBuild() NLMRequestMasterKey {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMRequestMasterKeyBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -317,7 +322,7 @@ func (m *_NLMRequestMasterKey) deepCopy() *_NLMRequestMasterKey {
 		m.NumberOfSupportedKeyAlgorithms,
 		utils.DeepCopySlice[byte, byte](m.EncryptionAndSignatureAlgorithms),
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMRequestMasterKeyCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMRequestMasterKeyCopy
 }
 

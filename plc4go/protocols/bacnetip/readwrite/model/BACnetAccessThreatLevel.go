@@ -279,7 +279,7 @@ func (m *_BACnetAccessThreatLevel) deepCopy() *_BACnetAccessThreatLevel {
 		return nil
 	}
 	_BACnetAccessThreatLevelCopy := &_BACnetAccessThreatLevel{
-		m.ThreatLevel.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ThreatLevel),
 	}
 	return _BACnetAccessThreatLevelCopy
 }

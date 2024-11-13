@@ -86,6 +86,8 @@ type BACnetConstructedDataIPv6DHCPLeaseTimeBuilder interface {
 	WithIpv6DhcpLeaseTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6DHCPLeaseTimeBuilder
 	// WithIpv6DhcpLeaseTimeBuilder adds Ipv6DhcpLeaseTime (property field) which is build by the builder
 	WithIpv6DhcpLeaseTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPv6DHCPLeaseTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIPv6DHCPLeaseTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataIPv6DHCPLeaseTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIPv6DHCPLeaseTimeBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataIPv6DHCPLeaseTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIPv6DHCPLeaseTime
 }
 
 func (b *_BACnetConstructedDataIPv6DHCPLeaseTimeBuilder) WithMandatoryFields(ipv6DhcpLeaseTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6DHCPLeaseTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIPv6DHCPLeaseTimeBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIPv6DHCPLeaseTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataIPv6DHCPLeaseTimeCopy := &_BACnetConstructedDataIPv6DHCPLeaseTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Ipv6DhcpLeaseTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.Ipv6DhcpLeaseTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIPv6DHCPLeaseTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIPv6DHCPLeaseTimeCopy
 }
 

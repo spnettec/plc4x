@@ -121,20 +121,11 @@ type BACnetConfirmedServiceRequestReadRangeRangeBuilder interface {
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestReadRangeRangeBuilder
 	// AsBACnetConfirmedServiceRequestReadRangeRangeByPosition converts this build to a subType of BACnetConfirmedServiceRequestReadRangeRange. It is always possible to return to current builder using Done()
-	AsBACnetConfirmedServiceRequestReadRangeRangeByPosition() interface {
-		BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
-		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
-	}
+	AsBACnetConfirmedServiceRequestReadRangeRangeByPosition() BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
 	// AsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber converts this build to a subType of BACnetConfirmedServiceRequestReadRangeRange. It is always possible to return to current builder using Done()
-	AsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() interface {
-		BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
-		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
-	}
+	AsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
 	// AsBACnetConfirmedServiceRequestReadRangeRangeByTime converts this build to a subType of BACnetConfirmedServiceRequestReadRangeRange. It is always possible to return to current builder using Done()
-	AsBACnetConfirmedServiceRequestReadRangeRangeByTime() interface {
-		BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
-		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
-	}
+	AsBACnetConfirmedServiceRequestReadRangeRangeByTime() BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
 	// Build builds the BACnetConfirmedServiceRequestReadRangeRange or returns an error if something is wrong
 	PartialBuild() (BACnetConfirmedServiceRequestReadRangeRangeContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -257,14 +248,8 @@ func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) PartialMustBuild()
 	return build
 }
 
-func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedServiceRequestReadRangeRangeByPosition() interface {
-	BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
-	Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
-		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
-	}); ok {
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedServiceRequestReadRangeRangeByPosition() BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder {
+	if cb, ok := b.childBuilder.(BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder)
@@ -273,14 +258,8 @@ func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedS
 	return cb
 }
 
-func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() interface {
-	BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
-	Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
-		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
-	}); ok {
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder {
+	if cb, ok := b.childBuilder.(BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder)
@@ -289,14 +268,8 @@ func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedS
 	return cb
 }
 
-func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedServiceRequestReadRangeRangeByTime() interface {
-	BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
-	Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
-		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
-	}); ok {
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedServiceRequestReadRangeRangeByTime() BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder {
+	if cb, ok := b.childBuilder.(BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder)
@@ -561,9 +534,9 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) deepCopy() *_BACnetConfir
 	}
 	_BACnetConfirmedServiceRequestReadRangeRangeCopy := &_BACnetConfirmedServiceRequestReadRangeRange{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
 	return _BACnetConfirmedServiceRequestReadRangeRangeCopy
 }

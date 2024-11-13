@@ -99,6 +99,8 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder interface {
 	WithOptionalAlarmtype(AlarmStateType) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
 	// WithReserve adds Reserve (property field)
 	WithOptionalReserve(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest or returns an error if something is wrong
 	Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -122,6 +124,7 @@ var _ (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) = (*_S7Pay
 
 func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) WithMandatoryFields(subscription uint8, magicKey string) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder {
@@ -163,8 +166,10 @@ func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) MustBui
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,7 +409,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) deepCopy() *_S
 		utils.CopyPtr[uint8](m.Reserve),
 		m.reservedField0,
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestCopy
 }
 

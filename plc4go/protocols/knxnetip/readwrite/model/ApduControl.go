@@ -89,25 +89,13 @@ type ApduControlBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduControlBuilder
 	// AsApduControlConnect converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
-	AsApduControlConnect() interface {
-		ApduControlConnectBuilder
-		Done() ApduControlBuilder
-	}
+	AsApduControlConnect() ApduControlConnectBuilder
 	// AsApduControlDisconnect converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
-	AsApduControlDisconnect() interface {
-		ApduControlDisconnectBuilder
-		Done() ApduControlBuilder
-	}
+	AsApduControlDisconnect() ApduControlDisconnectBuilder
 	// AsApduControlAck converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
-	AsApduControlAck() interface {
-		ApduControlAckBuilder
-		Done() ApduControlBuilder
-	}
+	AsApduControlAck() ApduControlAckBuilder
 	// AsApduControlNack converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
-	AsApduControlNack() interface {
-		ApduControlNackBuilder
-		Done() ApduControlBuilder
-	}
+	AsApduControlNack() ApduControlNackBuilder
 	// Build builds the ApduControl or returns an error if something is wrong
 	PartialBuild() (ApduControlContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -158,14 +146,8 @@ func (b *_ApduControlBuilder) PartialMustBuild() ApduControlContract {
 	return build
 }
 
-func (b *_ApduControlBuilder) AsApduControlConnect() interface {
-	ApduControlConnectBuilder
-	Done() ApduControlBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduControlConnectBuilder
-		Done() ApduControlBuilder
-	}); ok {
+func (b *_ApduControlBuilder) AsApduControlConnect() ApduControlConnectBuilder {
+	if cb, ok := b.childBuilder.(ApduControlConnectBuilder); ok {
 		return cb
 	}
 	cb := NewApduControlConnectBuilder().(*_ApduControlConnectBuilder)
@@ -174,14 +156,8 @@ func (b *_ApduControlBuilder) AsApduControlConnect() interface {
 	return cb
 }
 
-func (b *_ApduControlBuilder) AsApduControlDisconnect() interface {
-	ApduControlDisconnectBuilder
-	Done() ApduControlBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduControlDisconnectBuilder
-		Done() ApduControlBuilder
-	}); ok {
+func (b *_ApduControlBuilder) AsApduControlDisconnect() ApduControlDisconnectBuilder {
+	if cb, ok := b.childBuilder.(ApduControlDisconnectBuilder); ok {
 		return cb
 	}
 	cb := NewApduControlDisconnectBuilder().(*_ApduControlDisconnectBuilder)
@@ -190,14 +166,8 @@ func (b *_ApduControlBuilder) AsApduControlDisconnect() interface {
 	return cb
 }
 
-func (b *_ApduControlBuilder) AsApduControlAck() interface {
-	ApduControlAckBuilder
-	Done() ApduControlBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduControlAckBuilder
-		Done() ApduControlBuilder
-	}); ok {
+func (b *_ApduControlBuilder) AsApduControlAck() ApduControlAckBuilder {
+	if cb, ok := b.childBuilder.(ApduControlAckBuilder); ok {
 		return cb
 	}
 	cb := NewApduControlAckBuilder().(*_ApduControlAckBuilder)
@@ -206,14 +176,8 @@ func (b *_ApduControlBuilder) AsApduControlAck() interface {
 	return cb
 }
 
-func (b *_ApduControlBuilder) AsApduControlNack() interface {
-	ApduControlNackBuilder
-	Done() ApduControlBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduControlNackBuilder
-		Done() ApduControlBuilder
-	}); ok {
+func (b *_ApduControlBuilder) AsApduControlNack() ApduControlNackBuilder {
+	if cb, ok := b.childBuilder.(ApduControlNackBuilder); ok {
 		return cb
 	}
 	cb := NewApduControlNackBuilder().(*_ApduControlNackBuilder)

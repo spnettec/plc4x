@@ -72,6 +72,8 @@ type CIPEncapsulationConnectionResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CIPEncapsulationConnectionResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CIPEncapsulationPacketBuilder
 	// Build builds the CIPEncapsulationConnectionResponse or returns an error if something is wrong
 	Build() (CIPEncapsulationConnectionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -95,6 +97,7 @@ var _ (CIPEncapsulationConnectionResponseBuilder) = (*_CIPEncapsulationConnectio
 
 func (b *_CIPEncapsulationConnectionResponseBuilder) setParent(contract CIPEncapsulationPacketContract) {
 	b.CIPEncapsulationPacketContract = contract
+	contract.(*_CIPEncapsulationPacket)._SubType = b._CIPEncapsulationConnectionResponse
 }
 
 func (b *_CIPEncapsulationConnectionResponseBuilder) WithMandatoryFields() CIPEncapsulationConnectionResponseBuilder {
@@ -116,8 +119,10 @@ func (b *_CIPEncapsulationConnectionResponseBuilder) MustBuild() CIPEncapsulatio
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CIPEncapsulationConnectionResponseBuilder) Done() CIPEncapsulationPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCIPEncapsulationPacketBuilder().(*_CIPEncapsulationPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -246,7 +251,7 @@ func (m *_CIPEncapsulationConnectionResponse) deepCopy() *_CIPEncapsulationConne
 	_CIPEncapsulationConnectionResponseCopy := &_CIPEncapsulationConnectionResponse{
 		m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).deepCopy(),
 	}
-	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
+	_CIPEncapsulationConnectionResponseCopy.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
 	return _CIPEncapsulationConnectionResponseCopy
 }
 

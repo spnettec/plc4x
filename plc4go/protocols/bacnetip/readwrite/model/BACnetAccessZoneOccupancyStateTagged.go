@@ -393,7 +393,7 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) deepCopy() *_BACnetAccessZoneOcc
 		return nil
 	}
 	_BACnetAccessZoneOccupancyStateTaggedCopy := &_BACnetAccessZoneOccupancyStateTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

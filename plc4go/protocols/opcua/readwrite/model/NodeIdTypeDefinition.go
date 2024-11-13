@@ -97,35 +97,17 @@ type NodeIdTypeDefinitionBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() NodeIdTypeDefinitionBuilder
 	// AsNodeIdTwoByte converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
-	AsNodeIdTwoByte() interface {
-		NodeIdTwoByteBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}
+	AsNodeIdTwoByte() NodeIdTwoByteBuilder
 	// AsNodeIdFourByte converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
-	AsNodeIdFourByte() interface {
-		NodeIdFourByteBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}
+	AsNodeIdFourByte() NodeIdFourByteBuilder
 	// AsNodeIdNumeric converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
-	AsNodeIdNumeric() interface {
-		NodeIdNumericBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}
+	AsNodeIdNumeric() NodeIdNumericBuilder
 	// AsNodeIdString converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
-	AsNodeIdString() interface {
-		NodeIdStringBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}
+	AsNodeIdString() NodeIdStringBuilder
 	// AsNodeIdGuid converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
-	AsNodeIdGuid() interface {
-		NodeIdGuidBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}
+	AsNodeIdGuid() NodeIdGuidBuilder
 	// AsNodeIdByteString converts this build to a subType of NodeIdTypeDefinition. It is always possible to return to current builder using Done()
-	AsNodeIdByteString() interface {
-		NodeIdByteStringBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}
+	AsNodeIdByteString() NodeIdByteStringBuilder
 	// Build builds the NodeIdTypeDefinition or returns an error if something is wrong
 	PartialBuild() (NodeIdTypeDefinitionContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -176,14 +158,8 @@ func (b *_NodeIdTypeDefinitionBuilder) PartialMustBuild() NodeIdTypeDefinitionCo
 	return build
 }
 
-func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdTwoByte() interface {
-	NodeIdTwoByteBuilder
-	Done() NodeIdTypeDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NodeIdTwoByteBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}); ok {
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdTwoByte() NodeIdTwoByteBuilder {
+	if cb, ok := b.childBuilder.(NodeIdTwoByteBuilder); ok {
 		return cb
 	}
 	cb := NewNodeIdTwoByteBuilder().(*_NodeIdTwoByteBuilder)
@@ -192,14 +168,8 @@ func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdTwoByte() interface {
 	return cb
 }
 
-func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdFourByte() interface {
-	NodeIdFourByteBuilder
-	Done() NodeIdTypeDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NodeIdFourByteBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}); ok {
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdFourByte() NodeIdFourByteBuilder {
+	if cb, ok := b.childBuilder.(NodeIdFourByteBuilder); ok {
 		return cb
 	}
 	cb := NewNodeIdFourByteBuilder().(*_NodeIdFourByteBuilder)
@@ -208,14 +178,8 @@ func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdFourByte() interface {
 	return cb
 }
 
-func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdNumeric() interface {
-	NodeIdNumericBuilder
-	Done() NodeIdTypeDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NodeIdNumericBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}); ok {
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdNumeric() NodeIdNumericBuilder {
+	if cb, ok := b.childBuilder.(NodeIdNumericBuilder); ok {
 		return cb
 	}
 	cb := NewNodeIdNumericBuilder().(*_NodeIdNumericBuilder)
@@ -224,14 +188,8 @@ func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdNumeric() interface {
 	return cb
 }
 
-func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdString() interface {
-	NodeIdStringBuilder
-	Done() NodeIdTypeDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NodeIdStringBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}); ok {
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdString() NodeIdStringBuilder {
+	if cb, ok := b.childBuilder.(NodeIdStringBuilder); ok {
 		return cb
 	}
 	cb := NewNodeIdStringBuilder().(*_NodeIdStringBuilder)
@@ -240,14 +198,8 @@ func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdString() interface {
 	return cb
 }
 
-func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdGuid() interface {
-	NodeIdGuidBuilder
-	Done() NodeIdTypeDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NodeIdGuidBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}); ok {
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdGuid() NodeIdGuidBuilder {
+	if cb, ok := b.childBuilder.(NodeIdGuidBuilder); ok {
 		return cb
 	}
 	cb := NewNodeIdGuidBuilder().(*_NodeIdGuidBuilder)
@@ -256,14 +208,8 @@ func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdGuid() interface {
 	return cb
 }
 
-func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdByteString() interface {
-	NodeIdByteStringBuilder
-	Done() NodeIdTypeDefinitionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NodeIdByteStringBuilder
-		Done() NodeIdTypeDefinitionBuilder
-	}); ok {
+func (b *_NodeIdTypeDefinitionBuilder) AsNodeIdByteString() NodeIdByteStringBuilder {
+	if cb, ok := b.childBuilder.(NodeIdByteStringBuilder); ok {
 		return cb
 	}
 	cb := NewNodeIdByteStringBuilder().(*_NodeIdByteStringBuilder)

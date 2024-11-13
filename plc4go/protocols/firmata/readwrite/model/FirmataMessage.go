@@ -96,30 +96,15 @@ type FirmataMessageBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() FirmataMessageBuilder
 	// AsFirmataMessageAnalogIO converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
-	AsFirmataMessageAnalogIO() interface {
-		FirmataMessageAnalogIOBuilder
-		Done() FirmataMessageBuilder
-	}
+	AsFirmataMessageAnalogIO() FirmataMessageAnalogIOBuilder
 	// AsFirmataMessageDigitalIO converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
-	AsFirmataMessageDigitalIO() interface {
-		FirmataMessageDigitalIOBuilder
-		Done() FirmataMessageBuilder
-	}
+	AsFirmataMessageDigitalIO() FirmataMessageDigitalIOBuilder
 	// AsFirmataMessageSubscribeAnalogPinValue converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
-	AsFirmataMessageSubscribeAnalogPinValue() interface {
-		FirmataMessageSubscribeAnalogPinValueBuilder
-		Done() FirmataMessageBuilder
-	}
+	AsFirmataMessageSubscribeAnalogPinValue() FirmataMessageSubscribeAnalogPinValueBuilder
 	// AsFirmataMessageSubscribeDigitalPinValue converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
-	AsFirmataMessageSubscribeDigitalPinValue() interface {
-		FirmataMessageSubscribeDigitalPinValueBuilder
-		Done() FirmataMessageBuilder
-	}
+	AsFirmataMessageSubscribeDigitalPinValue() FirmataMessageSubscribeDigitalPinValueBuilder
 	// AsFirmataMessageCommand converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
-	AsFirmataMessageCommand() interface {
-		FirmataMessageCommandBuilder
-		Done() FirmataMessageBuilder
-	}
+	AsFirmataMessageCommand() FirmataMessageCommandBuilder
 	// Build builds the FirmataMessage or returns an error if something is wrong
 	PartialBuild() (FirmataMessageContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -170,14 +155,8 @@ func (b *_FirmataMessageBuilder) PartialMustBuild() FirmataMessageContract {
 	return build
 }
 
-func (b *_FirmataMessageBuilder) AsFirmataMessageAnalogIO() interface {
-	FirmataMessageAnalogIOBuilder
-	Done() FirmataMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		FirmataMessageAnalogIOBuilder
-		Done() FirmataMessageBuilder
-	}); ok {
+func (b *_FirmataMessageBuilder) AsFirmataMessageAnalogIO() FirmataMessageAnalogIOBuilder {
+	if cb, ok := b.childBuilder.(FirmataMessageAnalogIOBuilder); ok {
 		return cb
 	}
 	cb := NewFirmataMessageAnalogIOBuilder().(*_FirmataMessageAnalogIOBuilder)
@@ -186,14 +165,8 @@ func (b *_FirmataMessageBuilder) AsFirmataMessageAnalogIO() interface {
 	return cb
 }
 
-func (b *_FirmataMessageBuilder) AsFirmataMessageDigitalIO() interface {
-	FirmataMessageDigitalIOBuilder
-	Done() FirmataMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		FirmataMessageDigitalIOBuilder
-		Done() FirmataMessageBuilder
-	}); ok {
+func (b *_FirmataMessageBuilder) AsFirmataMessageDigitalIO() FirmataMessageDigitalIOBuilder {
+	if cb, ok := b.childBuilder.(FirmataMessageDigitalIOBuilder); ok {
 		return cb
 	}
 	cb := NewFirmataMessageDigitalIOBuilder().(*_FirmataMessageDigitalIOBuilder)
@@ -202,14 +175,8 @@ func (b *_FirmataMessageBuilder) AsFirmataMessageDigitalIO() interface {
 	return cb
 }
 
-func (b *_FirmataMessageBuilder) AsFirmataMessageSubscribeAnalogPinValue() interface {
-	FirmataMessageSubscribeAnalogPinValueBuilder
-	Done() FirmataMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		FirmataMessageSubscribeAnalogPinValueBuilder
-		Done() FirmataMessageBuilder
-	}); ok {
+func (b *_FirmataMessageBuilder) AsFirmataMessageSubscribeAnalogPinValue() FirmataMessageSubscribeAnalogPinValueBuilder {
+	if cb, ok := b.childBuilder.(FirmataMessageSubscribeAnalogPinValueBuilder); ok {
 		return cb
 	}
 	cb := NewFirmataMessageSubscribeAnalogPinValueBuilder().(*_FirmataMessageSubscribeAnalogPinValueBuilder)
@@ -218,14 +185,8 @@ func (b *_FirmataMessageBuilder) AsFirmataMessageSubscribeAnalogPinValue() inter
 	return cb
 }
 
-func (b *_FirmataMessageBuilder) AsFirmataMessageSubscribeDigitalPinValue() interface {
-	FirmataMessageSubscribeDigitalPinValueBuilder
-	Done() FirmataMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		FirmataMessageSubscribeDigitalPinValueBuilder
-		Done() FirmataMessageBuilder
-	}); ok {
+func (b *_FirmataMessageBuilder) AsFirmataMessageSubscribeDigitalPinValue() FirmataMessageSubscribeDigitalPinValueBuilder {
+	if cb, ok := b.childBuilder.(FirmataMessageSubscribeDigitalPinValueBuilder); ok {
 		return cb
 	}
 	cb := NewFirmataMessageSubscribeDigitalPinValueBuilder().(*_FirmataMessageSubscribeDigitalPinValueBuilder)
@@ -234,14 +195,8 @@ func (b *_FirmataMessageBuilder) AsFirmataMessageSubscribeDigitalPinValue() inte
 	return cb
 }
 
-func (b *_FirmataMessageBuilder) AsFirmataMessageCommand() interface {
-	FirmataMessageCommandBuilder
-	Done() FirmataMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		FirmataMessageCommandBuilder
-		Done() FirmataMessageBuilder
-	}); ok {
+func (b *_FirmataMessageBuilder) AsFirmataMessageCommand() FirmataMessageCommandBuilder {
+	if cb, ok := b.childBuilder.(FirmataMessageCommandBuilder); ok {
 		return cb
 	}
 	cb := NewFirmataMessageCommandBuilder().(*_FirmataMessageCommandBuilder)

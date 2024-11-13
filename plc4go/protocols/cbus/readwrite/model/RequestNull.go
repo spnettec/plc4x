@@ -76,6 +76,8 @@ type RequestNullBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() RequestNullBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() RequestBuilder
 	// Build builds the RequestNull or returns an error if something is wrong
 	Build() (RequestNull, error)
 	// MustBuild does the same as Build but panics on error
@@ -99,6 +101,7 @@ var _ (RequestNullBuilder) = (*_RequestNullBuilder)(nil)
 
 func (b *_RequestNullBuilder) setParent(contract RequestContract) {
 	b.RequestContract = contract
+	contract.(*_Request)._SubType = b._RequestNull
 }
 
 func (b *_RequestNullBuilder) WithMandatoryFields() RequestNullBuilder {
@@ -120,8 +123,10 @@ func (b *_RequestNullBuilder) MustBuild() RequestNull {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RequestNullBuilder) Done() RequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewRequestBuilder().(*_RequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -273,7 +278,7 @@ func (m *_RequestNull) deepCopy() *_RequestNull {
 	_RequestNullCopy := &_RequestNull{
 		m.RequestContract.(*_Request).deepCopy(),
 	}
-	m.RequestContract.(*_Request)._SubType = m
+	_RequestNullCopy.RequestContract.(*_Request)._SubType = m
 	return _RequestNullCopy
 }
 

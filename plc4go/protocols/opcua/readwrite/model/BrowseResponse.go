@@ -96,6 +96,8 @@ type BrowseResponseBuilder interface {
 	WithResults(...BrowseResult) BrowseResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) BrowseResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BrowseResponse or returns an error if something is wrong
 	Build() (BrowseResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (BrowseResponseBuilder) = (*_BrowseResponseBuilder)(nil)
 
 func (b *_BrowseResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BrowseResponse
 }
 
 func (b *_BrowseResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []BrowseResult, diagnosticInfos []DiagnosticInfo) BrowseResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_BrowseResponseBuilder) MustBuild() BrowseResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BrowseResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_BrowseResponse) deepCopy() *_BrowseResponse {
 	}
 	_BrowseResponseCopy := &_BrowseResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[BrowseResult, BrowseResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BrowseResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowseResponseCopy
 }
 

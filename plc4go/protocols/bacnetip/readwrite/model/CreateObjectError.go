@@ -95,6 +95,8 @@ type CreateObjectErrorBuilder interface {
 	WithFirstFailedElementNumber(BACnetContextTagUnsignedInteger) CreateObjectErrorBuilder
 	// WithFirstFailedElementNumberBuilder adds FirstFailedElementNumber (property field) which is build by the builder
 	WithFirstFailedElementNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) CreateObjectErrorBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetErrorBuilder
 	// Build builds the CreateObjectError or returns an error if something is wrong
 	Build() (CreateObjectError, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (CreateObjectErrorBuilder) = (*_CreateObjectErrorBuilder)(nil)
 
 func (b *_CreateObjectErrorBuilder) setParent(contract BACnetErrorContract) {
 	b.BACnetErrorContract = contract
+	contract.(*_BACnetError)._SubType = b._CreateObjectError
 }
 
 func (b *_CreateObjectErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) CreateObjectErrorBuilder {
@@ -187,8 +190,10 @@ func (b *_CreateObjectErrorBuilder) MustBuild() CreateObjectError {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CreateObjectErrorBuilder) Done() BACnetErrorBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetErrorBuilder().(*_BACnetErrorBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_CreateObjectError) deepCopy() *_CreateObjectError {
 	}
 	_CreateObjectErrorCopy := &_CreateObjectError{
 		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
-		m.ErrorType.DeepCopy().(ErrorEnclosed),
-		m.FirstFailedElementNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[ErrorEnclosed](m.ErrorType),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.FirstFailedElementNumber),
 	}
-	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	_CreateObjectErrorCopy.BACnetErrorContract.(*_BACnetError)._SubType = m
 	return _CreateObjectErrorCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetServiceAckCreateObjectBuilder interface {
 	WithObjectIdentifier(BACnetApplicationTagObjectIdentifier) BACnetServiceAckCreateObjectBuilder
 	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
 	WithObjectIdentifierBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetServiceAckCreateObjectBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckCreateObject or returns an error if something is wrong
 	Build() (BACnetServiceAckCreateObject, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetServiceAckCreateObjectBuilder) = (*_BACnetServiceAckCreateObjectBui
 
 func (b *_BACnetServiceAckCreateObjectBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckCreateObject
 }
 
 func (b *_BACnetServiceAckCreateObjectBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetServiceAckCreateObjectBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetServiceAckCreateObjectBuilder) MustBuild() BACnetServiceAckCreat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckCreateObjectBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_BACnetServiceAckCreateObject) deepCopy() *_BACnetServiceAckCreateObjec
 	}
 	_BACnetServiceAckCreateObjectCopy := &_BACnetServiceAckCreateObject{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
-		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectIdentifier),
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckCreateObjectCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckCreateObjectCopy
 }
 

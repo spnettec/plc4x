@@ -71,6 +71,8 @@ type SetAttributeSingleResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SetAttributeSingleResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the SetAttributeSingleResponse or returns an error if something is wrong
 	Build() (SetAttributeSingleResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SetAttributeSingleResponseBuilder) = (*_SetAttributeSingleResponseBuilder
 
 func (b *_SetAttributeSingleResponseBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._SetAttributeSingleResponse
 }
 
 func (b *_SetAttributeSingleResponseBuilder) WithMandatoryFields() SetAttributeSingleResponseBuilder {
@@ -115,8 +118,10 @@ func (b *_SetAttributeSingleResponseBuilder) MustBuild() SetAttributeSingleRespo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SetAttributeSingleResponseBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -253,7 +258,7 @@ func (m *_SetAttributeSingleResponse) deepCopy() *_SetAttributeSingleResponse {
 	_SetAttributeSingleResponseCopy := &_SetAttributeSingleResponse{
 		m.CipServiceContract.(*_CipService).deepCopy(),
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_SetAttributeSingleResponseCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _SetAttributeSingleResponseCopy
 }
 

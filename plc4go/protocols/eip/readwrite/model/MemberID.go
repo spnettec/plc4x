@@ -85,6 +85,8 @@ type MemberIDBuilder interface {
 	WithFormat(uint8) MemberIDBuilder
 	// WithInstance adds Instance (property field)
 	WithInstance(uint8) MemberIDBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LogicalSegmentTypeBuilder
 	// Build builds the MemberID or returns an error if something is wrong
 	Build() (MemberID, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (MemberIDBuilder) = (*_MemberIDBuilder)(nil)
 
 func (b *_MemberIDBuilder) setParent(contract LogicalSegmentTypeContract) {
 	b.LogicalSegmentTypeContract = contract
+	contract.(*_LogicalSegmentType)._SubType = b._MemberID
 }
 
 func (b *_MemberIDBuilder) WithMandatoryFields(format uint8, instance uint8) MemberIDBuilder {
@@ -139,8 +142,10 @@ func (b *_MemberIDBuilder) MustBuild() MemberID {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MemberIDBuilder) Done() LogicalSegmentTypeBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLogicalSegmentTypeBuilder().(*_LogicalSegmentTypeBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_MemberID) deepCopy() *_MemberID {
 		m.Format,
 		m.Instance,
 	}
-	m.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
+	_MemberIDCopy.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
 	return _MemberIDCopy
 }
 

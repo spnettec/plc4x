@@ -103,6 +103,8 @@ type UadpWriterGroupMessageDataTypeBuilder interface {
 	WithSamplingOffset(float64) UadpWriterGroupMessageDataTypeBuilder
 	// WithPublishingOffset adds PublishingOffset (property field)
 	WithPublishingOffset(...float64) UadpWriterGroupMessageDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the UadpWriterGroupMessageDataType or returns an error if something is wrong
 	Build() (UadpWriterGroupMessageDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (UadpWriterGroupMessageDataTypeBuilder) = (*_UadpWriterGroupMessageDataTyp
 
 func (b *_UadpWriterGroupMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._UadpWriterGroupMessageDataType
 }
 
 func (b *_UadpWriterGroupMessageDataTypeBuilder) WithMandatoryFields(groupVersion uint32, dataSetOrdering DataSetOrderingType, networkMessageContentMask UadpNetworkMessageContentMask, samplingOffset float64, publishingOffset []float64) UadpWriterGroupMessageDataTypeBuilder {
@@ -172,8 +175,10 @@ func (b *_UadpWriterGroupMessageDataTypeBuilder) MustBuild() UadpWriterGroupMess
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_UadpWriterGroupMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -417,7 +422,7 @@ func (m *_UadpWriterGroupMessageDataType) deepCopy() *_UadpWriterGroupMessageDat
 		m.SamplingOffset,
 		utils.DeepCopySlice[float64, float64](m.PublishingOffset),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_UadpWriterGroupMessageDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UadpWriterGroupMessageDataTypeCopy
 }
 

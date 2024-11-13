@@ -86,6 +86,8 @@ type BACnetConstructedDataAccumulatorLowLimitBuilder interface {
 	WithLowLimit(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorLowLimitBuilder
 	// WithLowLimitBuilder adds LowLimit (property field) which is build by the builder
 	WithLowLimitBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccumulatorLowLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAccumulatorLowLimit or returns an error if something is wrong
 	Build() (BACnetConstructedDataAccumulatorLowLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAccumulatorLowLimitBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataAccumulatorLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAccumulatorLowLimit
 }
 
 func (b *_BACnetConstructedDataAccumulatorLowLimitBuilder) WithMandatoryFields(lowLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorLowLimitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAccumulatorLowLimitBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAccumulatorLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataAccumulatorLowLimit) deepCopy() *_BACnetConstruct
 	}
 	_BACnetConstructedDataAccumulatorLowLimitCopy := &_BACnetConstructedDataAccumulatorLowLimit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LowLimit.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.LowLimit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAccumulatorLowLimitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAccumulatorLowLimitCopy
 }
 

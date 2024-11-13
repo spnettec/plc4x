@@ -85,6 +85,8 @@ type PortSegmentNormalBuilder interface {
 	WithPort(uint8) PortSegmentNormalBuilder
 	// WithLinkAddress adds LinkAddress (property field)
 	WithLinkAddress(uint8) PortSegmentNormalBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() PortSegmentTypeBuilder
 	// Build builds the PortSegmentNormal or returns an error if something is wrong
 	Build() (PortSegmentNormal, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (PortSegmentNormalBuilder) = (*_PortSegmentNormalBuilder)(nil)
 
 func (b *_PortSegmentNormalBuilder) setParent(contract PortSegmentTypeContract) {
 	b.PortSegmentTypeContract = contract
+	contract.(*_PortSegmentType)._SubType = b._PortSegmentNormal
 }
 
 func (b *_PortSegmentNormalBuilder) WithMandatoryFields(port uint8, linkAddress uint8) PortSegmentNormalBuilder {
@@ -139,8 +142,10 @@ func (b *_PortSegmentNormalBuilder) MustBuild() PortSegmentNormal {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PortSegmentNormalBuilder) Done() PortSegmentTypeBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewPortSegmentTypeBuilder().(*_PortSegmentTypeBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_PortSegmentNormal) deepCopy() *_PortSegmentNormal {
 		m.Port,
 		m.LinkAddress,
 	}
-	m.PortSegmentTypeContract.(*_PortSegmentType)._SubType = m
+	_PortSegmentNormalCopy.PortSegmentTypeContract.(*_PortSegmentType)._SubType = m
 	return _PortSegmentNormalCopy
 }
 

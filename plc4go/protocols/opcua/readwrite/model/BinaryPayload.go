@@ -79,6 +79,8 @@ type BinaryPayloadBuilder interface {
 	WithMandatoryFields(payload []byte) BinaryPayloadBuilder
 	// WithPayload adds Payload (property field)
 	WithPayload(...byte) BinaryPayloadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() PayloadBuilder
 	// Build builds the BinaryPayload or returns an error if something is wrong
 	Build() (BinaryPayload, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BinaryPayloadBuilder) = (*_BinaryPayloadBuilder)(nil)
 
 func (b *_BinaryPayloadBuilder) setParent(contract PayloadContract) {
 	b.PayloadContract = contract
+	contract.(*_Payload)._SubType = b._BinaryPayload
 }
 
 func (b *_BinaryPayloadBuilder) WithMandatoryFields(payload []byte) BinaryPayloadBuilder {
@@ -128,8 +131,10 @@ func (b *_BinaryPayloadBuilder) MustBuild() BinaryPayload {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BinaryPayloadBuilder) Done() PayloadBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewPayloadBuilder().(*_PayloadBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -288,7 +293,7 @@ func (m *_BinaryPayload) deepCopy() *_BinaryPayload {
 		m.PayloadContract.(*_Payload).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Payload),
 	}
-	m.PayloadContract.(*_Payload)._SubType = m
+	_BinaryPayloadCopy.PayloadContract.(*_Payload)._SubType = m
 	return _BinaryPayloadCopy
 }
 

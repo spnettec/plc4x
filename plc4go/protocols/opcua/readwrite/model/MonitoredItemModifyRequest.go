@@ -90,6 +90,8 @@ type MonitoredItemModifyRequestBuilder interface {
 	WithRequestedParameters(MonitoringParameters) MonitoredItemModifyRequestBuilder
 	// WithRequestedParametersBuilder adds RequestedParameters (property field) which is build by the builder
 	WithRequestedParametersBuilder(func(MonitoringParametersBuilder) MonitoringParametersBuilder) MonitoredItemModifyRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the MonitoredItemModifyRequest or returns an error if something is wrong
 	Build() (MonitoredItemModifyRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (MonitoredItemModifyRequestBuilder) = (*_MonitoredItemModifyRequestBuilder
 
 func (b *_MonitoredItemModifyRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._MonitoredItemModifyRequest
 }
 
 func (b *_MonitoredItemModifyRequestBuilder) WithMandatoryFields(monitoredItemId uint32, requestedParameters MonitoringParameters) MonitoredItemModifyRequestBuilder {
@@ -163,8 +166,10 @@ func (b *_MonitoredItemModifyRequestBuilder) MustBuild() MonitoredItemModifyRequ
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MonitoredItemModifyRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -337,9 +342,9 @@ func (m *_MonitoredItemModifyRequest) deepCopy() *_MonitoredItemModifyRequest {
 	_MonitoredItemModifyRequestCopy := &_MonitoredItemModifyRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.MonitoredItemId,
-		m.RequestedParameters.DeepCopy().(MonitoringParameters),
+		utils.DeepCopy[MonitoringParameters](m.RequestedParameters),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_MonitoredItemModifyRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _MonitoredItemModifyRequestCopy
 }
 

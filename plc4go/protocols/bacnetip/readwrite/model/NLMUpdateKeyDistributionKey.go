@@ -90,6 +90,8 @@ type NLMUpdateKeyDistributionKeyBuilder interface {
 	WithKey(NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyDistributionKeyBuilder
 	// WithKeyBuilder adds Key (property field) which is build by the builder
 	WithKeyBuilder(func(NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyDistributionKeyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMUpdateKeyDistributionKey or returns an error if something is wrong
 	Build() (NLMUpdateKeyDistributionKey, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (NLMUpdateKeyDistributionKeyBuilder) = (*_NLMUpdateKeyDistributionKeyBuild
 
 func (b *_NLMUpdateKeyDistributionKeyBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMUpdateKeyDistributionKey
 }
 
 func (b *_NLMUpdateKeyDistributionKeyBuilder) WithMandatoryFields(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyDistributionKeyBuilder {
@@ -163,8 +166,10 @@ func (b *_NLMUpdateKeyDistributionKeyBuilder) MustBuild() NLMUpdateKeyDistributi
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMUpdateKeyDistributionKeyBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -337,9 +342,9 @@ func (m *_NLMUpdateKeyDistributionKey) deepCopy() *_NLMUpdateKeyDistributionKey 
 	_NLMUpdateKeyDistributionKeyCopy := &_NLMUpdateKeyDistributionKey{
 		m.NLMContract.(*_NLM).deepCopy(),
 		m.KeyRevision,
-		m.Key.DeepCopy().(NLMUpdateKeyUpdateKeyEntry),
+		utils.DeepCopy[NLMUpdateKeyUpdateKeyEntry](m.Key),
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMUpdateKeyDistributionKeyCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMUpdateKeyDistributionKeyCopy
 }
 

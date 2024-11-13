@@ -84,6 +84,8 @@ type BACnetCalendarEntryDateRangeBuilder interface {
 	WithDateRange(BACnetDateRangeEnclosed) BACnetCalendarEntryDateRangeBuilder
 	// WithDateRangeBuilder adds DateRange (property field) which is build by the builder
 	WithDateRangeBuilder(func(BACnetDateRangeEnclosedBuilder) BACnetDateRangeEnclosedBuilder) BACnetCalendarEntryDateRangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetCalendarEntryBuilder
 	// Build builds the BACnetCalendarEntryDateRange or returns an error if something is wrong
 	Build() (BACnetCalendarEntryDateRange, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetCalendarEntryDateRangeBuilder) = (*_BACnetCalendarEntryDateRangeBui
 
 func (b *_BACnetCalendarEntryDateRangeBuilder) setParent(contract BACnetCalendarEntryContract) {
 	b.BACnetCalendarEntryContract = contract
+	contract.(*_BACnetCalendarEntry)._SubType = b._BACnetCalendarEntryDateRange
 }
 
 func (b *_BACnetCalendarEntryDateRangeBuilder) WithMandatoryFields(dateRange BACnetDateRangeEnclosed) BACnetCalendarEntryDateRangeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetCalendarEntryDateRangeBuilder) MustBuild() BACnetCalendarEntryDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetCalendarEntryDateRangeBuilder) Done() BACnetCalendarEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetCalendarEntryBuilder().(*_BACnetCalendarEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetCalendarEntryDateRange) deepCopy() *_BACnetCalendarEntryDateRang
 	}
 	_BACnetCalendarEntryDateRangeCopy := &_BACnetCalendarEntryDateRange{
 		m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).deepCopy(),
-		m.DateRange.DeepCopy().(BACnetDateRangeEnclosed),
+		utils.DeepCopy[BACnetDateRangeEnclosed](m.DateRange),
 	}
-	m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
+	_BACnetCalendarEntryDateRangeCopy.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
 	return _BACnetCalendarEntryDateRangeCopy
 }
 

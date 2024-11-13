@@ -84,6 +84,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder interface 
 	WithBitStringValue(BACnetApplicationTagBitString) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
 	// WithBitStringValueBuilder adds BitStringValue (property field) which is build by the builder
 	WithBitStringValueBuilder(func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
 	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryBitString or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultExtendedParametersEntryBitString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) = (*_BA
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
 	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
+	contract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = b._BACnetFaultParameterFaultExtendedParametersEntryBitString
 }
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) Must
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterFaultExtendedParametersEntryBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) deepCopy() 
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryBitStringCopy := &_BACnetFaultParameterFaultExtendedParametersEntryBitString{
 		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
-		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+		utils.DeepCopy[BACnetApplicationTagBitString](m.BitStringValue),
 	}
-	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	_BACnetFaultParameterFaultExtendedParametersEntryBitStringCopy.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
 	return _BACnetFaultParameterFaultExtendedParametersEntryBitStringCopy
 }
 

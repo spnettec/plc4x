@@ -89,20 +89,11 @@ type PathSegmentBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() PathSegmentBuilder
 	// AsPortSegment converts this build to a subType of PathSegment. It is always possible to return to current builder using Done()
-	AsPortSegment() interface {
-		PortSegmentBuilder
-		Done() PathSegmentBuilder
-	}
+	AsPortSegment() PortSegmentBuilder
 	// AsLogicalSegment converts this build to a subType of PathSegment. It is always possible to return to current builder using Done()
-	AsLogicalSegment() interface {
-		LogicalSegmentBuilder
-		Done() PathSegmentBuilder
-	}
+	AsLogicalSegment() LogicalSegmentBuilder
 	// AsDataSegment converts this build to a subType of PathSegment. It is always possible to return to current builder using Done()
-	AsDataSegment() interface {
-		DataSegmentBuilder
-		Done() PathSegmentBuilder
-	}
+	AsDataSegment() DataSegmentBuilder
 	// Build builds the PathSegment or returns an error if something is wrong
 	PartialBuild() (PathSegmentContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -153,14 +144,8 @@ func (b *_PathSegmentBuilder) PartialMustBuild() PathSegmentContract {
 	return build
 }
 
-func (b *_PathSegmentBuilder) AsPortSegment() interface {
-	PortSegmentBuilder
-	Done() PathSegmentBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		PortSegmentBuilder
-		Done() PathSegmentBuilder
-	}); ok {
+func (b *_PathSegmentBuilder) AsPortSegment() PortSegmentBuilder {
+	if cb, ok := b.childBuilder.(PortSegmentBuilder); ok {
 		return cb
 	}
 	cb := NewPortSegmentBuilder().(*_PortSegmentBuilder)
@@ -169,14 +154,8 @@ func (b *_PathSegmentBuilder) AsPortSegment() interface {
 	return cb
 }
 
-func (b *_PathSegmentBuilder) AsLogicalSegment() interface {
-	LogicalSegmentBuilder
-	Done() PathSegmentBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LogicalSegmentBuilder
-		Done() PathSegmentBuilder
-	}); ok {
+func (b *_PathSegmentBuilder) AsLogicalSegment() LogicalSegmentBuilder {
+	if cb, ok := b.childBuilder.(LogicalSegmentBuilder); ok {
 		return cb
 	}
 	cb := NewLogicalSegmentBuilder().(*_LogicalSegmentBuilder)
@@ -185,14 +164,8 @@ func (b *_PathSegmentBuilder) AsLogicalSegment() interface {
 	return cb
 }
 
-func (b *_PathSegmentBuilder) AsDataSegment() interface {
-	DataSegmentBuilder
-	Done() PathSegmentBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DataSegmentBuilder
-		Done() PathSegmentBuilder
-	}); ok {
+func (b *_PathSegmentBuilder) AsDataSegment() DataSegmentBuilder {
+	if cb, ok := b.childBuilder.(DataSegmentBuilder); ok {
 		return cb
 	}
 	cb := NewDataSegmentBuilder().(*_DataSegmentBuilder)

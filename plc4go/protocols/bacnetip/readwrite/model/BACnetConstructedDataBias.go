@@ -86,6 +86,8 @@ type BACnetConstructedDataBiasBuilder interface {
 	WithBias(BACnetApplicationTagReal) BACnetConstructedDataBiasBuilder
 	// WithBiasBuilder adds Bias (property field) which is build by the builder
 	WithBiasBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataBiasBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBias or returns an error if something is wrong
 	Build() (BACnetConstructedDataBias, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBiasBuilder) = (*_BACnetConstructedDataBiasBuilder)(
 
 func (b *_BACnetConstructedDataBiasBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBias
 }
 
 func (b *_BACnetConstructedDataBiasBuilder) WithMandatoryFields(bias BACnetApplicationTagReal) BACnetConstructedDataBiasBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBiasBuilder) MustBuild() BACnetConstructedDataBia
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBiasBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataBias) deepCopy() *_BACnetConstructedDataBias {
 	}
 	_BACnetConstructedDataBiasCopy := &_BACnetConstructedDataBias{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Bias.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.Bias),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBiasCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBiasCopy
 }
 

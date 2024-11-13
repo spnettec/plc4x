@@ -79,6 +79,8 @@ type BACnetConstructedDataActiveCOVSubscriptionsBuilder interface {
 	WithMandatoryFields(activeCOVSubscriptions []BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder
 	// WithActiveCOVSubscriptions adds ActiveCOVSubscriptions (property field)
 	WithActiveCOVSubscriptions(...BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataActiveCOVSubscriptions or returns an error if something is wrong
 	Build() (BACnetConstructedDataActiveCOVSubscriptions, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataActiveCOVSubscriptionsBuilder) = (*_BACnetConstructe
 
 func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataActiveCOVSubscriptions
 }
 
 func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) WithMandatoryFields(activeCOVSubscriptions []BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) deepCopy() *_BACnetConstr
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetCOVSubscription, BACnetCOVSubscription](m.ActiveCOVSubscriptions),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataActiveCOVSubscriptionsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataActiveCOVSubscriptionsCopy
 }
 

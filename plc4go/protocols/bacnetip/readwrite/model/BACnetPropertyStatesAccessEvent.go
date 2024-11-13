@@ -84,6 +84,8 @@ type BACnetPropertyStatesAccessEventBuilder interface {
 	WithAccessEvent(BACnetAccessEventTagged) BACnetPropertyStatesAccessEventBuilder
 	// WithAccessEventBuilder adds AccessEvent (property field) which is build by the builder
 	WithAccessEventBuilder(func(BACnetAccessEventTaggedBuilder) BACnetAccessEventTaggedBuilder) BACnetPropertyStatesAccessEventBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesAccessEvent or returns an error if something is wrong
 	Build() (BACnetPropertyStatesAccessEvent, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesAccessEventBuilder) = (*_BACnetPropertyStatesAccessEv
 
 func (b *_BACnetPropertyStatesAccessEventBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesAccessEvent
 }
 
 func (b *_BACnetPropertyStatesAccessEventBuilder) WithMandatoryFields(accessEvent BACnetAccessEventTagged) BACnetPropertyStatesAccessEventBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesAccessEventBuilder) MustBuild() BACnetPropertyStat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesAccessEventBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesAccessEvent) deepCopy() *_BACnetPropertyStatesAcce
 	}
 	_BACnetPropertyStatesAccessEventCopy := &_BACnetPropertyStatesAccessEvent{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.AccessEvent.DeepCopy().(BACnetAccessEventTagged),
+		utils.DeepCopy[BACnetAccessEventTagged](m.AccessEvent),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesAccessEventCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesAccessEventCopy
 }
 

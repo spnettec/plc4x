@@ -71,6 +71,8 @@ type GetAttributeSingleRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() GetAttributeSingleRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the GetAttributeSingleRequest or returns an error if something is wrong
 	Build() (GetAttributeSingleRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (GetAttributeSingleRequestBuilder) = (*_GetAttributeSingleRequestBuilder)(
 
 func (b *_GetAttributeSingleRequestBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._GetAttributeSingleRequest
 }
 
 func (b *_GetAttributeSingleRequestBuilder) WithMandatoryFields() GetAttributeSingleRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_GetAttributeSingleRequestBuilder) MustBuild() GetAttributeSingleReques
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_GetAttributeSingleRequestBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -253,7 +258,7 @@ func (m *_GetAttributeSingleRequest) deepCopy() *_GetAttributeSingleRequest {
 	_GetAttributeSingleRequestCopy := &_GetAttributeSingleRequest{
 		m.CipServiceContract.(*_CipService).deepCopy(),
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_GetAttributeSingleRequestCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _GetAttributeSingleRequestCopy
 }
 

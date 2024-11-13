@@ -84,6 +84,8 @@ type CBusCommandPointToPointToMultiPointBuilder interface {
 	WithCommand(CBusPointToPointToMultiPointCommand) CBusCommandPointToPointToMultiPointBuilder
 	// WithCommandBuilder adds Command (property field) which is build by the builder
 	WithCommandBuilder(func(CBusPointToPointToMultiPointCommandBuilder) CBusPointToPointToMultiPointCommandBuilder) CBusCommandPointToPointToMultiPointBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CBusCommandBuilder
 	// Build builds the CBusCommandPointToPointToMultiPoint or returns an error if something is wrong
 	Build() (CBusCommandPointToPointToMultiPoint, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (CBusCommandPointToPointToMultiPointBuilder) = (*_CBusCommandPointToPointT
 
 func (b *_CBusCommandPointToPointToMultiPointBuilder) setParent(contract CBusCommandContract) {
 	b.CBusCommandContract = contract
+	contract.(*_CBusCommand)._SubType = b._CBusCommandPointToPointToMultiPoint
 }
 
 func (b *_CBusCommandPointToPointToMultiPointBuilder) WithMandatoryFields(command CBusPointToPointToMultiPointCommand) CBusCommandPointToPointToMultiPointBuilder {
@@ -152,8 +155,10 @@ func (b *_CBusCommandPointToPointToMultiPointBuilder) MustBuild() CBusCommandPoi
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CBusCommandPointToPointToMultiPointBuilder) Done() CBusCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCBusCommandBuilder().(*_CBusCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_CBusCommandPointToPointToMultiPoint) deepCopy() *_CBusCommandPointToPo
 	}
 	_CBusCommandPointToPointToMultiPointCopy := &_CBusCommandPointToPointToMultiPoint{
 		m.CBusCommandContract.(*_CBusCommand).deepCopy(),
-		m.Command.DeepCopy().(CBusPointToPointToMultiPointCommand),
+		utils.DeepCopy[CBusPointToPointToMultiPointCommand](m.Command),
 	}
-	m.CBusCommandContract.(*_CBusCommand)._SubType = m
+	_CBusCommandPointToPointToMultiPointCopy.CBusCommandContract.(*_CBusCommand)._SubType = m
 	return _CBusCommandPointToPointToMultiPointCopy
 }
 

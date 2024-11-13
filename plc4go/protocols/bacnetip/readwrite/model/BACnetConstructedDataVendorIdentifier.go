@@ -86,6 +86,8 @@ type BACnetConstructedDataVendorIdentifierBuilder interface {
 	WithVendorIdentifier(BACnetVendorIdTagged) BACnetConstructedDataVendorIdentifierBuilder
 	// WithVendorIdentifierBuilder adds VendorIdentifier (property field) which is build by the builder
 	WithVendorIdentifierBuilder(func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetConstructedDataVendorIdentifierBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataVendorIdentifier or returns an error if something is wrong
 	Build() (BACnetConstructedDataVendorIdentifier, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataVendorIdentifierBuilder) = (*_BACnetConstructedDataV
 
 func (b *_BACnetConstructedDataVendorIdentifierBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataVendorIdentifier
 }
 
 func (b *_BACnetConstructedDataVendorIdentifierBuilder) WithMandatoryFields(vendorIdentifier BACnetVendorIdTagged) BACnetConstructedDataVendorIdentifierBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataVendorIdentifierBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataVendorIdentifierBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataVendorIdentifier) deepCopy() *_BACnetConstructedD
 	}
 	_BACnetConstructedDataVendorIdentifierCopy := &_BACnetConstructedDataVendorIdentifier{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.VendorIdentifier.DeepCopy().(BACnetVendorIdTagged),
+		utils.DeepCopy[BACnetVendorIdTagged](m.VendorIdentifier),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataVendorIdentifierCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataVendorIdentifierCopy
 }
 

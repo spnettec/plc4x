@@ -111,6 +111,8 @@ type BACnetConfirmedServiceRequestAddListElementBuilder interface {
 	WithOptionalListOfElements(BACnetConstructedData) BACnetConfirmedServiceRequestAddListElementBuilder
 	// WithOptionalListOfElementsBuilder adds ListOfElements (property field) which is build by the builder
 	WithOptionalListOfElementsBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestAddListElementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestAddListElement or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestAddListElement, error)
 	// MustBuild does the same as Build but panics on error
@@ -134,6 +136,7 @@ var _ (BACnetConfirmedServiceRequestAddListElementBuilder) = (*_BACnetConfirmedS
 
 func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestAddListElement
 }
 
 func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestAddListElementBuilder {
@@ -239,8 +242,10 @@ func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -459,12 +464,12 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) deepCopy() *_BACnetConfir
 	}
 	_BACnetConfirmedServiceRequestAddListElementCopy := &_BACnetConfirmedServiceRequestAddListElement{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ListOfElements.DeepCopy().(BACnetConstructedData),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
+		utils.DeepCopy[BACnetConstructedData](m.ListOfElements),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestAddListElementCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestAddListElementCopy
 }
 

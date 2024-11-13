@@ -84,6 +84,8 @@ type BACnetPropertyStatesDoorAlarmStateBuilder interface {
 	WithDoorAlarmState(BACnetDoorAlarmStateTagged) BACnetPropertyStatesDoorAlarmStateBuilder
 	// WithDoorAlarmStateBuilder adds DoorAlarmState (property field) which is build by the builder
 	WithDoorAlarmStateBuilder(func(BACnetDoorAlarmStateTaggedBuilder) BACnetDoorAlarmStateTaggedBuilder) BACnetPropertyStatesDoorAlarmStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesDoorAlarmState or returns an error if something is wrong
 	Build() (BACnetPropertyStatesDoorAlarmState, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesDoorAlarmStateBuilder) = (*_BACnetPropertyStatesDoorA
 
 func (b *_BACnetPropertyStatesDoorAlarmStateBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesDoorAlarmState
 }
 
 func (b *_BACnetPropertyStatesDoorAlarmStateBuilder) WithMandatoryFields(doorAlarmState BACnetDoorAlarmStateTagged) BACnetPropertyStatesDoorAlarmStateBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesDoorAlarmStateBuilder) MustBuild() BACnetPropertyS
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesDoorAlarmStateBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesDoorAlarmState) deepCopy() *_BACnetPropertyStatesD
 	}
 	_BACnetPropertyStatesDoorAlarmStateCopy := &_BACnetPropertyStatesDoorAlarmState{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.DoorAlarmState.DeepCopy().(BACnetDoorAlarmStateTagged),
+		utils.DeepCopy[BACnetDoorAlarmStateTagged](m.DoorAlarmState),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesDoorAlarmStateCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesDoorAlarmStateCopy
 }
 

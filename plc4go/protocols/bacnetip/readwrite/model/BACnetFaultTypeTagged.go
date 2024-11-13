@@ -333,7 +333,7 @@ func (m *_BACnetFaultTypeTagged) deepCopy() *_BACnetFaultTypeTagged {
 		return nil
 	}
 	_BACnetFaultTypeTaggedCopy := &_BACnetFaultTypeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

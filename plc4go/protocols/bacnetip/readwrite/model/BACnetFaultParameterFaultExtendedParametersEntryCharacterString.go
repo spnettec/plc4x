@@ -84,6 +84,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder inte
 	WithCharacterStringValue(BACnetApplicationTagCharacterString) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
 	// WithCharacterStringValueBuilder adds CharacterStringValue (property field) which is build by the builder
 	WithCharacterStringValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
 	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryCharacterString or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultExtendedParametersEntryCharacterString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) =
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
 	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
+	contract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = b._BACnetFaultParameterFaultExtendedParametersEntryCharacterString
 }
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterFaultExtendedParametersEntryBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) deepC
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringCopy := &_BACnetFaultParameterFaultExtendedParametersEntryCharacterString{
 		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
-		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.CharacterStringValue),
 	}
-	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringCopy.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
 	return _BACnetFaultParameterFaultExtendedParametersEntryCharacterStringCopy
 }
 

@@ -85,6 +85,8 @@ type S7PayloadUserDataItemCyclicServicesPushBuilder interface {
 	WithItemsCount(uint16) S7PayloadUserDataItemCyclicServicesPushBuilder
 	// WithItems adds Items (property field)
 	WithItems(...AssociatedValueType) S7PayloadUserDataItemCyclicServicesPushBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadUserDataItemCyclicServicesPush or returns an error if something is wrong
 	Build() (S7PayloadUserDataItemCyclicServicesPush, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (S7PayloadUserDataItemCyclicServicesPushBuilder) = (*_S7PayloadUserDataIte
 
 func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemCyclicServicesPush
 }
 
 func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithMandatoryFields(itemsCount uint16, items []AssociatedValueType) S7PayloadUserDataItemCyclicServicesPushBuilder {
@@ -139,8 +142,10 @@ func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) MustBuild() S7PayloadU
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataItemCyclicServicesPushBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -330,7 +335,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesPush) deepCopy() *_S7PayloadUserDat
 		m.ItemsCount,
 		utils.DeepCopySlice[AssociatedValueType, AssociatedValueType](m.Items),
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadUserDataItemCyclicServicesPushCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemCyclicServicesPushCopy
 }
 

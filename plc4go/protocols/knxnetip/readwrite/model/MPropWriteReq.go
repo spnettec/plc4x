@@ -71,6 +71,8 @@ type MPropWriteReqBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() MPropWriteReqBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the MPropWriteReq or returns an error if something is wrong
 	Build() (MPropWriteReq, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (MPropWriteReqBuilder) = (*_MPropWriteReqBuilder)(nil)
 
 func (b *_MPropWriteReqBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._MPropWriteReq
 }
 
 func (b *_MPropWriteReqBuilder) WithMandatoryFields() MPropWriteReqBuilder {
@@ -115,8 +118,10 @@ func (b *_MPropWriteReqBuilder) MustBuild() MPropWriteReq {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MPropWriteReqBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_MPropWriteReq) deepCopy() *_MPropWriteReq {
 	_MPropWriteReqCopy := &_MPropWriteReq{
 		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_MPropWriteReqCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _MPropWriteReqCopy
 }
 

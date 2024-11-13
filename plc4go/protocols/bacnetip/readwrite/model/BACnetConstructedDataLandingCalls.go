@@ -79,6 +79,8 @@ type BACnetConstructedDataLandingCallsBuilder interface {
 	WithMandatoryFields(landingCallStatus []BACnetLandingCallStatus) BACnetConstructedDataLandingCallsBuilder
 	// WithLandingCallStatus adds LandingCallStatus (property field)
 	WithLandingCallStatus(...BACnetLandingCallStatus) BACnetConstructedDataLandingCallsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLandingCalls or returns an error if something is wrong
 	Build() (BACnetConstructedDataLandingCalls, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataLandingCallsBuilder) = (*_BACnetConstructedDataLandi
 
 func (b *_BACnetConstructedDataLandingCallsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLandingCalls
 }
 
 func (b *_BACnetConstructedDataLandingCallsBuilder) WithMandatoryFields(landingCallStatus []BACnetLandingCallStatus) BACnetConstructedDataLandingCallsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataLandingCallsBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLandingCallsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataLandingCalls) deepCopy() *_BACnetConstructedDataL
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetLandingCallStatus, BACnetLandingCallStatus](m.LandingCallStatus),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLandingCallsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLandingCallsCopy
 }
 

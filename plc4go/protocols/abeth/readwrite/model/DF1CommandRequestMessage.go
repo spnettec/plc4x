@@ -84,6 +84,8 @@ type DF1CommandRequestMessageBuilder interface {
 	WithCommand(DF1RequestCommand) DF1CommandRequestMessageBuilder
 	// WithCommandBuilder adds Command (property field) which is build by the builder
 	WithCommandBuilder(func(DF1RequestCommandBuilder) DF1RequestCommandBuilder) DF1CommandRequestMessageBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() DF1RequestMessageBuilder
 	// Build builds the DF1CommandRequestMessage or returns an error if something is wrong
 	Build() (DF1CommandRequestMessage, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (DF1CommandRequestMessageBuilder) = (*_DF1CommandRequestMessageBuilder)(ni
 
 func (b *_DF1CommandRequestMessageBuilder) setParent(contract DF1RequestMessageContract) {
 	b.DF1RequestMessageContract = contract
+	contract.(*_DF1RequestMessage)._SubType = b._DF1CommandRequestMessage
 }
 
 func (b *_DF1CommandRequestMessageBuilder) WithMandatoryFields(command DF1RequestCommand) DF1CommandRequestMessageBuilder {
@@ -152,8 +155,10 @@ func (b *_DF1CommandRequestMessageBuilder) MustBuild() DF1CommandRequestMessage 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DF1CommandRequestMessageBuilder) Done() DF1RequestMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewDF1RequestMessageBuilder().(*_DF1RequestMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_DF1CommandRequestMessage) deepCopy() *_DF1CommandRequestMessage {
 	}
 	_DF1CommandRequestMessageCopy := &_DF1CommandRequestMessage{
 		m.DF1RequestMessageContract.(*_DF1RequestMessage).deepCopy(),
-		m.Command.DeepCopy().(DF1RequestCommand),
+		utils.DeepCopy[DF1RequestCommand](m.Command),
 	}
-	m.DF1RequestMessageContract.(*_DF1RequestMessage)._SubType = m
+	_DF1CommandRequestMessageCopy.DF1RequestMessageContract.(*_DF1RequestMessage)._SubType = m
 	return _DF1CommandRequestMessageCopy
 }
 

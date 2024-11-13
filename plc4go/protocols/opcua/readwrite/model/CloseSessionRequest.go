@@ -92,6 +92,8 @@ type CloseSessionRequestBuilder interface {
 	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CloseSessionRequestBuilder
 	// WithDeleteSubscriptions adds DeleteSubscriptions (property field)
 	WithDeleteSubscriptions(bool) CloseSessionRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CloseSessionRequest or returns an error if something is wrong
 	Build() (CloseSessionRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,6 +117,7 @@ var _ (CloseSessionRequestBuilder) = (*_CloseSessionRequestBuilder)(nil)
 
 func (b *_CloseSessionRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CloseSessionRequest
 }
 
 func (b *_CloseSessionRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, deleteSubscriptions bool) CloseSessionRequestBuilder {
@@ -165,8 +168,10 @@ func (b *_CloseSessionRequestBuilder) MustBuild() CloseSessionRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CloseSessionRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -351,11 +356,11 @@ func (m *_CloseSessionRequest) deepCopy() *_CloseSessionRequest {
 	}
 	_CloseSessionRequestCopy := &_CloseSessionRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		m.DeleteSubscriptions,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CloseSessionRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CloseSessionRequestCopy
 }
 

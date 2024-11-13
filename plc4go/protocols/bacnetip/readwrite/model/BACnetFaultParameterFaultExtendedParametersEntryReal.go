@@ -84,6 +84,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryRealBuilder interface {
 	WithRealValue(BACnetApplicationTagReal) BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
 	// WithRealValueBuilder adds RealValue (property field) which is build by the builder
 	WithRealValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
 	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryReal or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultExtendedParametersEntryReal, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) = (*_BACnetF
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
 	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
+	contract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = b._BACnetFaultParameterFaultExtendedParametersEntryReal
 }
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetFaultParameterFaultExtendedParametersEntryRealBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) MustBuild
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterFaultExtendedParametersEntryBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) deepCopy() *_BAC
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryRealCopy := &_BACnetFaultParameterFaultExtendedParametersEntryReal{
 		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
-		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.RealValue),
 	}
-	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	_BACnetFaultParameterFaultExtendedParametersEntryRealCopy.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
 	return _BACnetFaultParameterFaultExtendedParametersEntryRealCopy
 }
 

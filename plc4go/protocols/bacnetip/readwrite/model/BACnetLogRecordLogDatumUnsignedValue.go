@@ -84,6 +84,8 @@ type BACnetLogRecordLogDatumUnsignedValueBuilder interface {
 	WithUnsignedValue(BACnetContextTagUnsignedInteger) BACnetLogRecordLogDatumUnsignedValueBuilder
 	// WithUnsignedValueBuilder adds UnsignedValue (property field) which is build by the builder
 	WithUnsignedValueBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLogRecordLogDatumUnsignedValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogRecordLogDatumBuilder
 	// Build builds the BACnetLogRecordLogDatumUnsignedValue or returns an error if something is wrong
 	Build() (BACnetLogRecordLogDatumUnsignedValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogRecordLogDatumUnsignedValueBuilder) = (*_BACnetLogRecordLogDatum
 
 func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
 	b.BACnetLogRecordLogDatumContract = contract
+	contract.(*_BACnetLogRecordLogDatum)._SubType = b._BACnetLogRecordLogDatumUnsignedValue
 }
 
 func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) WithMandatoryFields(unsignedValue BACnetContextTagUnsignedInteger) BACnetLogRecordLogDatumUnsignedValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) MustBuild() BACnetLogReco
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogRecordLogDatumBuilder().(*_BACnetLogRecordLogDatumBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) deepCopy() *_BACnetLogRecordLogD
 	}
 	_BACnetLogRecordLogDatumUnsignedValueCopy := &_BACnetLogRecordLogDatumUnsignedValue{
 		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
-		m.UnsignedValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.UnsignedValue),
 	}
-	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	_BACnetLogRecordLogDatumUnsignedValueCopy.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
 	return _BACnetLogRecordLogDatumUnsignedValueCopy
 }
 

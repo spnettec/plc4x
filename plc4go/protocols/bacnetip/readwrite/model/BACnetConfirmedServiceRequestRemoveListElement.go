@@ -111,6 +111,8 @@ type BACnetConfirmedServiceRequestRemoveListElementBuilder interface {
 	WithOptionalListOfElements(BACnetConstructedData) BACnetConfirmedServiceRequestRemoveListElementBuilder
 	// WithOptionalListOfElementsBuilder adds ListOfElements (property field) which is build by the builder
 	WithOptionalListOfElementsBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestRemoveListElement or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestRemoveListElement, error)
 	// MustBuild does the same as Build but panics on error
@@ -134,6 +136,7 @@ var _ (BACnetConfirmedServiceRequestRemoveListElementBuilder) = (*_BACnetConfirm
 
 func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestRemoveListElement
 }
 
 func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestRemoveListElementBuilder {
@@ -239,8 +242,10 @@ func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -459,12 +464,12 @@ func (m *_BACnetConfirmedServiceRequestRemoveListElement) deepCopy() *_BACnetCon
 	}
 	_BACnetConfirmedServiceRequestRemoveListElementCopy := &_BACnetConfirmedServiceRequestRemoveListElement{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ListOfElements.DeepCopy().(BACnetConstructedData),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
+		utils.DeepCopy[BACnetConstructedData](m.ListOfElements),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestRemoveListElementCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestRemoveListElementCopy
 }
 

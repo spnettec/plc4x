@@ -86,6 +86,8 @@ type BACnetConstructedDataMultiStateOutputFeedbackValueBuilder interface {
 	WithFeedbackValue(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
 	// WithFeedbackValueBuilder adds FeedbackValue (property field) which is build by the builder
 	WithFeedbackValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMultiStateOutputFeedbackValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataMultiStateOutputFeedbackValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) = (*_BACnetCon
 
 func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMultiStateOutputFeedbackValue
 }
 
 func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) WithMandatoryFields(feedbackValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) MustBuild()
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) deepCopy() *_BACne
 	}
 	_BACnetConstructedDataMultiStateOutputFeedbackValueCopy := &_BACnetConstructedDataMultiStateOutputFeedbackValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.FeedbackValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.FeedbackValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMultiStateOutputFeedbackValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMultiStateOutputFeedbackValueCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataManipulatedVariableReferenceBuilder interface {
 	WithManipulatedVariableReference(BACnetObjectPropertyReference) BACnetConstructedDataManipulatedVariableReferenceBuilder
 	// WithManipulatedVariableReferenceBuilder adds ManipulatedVariableReference (property field) which is build by the builder
 	WithManipulatedVariableReferenceBuilder(func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataManipulatedVariableReferenceBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataManipulatedVariableReference or returns an error if something is wrong
 	Build() (BACnetConstructedDataManipulatedVariableReference, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataManipulatedVariableReferenceBuilder) = (*_BACnetCons
 
 func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataManipulatedVariableReference
 }
 
 func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) WithMandatoryFields(manipulatedVariableReference BACnetObjectPropertyReference) BACnetConstructedDataManipulatedVariableReferenceBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) deepCopy() *_BACnet
 	}
 	_BACnetConstructedDataManipulatedVariableReferenceCopy := &_BACnetConstructedDataManipulatedVariableReference{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ManipulatedVariableReference.DeepCopy().(BACnetObjectPropertyReference),
+		utils.DeepCopy[BACnetObjectPropertyReference](m.ManipulatedVariableReference),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataManipulatedVariableReferenceCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataManipulatedVariableReferenceCopy
 }
 

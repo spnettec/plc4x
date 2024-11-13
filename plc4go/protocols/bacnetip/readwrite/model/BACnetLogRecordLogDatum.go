@@ -126,60 +126,27 @@ type BACnetLogRecordLogDatumBuilder interface {
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogRecordLogDatumBuilder
 	// AsBACnetLogRecordLogDatumLogStatus converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumLogStatus() interface {
-		BACnetLogRecordLogDatumLogStatusBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumLogStatus() BACnetLogRecordLogDatumLogStatusBuilder
 	// AsBACnetLogRecordLogDatumBooleanValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumBooleanValue() interface {
-		BACnetLogRecordLogDatumBooleanValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumBooleanValue() BACnetLogRecordLogDatumBooleanValueBuilder
 	// AsBACnetLogRecordLogDatumRealValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumRealValue() interface {
-		BACnetLogRecordLogDatumRealValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumRealValue() BACnetLogRecordLogDatumRealValueBuilder
 	// AsBACnetLogRecordLogDatumEnumeratedValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumEnumeratedValue() interface {
-		BACnetLogRecordLogDatumEnumeratedValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumEnumeratedValue() BACnetLogRecordLogDatumEnumeratedValueBuilder
 	// AsBACnetLogRecordLogDatumUnsignedValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumUnsignedValue() interface {
-		BACnetLogRecordLogDatumUnsignedValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumUnsignedValue() BACnetLogRecordLogDatumUnsignedValueBuilder
 	// AsBACnetLogRecordLogDatumIntegerValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumIntegerValue() interface {
-		BACnetLogRecordLogDatumIntegerValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumIntegerValue() BACnetLogRecordLogDatumIntegerValueBuilder
 	// AsBACnetLogRecordLogDatumBitStringValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumBitStringValue() interface {
-		BACnetLogRecordLogDatumBitStringValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumBitStringValue() BACnetLogRecordLogDatumBitStringValueBuilder
 	// AsBACnetLogRecordLogDatumNullValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumNullValue() interface {
-		BACnetLogRecordLogDatumNullValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumNullValue() BACnetLogRecordLogDatumNullValueBuilder
 	// AsBACnetLogRecordLogDatumFailure converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumFailure() interface {
-		BACnetLogRecordLogDatumFailureBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumFailure() BACnetLogRecordLogDatumFailureBuilder
 	// AsBACnetLogRecordLogDatumTimeChange converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumTimeChange() interface {
-		BACnetLogRecordLogDatumTimeChangeBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumTimeChange() BACnetLogRecordLogDatumTimeChangeBuilder
 	// AsBACnetLogRecordLogDatumAnyValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
-	AsBACnetLogRecordLogDatumAnyValue() interface {
-		BACnetLogRecordLogDatumAnyValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}
+	AsBACnetLogRecordLogDatumAnyValue() BACnetLogRecordLogDatumAnyValueBuilder
 	// Build builds the BACnetLogRecordLogDatum or returns an error if something is wrong
 	PartialBuild() (BACnetLogRecordLogDatumContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -302,14 +269,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) PartialMustBuild() BACnetLogRecordLogD
 	return build
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumLogStatus() interface {
-	BACnetLogRecordLogDatumLogStatusBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumLogStatusBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumLogStatus() BACnetLogRecordLogDatumLogStatusBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumLogStatusBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumLogStatusBuilder().(*_BACnetLogRecordLogDatumLogStatusBuilder)
@@ -318,14 +279,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumLogStatus() i
 	return cb
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumBooleanValue() interface {
-	BACnetLogRecordLogDatumBooleanValueBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumBooleanValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumBooleanValue() BACnetLogRecordLogDatumBooleanValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumBooleanValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumBooleanValueBuilder().(*_BACnetLogRecordLogDatumBooleanValueBuilder)
@@ -334,14 +289,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumBooleanValue(
 	return cb
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumRealValue() interface {
-	BACnetLogRecordLogDatumRealValueBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumRealValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumRealValue() BACnetLogRecordLogDatumRealValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumRealValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumRealValueBuilder().(*_BACnetLogRecordLogDatumRealValueBuilder)
@@ -350,14 +299,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumRealValue() i
 	return cb
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumEnumeratedValue() interface {
-	BACnetLogRecordLogDatumEnumeratedValueBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumEnumeratedValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumEnumeratedValue() BACnetLogRecordLogDatumEnumeratedValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumEnumeratedValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumEnumeratedValueBuilder().(*_BACnetLogRecordLogDatumEnumeratedValueBuilder)
@@ -366,14 +309,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumEnumeratedVal
 	return cb
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumUnsignedValue() interface {
-	BACnetLogRecordLogDatumUnsignedValueBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumUnsignedValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumUnsignedValue() BACnetLogRecordLogDatumUnsignedValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumUnsignedValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumUnsignedValueBuilder().(*_BACnetLogRecordLogDatumUnsignedValueBuilder)
@@ -382,14 +319,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumUnsignedValue
 	return cb
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumIntegerValue() interface {
-	BACnetLogRecordLogDatumIntegerValueBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumIntegerValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumIntegerValue() BACnetLogRecordLogDatumIntegerValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumIntegerValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumIntegerValueBuilder().(*_BACnetLogRecordLogDatumIntegerValueBuilder)
@@ -398,14 +329,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumIntegerValue(
 	return cb
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumBitStringValue() interface {
-	BACnetLogRecordLogDatumBitStringValueBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumBitStringValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumBitStringValue() BACnetLogRecordLogDatumBitStringValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumBitStringValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumBitStringValueBuilder().(*_BACnetLogRecordLogDatumBitStringValueBuilder)
@@ -414,14 +339,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumBitStringValu
 	return cb
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumNullValue() interface {
-	BACnetLogRecordLogDatumNullValueBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumNullValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumNullValue() BACnetLogRecordLogDatumNullValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumNullValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumNullValueBuilder().(*_BACnetLogRecordLogDatumNullValueBuilder)
@@ -430,14 +349,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumNullValue() i
 	return cb
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumFailure() interface {
-	BACnetLogRecordLogDatumFailureBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumFailureBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumFailure() BACnetLogRecordLogDatumFailureBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumFailureBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumFailureBuilder().(*_BACnetLogRecordLogDatumFailureBuilder)
@@ -446,14 +359,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumFailure() int
 	return cb
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumTimeChange() interface {
-	BACnetLogRecordLogDatumTimeChangeBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumTimeChangeBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumTimeChange() BACnetLogRecordLogDatumTimeChangeBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumTimeChangeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumTimeChangeBuilder().(*_BACnetLogRecordLogDatumTimeChangeBuilder)
@@ -462,14 +369,8 @@ func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumTimeChange() 
 	return cb
 }
 
-func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumAnyValue() interface {
-	BACnetLogRecordLogDatumAnyValueBuilder
-	Done() BACnetLogRecordLogDatumBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLogRecordLogDatumAnyValueBuilder
-		Done() BACnetLogRecordLogDatumBuilder
-	}); ok {
+func (b *_BACnetLogRecordLogDatumBuilder) AsBACnetLogRecordLogDatumAnyValue() BACnetLogRecordLogDatumAnyValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetLogRecordLogDatumAnyValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLogRecordLogDatumAnyValueBuilder().(*_BACnetLogRecordLogDatumAnyValueBuilder)
@@ -775,9 +676,9 @@ func (m *_BACnetLogRecordLogDatum) deepCopy() *_BACnetLogRecordLogDatum {
 	}
 	_BACnetLogRecordLogDatumCopy := &_BACnetLogRecordLogDatum{
 		nil, // will be set by child
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetLogRecordLogDatumCopy

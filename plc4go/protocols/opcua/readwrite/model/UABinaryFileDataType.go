@@ -125,6 +125,8 @@ type UABinaryFileDataTypeBuilder interface {
 	WithBody(Variant) UABinaryFileDataTypeBuilder
 	// WithBodyBuilder adds Body (property field) which is build by the builder
 	WithBodyBuilder(func(VariantBuilder) VariantBuilder) UABinaryFileDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the UABinaryFileDataType or returns an error if something is wrong
 	Build() (UABinaryFileDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -148,6 +150,7 @@ var _ (UABinaryFileDataTypeBuilder) = (*_UABinaryFileDataTypeBuilder)(nil)
 
 func (b *_UABinaryFileDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._UABinaryFileDataType
 }
 
 func (b *_UABinaryFileDataTypeBuilder) WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription, schemaLocation PascalString, fileHeader []KeyValuePair, body Variant) UABinaryFileDataTypeBuilder {
@@ -242,8 +245,10 @@ func (b *_UABinaryFileDataTypeBuilder) MustBuild() UABinaryFileDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_UABinaryFileDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -604,11 +609,11 @@ func (m *_UABinaryFileDataType) deepCopy() *_UABinaryFileDataType {
 		utils.DeepCopySlice[StructureDescription, StructureDescription](m.StructureDataTypes),
 		utils.DeepCopySlice[EnumDescription, EnumDescription](m.EnumDataTypes),
 		utils.DeepCopySlice[SimpleTypeDescription, SimpleTypeDescription](m.SimpleDataTypes),
-		m.SchemaLocation.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.SchemaLocation),
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.FileHeader),
-		m.Body.DeepCopy().(Variant),
+		utils.DeepCopy[Variant](m.Body),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_UABinaryFileDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UABinaryFileDataTypeCopy
 }
 

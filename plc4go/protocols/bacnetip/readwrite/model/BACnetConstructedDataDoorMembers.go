@@ -89,6 +89,8 @@ type BACnetConstructedDataDoorMembersBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorMembersBuilder
 	// WithDoorMembers adds DoorMembers (property field)
 	WithDoorMembers(...BACnetDeviceObjectReference) BACnetConstructedDataDoorMembersBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDoorMembers or returns an error if something is wrong
 	Build() (BACnetConstructedDataDoorMembers, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataDoorMembersBuilder) = (*_BACnetConstructedDataDoorMe
 
 func (b *_BACnetConstructedDataDoorMembersBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDoorMembers
 }
 
 func (b *_BACnetConstructedDataDoorMembersBuilder) WithMandatoryFields(doorMembers []BACnetDeviceObjectReference) BACnetConstructedDataDoorMembersBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataDoorMembersBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDoorMembersBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataDoorMembers) deepCopy() *_BACnetConstructedDataDo
 	}
 	_BACnetConstructedDataDoorMembersCopy := &_BACnetConstructedDataDoorMembers{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.DoorMembers),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDoorMembersCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDoorMembersCopy
 }
 

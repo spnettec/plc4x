@@ -82,6 +82,8 @@ type StatusRequestBinaryStateBuilder interface {
 	WithMandatoryFields(application ApplicationIdContainer) StatusRequestBinaryStateBuilder
 	// WithApplication adds Application (property field)
 	WithApplication(ApplicationIdContainer) StatusRequestBinaryStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() StatusRequestBuilder
 	// Build builds the StatusRequestBinaryState or returns an error if something is wrong
 	Build() (StatusRequestBinaryState, error)
 	// MustBuild does the same as Build but panics on error
@@ -105,6 +107,7 @@ var _ (StatusRequestBinaryStateBuilder) = (*_StatusRequestBinaryStateBuilder)(ni
 
 func (b *_StatusRequestBinaryStateBuilder) setParent(contract StatusRequestContract) {
 	b.StatusRequestContract = contract
+	contract.(*_StatusRequest)._SubType = b._StatusRequestBinaryState
 }
 
 func (b *_StatusRequestBinaryStateBuilder) WithMandatoryFields(application ApplicationIdContainer) StatusRequestBinaryStateBuilder {
@@ -131,8 +134,10 @@ func (b *_StatusRequestBinaryStateBuilder) MustBuild() StatusRequestBinaryState 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_StatusRequestBinaryStateBuilder) Done() StatusRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewStatusRequestBuilder().(*_StatusRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -313,7 +318,7 @@ func (m *_StatusRequestBinaryState) deepCopy() *_StatusRequestBinaryState {
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.StatusRequestContract.(*_StatusRequest)._SubType = m
+	_StatusRequestBinaryStateCopy.StatusRequestContract.(*_StatusRequest)._SubType = m
 	return _StatusRequestBinaryStateCopy
 }
 

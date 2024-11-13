@@ -129,6 +129,8 @@ type ActivateSessionRequestBuilder interface {
 	WithUserTokenSignature(SignatureData) ActivateSessionRequestBuilder
 	// WithUserTokenSignatureBuilder adds UserTokenSignature (property field) which is build by the builder
 	WithUserTokenSignatureBuilder(func(SignatureDataBuilder) SignatureDataBuilder) ActivateSessionRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ActivateSessionRequest or returns an error if something is wrong
 	Build() (ActivateSessionRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,6 +154,7 @@ var _ (ActivateSessionRequestBuilder) = (*_ActivateSessionRequestBuilder)(nil)
 
 func (b *_ActivateSessionRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ActivateSessionRequest
 }
 
 func (b *_ActivateSessionRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, clientSignature SignatureData, clientSoftwareCertificates []SignedSoftwareCertificate, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature SignatureData) ActivateSessionRequestBuilder {
@@ -279,8 +282,10 @@ func (b *_ActivateSessionRequestBuilder) MustBuild() ActivateSessionRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ActivateSessionRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -560,14 +565,14 @@ func (m *_ActivateSessionRequest) deepCopy() *_ActivateSessionRequest {
 	}
 	_ActivateSessionRequestCopy := &_ActivateSessionRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
-		m.ClientSignature.DeepCopy().(SignatureData),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
+		utils.DeepCopy[SignatureData](m.ClientSignature),
 		utils.DeepCopySlice[SignedSoftwareCertificate, SignedSoftwareCertificate](m.ClientSoftwareCertificates),
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
-		m.UserIdentityToken.DeepCopy().(ExtensionObject),
-		m.UserTokenSignature.DeepCopy().(SignatureData),
+		utils.DeepCopy[ExtensionObject](m.UserIdentityToken),
+		utils.DeepCopy[SignatureData](m.UserTokenSignature),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ActivateSessionRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ActivateSessionRequestCopy
 }
 

@@ -90,6 +90,8 @@ type DeleteEventDetailsBuilder interface {
 	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) DeleteEventDetailsBuilder
 	// WithEventIds adds EventIds (property field)
 	WithEventIds(...PascalByteString) DeleteEventDetailsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DeleteEventDetails or returns an error if something is wrong
 	Build() (DeleteEventDetails, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (DeleteEventDetailsBuilder) = (*_DeleteEventDetailsBuilder)(nil)
 
 func (b *_DeleteEventDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DeleteEventDetails
 }
 
 func (b *_DeleteEventDetailsBuilder) WithMandatoryFields(nodeId NodeId, eventIds []PascalByteString) DeleteEventDetailsBuilder {
@@ -163,8 +166,10 @@ func (b *_DeleteEventDetailsBuilder) MustBuild() DeleteEventDetails {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeleteEventDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_DeleteEventDetails) deepCopy() *_DeleteEventDetails {
 	}
 	_DeleteEventDetailsCopy := &_DeleteEventDetails{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.NodeId),
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.EventIds),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DeleteEventDetailsCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteEventDetailsCopy
 }
 

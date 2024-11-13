@@ -95,6 +95,8 @@ type WritePropertyMultipleErrorBuilder interface {
 	WithFirstFailedWriteAttempt(BACnetObjectPropertyReferenceEnclosed) WritePropertyMultipleErrorBuilder
 	// WithFirstFailedWriteAttemptBuilder adds FirstFailedWriteAttempt (property field) which is build by the builder
 	WithFirstFailedWriteAttemptBuilder(func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) WritePropertyMultipleErrorBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetErrorBuilder
 	// Build builds the WritePropertyMultipleError or returns an error if something is wrong
 	Build() (WritePropertyMultipleError, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (WritePropertyMultipleErrorBuilder) = (*_WritePropertyMultipleErrorBuilder
 
 func (b *_WritePropertyMultipleErrorBuilder) setParent(contract BACnetErrorContract) {
 	b.BACnetErrorContract = contract
+	contract.(*_BACnetError)._SubType = b._WritePropertyMultipleError
 }
 
 func (b *_WritePropertyMultipleErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed) WritePropertyMultipleErrorBuilder {
@@ -187,8 +190,10 @@ func (b *_WritePropertyMultipleErrorBuilder) MustBuild() WritePropertyMultipleEr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_WritePropertyMultipleErrorBuilder) Done() BACnetErrorBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetErrorBuilder().(*_BACnetErrorBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_WritePropertyMultipleError) deepCopy() *_WritePropertyMultipleError {
 	}
 	_WritePropertyMultipleErrorCopy := &_WritePropertyMultipleError{
 		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
-		m.ErrorType.DeepCopy().(ErrorEnclosed),
-		m.FirstFailedWriteAttempt.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
+		utils.DeepCopy[ErrorEnclosed](m.ErrorType),
+		utils.DeepCopy[BACnetObjectPropertyReferenceEnclosed](m.FirstFailedWriteAttempt),
 	}
-	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	_WritePropertyMultipleErrorCopy.BACnetErrorContract.(*_BACnetError)._SubType = m
 	return _WritePropertyMultipleErrorCopy
 }
 

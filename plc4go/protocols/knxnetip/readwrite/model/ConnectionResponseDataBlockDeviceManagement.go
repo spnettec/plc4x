@@ -71,6 +71,8 @@ type ConnectionResponseDataBlockDeviceManagementBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ConnectionResponseDataBlockDeviceManagementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ConnectionResponseDataBlockBuilder
 	// Build builds the ConnectionResponseDataBlockDeviceManagement or returns an error if something is wrong
 	Build() (ConnectionResponseDataBlockDeviceManagement, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ConnectionResponseDataBlockDeviceManagementBuilder) = (*_ConnectionRespon
 
 func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) setParent(contract ConnectionResponseDataBlockContract) {
 	b.ConnectionResponseDataBlockContract = contract
+	contract.(*_ConnectionResponseDataBlock)._SubType = b._ConnectionResponseDataBlockDeviceManagement
 }
 
 func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) WithMandatoryFields() ConnectionResponseDataBlockDeviceManagementBuilder {
@@ -115,8 +118,10 @@ func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) MustBuild() Connec
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ConnectionResponseDataBlockDeviceManagementBuilder) Done() ConnectionResponseDataBlockBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewConnectionResponseDataBlockBuilder().(*_ConnectionResponseDataBlockBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -246,7 +251,7 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) deepCopy() *_ConnectionRe
 	_ConnectionResponseDataBlockDeviceManagementCopy := &_ConnectionResponseDataBlockDeviceManagement{
 		m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock).deepCopy(),
 	}
-	m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = m
+	_ConnectionResponseDataBlockDeviceManagementCopy.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = m
 	return _ConnectionResponseDataBlockDeviceManagementCopy
 }
 

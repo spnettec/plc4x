@@ -96,6 +96,8 @@ type FindServersOnNetworkResponseBuilder interface {
 	WithLastCounterResetTime(int64) FindServersOnNetworkResponseBuilder
 	// WithServers adds Servers (property field)
 	WithServers(...ServerOnNetwork) FindServersOnNetworkResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the FindServersOnNetworkResponse or returns an error if something is wrong
 	Build() (FindServersOnNetworkResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (FindServersOnNetworkResponseBuilder) = (*_FindServersOnNetworkResponseBui
 
 func (b *_FindServersOnNetworkResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._FindServersOnNetworkResponse
 }
 
 func (b *_FindServersOnNetworkResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, lastCounterResetTime int64, servers []ServerOnNetwork) FindServersOnNetworkResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_FindServersOnNetworkResponseBuilder) MustBuild() FindServersOnNetworkR
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FindServersOnNetworkResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -384,11 +389,11 @@ func (m *_FindServersOnNetworkResponse) deepCopy() *_FindServersOnNetworkRespons
 	}
 	_FindServersOnNetworkResponseCopy := &_FindServersOnNetworkResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		m.LastCounterResetTime,
 		utils.DeepCopySlice[ServerOnNetwork, ServerOnNetwork](m.Servers),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_FindServersOnNetworkResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _FindServersOnNetworkResponseCopy
 }
 

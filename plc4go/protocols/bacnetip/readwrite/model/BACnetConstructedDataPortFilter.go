@@ -89,6 +89,8 @@ type BACnetConstructedDataPortFilterBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPortFilterBuilder
 	// WithPortFilter adds PortFilter (property field)
 	WithPortFilter(...BACnetPortPermission) BACnetConstructedDataPortFilterBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPortFilter or returns an error if something is wrong
 	Build() (BACnetConstructedDataPortFilter, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataPortFilterBuilder) = (*_BACnetConstructedDataPortFil
 
 func (b *_BACnetConstructedDataPortFilterBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPortFilter
 }
 
 func (b *_BACnetConstructedDataPortFilterBuilder) WithMandatoryFields(portFilter []BACnetPortPermission) BACnetConstructedDataPortFilterBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataPortFilterBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPortFilterBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataPortFilter) deepCopy() *_BACnetConstructedDataPor
 	}
 	_BACnetConstructedDataPortFilterCopy := &_BACnetConstructedDataPortFilter{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetPortPermission, BACnetPortPermission](m.PortFilter),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPortFilterCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPortFilterCopy
 }
 

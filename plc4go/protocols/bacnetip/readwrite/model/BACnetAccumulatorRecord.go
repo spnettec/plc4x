@@ -432,10 +432,10 @@ func (m *_BACnetAccumulatorRecord) deepCopy() *_BACnetAccumulatorRecord {
 		return nil
 	}
 	_BACnetAccumulatorRecordCopy := &_BACnetAccumulatorRecord{
-		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
-		m.PresentValue.DeepCopy().(BACnetContextTagSignedInteger),
-		m.AccumulatedValue.DeepCopy().(BACnetContextTagSignedInteger),
-		m.AccumulatorStatus.DeepCopy().(BACnetAccumulatorRecordAccumulatorStatusTagged),
+		utils.DeepCopy[BACnetDateTimeEnclosed](m.Timestamp),
+		utils.DeepCopy[BACnetContextTagSignedInteger](m.PresentValue),
+		utils.DeepCopy[BACnetContextTagSignedInteger](m.AccumulatedValue),
+		utils.DeepCopy[BACnetAccumulatorRecordAccumulatorStatusTagged](m.AccumulatorStatus),
 	}
 	return _BACnetAccumulatorRecordCopy
 }

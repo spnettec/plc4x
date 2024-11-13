@@ -330,8 +330,8 @@ func (m *_BACnetEventLogRecord) deepCopy() *_BACnetEventLogRecord {
 		return nil
 	}
 	_BACnetEventLogRecordCopy := &_BACnetEventLogRecord{
-		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
-		m.LogDatum.DeepCopy().(BACnetEventLogRecordLogDatum),
+		utils.DeepCopy[BACnetDateTimeEnclosed](m.Timestamp),
+		utils.DeepCopy[BACnetEventLogRecordLogDatum](m.LogDatum),
 	}
 	return _BACnetEventLogRecordCopy
 }

@@ -89,6 +89,8 @@ type BACnetConstructedDataLandingDoorStatusBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLandingDoorStatusBuilder
 	// WithLandingDoorStatus adds LandingDoorStatus (property field)
 	WithLandingDoorStatus(...BACnetLandingDoorStatus) BACnetConstructedDataLandingDoorStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLandingDoorStatus or returns an error if something is wrong
 	Build() (BACnetConstructedDataLandingDoorStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataLandingDoorStatusBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataLandingDoorStatusBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLandingDoorStatus
 }
 
 func (b *_BACnetConstructedDataLandingDoorStatusBuilder) WithMandatoryFields(landingDoorStatus []BACnetLandingDoorStatus) BACnetConstructedDataLandingDoorStatusBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataLandingDoorStatusBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLandingDoorStatusBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataLandingDoorStatus) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataLandingDoorStatusCopy := &_BACnetConstructedDataLandingDoorStatus{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetLandingDoorStatus, BACnetLandingDoorStatus](m.LandingDoorStatus),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLandingDoorStatusCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLandingDoorStatusCopy
 }
 

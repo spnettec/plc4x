@@ -83,6 +83,8 @@ type TelephonyDataIsolateSecondaryOutletBuilder interface {
 	WithMandatoryFields(isolateStatus byte) TelephonyDataIsolateSecondaryOutletBuilder
 	// WithIsolateStatus adds IsolateStatus (property field)
 	WithIsolateStatus(byte) TelephonyDataIsolateSecondaryOutletBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TelephonyDataBuilder
 	// Build builds the TelephonyDataIsolateSecondaryOutlet or returns an error if something is wrong
 	Build() (TelephonyDataIsolateSecondaryOutlet, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,6 +108,7 @@ var _ (TelephonyDataIsolateSecondaryOutletBuilder) = (*_TelephonyDataIsolateSeco
 
 func (b *_TelephonyDataIsolateSecondaryOutletBuilder) setParent(contract TelephonyDataContract) {
 	b.TelephonyDataContract = contract
+	contract.(*_TelephonyData)._SubType = b._TelephonyDataIsolateSecondaryOutlet
 }
 
 func (b *_TelephonyDataIsolateSecondaryOutletBuilder) WithMandatoryFields(isolateStatus byte) TelephonyDataIsolateSecondaryOutletBuilder {
@@ -132,8 +135,10 @@ func (b *_TelephonyDataIsolateSecondaryOutletBuilder) MustBuild() TelephonyDataI
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TelephonyDataIsolateSecondaryOutletBuilder) Done() TelephonyDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTelephonyDataBuilder().(*_TelephonyDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -335,7 +340,7 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) deepCopy() *_TelephonyDataIsolate
 		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
 		m.IsolateStatus,
 	}
-	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	_TelephonyDataIsolateSecondaryOutletCopy.TelephonyDataContract.(*_TelephonyData)._SubType = m
 	return _TelephonyDataIsolateSecondaryOutletCopy
 }
 

@@ -94,120 +94,51 @@ type CEMIBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CEMIBuilder
 	// AsLBusmonInd converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsLBusmonInd() interface {
-		LBusmonIndBuilder
-		Done() CEMIBuilder
-	}
+	AsLBusmonInd() LBusmonIndBuilder
 	// AsLDataReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsLDataReq() interface {
-		LDataReqBuilder
-		Done() CEMIBuilder
-	}
+	AsLDataReq() LDataReqBuilder
 	// AsLDataInd converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsLDataInd() interface {
-		LDataIndBuilder
-		Done() CEMIBuilder
-	}
+	AsLDataInd() LDataIndBuilder
 	// AsLDataCon converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsLDataCon() interface {
-		LDataConBuilder
-		Done() CEMIBuilder
-	}
+	AsLDataCon() LDataConBuilder
 	// AsLRawReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsLRawReq() interface {
-		LRawReqBuilder
-		Done() CEMIBuilder
-	}
+	AsLRawReq() LRawReqBuilder
 	// AsLRawInd converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsLRawInd() interface {
-		LRawIndBuilder
-		Done() CEMIBuilder
-	}
+	AsLRawInd() LRawIndBuilder
 	// AsLRawCon converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsLRawCon() interface {
-		LRawConBuilder
-		Done() CEMIBuilder
-	}
+	AsLRawCon() LRawConBuilder
 	// AsLPollDataReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsLPollDataReq() interface {
-		LPollDataReqBuilder
-		Done() CEMIBuilder
-	}
+	AsLPollDataReq() LPollDataReqBuilder
 	// AsLPollDataCon converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsLPollDataCon() interface {
-		LPollDataConBuilder
-		Done() CEMIBuilder
-	}
+	AsLPollDataCon() LPollDataConBuilder
 	// AsTDataConnectedReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsTDataConnectedReq() interface {
-		TDataConnectedReqBuilder
-		Done() CEMIBuilder
-	}
+	AsTDataConnectedReq() TDataConnectedReqBuilder
 	// AsTDataConnectedInd converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsTDataConnectedInd() interface {
-		TDataConnectedIndBuilder
-		Done() CEMIBuilder
-	}
+	AsTDataConnectedInd() TDataConnectedIndBuilder
 	// AsTDataIndividualReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsTDataIndividualReq() interface {
-		TDataIndividualReqBuilder
-		Done() CEMIBuilder
-	}
+	AsTDataIndividualReq() TDataIndividualReqBuilder
 	// AsTDataIndividualInd converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsTDataIndividualInd() interface {
-		TDataIndividualIndBuilder
-		Done() CEMIBuilder
-	}
+	AsTDataIndividualInd() TDataIndividualIndBuilder
 	// AsMPropReadReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsMPropReadReq() interface {
-		MPropReadReqBuilder
-		Done() CEMIBuilder
-	}
+	AsMPropReadReq() MPropReadReqBuilder
 	// AsMPropReadCon converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsMPropReadCon() interface {
-		MPropReadConBuilder
-		Done() CEMIBuilder
-	}
+	AsMPropReadCon() MPropReadConBuilder
 	// AsMPropWriteReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsMPropWriteReq() interface {
-		MPropWriteReqBuilder
-		Done() CEMIBuilder
-	}
+	AsMPropWriteReq() MPropWriteReqBuilder
 	// AsMPropWriteCon converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsMPropWriteCon() interface {
-		MPropWriteConBuilder
-		Done() CEMIBuilder
-	}
+	AsMPropWriteCon() MPropWriteConBuilder
 	// AsMPropInfoInd converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsMPropInfoInd() interface {
-		MPropInfoIndBuilder
-		Done() CEMIBuilder
-	}
+	AsMPropInfoInd() MPropInfoIndBuilder
 	// AsMFuncPropCommandReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsMFuncPropCommandReq() interface {
-		MFuncPropCommandReqBuilder
-		Done() CEMIBuilder
-	}
+	AsMFuncPropCommandReq() MFuncPropCommandReqBuilder
 	// AsMFuncPropStateReadReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsMFuncPropStateReadReq() interface {
-		MFuncPropStateReadReqBuilder
-		Done() CEMIBuilder
-	}
+	AsMFuncPropStateReadReq() MFuncPropStateReadReqBuilder
 	// AsMFuncPropCon converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsMFuncPropCon() interface {
-		MFuncPropConBuilder
-		Done() CEMIBuilder
-	}
+	AsMFuncPropCon() MFuncPropConBuilder
 	// AsMResetReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsMResetReq() interface {
-		MResetReqBuilder
-		Done() CEMIBuilder
-	}
+	AsMResetReq() MResetReqBuilder
 	// AsMResetInd converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
-	AsMResetInd() interface {
-		MResetIndBuilder
-		Done() CEMIBuilder
-	}
+	AsMResetInd() MResetIndBuilder
 	// Build builds the CEMI or returns an error if something is wrong
 	PartialBuild() (CEMIContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -258,14 +189,8 @@ func (b *_CEMIBuilder) PartialMustBuild() CEMIContract {
 	return build
 }
 
-func (b *_CEMIBuilder) AsLBusmonInd() interface {
-	LBusmonIndBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LBusmonIndBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsLBusmonInd() LBusmonIndBuilder {
+	if cb, ok := b.childBuilder.(LBusmonIndBuilder); ok {
 		return cb
 	}
 	cb := NewLBusmonIndBuilder().(*_LBusmonIndBuilder)
@@ -274,14 +199,8 @@ func (b *_CEMIBuilder) AsLBusmonInd() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsLDataReq() interface {
-	LDataReqBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LDataReqBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsLDataReq() LDataReqBuilder {
+	if cb, ok := b.childBuilder.(LDataReqBuilder); ok {
 		return cb
 	}
 	cb := NewLDataReqBuilder().(*_LDataReqBuilder)
@@ -290,14 +209,8 @@ func (b *_CEMIBuilder) AsLDataReq() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsLDataInd() interface {
-	LDataIndBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LDataIndBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsLDataInd() LDataIndBuilder {
+	if cb, ok := b.childBuilder.(LDataIndBuilder); ok {
 		return cb
 	}
 	cb := NewLDataIndBuilder().(*_LDataIndBuilder)
@@ -306,14 +219,8 @@ func (b *_CEMIBuilder) AsLDataInd() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsLDataCon() interface {
-	LDataConBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LDataConBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsLDataCon() LDataConBuilder {
+	if cb, ok := b.childBuilder.(LDataConBuilder); ok {
 		return cb
 	}
 	cb := NewLDataConBuilder().(*_LDataConBuilder)
@@ -322,14 +229,8 @@ func (b *_CEMIBuilder) AsLDataCon() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsLRawReq() interface {
-	LRawReqBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LRawReqBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsLRawReq() LRawReqBuilder {
+	if cb, ok := b.childBuilder.(LRawReqBuilder); ok {
 		return cb
 	}
 	cb := NewLRawReqBuilder().(*_LRawReqBuilder)
@@ -338,14 +239,8 @@ func (b *_CEMIBuilder) AsLRawReq() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsLRawInd() interface {
-	LRawIndBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LRawIndBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsLRawInd() LRawIndBuilder {
+	if cb, ok := b.childBuilder.(LRawIndBuilder); ok {
 		return cb
 	}
 	cb := NewLRawIndBuilder().(*_LRawIndBuilder)
@@ -354,14 +249,8 @@ func (b *_CEMIBuilder) AsLRawInd() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsLRawCon() interface {
-	LRawConBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LRawConBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsLRawCon() LRawConBuilder {
+	if cb, ok := b.childBuilder.(LRawConBuilder); ok {
 		return cb
 	}
 	cb := NewLRawConBuilder().(*_LRawConBuilder)
@@ -370,14 +259,8 @@ func (b *_CEMIBuilder) AsLRawCon() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsLPollDataReq() interface {
-	LPollDataReqBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LPollDataReqBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsLPollDataReq() LPollDataReqBuilder {
+	if cb, ok := b.childBuilder.(LPollDataReqBuilder); ok {
 		return cb
 	}
 	cb := NewLPollDataReqBuilder().(*_LPollDataReqBuilder)
@@ -386,14 +269,8 @@ func (b *_CEMIBuilder) AsLPollDataReq() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsLPollDataCon() interface {
-	LPollDataConBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LPollDataConBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsLPollDataCon() LPollDataConBuilder {
+	if cb, ok := b.childBuilder.(LPollDataConBuilder); ok {
 		return cb
 	}
 	cb := NewLPollDataConBuilder().(*_LPollDataConBuilder)
@@ -402,14 +279,8 @@ func (b *_CEMIBuilder) AsLPollDataCon() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsTDataConnectedReq() interface {
-	TDataConnectedReqBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TDataConnectedReqBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsTDataConnectedReq() TDataConnectedReqBuilder {
+	if cb, ok := b.childBuilder.(TDataConnectedReqBuilder); ok {
 		return cb
 	}
 	cb := NewTDataConnectedReqBuilder().(*_TDataConnectedReqBuilder)
@@ -418,14 +289,8 @@ func (b *_CEMIBuilder) AsTDataConnectedReq() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsTDataConnectedInd() interface {
-	TDataConnectedIndBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TDataConnectedIndBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsTDataConnectedInd() TDataConnectedIndBuilder {
+	if cb, ok := b.childBuilder.(TDataConnectedIndBuilder); ok {
 		return cb
 	}
 	cb := NewTDataConnectedIndBuilder().(*_TDataConnectedIndBuilder)
@@ -434,14 +299,8 @@ func (b *_CEMIBuilder) AsTDataConnectedInd() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsTDataIndividualReq() interface {
-	TDataIndividualReqBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TDataIndividualReqBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsTDataIndividualReq() TDataIndividualReqBuilder {
+	if cb, ok := b.childBuilder.(TDataIndividualReqBuilder); ok {
 		return cb
 	}
 	cb := NewTDataIndividualReqBuilder().(*_TDataIndividualReqBuilder)
@@ -450,14 +309,8 @@ func (b *_CEMIBuilder) AsTDataIndividualReq() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsTDataIndividualInd() interface {
-	TDataIndividualIndBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TDataIndividualIndBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsTDataIndividualInd() TDataIndividualIndBuilder {
+	if cb, ok := b.childBuilder.(TDataIndividualIndBuilder); ok {
 		return cb
 	}
 	cb := NewTDataIndividualIndBuilder().(*_TDataIndividualIndBuilder)
@@ -466,14 +319,8 @@ func (b *_CEMIBuilder) AsTDataIndividualInd() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsMPropReadReq() interface {
-	MPropReadReqBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MPropReadReqBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsMPropReadReq() MPropReadReqBuilder {
+	if cb, ok := b.childBuilder.(MPropReadReqBuilder); ok {
 		return cb
 	}
 	cb := NewMPropReadReqBuilder().(*_MPropReadReqBuilder)
@@ -482,14 +329,8 @@ func (b *_CEMIBuilder) AsMPropReadReq() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsMPropReadCon() interface {
-	MPropReadConBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MPropReadConBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsMPropReadCon() MPropReadConBuilder {
+	if cb, ok := b.childBuilder.(MPropReadConBuilder); ok {
 		return cb
 	}
 	cb := NewMPropReadConBuilder().(*_MPropReadConBuilder)
@@ -498,14 +339,8 @@ func (b *_CEMIBuilder) AsMPropReadCon() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsMPropWriteReq() interface {
-	MPropWriteReqBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MPropWriteReqBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsMPropWriteReq() MPropWriteReqBuilder {
+	if cb, ok := b.childBuilder.(MPropWriteReqBuilder); ok {
 		return cb
 	}
 	cb := NewMPropWriteReqBuilder().(*_MPropWriteReqBuilder)
@@ -514,14 +349,8 @@ func (b *_CEMIBuilder) AsMPropWriteReq() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsMPropWriteCon() interface {
-	MPropWriteConBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MPropWriteConBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsMPropWriteCon() MPropWriteConBuilder {
+	if cb, ok := b.childBuilder.(MPropWriteConBuilder); ok {
 		return cb
 	}
 	cb := NewMPropWriteConBuilder().(*_MPropWriteConBuilder)
@@ -530,14 +359,8 @@ func (b *_CEMIBuilder) AsMPropWriteCon() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsMPropInfoInd() interface {
-	MPropInfoIndBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MPropInfoIndBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsMPropInfoInd() MPropInfoIndBuilder {
+	if cb, ok := b.childBuilder.(MPropInfoIndBuilder); ok {
 		return cb
 	}
 	cb := NewMPropInfoIndBuilder().(*_MPropInfoIndBuilder)
@@ -546,14 +369,8 @@ func (b *_CEMIBuilder) AsMPropInfoInd() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsMFuncPropCommandReq() interface {
-	MFuncPropCommandReqBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MFuncPropCommandReqBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsMFuncPropCommandReq() MFuncPropCommandReqBuilder {
+	if cb, ok := b.childBuilder.(MFuncPropCommandReqBuilder); ok {
 		return cb
 	}
 	cb := NewMFuncPropCommandReqBuilder().(*_MFuncPropCommandReqBuilder)
@@ -562,14 +379,8 @@ func (b *_CEMIBuilder) AsMFuncPropCommandReq() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsMFuncPropStateReadReq() interface {
-	MFuncPropStateReadReqBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MFuncPropStateReadReqBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsMFuncPropStateReadReq() MFuncPropStateReadReqBuilder {
+	if cb, ok := b.childBuilder.(MFuncPropStateReadReqBuilder); ok {
 		return cb
 	}
 	cb := NewMFuncPropStateReadReqBuilder().(*_MFuncPropStateReadReqBuilder)
@@ -578,14 +389,8 @@ func (b *_CEMIBuilder) AsMFuncPropStateReadReq() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsMFuncPropCon() interface {
-	MFuncPropConBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MFuncPropConBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsMFuncPropCon() MFuncPropConBuilder {
+	if cb, ok := b.childBuilder.(MFuncPropConBuilder); ok {
 		return cb
 	}
 	cb := NewMFuncPropConBuilder().(*_MFuncPropConBuilder)
@@ -594,14 +399,8 @@ func (b *_CEMIBuilder) AsMFuncPropCon() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsMResetReq() interface {
-	MResetReqBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MResetReqBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsMResetReq() MResetReqBuilder {
+	if cb, ok := b.childBuilder.(MResetReqBuilder); ok {
 		return cb
 	}
 	cb := NewMResetReqBuilder().(*_MResetReqBuilder)
@@ -610,14 +409,8 @@ func (b *_CEMIBuilder) AsMResetReq() interface {
 	return cb
 }
 
-func (b *_CEMIBuilder) AsMResetInd() interface {
-	MResetIndBuilder
-	Done() CEMIBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MResetIndBuilder
-		Done() CEMIBuilder
-	}); ok {
+func (b *_CEMIBuilder) AsMResetInd() MResetIndBuilder {
+	if cb, ok := b.childBuilder.(MResetIndBuilder); ok {
 		return cb
 	}
 	cb := NewMResetIndBuilder().(*_MResetIndBuilder)

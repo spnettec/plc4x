@@ -84,6 +84,8 @@ type BACnetPropertyStatesLiftGroupModeBuilder interface {
 	WithLiftGroupMode(BACnetLiftGroupModeTagged) BACnetPropertyStatesLiftGroupModeBuilder
 	// WithLiftGroupModeBuilder adds LiftGroupMode (property field) which is build by the builder
 	WithLiftGroupModeBuilder(func(BACnetLiftGroupModeTaggedBuilder) BACnetLiftGroupModeTaggedBuilder) BACnetPropertyStatesLiftGroupModeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesLiftGroupMode or returns an error if something is wrong
 	Build() (BACnetPropertyStatesLiftGroupMode, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesLiftGroupModeBuilder) = (*_BACnetPropertyStatesLiftGr
 
 func (b *_BACnetPropertyStatesLiftGroupModeBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesLiftGroupMode
 }
 
 func (b *_BACnetPropertyStatesLiftGroupModeBuilder) WithMandatoryFields(liftGroupMode BACnetLiftGroupModeTagged) BACnetPropertyStatesLiftGroupModeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesLiftGroupModeBuilder) MustBuild() BACnetPropertySt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesLiftGroupModeBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesLiftGroupMode) deepCopy() *_BACnetPropertyStatesLi
 	}
 	_BACnetPropertyStatesLiftGroupModeCopy := &_BACnetPropertyStatesLiftGroupMode{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.LiftGroupMode.DeepCopy().(BACnetLiftGroupModeTagged),
+		utils.DeepCopy[BACnetLiftGroupModeTagged](m.LiftGroupMode),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesLiftGroupModeCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesLiftGroupModeCopy
 }
 

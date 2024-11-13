@@ -108,6 +108,8 @@ type ConnectionRequestBuilder interface {
 	WithConnectionRequestInformation(ConnectionRequestInformation) ConnectionRequestBuilder
 	// WithConnectionRequestInformationBuilder adds ConnectionRequestInformation (property field) which is build by the builder
 	WithConnectionRequestInformationBuilder(func(ConnectionRequestInformationBuilder) ConnectionRequestInformationBuilder) ConnectionRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the ConnectionRequest or returns an error if something is wrong
 	Build() (ConnectionRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -131,6 +133,7 @@ var _ (ConnectionRequestBuilder) = (*_ConnectionRequestBuilder)(nil)
 
 func (b *_ConnectionRequestBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._ConnectionRequest
 }
 
 func (b *_ConnectionRequestBuilder) WithMandatoryFields(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) ConnectionRequestBuilder {
@@ -224,8 +227,10 @@ func (b *_ConnectionRequestBuilder) MustBuild() ConnectionRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ConnectionRequestBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -414,11 +419,11 @@ func (m *_ConnectionRequest) deepCopy() *_ConnectionRequest {
 	}
 	_ConnectionRequestCopy := &_ConnectionRequest{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
-		m.HpaiDiscoveryEndpoint.DeepCopy().(HPAIDiscoveryEndpoint),
-		m.HpaiDataEndpoint.DeepCopy().(HPAIDataEndpoint),
-		m.ConnectionRequestInformation.DeepCopy().(ConnectionRequestInformation),
+		utils.DeepCopy[HPAIDiscoveryEndpoint](m.HpaiDiscoveryEndpoint),
+		utils.DeepCopy[HPAIDataEndpoint](m.HpaiDataEndpoint),
+		utils.DeepCopy[ConnectionRequestInformation](m.ConnectionRequestInformation),
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_ConnectionRequestCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _ConnectionRequestCopy
 }
 

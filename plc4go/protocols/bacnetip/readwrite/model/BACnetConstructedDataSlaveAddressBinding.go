@@ -79,6 +79,8 @@ type BACnetConstructedDataSlaveAddressBindingBuilder interface {
 	WithMandatoryFields(slaveAddressBinding []BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder
 	// WithSlaveAddressBinding adds SlaveAddressBinding (property field)
 	WithSlaveAddressBinding(...BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataSlaveAddressBinding or returns an error if something is wrong
 	Build() (BACnetConstructedDataSlaveAddressBinding, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataSlaveAddressBindingBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataSlaveAddressBinding
 }
 
 func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) WithMandatoryFields(slaveAddressBinding []BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataSlaveAddressBindingBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataSlaveAddressBinding) deepCopy() *_BACnetConstruct
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAddressBinding, BACnetAddressBinding](m.SlaveAddressBinding),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataSlaveAddressBindingCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataSlaveAddressBindingCopy
 }
 

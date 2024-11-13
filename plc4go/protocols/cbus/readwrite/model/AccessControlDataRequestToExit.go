@@ -71,6 +71,8 @@ type AccessControlDataRequestToExitBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() AccessControlDataRequestToExitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AccessControlDataBuilder
 	// Build builds the AccessControlDataRequestToExit or returns an error if something is wrong
 	Build() (AccessControlDataRequestToExit, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (AccessControlDataRequestToExitBuilder) = (*_AccessControlDataRequestToExi
 
 func (b *_AccessControlDataRequestToExitBuilder) setParent(contract AccessControlDataContract) {
 	b.AccessControlDataContract = contract
+	contract.(*_AccessControlData)._SubType = b._AccessControlDataRequestToExit
 }
 
 func (b *_AccessControlDataRequestToExitBuilder) WithMandatoryFields() AccessControlDataRequestToExitBuilder {
@@ -115,8 +118,10 @@ func (b *_AccessControlDataRequestToExitBuilder) MustBuild() AccessControlDataRe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AccessControlDataRequestToExitBuilder) Done() AccessControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAccessControlDataBuilder().(*_AccessControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_AccessControlDataRequestToExit) deepCopy() *_AccessControlDataRequestT
 	_AccessControlDataRequestToExitCopy := &_AccessControlDataRequestToExit{
 		m.AccessControlDataContract.(*_AccessControlData).deepCopy(),
 	}
-	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	_AccessControlDataRequestToExitCopy.AccessControlDataContract.(*_AccessControlData)._SubType = m
 	return _AccessControlDataRequestToExitCopy
 }
 

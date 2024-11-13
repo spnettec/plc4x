@@ -86,6 +86,8 @@ type BACnetConstructedDataEventEnableBuilder interface {
 	WithEventEnable(BACnetEventTransitionBitsTagged) BACnetConstructedDataEventEnableBuilder
 	// WithEventEnableBuilder adds EventEnable (property field) which is build by the builder
 	WithEventEnableBuilder(func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetConstructedDataEventEnableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEventEnable or returns an error if something is wrong
 	Build() (BACnetConstructedDataEventEnable, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataEventEnableBuilder) = (*_BACnetConstructedDataEventE
 
 func (b *_BACnetConstructedDataEventEnableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEventEnable
 }
 
 func (b *_BACnetConstructedDataEventEnableBuilder) WithMandatoryFields(eventEnable BACnetEventTransitionBitsTagged) BACnetConstructedDataEventEnableBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataEventEnableBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEventEnableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataEventEnable) deepCopy() *_BACnetConstructedDataEv
 	}
 	_BACnetConstructedDataEventEnableCopy := &_BACnetConstructedDataEventEnable{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.EventEnable.DeepCopy().(BACnetEventTransitionBitsTagged),
+		utils.DeepCopy[BACnetEventTransitionBitsTagged](m.EventEnable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEventEnableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEventEnableCopy
 }
 

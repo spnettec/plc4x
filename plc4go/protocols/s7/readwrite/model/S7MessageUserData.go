@@ -71,6 +71,8 @@ type S7MessageUserDataBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7MessageUserDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7MessageBuilder
 	// Build builds the S7MessageUserData or returns an error if something is wrong
 	Build() (S7MessageUserData, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (S7MessageUserDataBuilder) = (*_S7MessageUserDataBuilder)(nil)
 
 func (b *_S7MessageUserDataBuilder) setParent(contract S7MessageContract) {
 	b.S7MessageContract = contract
+	contract.(*_S7Message)._SubType = b._S7MessageUserData
 }
 
 func (b *_S7MessageUserDataBuilder) WithMandatoryFields() S7MessageUserDataBuilder {
@@ -115,8 +118,10 @@ func (b *_S7MessageUserDataBuilder) MustBuild() S7MessageUserData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7MessageUserDataBuilder) Done() S7MessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7MessageBuilder().(*_S7MessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_S7MessageUserData) deepCopy() *_S7MessageUserData {
 	_S7MessageUserDataCopy := &_S7MessageUserData{
 		m.S7MessageContract.(*_S7Message).deepCopy(),
 	}
-	m.S7MessageContract.(*_S7Message)._SubType = m
+	_S7MessageUserDataCopy.S7MessageContract.(*_S7Message)._SubType = m
 	return _S7MessageUserDataCopy
 }
 

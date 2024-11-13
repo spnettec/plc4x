@@ -89,6 +89,8 @@ type FirmataMessageSubscribeAnalogPinValueBuilder interface {
 	WithPin(uint8) FirmataMessageSubscribeAnalogPinValueBuilder
 	// WithEnable adds Enable (property field)
 	WithEnable(bool) FirmataMessageSubscribeAnalogPinValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() FirmataMessageBuilder
 	// Build builds the FirmataMessageSubscribeAnalogPinValue or returns an error if something is wrong
 	Build() (FirmataMessageSubscribeAnalogPinValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (FirmataMessageSubscribeAnalogPinValueBuilder) = (*_FirmataMessageSubscrib
 
 func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) setParent(contract FirmataMessageContract) {
 	b.FirmataMessageContract = contract
+	contract.(*_FirmataMessage)._SubType = b._FirmataMessageSubscribeAnalogPinValue
 }
 
 func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) WithMandatoryFields(pin uint8, enable bool) FirmataMessageSubscribeAnalogPinValueBuilder {
@@ -143,8 +146,10 @@ func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) MustBuild() FirmataMessa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FirmataMessageSubscribeAnalogPinValueBuilder) Done() FirmataMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewFirmataMessageBuilder().(*_FirmataMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -333,7 +338,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) deepCopy() *_FirmataMessageSubs
 		m.Enable,
 		m.reservedField0,
 	}
-	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	_FirmataMessageSubscribeAnalogPinValueCopy.FirmataMessageContract.(*_FirmataMessage)._SubType = m
 	return _FirmataMessageSubscribeAnalogPinValueCopy
 }
 

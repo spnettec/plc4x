@@ -86,6 +86,8 @@ type BACnetConstructedDataLastRestartReasonBuilder interface {
 	WithLastRestartReason(BACnetRestartReasonTagged) BACnetConstructedDataLastRestartReasonBuilder
 	// WithLastRestartReasonBuilder adds LastRestartReason (property field) which is build by the builder
 	WithLastRestartReasonBuilder(func(BACnetRestartReasonTaggedBuilder) BACnetRestartReasonTaggedBuilder) BACnetConstructedDataLastRestartReasonBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLastRestartReason or returns an error if something is wrong
 	Build() (BACnetConstructedDataLastRestartReason, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLastRestartReasonBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataLastRestartReasonBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLastRestartReason
 }
 
 func (b *_BACnetConstructedDataLastRestartReasonBuilder) WithMandatoryFields(lastRestartReason BACnetRestartReasonTagged) BACnetConstructedDataLastRestartReasonBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLastRestartReasonBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLastRestartReasonBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLastRestartReason) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataLastRestartReasonCopy := &_BACnetConstructedDataLastRestartReason{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LastRestartReason.DeepCopy().(BACnetRestartReasonTagged),
+		utils.DeepCopy[BACnetRestartReasonTagged](m.LastRestartReason),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLastRestartReasonCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLastRestartReasonCopy
 }
 

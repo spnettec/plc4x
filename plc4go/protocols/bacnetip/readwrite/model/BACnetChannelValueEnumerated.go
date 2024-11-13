@@ -84,6 +84,8 @@ type BACnetChannelValueEnumeratedBuilder interface {
 	WithEnumeratedValue(BACnetApplicationTagEnumerated) BACnetChannelValueEnumeratedBuilder
 	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
 	WithEnumeratedValueBuilder(func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetChannelValueEnumeratedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueEnumerated or returns an error if something is wrong
 	Build() (BACnetChannelValueEnumerated, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueEnumeratedBuilder) = (*_BACnetChannelValueEnumeratedBui
 
 func (b *_BACnetChannelValueEnumeratedBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueEnumerated
 }
 
 func (b *_BACnetChannelValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetChannelValueEnumeratedBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueEnumeratedBuilder) MustBuild() BACnetChannelValueEnu
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueEnumeratedBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueEnumerated) deepCopy() *_BACnetChannelValueEnumerate
 	}
 	_BACnetChannelValueEnumeratedCopy := &_BACnetChannelValueEnumerated{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+		utils.DeepCopy[BACnetApplicationTagEnumerated](m.EnumeratedValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueEnumeratedCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueEnumeratedCopy
 }
 

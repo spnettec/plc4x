@@ -102,6 +102,8 @@ type ModifyMonitoredItemsRequestBuilder interface {
 	WithTimestampsToReturn(TimestampsToReturn) ModifyMonitoredItemsRequestBuilder
 	// WithItemsToModify adds ItemsToModify (property field)
 	WithItemsToModify(...MonitoredItemModifyRequest) ModifyMonitoredItemsRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ModifyMonitoredItemsRequest or returns an error if something is wrong
 	Build() (ModifyMonitoredItemsRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -125,6 +127,7 @@ var _ (ModifyMonitoredItemsRequestBuilder) = (*_ModifyMonitoredItemsRequestBuild
 
 func (b *_ModifyMonitoredItemsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ModifyMonitoredItemsRequest
 }
 
 func (b *_ModifyMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, timestampsToReturn TimestampsToReturn, itemsToModify []MonitoredItemModifyRequest) ModifyMonitoredItemsRequestBuilder {
@@ -185,8 +188,10 @@ func (b *_ModifyMonitoredItemsRequestBuilder) MustBuild() ModifyMonitoredItemsRe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModifyMonitoredItemsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,12 +417,12 @@ func (m *_ModifyMonitoredItemsRequest) deepCopy() *_ModifyMonitoredItemsRequest 
 	}
 	_ModifyMonitoredItemsRequestCopy := &_ModifyMonitoredItemsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		m.SubscriptionId,
 		m.TimestampsToReturn,
 		utils.DeepCopySlice[MonitoredItemModifyRequest, MonitoredItemModifyRequest](m.ItemsToModify),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ModifyMonitoredItemsRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ModifyMonitoredItemsRequestCopy
 }
 

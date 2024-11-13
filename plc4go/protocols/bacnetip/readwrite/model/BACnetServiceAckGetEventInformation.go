@@ -95,6 +95,8 @@ type BACnetServiceAckGetEventInformationBuilder interface {
 	WithMoreEvents(BACnetContextTagBoolean) BACnetServiceAckGetEventInformationBuilder
 	// WithMoreEventsBuilder adds MoreEvents (property field) which is build by the builder
 	WithMoreEventsBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetServiceAckGetEventInformationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckGetEventInformation or returns an error if something is wrong
 	Build() (BACnetServiceAckGetEventInformation, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (BACnetServiceAckGetEventInformationBuilder) = (*_BACnetServiceAckGetEvent
 
 func (b *_BACnetServiceAckGetEventInformationBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckGetEventInformation
 }
 
 func (b *_BACnetServiceAckGetEventInformationBuilder) WithMandatoryFields(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean) BACnetServiceAckGetEventInformationBuilder {
@@ -187,8 +190,10 @@ func (b *_BACnetServiceAckGetEventInformationBuilder) MustBuild() BACnetServiceA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckGetEventInformationBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_BACnetServiceAckGetEventInformation) deepCopy() *_BACnetServiceAckGetE
 	}
 	_BACnetServiceAckGetEventInformationCopy := &_BACnetServiceAckGetEventInformation{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
-		m.ListOfEventSummaries.DeepCopy().(BACnetEventSummariesList),
-		m.MoreEvents.DeepCopy().(BACnetContextTagBoolean),
+		utils.DeepCopy[BACnetEventSummariesList](m.ListOfEventSummaries),
+		utils.DeepCopy[BACnetContextTagBoolean](m.MoreEvents),
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckGetEventInformationCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckGetEventInformationCopy
 }
 

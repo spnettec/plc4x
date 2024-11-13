@@ -84,6 +84,8 @@ type BACnetErrorGeneralBuilder interface {
 	WithError(Error) BACnetErrorGeneralBuilder
 	// WithErrorBuilder adds Error (property field) which is build by the builder
 	WithErrorBuilder(func(ErrorBuilder) ErrorBuilder) BACnetErrorGeneralBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetErrorBuilder
 	// Build builds the BACnetErrorGeneral or returns an error if something is wrong
 	Build() (BACnetErrorGeneral, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetErrorGeneralBuilder) = (*_BACnetErrorGeneralBuilder)(nil)
 
 func (b *_BACnetErrorGeneralBuilder) setParent(contract BACnetErrorContract) {
 	b.BACnetErrorContract = contract
+	contract.(*_BACnetError)._SubType = b._BACnetErrorGeneral
 }
 
 func (b *_BACnetErrorGeneralBuilder) WithMandatoryFields(error Error) BACnetErrorGeneralBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetErrorGeneralBuilder) MustBuild() BACnetErrorGeneral {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetErrorGeneralBuilder) Done() BACnetErrorBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetErrorBuilder().(*_BACnetErrorBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_BACnetErrorGeneral) deepCopy() *_BACnetErrorGeneral {
 	}
 	_BACnetErrorGeneralCopy := &_BACnetErrorGeneral{
 		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
-		m.Error.DeepCopy().(Error),
+		utils.DeepCopy[Error](m.Error),
 	}
-	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	_BACnetErrorGeneralCopy.BACnetErrorContract.(*_BACnetError)._SubType = m
 	return _BACnetErrorGeneralCopy
 }
 

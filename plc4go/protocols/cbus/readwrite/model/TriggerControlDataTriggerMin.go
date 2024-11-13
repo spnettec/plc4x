@@ -71,6 +71,8 @@ type TriggerControlDataTriggerMinBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() TriggerControlDataTriggerMinBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TriggerControlDataBuilder
 	// Build builds the TriggerControlDataTriggerMin or returns an error if something is wrong
 	Build() (TriggerControlDataTriggerMin, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (TriggerControlDataTriggerMinBuilder) = (*_TriggerControlDataTriggerMinBui
 
 func (b *_TriggerControlDataTriggerMinBuilder) setParent(contract TriggerControlDataContract) {
 	b.TriggerControlDataContract = contract
+	contract.(*_TriggerControlData)._SubType = b._TriggerControlDataTriggerMin
 }
 
 func (b *_TriggerControlDataTriggerMinBuilder) WithMandatoryFields() TriggerControlDataTriggerMinBuilder {
@@ -115,8 +118,10 @@ func (b *_TriggerControlDataTriggerMinBuilder) MustBuild() TriggerControlDataTri
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TriggerControlDataTriggerMinBuilder) Done() TriggerControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTriggerControlDataBuilder().(*_TriggerControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_TriggerControlDataTriggerMin) deepCopy() *_TriggerControlDataTriggerMi
 	_TriggerControlDataTriggerMinCopy := &_TriggerControlDataTriggerMin{
 		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
 	}
-	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	_TriggerControlDataTriggerMinCopy.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
 	return _TriggerControlDataTriggerMinCopy
 }
 

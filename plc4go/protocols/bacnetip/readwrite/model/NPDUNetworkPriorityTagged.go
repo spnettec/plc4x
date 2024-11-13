@@ -333,7 +333,7 @@ func (m *_NPDUNetworkPriorityTagged) deepCopy() *_NPDUNetworkPriorityTagged {
 		return nil
 	}
 	_NPDUNetworkPriorityTaggedCopy := &_NPDUNetworkPriorityTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

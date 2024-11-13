@@ -105,6 +105,8 @@ type S7ParameterModeTransitionBuilder interface {
 	WithCurrentMode(uint8) S7ParameterModeTransitionBuilder
 	// WithSequenceNumber adds SequenceNumber (property field)
 	WithSequenceNumber(uint8) S7ParameterModeTransitionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7ParameterBuilder
 	// Build builds the S7ParameterModeTransition or returns an error if something is wrong
 	Build() (S7ParameterModeTransition, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +130,7 @@ var _ (S7ParameterModeTransitionBuilder) = (*_S7ParameterModeTransitionBuilder)(
 
 func (b *_S7ParameterModeTransitionBuilder) setParent(contract S7ParameterContract) {
 	b.S7ParameterContract = contract
+	contract.(*_S7Parameter)._SubType = b._S7ParameterModeTransition
 }
 
 func (b *_S7ParameterModeTransitionBuilder) WithMandatoryFields(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) S7ParameterModeTransitionBuilder {
@@ -174,8 +177,10 @@ func (b *_S7ParameterModeTransitionBuilder) MustBuild() S7ParameterModeTransitio
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7ParameterModeTransitionBuilder) Done() S7ParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7ParameterBuilder().(*_S7ParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -435,7 +440,7 @@ func (m *_S7ParameterModeTransition) deepCopy() *_S7ParameterModeTransition {
 		m.SequenceNumber,
 		m.reservedField0,
 	}
-	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	_S7ParameterModeTransitionCopy.S7ParameterContract.(*_S7Parameter)._SubType = m
 	return _S7ParameterModeTransitionCopy
 }
 

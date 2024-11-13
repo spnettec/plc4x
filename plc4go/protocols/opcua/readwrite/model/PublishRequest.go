@@ -90,6 +90,8 @@ type PublishRequestBuilder interface {
 	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) PublishRequestBuilder
 	// WithSubscriptionAcknowledgements adds SubscriptionAcknowledgements (property field)
 	WithSubscriptionAcknowledgements(...SubscriptionAcknowledgement) PublishRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PublishRequest or returns an error if something is wrong
 	Build() (PublishRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (PublishRequestBuilder) = (*_PublishRequestBuilder)(nil)
 
 func (b *_PublishRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PublishRequest
 }
 
 func (b *_PublishRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionAcknowledgements []SubscriptionAcknowledgement) PublishRequestBuilder {
@@ -163,8 +166,10 @@ func (b *_PublishRequestBuilder) MustBuild() PublishRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PublishRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_PublishRequest) deepCopy() *_PublishRequest {
 	}
 	_PublishRequestCopy := &_PublishRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		utils.DeepCopySlice[SubscriptionAcknowledgement, SubscriptionAcknowledgement](m.SubscriptionAcknowledgements),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PublishRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PublishRequestCopy
 }
 

@@ -99,6 +99,8 @@ type MediaTransportControlDataEnumerationsSizeBuilder interface {
 	WithStart(uint8) MediaTransportControlDataEnumerationsSizeBuilder
 	// WithSize adds Size (property field)
 	WithSize(uint8) MediaTransportControlDataEnumerationsSizeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataEnumerationsSize or returns an error if something is wrong
 	Build() (MediaTransportControlDataEnumerationsSize, error)
 	// MustBuild does the same as Build but panics on error
@@ -122,6 +124,7 @@ var _ (MediaTransportControlDataEnumerationsSizeBuilder) = (*_MediaTransportCont
 
 func (b *_MediaTransportControlDataEnumerationsSizeBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataEnumerationsSize
 }
 
 func (b *_MediaTransportControlDataEnumerationsSizeBuilder) WithMandatoryFields(sizeType byte, start uint8, size uint8) MediaTransportControlDataEnumerationsSizeBuilder {
@@ -158,8 +161,10 @@ func (b *_MediaTransportControlDataEnumerationsSizeBuilder) MustBuild() MediaTra
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataEnumerationsSizeBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -437,7 +442,7 @@ func (m *_MediaTransportControlDataEnumerationsSize) deepCopy() *_MediaTransport
 		m.Start,
 		m.Size,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataEnumerationsSizeCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataEnumerationsSizeCopy
 }
 

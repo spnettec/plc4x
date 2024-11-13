@@ -56,7 +56,7 @@ def plcDriverManager = new DefaultPlcDriverManager(moduleClassloader)
 
 // Process all driver information.
 for (final def protocolCode in plcDriverManager.getProtocolCodes()) {
-    def outputFile = new File(project.getBasedir(), "src/site/generated/" + protocolCode + ".adoc")
+    def outputFile = new File(project.getBasedir(), "../../../website/generated/" + protocolCode + ".adoc")
     // In order to re-generate this file, make sure it doesn't exist.
     if(outputFile.exists()) {
         outputFile.delete()
@@ -102,7 +102,7 @@ for (final def protocolCode in plcDriverManager.getProtocolCodes()) {
         "<dependency>\n" +
         "  <groupId>org.apache.plc4x</groupId>\n" +
         "  <artifactId>" + moduleName + "</artifactId>\n" +
-        "  <version>{current-last-released-version}</version>\n" +
+        "  <version>{page-component-version}</version>\n" +
         "</dependency>\n" +
         "----"
     if(driver.metadata.defaultTransportCode.isPresent()) {

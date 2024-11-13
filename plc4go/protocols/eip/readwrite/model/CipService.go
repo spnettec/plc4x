@@ -98,130 +98,55 @@ type CipServiceBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CipServiceBuilder
 	// AsGetAttributeAllRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsGetAttributeAllRequest() interface {
-		GetAttributeAllRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsGetAttributeAllRequest() GetAttributeAllRequestBuilder
 	// AsGetAttributeAllResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsGetAttributeAllResponse() interface {
-		GetAttributeAllResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsGetAttributeAllResponse() GetAttributeAllResponseBuilder
 	// AsSetAttributeAllRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsSetAttributeAllRequest() interface {
-		SetAttributeAllRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsSetAttributeAllRequest() SetAttributeAllRequestBuilder
 	// AsSetAttributeAllResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsSetAttributeAllResponse() interface {
-		SetAttributeAllResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsSetAttributeAllResponse() SetAttributeAllResponseBuilder
 	// AsGetAttributeListRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsGetAttributeListRequest() interface {
-		GetAttributeListRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsGetAttributeListRequest() GetAttributeListRequestBuilder
 	// AsGetAttributeListResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsGetAttributeListResponse() interface {
-		GetAttributeListResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsGetAttributeListResponse() GetAttributeListResponseBuilder
 	// AsSetAttributeListRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsSetAttributeListRequest() interface {
-		SetAttributeListRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsSetAttributeListRequest() SetAttributeListRequestBuilder
 	// AsSetAttributeListResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsSetAttributeListResponse() interface {
-		SetAttributeListResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsSetAttributeListResponse() SetAttributeListResponseBuilder
 	// AsMultipleServiceRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsMultipleServiceRequest() interface {
-		MultipleServiceRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsMultipleServiceRequest() MultipleServiceRequestBuilder
 	// AsMultipleServiceResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsMultipleServiceResponse() interface {
-		MultipleServiceResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsMultipleServiceResponse() MultipleServiceResponseBuilder
 	// AsGetAttributeSingleRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsGetAttributeSingleRequest() interface {
-		GetAttributeSingleRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsGetAttributeSingleRequest() GetAttributeSingleRequestBuilder
 	// AsGetAttributeSingleResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsGetAttributeSingleResponse() interface {
-		GetAttributeSingleResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsGetAttributeSingleResponse() GetAttributeSingleResponseBuilder
 	// AsSetAttributeSingleRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsSetAttributeSingleRequest() interface {
-		SetAttributeSingleRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsSetAttributeSingleRequest() SetAttributeSingleRequestBuilder
 	// AsSetAttributeSingleResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsSetAttributeSingleResponse() interface {
-		SetAttributeSingleResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsSetAttributeSingleResponse() SetAttributeSingleResponseBuilder
 	// AsCipReadRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipReadRequest() interface {
-		CipReadRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipReadRequest() CipReadRequestBuilder
 	// AsCipReadResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipReadResponse() interface {
-		CipReadResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipReadResponse() CipReadResponseBuilder
 	// AsCipWriteRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipWriteRequest() interface {
-		CipWriteRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipWriteRequest() CipWriteRequestBuilder
 	// AsCipWriteResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipWriteResponse() interface {
-		CipWriteResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipWriteResponse() CipWriteResponseBuilder
 	// AsCipConnectionManagerCloseRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipConnectionManagerCloseRequest() interface {
-		CipConnectionManagerCloseRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipConnectionManagerCloseRequest() CipConnectionManagerCloseRequestBuilder
 	// AsCipConnectionManagerCloseResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipConnectionManagerCloseResponse() interface {
-		CipConnectionManagerCloseResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipConnectionManagerCloseResponse() CipConnectionManagerCloseResponseBuilder
 	// AsCipUnconnectedRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipUnconnectedRequest() interface {
-		CipUnconnectedRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipUnconnectedRequest() CipUnconnectedRequestBuilder
 	// AsCipConnectedRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipConnectedRequest() interface {
-		CipConnectedRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipConnectedRequest() CipConnectedRequestBuilder
 	// AsCipConnectedResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipConnectedResponse() interface {
-		CipConnectedResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipConnectedResponse() CipConnectedResponseBuilder
 	// AsCipConnectionManagerRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipConnectionManagerRequest() interface {
-		CipConnectionManagerRequestBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipConnectionManagerRequest() CipConnectionManagerRequestBuilder
 	// AsCipConnectionManagerResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
-	AsCipConnectionManagerResponse() interface {
-		CipConnectionManagerResponseBuilder
-		Done() CipServiceBuilder
-	}
+	AsCipConnectionManagerResponse() CipConnectionManagerResponseBuilder
 	// Build builds the CipService or returns an error if something is wrong
 	PartialBuild() (CipServiceContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -272,14 +197,8 @@ func (b *_CipServiceBuilder) PartialMustBuild() CipServiceContract {
 	return build
 }
 
-func (b *_CipServiceBuilder) AsGetAttributeAllRequest() interface {
-	GetAttributeAllRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		GetAttributeAllRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsGetAttributeAllRequest() GetAttributeAllRequestBuilder {
+	if cb, ok := b.childBuilder.(GetAttributeAllRequestBuilder); ok {
 		return cb
 	}
 	cb := NewGetAttributeAllRequestBuilder().(*_GetAttributeAllRequestBuilder)
@@ -288,14 +207,8 @@ func (b *_CipServiceBuilder) AsGetAttributeAllRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsGetAttributeAllResponse() interface {
-	GetAttributeAllResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		GetAttributeAllResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsGetAttributeAllResponse() GetAttributeAllResponseBuilder {
+	if cb, ok := b.childBuilder.(GetAttributeAllResponseBuilder); ok {
 		return cb
 	}
 	cb := NewGetAttributeAllResponseBuilder().(*_GetAttributeAllResponseBuilder)
@@ -304,14 +217,8 @@ func (b *_CipServiceBuilder) AsGetAttributeAllResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsSetAttributeAllRequest() interface {
-	SetAttributeAllRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SetAttributeAllRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsSetAttributeAllRequest() SetAttributeAllRequestBuilder {
+	if cb, ok := b.childBuilder.(SetAttributeAllRequestBuilder); ok {
 		return cb
 	}
 	cb := NewSetAttributeAllRequestBuilder().(*_SetAttributeAllRequestBuilder)
@@ -320,14 +227,8 @@ func (b *_CipServiceBuilder) AsSetAttributeAllRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsSetAttributeAllResponse() interface {
-	SetAttributeAllResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SetAttributeAllResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsSetAttributeAllResponse() SetAttributeAllResponseBuilder {
+	if cb, ok := b.childBuilder.(SetAttributeAllResponseBuilder); ok {
 		return cb
 	}
 	cb := NewSetAttributeAllResponseBuilder().(*_SetAttributeAllResponseBuilder)
@@ -336,14 +237,8 @@ func (b *_CipServiceBuilder) AsSetAttributeAllResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsGetAttributeListRequest() interface {
-	GetAttributeListRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		GetAttributeListRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsGetAttributeListRequest() GetAttributeListRequestBuilder {
+	if cb, ok := b.childBuilder.(GetAttributeListRequestBuilder); ok {
 		return cb
 	}
 	cb := NewGetAttributeListRequestBuilder().(*_GetAttributeListRequestBuilder)
@@ -352,14 +247,8 @@ func (b *_CipServiceBuilder) AsGetAttributeListRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsGetAttributeListResponse() interface {
-	GetAttributeListResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		GetAttributeListResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsGetAttributeListResponse() GetAttributeListResponseBuilder {
+	if cb, ok := b.childBuilder.(GetAttributeListResponseBuilder); ok {
 		return cb
 	}
 	cb := NewGetAttributeListResponseBuilder().(*_GetAttributeListResponseBuilder)
@@ -368,14 +257,8 @@ func (b *_CipServiceBuilder) AsGetAttributeListResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsSetAttributeListRequest() interface {
-	SetAttributeListRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SetAttributeListRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsSetAttributeListRequest() SetAttributeListRequestBuilder {
+	if cb, ok := b.childBuilder.(SetAttributeListRequestBuilder); ok {
 		return cb
 	}
 	cb := NewSetAttributeListRequestBuilder().(*_SetAttributeListRequestBuilder)
@@ -384,14 +267,8 @@ func (b *_CipServiceBuilder) AsSetAttributeListRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsSetAttributeListResponse() interface {
-	SetAttributeListResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SetAttributeListResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsSetAttributeListResponse() SetAttributeListResponseBuilder {
+	if cb, ok := b.childBuilder.(SetAttributeListResponseBuilder); ok {
 		return cb
 	}
 	cb := NewSetAttributeListResponseBuilder().(*_SetAttributeListResponseBuilder)
@@ -400,14 +277,8 @@ func (b *_CipServiceBuilder) AsSetAttributeListResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsMultipleServiceRequest() interface {
-	MultipleServiceRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MultipleServiceRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsMultipleServiceRequest() MultipleServiceRequestBuilder {
+	if cb, ok := b.childBuilder.(MultipleServiceRequestBuilder); ok {
 		return cb
 	}
 	cb := NewMultipleServiceRequestBuilder().(*_MultipleServiceRequestBuilder)
@@ -416,14 +287,8 @@ func (b *_CipServiceBuilder) AsMultipleServiceRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsMultipleServiceResponse() interface {
-	MultipleServiceResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MultipleServiceResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsMultipleServiceResponse() MultipleServiceResponseBuilder {
+	if cb, ok := b.childBuilder.(MultipleServiceResponseBuilder); ok {
 		return cb
 	}
 	cb := NewMultipleServiceResponseBuilder().(*_MultipleServiceResponseBuilder)
@@ -432,14 +297,8 @@ func (b *_CipServiceBuilder) AsMultipleServiceResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsGetAttributeSingleRequest() interface {
-	GetAttributeSingleRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		GetAttributeSingleRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsGetAttributeSingleRequest() GetAttributeSingleRequestBuilder {
+	if cb, ok := b.childBuilder.(GetAttributeSingleRequestBuilder); ok {
 		return cb
 	}
 	cb := NewGetAttributeSingleRequestBuilder().(*_GetAttributeSingleRequestBuilder)
@@ -448,14 +307,8 @@ func (b *_CipServiceBuilder) AsGetAttributeSingleRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsGetAttributeSingleResponse() interface {
-	GetAttributeSingleResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		GetAttributeSingleResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsGetAttributeSingleResponse() GetAttributeSingleResponseBuilder {
+	if cb, ok := b.childBuilder.(GetAttributeSingleResponseBuilder); ok {
 		return cb
 	}
 	cb := NewGetAttributeSingleResponseBuilder().(*_GetAttributeSingleResponseBuilder)
@@ -464,14 +317,8 @@ func (b *_CipServiceBuilder) AsGetAttributeSingleResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsSetAttributeSingleRequest() interface {
-	SetAttributeSingleRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SetAttributeSingleRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsSetAttributeSingleRequest() SetAttributeSingleRequestBuilder {
+	if cb, ok := b.childBuilder.(SetAttributeSingleRequestBuilder); ok {
 		return cb
 	}
 	cb := NewSetAttributeSingleRequestBuilder().(*_SetAttributeSingleRequestBuilder)
@@ -480,14 +327,8 @@ func (b *_CipServiceBuilder) AsSetAttributeSingleRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsSetAttributeSingleResponse() interface {
-	SetAttributeSingleResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SetAttributeSingleResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsSetAttributeSingleResponse() SetAttributeSingleResponseBuilder {
+	if cb, ok := b.childBuilder.(SetAttributeSingleResponseBuilder); ok {
 		return cb
 	}
 	cb := NewSetAttributeSingleResponseBuilder().(*_SetAttributeSingleResponseBuilder)
@@ -496,14 +337,8 @@ func (b *_CipServiceBuilder) AsSetAttributeSingleResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipReadRequest() interface {
-	CipReadRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipReadRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipReadRequest() CipReadRequestBuilder {
+	if cb, ok := b.childBuilder.(CipReadRequestBuilder); ok {
 		return cb
 	}
 	cb := NewCipReadRequestBuilder().(*_CipReadRequestBuilder)
@@ -512,14 +347,8 @@ func (b *_CipServiceBuilder) AsCipReadRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipReadResponse() interface {
-	CipReadResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipReadResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipReadResponse() CipReadResponseBuilder {
+	if cb, ok := b.childBuilder.(CipReadResponseBuilder); ok {
 		return cb
 	}
 	cb := NewCipReadResponseBuilder().(*_CipReadResponseBuilder)
@@ -528,14 +357,8 @@ func (b *_CipServiceBuilder) AsCipReadResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipWriteRequest() interface {
-	CipWriteRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipWriteRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipWriteRequest() CipWriteRequestBuilder {
+	if cb, ok := b.childBuilder.(CipWriteRequestBuilder); ok {
 		return cb
 	}
 	cb := NewCipWriteRequestBuilder().(*_CipWriteRequestBuilder)
@@ -544,14 +367,8 @@ func (b *_CipServiceBuilder) AsCipWriteRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipWriteResponse() interface {
-	CipWriteResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipWriteResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipWriteResponse() CipWriteResponseBuilder {
+	if cb, ok := b.childBuilder.(CipWriteResponseBuilder); ok {
 		return cb
 	}
 	cb := NewCipWriteResponseBuilder().(*_CipWriteResponseBuilder)
@@ -560,14 +377,8 @@ func (b *_CipServiceBuilder) AsCipWriteResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipConnectionManagerCloseRequest() interface {
-	CipConnectionManagerCloseRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipConnectionManagerCloseRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipConnectionManagerCloseRequest() CipConnectionManagerCloseRequestBuilder {
+	if cb, ok := b.childBuilder.(CipConnectionManagerCloseRequestBuilder); ok {
 		return cb
 	}
 	cb := NewCipConnectionManagerCloseRequestBuilder().(*_CipConnectionManagerCloseRequestBuilder)
@@ -576,14 +387,8 @@ func (b *_CipServiceBuilder) AsCipConnectionManagerCloseRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipConnectionManagerCloseResponse() interface {
-	CipConnectionManagerCloseResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipConnectionManagerCloseResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipConnectionManagerCloseResponse() CipConnectionManagerCloseResponseBuilder {
+	if cb, ok := b.childBuilder.(CipConnectionManagerCloseResponseBuilder); ok {
 		return cb
 	}
 	cb := NewCipConnectionManagerCloseResponseBuilder().(*_CipConnectionManagerCloseResponseBuilder)
@@ -592,14 +397,8 @@ func (b *_CipServiceBuilder) AsCipConnectionManagerCloseResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipUnconnectedRequest() interface {
-	CipUnconnectedRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipUnconnectedRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipUnconnectedRequest() CipUnconnectedRequestBuilder {
+	if cb, ok := b.childBuilder.(CipUnconnectedRequestBuilder); ok {
 		return cb
 	}
 	cb := NewCipUnconnectedRequestBuilder().(*_CipUnconnectedRequestBuilder)
@@ -608,14 +407,8 @@ func (b *_CipServiceBuilder) AsCipUnconnectedRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipConnectedRequest() interface {
-	CipConnectedRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipConnectedRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipConnectedRequest() CipConnectedRequestBuilder {
+	if cb, ok := b.childBuilder.(CipConnectedRequestBuilder); ok {
 		return cb
 	}
 	cb := NewCipConnectedRequestBuilder().(*_CipConnectedRequestBuilder)
@@ -624,14 +417,8 @@ func (b *_CipServiceBuilder) AsCipConnectedRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipConnectedResponse() interface {
-	CipConnectedResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipConnectedResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipConnectedResponse() CipConnectedResponseBuilder {
+	if cb, ok := b.childBuilder.(CipConnectedResponseBuilder); ok {
 		return cb
 	}
 	cb := NewCipConnectedResponseBuilder().(*_CipConnectedResponseBuilder)
@@ -640,14 +427,8 @@ func (b *_CipServiceBuilder) AsCipConnectedResponse() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipConnectionManagerRequest() interface {
-	CipConnectionManagerRequestBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipConnectionManagerRequestBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipConnectionManagerRequest() CipConnectionManagerRequestBuilder {
+	if cb, ok := b.childBuilder.(CipConnectionManagerRequestBuilder); ok {
 		return cb
 	}
 	cb := NewCipConnectionManagerRequestBuilder().(*_CipConnectionManagerRequestBuilder)
@@ -656,14 +437,8 @@ func (b *_CipServiceBuilder) AsCipConnectionManagerRequest() interface {
 	return cb
 }
 
-func (b *_CipServiceBuilder) AsCipConnectionManagerResponse() interface {
-	CipConnectionManagerResponseBuilder
-	Done() CipServiceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipConnectionManagerResponseBuilder
-		Done() CipServiceBuilder
-	}); ok {
+func (b *_CipServiceBuilder) AsCipConnectionManagerResponse() CipConnectionManagerResponseBuilder {
+	if cb, ok := b.childBuilder.(CipConnectionManagerResponseBuilder); ok {
 		return cb
 	}
 	cb := NewCipConnectionManagerResponseBuilder().(*_CipConnectionManagerResponseBuilder)

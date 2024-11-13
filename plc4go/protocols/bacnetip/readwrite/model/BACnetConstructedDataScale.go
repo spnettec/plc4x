@@ -86,6 +86,8 @@ type BACnetConstructedDataScaleBuilder interface {
 	WithScale(BACnetScale) BACnetConstructedDataScaleBuilder
 	// WithScaleBuilder adds Scale (property field) which is build by the builder
 	WithScaleBuilder(func(BACnetScaleBuilder) BACnetScaleBuilder) BACnetConstructedDataScaleBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataScale or returns an error if something is wrong
 	Build() (BACnetConstructedDataScale, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataScaleBuilder) = (*_BACnetConstructedDataScaleBuilder
 
 func (b *_BACnetConstructedDataScaleBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataScale
 }
 
 func (b *_BACnetConstructedDataScaleBuilder) WithMandatoryFields(scale BACnetScale) BACnetConstructedDataScaleBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataScaleBuilder) MustBuild() BACnetConstructedDataSc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataScaleBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataScale) deepCopy() *_BACnetConstructedDataScale {
 	}
 	_BACnetConstructedDataScaleCopy := &_BACnetConstructedDataScale{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Scale.DeepCopy().(BACnetScale),
+		utils.DeepCopy[BACnetScale](m.Scale),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataScaleCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataScaleCopy
 }
 

@@ -79,6 +79,8 @@ type ErrorReportingSystemCategoryTypeInputUnitsBuilder interface {
 	WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder
 	// WithCategoryForType adds CategoryForType (property field)
 	WithCategoryForType(ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ErrorReportingSystemCategoryTypeBuilder
 	// Build builds the ErrorReportingSystemCategoryTypeInputUnits or returns an error if something is wrong
 	Build() (ErrorReportingSystemCategoryTypeInputUnits, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ErrorReportingSystemCategoryTypeInputUnitsBuilder) = (*_ErrorReportingSys
 
 func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) setParent(contract ErrorReportingSystemCategoryTypeContract) {
 	b.ErrorReportingSystemCategoryTypeContract = contract
+	contract.(*_ErrorReportingSystemCategoryType)._SubType = b._ErrorReportingSystemCategoryTypeInputUnits
 }
 
 func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder {
@@ -128,8 +131,10 @@ func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) MustBuild() ErrorRe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) Done() ErrorReportingSystemCategoryTypeBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewErrorReportingSystemCategoryTypeBuilder().(*_ErrorReportingSystemCategoryTypeBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -287,7 +292,7 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) deepCopy() *_ErrorReportin
 		m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).deepCopy(),
 		m.CategoryForType,
 	}
-	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	_ErrorReportingSystemCategoryTypeInputUnitsCopy.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
 	return _ErrorReportingSystemCategoryTypeInputUnitsCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataBinaryLightingOutputPresentValueBuilder interface {
 	WithPresentValue(BACnetBinaryLightingPVTagged) BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
 	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
 	WithPresentValueBuilder(func(BACnetBinaryLightingPVTaggedBuilder) BACnetBinaryLightingPVTaggedBuilder) BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBinaryLightingOutputPresentValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataBinaryLightingOutputPresentValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) = (*_BACnet
 
 func (b *_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBinaryLightingOutputPresentValue
 }
 
 func (b *_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) WithMandatoryFields(presentValue BACnetBinaryLightingPVTagged) BACnetConstructedDataBinaryLightingOutputPresentValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) MustBuil
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) deepCopy() *_BA
 	}
 	_BACnetConstructedDataBinaryLightingOutputPresentValueCopy := &_BACnetConstructedDataBinaryLightingOutputPresentValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PresentValue.DeepCopy().(BACnetBinaryLightingPVTagged),
+		utils.DeepCopy[BACnetBinaryLightingPVTagged](m.PresentValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBinaryLightingOutputPresentValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBinaryLightingOutputPresentValueCopy
 }
 

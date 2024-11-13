@@ -94,6 +94,8 @@ type NodeIdStringBuilder interface {
 	WithId(PascalString) NodeIdStringBuilder
 	// WithIdBuilder adds Id (property field) which is build by the builder
 	WithIdBuilder(func(PascalStringBuilder) PascalStringBuilder) NodeIdStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NodeIdTypeDefinitionBuilder
 	// Build builds the NodeIdString or returns an error if something is wrong
 	Build() (NodeIdString, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,6 +119,7 @@ var _ (NodeIdStringBuilder) = (*_NodeIdStringBuilder)(nil)
 
 func (b *_NodeIdStringBuilder) setParent(contract NodeIdTypeDefinitionContract) {
 	b.NodeIdTypeDefinitionContract = contract
+	contract.(*_NodeIdTypeDefinition)._SubType = b._NodeIdString
 }
 
 func (b *_NodeIdStringBuilder) WithMandatoryFields(namespaceIndex uint16, id PascalString) NodeIdStringBuilder {
@@ -167,8 +170,10 @@ func (b *_NodeIdStringBuilder) MustBuild() NodeIdString {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NodeIdStringBuilder) Done() NodeIdTypeDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNodeIdTypeDefinitionBuilder().(*_NodeIdTypeDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -390,9 +395,9 @@ func (m *_NodeIdString) deepCopy() *_NodeIdString {
 	_NodeIdStringCopy := &_NodeIdString{
 		m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).deepCopy(),
 		m.NamespaceIndex,
-		m.Id.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Id),
 	}
-	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	_NodeIdStringCopy.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
 	return _NodeIdStringCopy
 }
 

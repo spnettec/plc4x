@@ -86,6 +86,8 @@ type BACnetConstructedDataDatabaseRevisionBuilder interface {
 	WithDatabaseRevision(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDatabaseRevisionBuilder
 	// WithDatabaseRevisionBuilder adds DatabaseRevision (property field) which is build by the builder
 	WithDatabaseRevisionBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDatabaseRevisionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDatabaseRevision or returns an error if something is wrong
 	Build() (BACnetConstructedDataDatabaseRevision, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDatabaseRevisionBuilder) = (*_BACnetConstructedDataD
 
 func (b *_BACnetConstructedDataDatabaseRevisionBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDatabaseRevision
 }
 
 func (b *_BACnetConstructedDataDatabaseRevisionBuilder) WithMandatoryFields(databaseRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDatabaseRevisionBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDatabaseRevisionBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDatabaseRevisionBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDatabaseRevision) deepCopy() *_BACnetConstructedD
 	}
 	_BACnetConstructedDataDatabaseRevisionCopy := &_BACnetConstructedDataDatabaseRevision{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DatabaseRevision.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.DatabaseRevision),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDatabaseRevisionCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDatabaseRevisionCopy
 }
 

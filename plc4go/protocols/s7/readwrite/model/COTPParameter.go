@@ -94,30 +94,15 @@ type COTPParameterBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() COTPParameterBuilder
 	// AsCOTPParameterTpduSize converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
-	AsCOTPParameterTpduSize() interface {
-		COTPParameterTpduSizeBuilder
-		Done() COTPParameterBuilder
-	}
+	AsCOTPParameterTpduSize() COTPParameterTpduSizeBuilder
 	// AsCOTPParameterCallingTsap converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
-	AsCOTPParameterCallingTsap() interface {
-		COTPParameterCallingTsapBuilder
-		Done() COTPParameterBuilder
-	}
+	AsCOTPParameterCallingTsap() COTPParameterCallingTsapBuilder
 	// AsCOTPParameterCalledTsap converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
-	AsCOTPParameterCalledTsap() interface {
-		COTPParameterCalledTsapBuilder
-		Done() COTPParameterBuilder
-	}
+	AsCOTPParameterCalledTsap() COTPParameterCalledTsapBuilder
 	// AsCOTPParameterChecksum converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
-	AsCOTPParameterChecksum() interface {
-		COTPParameterChecksumBuilder
-		Done() COTPParameterBuilder
-	}
+	AsCOTPParameterChecksum() COTPParameterChecksumBuilder
 	// AsCOTPParameterDisconnectAdditionalInformation converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
-	AsCOTPParameterDisconnectAdditionalInformation() interface {
-		COTPParameterDisconnectAdditionalInformationBuilder
-		Done() COTPParameterBuilder
-	}
+	AsCOTPParameterDisconnectAdditionalInformation() COTPParameterDisconnectAdditionalInformationBuilder
 	// Build builds the COTPParameter or returns an error if something is wrong
 	PartialBuild() (COTPParameterContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -168,14 +153,8 @@ func (b *_COTPParameterBuilder) PartialMustBuild() COTPParameterContract {
 	return build
 }
 
-func (b *_COTPParameterBuilder) AsCOTPParameterTpduSize() interface {
-	COTPParameterTpduSizeBuilder
-	Done() COTPParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPParameterTpduSizeBuilder
-		Done() COTPParameterBuilder
-	}); ok {
+func (b *_COTPParameterBuilder) AsCOTPParameterTpduSize() COTPParameterTpduSizeBuilder {
+	if cb, ok := b.childBuilder.(COTPParameterTpduSizeBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPParameterTpduSizeBuilder().(*_COTPParameterTpduSizeBuilder)
@@ -184,14 +163,8 @@ func (b *_COTPParameterBuilder) AsCOTPParameterTpduSize() interface {
 	return cb
 }
 
-func (b *_COTPParameterBuilder) AsCOTPParameterCallingTsap() interface {
-	COTPParameterCallingTsapBuilder
-	Done() COTPParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPParameterCallingTsapBuilder
-		Done() COTPParameterBuilder
-	}); ok {
+func (b *_COTPParameterBuilder) AsCOTPParameterCallingTsap() COTPParameterCallingTsapBuilder {
+	if cb, ok := b.childBuilder.(COTPParameterCallingTsapBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPParameterCallingTsapBuilder().(*_COTPParameterCallingTsapBuilder)
@@ -200,14 +173,8 @@ func (b *_COTPParameterBuilder) AsCOTPParameterCallingTsap() interface {
 	return cb
 }
 
-func (b *_COTPParameterBuilder) AsCOTPParameterCalledTsap() interface {
-	COTPParameterCalledTsapBuilder
-	Done() COTPParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPParameterCalledTsapBuilder
-		Done() COTPParameterBuilder
-	}); ok {
+func (b *_COTPParameterBuilder) AsCOTPParameterCalledTsap() COTPParameterCalledTsapBuilder {
+	if cb, ok := b.childBuilder.(COTPParameterCalledTsapBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPParameterCalledTsapBuilder().(*_COTPParameterCalledTsapBuilder)
@@ -216,14 +183,8 @@ func (b *_COTPParameterBuilder) AsCOTPParameterCalledTsap() interface {
 	return cb
 }
 
-func (b *_COTPParameterBuilder) AsCOTPParameterChecksum() interface {
-	COTPParameterChecksumBuilder
-	Done() COTPParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPParameterChecksumBuilder
-		Done() COTPParameterBuilder
-	}); ok {
+func (b *_COTPParameterBuilder) AsCOTPParameterChecksum() COTPParameterChecksumBuilder {
+	if cb, ok := b.childBuilder.(COTPParameterChecksumBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPParameterChecksumBuilder().(*_COTPParameterChecksumBuilder)
@@ -232,14 +193,8 @@ func (b *_COTPParameterBuilder) AsCOTPParameterChecksum() interface {
 	return cb
 }
 
-func (b *_COTPParameterBuilder) AsCOTPParameterDisconnectAdditionalInformation() interface {
-	COTPParameterDisconnectAdditionalInformationBuilder
-	Done() COTPParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		COTPParameterDisconnectAdditionalInformationBuilder
-		Done() COTPParameterBuilder
-	}); ok {
+func (b *_COTPParameterBuilder) AsCOTPParameterDisconnectAdditionalInformation() COTPParameterDisconnectAdditionalInformationBuilder {
+	if cb, ok := b.childBuilder.(COTPParameterDisconnectAdditionalInformationBuilder); ok {
 		return cb
 	}
 	cb := NewCOTPParameterDisconnectAdditionalInformationBuilder().(*_COTPParameterDisconnectAdditionalInformationBuilder)

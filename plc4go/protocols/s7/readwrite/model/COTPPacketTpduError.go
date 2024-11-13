@@ -85,6 +85,8 @@ type COTPPacketTpduErrorBuilder interface {
 	WithDestinationReference(uint16) COTPPacketTpduErrorBuilder
 	// WithRejectCause adds RejectCause (property field)
 	WithRejectCause(uint8) COTPPacketTpduErrorBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() COTPPacketBuilder
 	// Build builds the COTPPacketTpduError or returns an error if something is wrong
 	Build() (COTPPacketTpduError, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (COTPPacketTpduErrorBuilder) = (*_COTPPacketTpduErrorBuilder)(nil)
 
 func (b *_COTPPacketTpduErrorBuilder) setParent(contract COTPPacketContract) {
 	b.COTPPacketContract = contract
+	contract.(*_COTPPacket)._SubType = b._COTPPacketTpduError
 }
 
 func (b *_COTPPacketTpduErrorBuilder) WithMandatoryFields(destinationReference uint16, rejectCause uint8) COTPPacketTpduErrorBuilder {
@@ -139,8 +142,10 @@ func (b *_COTPPacketTpduErrorBuilder) MustBuild() COTPPacketTpduError {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_COTPPacketTpduErrorBuilder) Done() COTPPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCOTPPacketBuilder().(*_COTPPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_COTPPacketTpduError) deepCopy() *_COTPPacketTpduError {
 		m.DestinationReference,
 		m.RejectCause,
 	}
-	m.COTPPacketContract.(*_COTPPacket)._SubType = m
+	_COTPPacketTpduErrorCopy.COTPPacketContract.(*_COTPPacket)._SubType = m
 	return _COTPPacketTpduErrorCopy
 }
 

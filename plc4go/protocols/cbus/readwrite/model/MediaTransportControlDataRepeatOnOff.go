@@ -85,6 +85,8 @@ type MediaTransportControlDataRepeatOnOffBuilder interface {
 	WithMandatoryFields(repeatType byte) MediaTransportControlDataRepeatOnOffBuilder
 	// WithRepeatType adds RepeatType (property field)
 	WithRepeatType(byte) MediaTransportControlDataRepeatOnOffBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataRepeatOnOff or returns an error if something is wrong
 	Build() (MediaTransportControlDataRepeatOnOff, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (MediaTransportControlDataRepeatOnOffBuilder) = (*_MediaTransportControlDa
 
 func (b *_MediaTransportControlDataRepeatOnOffBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataRepeatOnOff
 }
 
 func (b *_MediaTransportControlDataRepeatOnOffBuilder) WithMandatoryFields(repeatType byte) MediaTransportControlDataRepeatOnOffBuilder {
@@ -134,8 +137,10 @@ func (b *_MediaTransportControlDataRepeatOnOffBuilder) MustBuild() MediaTranspor
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataRepeatOnOffBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -357,7 +362,7 @@ func (m *_MediaTransportControlDataRepeatOnOff) deepCopy() *_MediaTransportContr
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.RepeatType,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataRepeatOnOffCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataRepeatOnOffCopy
 }
 

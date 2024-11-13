@@ -106,6 +106,8 @@ type BACnetFaultParameterFaultStatusFlagsBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultStatusFlagsBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultStatusFlagsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterBuilder
 	// Build builds the BACnetFaultParameterFaultStatusFlags or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultStatusFlags, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (BACnetFaultParameterFaultStatusFlagsBuilder) = (*_BACnetFaultParameterFau
 
 func (b *_BACnetFaultParameterFaultStatusFlagsBuilder) setParent(contract BACnetFaultParameterContract) {
 	b.BACnetFaultParameterContract = contract
+	contract.(*_BACnetFaultParameter)._SubType = b._BACnetFaultParameterFaultStatusFlags
 }
 
 func (b *_BACnetFaultParameterFaultStatusFlagsBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, statusFlagsReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) BACnetFaultParameterFaultStatusFlagsBuilder {
@@ -222,8 +225,10 @@ func (b *_BACnetFaultParameterFaultStatusFlagsBuilder) MustBuild() BACnetFaultPa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultStatusFlagsBuilder) Done() BACnetFaultParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterBuilder().(*_BACnetFaultParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -408,11 +413,11 @@ func (m *_BACnetFaultParameterFaultStatusFlags) deepCopy() *_BACnetFaultParamete
 	}
 	_BACnetFaultParameterFaultStatusFlagsCopy := &_BACnetFaultParameterFaultStatusFlags{
 		m.BACnetFaultParameterContract.(*_BACnetFaultParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.StatusFlagsReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetDeviceObjectPropertyReferenceEnclosed](m.StatusFlagsReference),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = m
+	_BACnetFaultParameterFaultStatusFlagsCopy.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = m
 	return _BACnetFaultParameterFaultStatusFlagsCopy
 }
 

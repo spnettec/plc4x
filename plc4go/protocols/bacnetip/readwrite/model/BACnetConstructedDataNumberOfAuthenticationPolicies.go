@@ -86,6 +86,8 @@ type BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder interface {
 	WithNumberOfAuthenticationPolicies(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder
 	// WithNumberOfAuthenticationPoliciesBuilder adds NumberOfAuthenticationPolicies (property field) which is build by the builder
 	WithNumberOfAuthenticationPoliciesBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNumberOfAuthenticationPolicies or returns an error if something is wrong
 	Build() (BACnetConstructedDataNumberOfAuthenticationPolicies, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) = (*_BACnetCo
 
 func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNumberOfAuthenticationPolicies
 }
 
 func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) WithMandatoryFields(numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) MustBuild(
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) deepCopy() *_BACn
 	}
 	_BACnetConstructedDataNumberOfAuthenticationPoliciesCopy := &_BACnetConstructedDataNumberOfAuthenticationPolicies{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfAuthenticationPolicies.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfAuthenticationPolicies),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNumberOfAuthenticationPoliciesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNumberOfAuthenticationPoliciesCopy
 }
 

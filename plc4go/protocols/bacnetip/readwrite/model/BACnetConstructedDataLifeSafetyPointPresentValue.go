@@ -86,6 +86,8 @@ type BACnetConstructedDataLifeSafetyPointPresentValueBuilder interface {
 	WithPresentValue(BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyPointPresentValueBuilder
 	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
 	WithPresentValueBuilder(func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataLifeSafetyPointPresentValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLifeSafetyPointPresentValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataLifeSafetyPointPresentValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLifeSafetyPointPresentValueBuilder) = (*_BACnetConst
 
 func (b *_BACnetConstructedDataLifeSafetyPointPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLifeSafetyPointPresentValue
 }
 
 func (b *_BACnetConstructedDataLifeSafetyPointPresentValueBuilder) WithMandatoryFields(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyPointPresentValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLifeSafetyPointPresentValueBuilder) MustBuild() B
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLifeSafetyPointPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) deepCopy() *_BACnetC
 	}
 	_BACnetConstructedDataLifeSafetyPointPresentValueCopy := &_BACnetConstructedDataLifeSafetyPointPresentValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PresentValue.DeepCopy().(BACnetLifeSafetyStateTagged),
+		utils.DeepCopy[BACnetLifeSafetyStateTagged](m.PresentValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLifeSafetyPointPresentValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLifeSafetyPointPresentValueCopy
 }
 

@@ -86,6 +86,8 @@ type APDUUnconfirmedRequestBuilder interface {
 	WithServiceRequest(BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder
 	// WithServiceRequestBuilder adds ServiceRequest (property field) which is build by the builder
 	WithServiceRequestBuilder(func(BACnetUnconfirmedServiceRequestBuilder) BACnetUnconfirmedServiceRequestBuilder) APDUUnconfirmedRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() APDUBuilder
 	// Build builds the APDUUnconfirmedRequest or returns an error if something is wrong
 	Build() (APDUUnconfirmedRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (APDUUnconfirmedRequestBuilder) = (*_APDUUnconfirmedRequestBuilder)(nil)
 
 func (b *_APDUUnconfirmedRequestBuilder) setParent(contract APDUContract) {
 	b.APDUContract = contract
+	contract.(*_APDU)._SubType = b._APDUUnconfirmedRequest
 }
 
 func (b *_APDUUnconfirmedRequestBuilder) WithMandatoryFields(serviceRequest BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder {
@@ -154,8 +157,10 @@ func (b *_APDUUnconfirmedRequestBuilder) MustBuild() APDUUnconfirmedRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_APDUUnconfirmedRequestBuilder) Done() APDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAPDUBuilder().(*_APDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -323,10 +328,10 @@ func (m *_APDUUnconfirmedRequest) deepCopy() *_APDUUnconfirmedRequest {
 	}
 	_APDUUnconfirmedRequestCopy := &_APDUUnconfirmedRequest{
 		m.APDUContract.(*_APDU).deepCopy(),
-		m.ServiceRequest.DeepCopy().(BACnetUnconfirmedServiceRequest),
+		utils.DeepCopy[BACnetUnconfirmedServiceRequest](m.ServiceRequest),
 		m.reservedField0,
 	}
-	m.APDUContract.(*_APDU)._SubType = m
+	_APDUUnconfirmedRequestCopy.APDUContract.(*_APDU)._SubType = m
 	return _APDUUnconfirmedRequestCopy
 }
 

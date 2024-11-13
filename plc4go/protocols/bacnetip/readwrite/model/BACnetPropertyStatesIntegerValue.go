@@ -84,6 +84,8 @@ type BACnetPropertyStatesIntegerValueBuilder interface {
 	WithIntegerValue(BACnetContextTagSignedInteger) BACnetPropertyStatesIntegerValueBuilder
 	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
 	WithIntegerValueBuilder(func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetPropertyStatesIntegerValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesIntegerValue or returns an error if something is wrong
 	Build() (BACnetPropertyStatesIntegerValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesIntegerValueBuilder) = (*_BACnetPropertyStatesInteger
 
 func (b *_BACnetPropertyStatesIntegerValueBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesIntegerValue
 }
 
 func (b *_BACnetPropertyStatesIntegerValueBuilder) WithMandatoryFields(integerValue BACnetContextTagSignedInteger) BACnetPropertyStatesIntegerValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesIntegerValueBuilder) MustBuild() BACnetPropertySta
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesIntegerValueBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesIntegerValue) deepCopy() *_BACnetPropertyStatesInt
 	}
 	_BACnetPropertyStatesIntegerValueCopy := &_BACnetPropertyStatesIntegerValue{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.IntegerValue.DeepCopy().(BACnetContextTagSignedInteger),
+		utils.DeepCopy[BACnetContextTagSignedInteger](m.IntegerValue),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesIntegerValueCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesIntegerValueCopy
 }
 

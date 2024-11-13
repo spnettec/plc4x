@@ -84,6 +84,8 @@ type BACnetPriorityValueIntegerBuilder interface {
 	WithIntegerValue(BACnetApplicationTagSignedInteger) BACnetPriorityValueIntegerBuilder
 	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
 	WithIntegerValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetPriorityValueIntegerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPriorityValueBuilder
 	// Build builds the BACnetPriorityValueInteger or returns an error if something is wrong
 	Build() (BACnetPriorityValueInteger, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPriorityValueIntegerBuilder) = (*_BACnetPriorityValueIntegerBuilder
 
 func (b *_BACnetPriorityValueIntegerBuilder) setParent(contract BACnetPriorityValueContract) {
 	b.BACnetPriorityValueContract = contract
+	contract.(*_BACnetPriorityValue)._SubType = b._BACnetPriorityValueInteger
 }
 
 func (b *_BACnetPriorityValueIntegerBuilder) WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetPriorityValueIntegerBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPriorityValueIntegerBuilder) MustBuild() BACnetPriorityValueInte
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPriorityValueIntegerBuilder) Done() BACnetPriorityValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPriorityValueInteger) deepCopy() *_BACnetPriorityValueInteger {
 	}
 	_BACnetPriorityValueIntegerCopy := &_BACnetPriorityValueInteger{
 		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
-		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.IntegerValue),
 	}
-	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	_BACnetPriorityValueIntegerCopy.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
 	return _BACnetPriorityValueIntegerCopy
 }
 

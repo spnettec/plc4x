@@ -333,7 +333,7 @@ func (m *_BACnetAccessPassbackModeTagged) deepCopy() *_BACnetAccessPassbackModeT
 		return nil
 	}
 	_BACnetAccessPassbackModeTaggedCopy := &_BACnetAccessPassbackModeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

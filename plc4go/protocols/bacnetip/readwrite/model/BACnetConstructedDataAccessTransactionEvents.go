@@ -79,6 +79,8 @@ type BACnetConstructedDataAccessTransactionEventsBuilder interface {
 	WithMandatoryFields(accessTransactionEvents []BACnetAccessEventTagged) BACnetConstructedDataAccessTransactionEventsBuilder
 	// WithAccessTransactionEvents adds AccessTransactionEvents (property field)
 	WithAccessTransactionEvents(...BACnetAccessEventTagged) BACnetConstructedDataAccessTransactionEventsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAccessTransactionEvents or returns an error if something is wrong
 	Build() (BACnetConstructedDataAccessTransactionEvents, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataAccessTransactionEventsBuilder) = (*_BACnetConstruct
 
 func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAccessTransactionEvents
 }
 
 func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) WithMandatoryFields(accessTransactionEvents []BACnetAccessEventTagged) BACnetConstructedDataAccessTransactionEventsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAccessTransactionEventsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) deepCopy() *_BACnetConst
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAccessEventTagged, BACnetAccessEventTagged](m.AccessTransactionEvents),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAccessTransactionEventsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAccessTransactionEventsCopy
 }
 

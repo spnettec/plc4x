@@ -86,6 +86,8 @@ type BACnetConstructedDataMachineRoomIDBuilder interface {
 	WithMachineRoomId(BACnetApplicationTagObjectIdentifier) BACnetConstructedDataMachineRoomIDBuilder
 	// WithMachineRoomIdBuilder adds MachineRoomId (property field) which is build by the builder
 	WithMachineRoomIdBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataMachineRoomIDBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMachineRoomID or returns an error if something is wrong
 	Build() (BACnetConstructedDataMachineRoomID, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMachineRoomIDBuilder) = (*_BACnetConstructedDataMach
 
 func (b *_BACnetConstructedDataMachineRoomIDBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMachineRoomID
 }
 
 func (b *_BACnetConstructedDataMachineRoomIDBuilder) WithMandatoryFields(machineRoomId BACnetApplicationTagObjectIdentifier) BACnetConstructedDataMachineRoomIDBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMachineRoomIDBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMachineRoomIDBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataMachineRoomID) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataMachineRoomIDCopy := &_BACnetConstructedDataMachineRoomID{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MachineRoomId.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.MachineRoomId),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMachineRoomIDCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMachineRoomIDCopy
 }
 

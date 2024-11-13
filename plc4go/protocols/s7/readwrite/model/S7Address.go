@@ -89,10 +89,7 @@ type S7AddressBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7AddressBuilder
 	// AsS7AddressAny converts this build to a subType of S7Address. It is always possible to return to current builder using Done()
-	AsS7AddressAny() interface {
-		S7AddressAnyBuilder
-		Done() S7AddressBuilder
-	}
+	AsS7AddressAny() S7AddressAnyBuilder
 	// Build builds the S7Address or returns an error if something is wrong
 	PartialBuild() (S7AddressContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -143,14 +140,8 @@ func (b *_S7AddressBuilder) PartialMustBuild() S7AddressContract {
 	return build
 }
 
-func (b *_S7AddressBuilder) AsS7AddressAny() interface {
-	S7AddressAnyBuilder
-	Done() S7AddressBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7AddressAnyBuilder
-		Done() S7AddressBuilder
-	}); ok {
+func (b *_S7AddressBuilder) AsS7AddressAny() S7AddressAnyBuilder {
+	if cb, ok := b.childBuilder.(S7AddressAnyBuilder); ok {
 		return cb
 	}
 	cb := NewS7AddressAnyBuilder().(*_S7AddressAnyBuilder)

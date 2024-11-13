@@ -707,9 +707,9 @@ func (m *_DiagnosticInfo) deepCopy() *_DiagnosticInfo {
 		utils.CopyPtr[int32](m.NamespaceURI),
 		utils.CopyPtr[int32](m.Locale),
 		utils.CopyPtr[int32](m.LocalizedText),
-		m.AdditionalInfo.DeepCopy().(PascalString),
-		m.InnerStatusCode.DeepCopy().(StatusCode),
-		m.InnerDiagnosticInfo.DeepCopy().(DiagnosticInfo),
+		utils.DeepCopy[PascalString](m.AdditionalInfo),
+		utils.DeepCopy[StatusCode](m.InnerStatusCode),
+		utils.DeepCopy[DiagnosticInfo](m.InnerDiagnosticInfo),
 		m.reservedField0,
 	}
 	return _DiagnosticInfoCopy

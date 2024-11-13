@@ -118,6 +118,8 @@ type ArgumentBuilder interface {
 	WithDescription(LocalizedText) ArgumentBuilder
 	// WithDescriptionBuilder adds Description (property field) which is build by the builder
 	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ArgumentBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the Argument or returns an error if something is wrong
 	Build() (Argument, error)
 	// MustBuild does the same as Build but panics on error
@@ -141,6 +143,7 @@ var _ (ArgumentBuilder) = (*_ArgumentBuilder)(nil)
 
 func (b *_ArgumentBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._Argument
 }
 
 func (b *_ArgumentBuilder) WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder {
@@ -244,8 +247,10 @@ func (b *_ArgumentBuilder) MustBuild() Argument {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ArgumentBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -483,13 +488,13 @@ func (m *_Argument) deepCopy() *_Argument {
 	}
 	_ArgumentCopy := &_Argument{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
-		m.DataType.DeepCopy().(NodeId),
+		utils.DeepCopy[PascalString](m.Name),
+		utils.DeepCopy[NodeId](m.DataType),
 		m.ValueRank,
 		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.Description),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ArgumentCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ArgumentCopy
 }
 

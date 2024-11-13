@@ -96,10 +96,7 @@ type ErrorReportingDataBuilder interface {
 	// WithCommandTypeContainer adds CommandTypeContainer (property field)
 	WithCommandTypeContainer(ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder
 	// AsErrorReportingDataGeneric converts this build to a subType of ErrorReportingData. It is always possible to return to current builder using Done()
-	AsErrorReportingDataGeneric() interface {
-		ErrorReportingDataGenericBuilder
-		Done() ErrorReportingDataBuilder
-	}
+	AsErrorReportingDataGeneric() ErrorReportingDataGenericBuilder
 	// Build builds the ErrorReportingData or returns an error if something is wrong
 	PartialBuild() (ErrorReportingDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,14 +152,8 @@ func (b *_ErrorReportingDataBuilder) PartialMustBuild() ErrorReportingDataContra
 	return build
 }
 
-func (b *_ErrorReportingDataBuilder) AsErrorReportingDataGeneric() interface {
-	ErrorReportingDataGenericBuilder
-	Done() ErrorReportingDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ErrorReportingDataGenericBuilder
-		Done() ErrorReportingDataBuilder
-	}); ok {
+func (b *_ErrorReportingDataBuilder) AsErrorReportingDataGeneric() ErrorReportingDataGenericBuilder {
+	if cb, ok := b.childBuilder.(ErrorReportingDataGenericBuilder); ok {
 		return cb
 	}
 	cb := NewErrorReportingDataGenericBuilder().(*_ErrorReportingDataGenericBuilder)

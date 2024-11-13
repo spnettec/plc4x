@@ -101,6 +101,8 @@ type OpcuaHelloRequestBuilder interface {
 	WithEndpoint(PascalString) OpcuaHelloRequestBuilder
 	// WithEndpointBuilder adds Endpoint (property field) which is build by the builder
 	WithEndpointBuilder(func(PascalStringBuilder) PascalStringBuilder) OpcuaHelloRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MessagePDUBuilder
 	// Build builds the OpcuaHelloRequest or returns an error if something is wrong
 	Build() (OpcuaHelloRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (OpcuaHelloRequestBuilder) = (*_OpcuaHelloRequestBuilder)(nil)
 
 func (b *_OpcuaHelloRequestBuilder) setParent(contract MessagePDUContract) {
 	b.MessagePDUContract = contract
+	contract.(*_MessagePDU)._SubType = b._OpcuaHelloRequest
 }
 
 func (b *_OpcuaHelloRequestBuilder) WithMandatoryFields(version uint32, limits OpcuaProtocolLimits, endpoint PascalString) OpcuaHelloRequestBuilder {
@@ -198,8 +201,10 @@ func (b *_OpcuaHelloRequestBuilder) MustBuild() OpcuaHelloRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_OpcuaHelloRequestBuilder) Done() MessagePDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMessagePDUBuilder().(*_MessagePDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -393,10 +398,10 @@ func (m *_OpcuaHelloRequest) deepCopy() *_OpcuaHelloRequest {
 	_OpcuaHelloRequestCopy := &_OpcuaHelloRequest{
 		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
 		m.Version,
-		m.Limits.DeepCopy().(OpcuaProtocolLimits),
-		m.Endpoint.DeepCopy().(PascalString),
+		utils.DeepCopy[OpcuaProtocolLimits](m.Limits),
+		utils.DeepCopy[PascalString](m.Endpoint),
 	}
-	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	_OpcuaHelloRequestCopy.MessagePDUContract.(*_MessagePDU)._SubType = m
 	return _OpcuaHelloRequestCopy
 }
 

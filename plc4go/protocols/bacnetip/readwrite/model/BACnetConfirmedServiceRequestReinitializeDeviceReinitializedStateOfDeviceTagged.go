@@ -334,7 +334,7 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDev
 		return nil
 	}
 	_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedCopy := &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

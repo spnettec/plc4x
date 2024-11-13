@@ -294,7 +294,7 @@ func (m *_NodeId) deepCopy() *_NodeId {
 		return nil
 	}
 	_NodeIdCopy := &_NodeId{
-		m.NodeId.DeepCopy().(NodeIdTypeDefinition),
+		utils.DeepCopy[NodeIdTypeDefinition](m.NodeId),
 		m.reservedField0,
 	}
 	return _NodeIdCopy

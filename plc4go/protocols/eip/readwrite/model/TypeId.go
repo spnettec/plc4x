@@ -89,30 +89,15 @@ type TypeIdBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() TypeIdBuilder
 	// AsNullAddressItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
-	AsNullAddressItem() interface {
-		NullAddressItemBuilder
-		Done() TypeIdBuilder
-	}
+	AsNullAddressItem() NullAddressItemBuilder
 	// AsServicesResponse converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
-	AsServicesResponse() interface {
-		ServicesResponseBuilder
-		Done() TypeIdBuilder
-	}
+	AsServicesResponse() ServicesResponseBuilder
 	// AsConnectedAddressItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
-	AsConnectedAddressItem() interface {
-		ConnectedAddressItemBuilder
-		Done() TypeIdBuilder
-	}
+	AsConnectedAddressItem() ConnectedAddressItemBuilder
 	// AsConnectedDataItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
-	AsConnectedDataItem() interface {
-		ConnectedDataItemBuilder
-		Done() TypeIdBuilder
-	}
+	AsConnectedDataItem() ConnectedDataItemBuilder
 	// AsUnConnectedDataItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
-	AsUnConnectedDataItem() interface {
-		UnConnectedDataItemBuilder
-		Done() TypeIdBuilder
-	}
+	AsUnConnectedDataItem() UnConnectedDataItemBuilder
 	// Build builds the TypeId or returns an error if something is wrong
 	PartialBuild() (TypeIdContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -163,14 +148,8 @@ func (b *_TypeIdBuilder) PartialMustBuild() TypeIdContract {
 	return build
 }
 
-func (b *_TypeIdBuilder) AsNullAddressItem() interface {
-	NullAddressItemBuilder
-	Done() TypeIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NullAddressItemBuilder
-		Done() TypeIdBuilder
-	}); ok {
+func (b *_TypeIdBuilder) AsNullAddressItem() NullAddressItemBuilder {
+	if cb, ok := b.childBuilder.(NullAddressItemBuilder); ok {
 		return cb
 	}
 	cb := NewNullAddressItemBuilder().(*_NullAddressItemBuilder)
@@ -179,14 +158,8 @@ func (b *_TypeIdBuilder) AsNullAddressItem() interface {
 	return cb
 }
 
-func (b *_TypeIdBuilder) AsServicesResponse() interface {
-	ServicesResponseBuilder
-	Done() TypeIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ServicesResponseBuilder
-		Done() TypeIdBuilder
-	}); ok {
+func (b *_TypeIdBuilder) AsServicesResponse() ServicesResponseBuilder {
+	if cb, ok := b.childBuilder.(ServicesResponseBuilder); ok {
 		return cb
 	}
 	cb := NewServicesResponseBuilder().(*_ServicesResponseBuilder)
@@ -195,14 +168,8 @@ func (b *_TypeIdBuilder) AsServicesResponse() interface {
 	return cb
 }
 
-func (b *_TypeIdBuilder) AsConnectedAddressItem() interface {
-	ConnectedAddressItemBuilder
-	Done() TypeIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConnectedAddressItemBuilder
-		Done() TypeIdBuilder
-	}); ok {
+func (b *_TypeIdBuilder) AsConnectedAddressItem() ConnectedAddressItemBuilder {
+	if cb, ok := b.childBuilder.(ConnectedAddressItemBuilder); ok {
 		return cb
 	}
 	cb := NewConnectedAddressItemBuilder().(*_ConnectedAddressItemBuilder)
@@ -211,14 +178,8 @@ func (b *_TypeIdBuilder) AsConnectedAddressItem() interface {
 	return cb
 }
 
-func (b *_TypeIdBuilder) AsConnectedDataItem() interface {
-	ConnectedDataItemBuilder
-	Done() TypeIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConnectedDataItemBuilder
-		Done() TypeIdBuilder
-	}); ok {
+func (b *_TypeIdBuilder) AsConnectedDataItem() ConnectedDataItemBuilder {
+	if cb, ok := b.childBuilder.(ConnectedDataItemBuilder); ok {
 		return cb
 	}
 	cb := NewConnectedDataItemBuilder().(*_ConnectedDataItemBuilder)
@@ -227,14 +188,8 @@ func (b *_TypeIdBuilder) AsConnectedDataItem() interface {
 	return cb
 }
 
-func (b *_TypeIdBuilder) AsUnConnectedDataItem() interface {
-	UnConnectedDataItemBuilder
-	Done() TypeIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		UnConnectedDataItemBuilder
-		Done() TypeIdBuilder
-	}); ok {
+func (b *_TypeIdBuilder) AsUnConnectedDataItem() UnConnectedDataItemBuilder {
+	if cb, ok := b.childBuilder.(UnConnectedDataItemBuilder); ok {
 		return cb
 	}
 	cb := NewUnConnectedDataItemBuilder().(*_UnConnectedDataItemBuilder)

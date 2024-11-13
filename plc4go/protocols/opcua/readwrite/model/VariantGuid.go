@@ -85,6 +85,8 @@ type VariantGuidBuilder interface {
 	WithOptionalArrayLength(int32) VariantGuidBuilder
 	// WithValue adds Value (property field)
 	WithValue(...GuidValue) VariantGuidBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantGuid or returns an error if something is wrong
 	Build() (VariantGuid, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantGuidBuilder) = (*_VariantGuidBuilder)(nil)
 
 func (b *_VariantGuidBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantGuid
 }
 
 func (b *_VariantGuidBuilder) WithMandatoryFields(value []GuidValue) VariantGuidBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantGuidBuilder) MustBuild() VariantGuid {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantGuidBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -325,7 +330,7 @@ func (m *_VariantGuid) deepCopy() *_VariantGuid {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[GuidValue, GuidValue](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantGuidCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantGuidCopy
 }
 

@@ -100,6 +100,8 @@ type BACnetUnconfirmedServiceRequestWhoHasBuilder interface {
 	WithObject(BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder
 	// WithObjectBuilder adds Object (property field) which is build by the builder
 	WithObjectBuilder(func(BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetUnconfirmedServiceRequestBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestWhoHas or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestWhoHas, error)
 	// MustBuild does the same as Build but panics on error
@@ -123,6 +125,7 @@ var _ (BACnetUnconfirmedServiceRequestWhoHasBuilder) = (*_BACnetUnconfirmedServi
 
 func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
 	b.BACnetUnconfirmedServiceRequestContract = contract
+	contract.(*_BACnetUnconfirmedServiceRequest)._SubType = b._BACnetUnconfirmedServiceRequestWhoHas
 }
 
 func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithMandatoryFields(object BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder {
@@ -204,8 +207,10 @@ func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) MustBuild() BACnetUnconf
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetUnconfirmedServiceRequestWhoHasBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetUnconfirmedServiceRequestBuilder().(*_BACnetUnconfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -406,11 +411,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) deepCopy() *_BACnetUnconfirmedS
 	}
 	_BACnetUnconfirmedServiceRequestWhoHasCopy := &_BACnetUnconfirmedServiceRequestWhoHas{
 		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
-		m.DeviceInstanceRangeLowLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.DeviceInstanceRangeHighLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Object.DeepCopy().(BACnetUnconfirmedServiceRequestWhoHasObject),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.DeviceInstanceRangeLowLimit),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.DeviceInstanceRangeHighLimit),
+		utils.DeepCopy[BACnetUnconfirmedServiceRequestWhoHasObject](m.Object),
 	}
-	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	_BACnetUnconfirmedServiceRequestWhoHasCopy.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
 	return _BACnetUnconfirmedServiceRequestWhoHasCopy
 }
 

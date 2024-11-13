@@ -71,6 +71,8 @@ type BACnetConstructedDataCharacterstringValueAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataCharacterstringValueAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCharacterstringValueAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataCharacterstringValueAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataCharacterstringValueAllBuilder) = (*_BACnetConstruct
 
 func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCharacterstringValueAll
 }
 
 func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) WithMandatoryFields() BACnetConstructedDataCharacterstringValueAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCharacterstringValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -255,7 +260,7 @@ func (m *_BACnetConstructedDataCharacterstringValueAll) deepCopy() *_BACnetConst
 	_BACnetConstructedDataCharacterstringValueAllCopy := &_BACnetConstructedDataCharacterstringValueAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCharacterstringValueAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCharacterstringValueAllCopy
 }
 

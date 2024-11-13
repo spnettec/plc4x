@@ -96,6 +96,8 @@ type WriteResponseBuilder interface {
 	WithResults(...StatusCode) WriteResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) WriteResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the WriteResponse or returns an error if something is wrong
 	Build() (WriteResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (WriteResponseBuilder) = (*_WriteResponseBuilder)(nil)
 
 func (b *_WriteResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._WriteResponse
 }
 
 func (b *_WriteResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) WriteResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_WriteResponseBuilder) MustBuild() WriteResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_WriteResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_WriteResponse) deepCopy() *_WriteResponse {
 	}
 	_WriteResponseCopy := &_WriteResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_WriteResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _WriteResponseCopy
 }
 

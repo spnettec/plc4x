@@ -92,6 +92,8 @@ type ModbusAsciiADUBuilder interface {
 	WithPdu(ModbusPDU) ModbusAsciiADUBuilder
 	// WithPduBuilder adds Pdu (property field) which is build by the builder
 	WithPduBuilder(func(ModbusPDUBuilder) ModbusPDUBuilder) ModbusAsciiADUBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusADUBuilder
 	// Build builds the ModbusAsciiADU or returns an error if something is wrong
 	Build() (ModbusAsciiADU, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,6 +117,7 @@ var _ (ModbusAsciiADUBuilder) = (*_ModbusAsciiADUBuilder)(nil)
 
 func (b *_ModbusAsciiADUBuilder) setParent(contract ModbusADUContract) {
 	b.ModbusADUContract = contract
+	contract.(*_ModbusADU)._SubType = b._ModbusAsciiADU
 }
 
 func (b *_ModbusAsciiADUBuilder) WithMandatoryFields(address uint8, pdu ModbusPDU) ModbusAsciiADUBuilder {
@@ -165,8 +168,10 @@ func (b *_ModbusAsciiADUBuilder) MustBuild() ModbusAsciiADU {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusAsciiADUBuilder) Done() ModbusADUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusADUBuilder().(*_ModbusADUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -352,9 +357,9 @@ func (m *_ModbusAsciiADU) deepCopy() *_ModbusAsciiADU {
 	_ModbusAsciiADUCopy := &_ModbusAsciiADU{
 		m.ModbusADUContract.(*_ModbusADU).deepCopy(),
 		m.Address,
-		m.Pdu.DeepCopy().(ModbusPDU),
+		utils.DeepCopy[ModbusPDU](m.Pdu),
 	}
-	m.ModbusADUContract.(*_ModbusADU)._SubType = m
+	_ModbusAsciiADUCopy.ModbusADUContract.(*_ModbusADU)._SubType = m
 	return _ModbusAsciiADUCopy
 }
 

@@ -393,7 +393,7 @@ func (m *_BACnetAccessCredentialDisableTagged) deepCopy() *_BACnetAccessCredenti
 		return nil
 	}
 	_BACnetAccessCredentialDisableTaggedCopy := &_BACnetAccessCredentialDisableTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

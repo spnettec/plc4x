@@ -79,6 +79,8 @@ type MediaTransportControlDataSetCategoryBuilder interface {
 	WithMandatoryFields(categoryNumber uint8) MediaTransportControlDataSetCategoryBuilder
 	// WithCategoryNumber adds CategoryNumber (property field)
 	WithCategoryNumber(uint8) MediaTransportControlDataSetCategoryBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataSetCategory or returns an error if something is wrong
 	Build() (MediaTransportControlDataSetCategory, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (MediaTransportControlDataSetCategoryBuilder) = (*_MediaTransportControlDa
 
 func (b *_MediaTransportControlDataSetCategoryBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataSetCategory
 }
 
 func (b *_MediaTransportControlDataSetCategoryBuilder) WithMandatoryFields(categoryNumber uint8) MediaTransportControlDataSetCategoryBuilder {
@@ -128,8 +131,10 @@ func (b *_MediaTransportControlDataSetCategoryBuilder) MustBuild() MediaTranspor
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataSetCategoryBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -282,7 +287,7 @@ func (m *_MediaTransportControlDataSetCategory) deepCopy() *_MediaTransportContr
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.CategoryNumber,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataSetCategoryCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataSetCategoryCopy
 }
 

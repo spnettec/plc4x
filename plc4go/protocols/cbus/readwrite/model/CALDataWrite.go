@@ -96,6 +96,8 @@ type CALDataWriteBuilder interface {
 	WithParameterValue(ParameterValue) CALDataWriteBuilder
 	// WithParameterValueBuilder adds ParameterValue (property field) which is build by the builder
 	WithParameterValueBuilder(func(ParameterValueBuilder) ParameterValueBuilder) CALDataWriteBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CALDataBuilder
 	// Build builds the CALDataWrite or returns an error if something is wrong
 	Build() (CALDataWrite, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (CALDataWriteBuilder) = (*_CALDataWriteBuilder)(nil)
 
 func (b *_CALDataWriteBuilder) setParent(contract CALDataContract) {
 	b.CALDataContract = contract
+	contract.(*_CALData)._SubType = b._CALDataWrite
 }
 
 func (b *_CALDataWriteBuilder) WithMandatoryFields(paramNo Parameter, code byte, parameterValue ParameterValue) CALDataWriteBuilder {
@@ -174,8 +177,10 @@ func (b *_CALDataWriteBuilder) MustBuild() CALDataWrite {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CALDataWriteBuilder) Done() CALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCALDataBuilder().(*_CALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -362,9 +367,9 @@ func (m *_CALDataWrite) deepCopy() *_CALDataWrite {
 		m.CALDataContract.(*_CALData).deepCopy(),
 		m.ParamNo,
 		m.Code,
-		m.ParameterValue.DeepCopy().(ParameterValue),
+		utils.DeepCopy[ParameterValue](m.ParameterValue),
 	}
-	m.CALDataContract.(*_CALData)._SubType = m
+	_CALDataWriteCopy.CALDataContract.(*_CALData)._SubType = m
 	return _CALDataWriteCopy
 }
 

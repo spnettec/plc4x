@@ -86,6 +86,8 @@ type BACnetConstructedDataMaxSegmentsAcceptedBuilder interface {
 	WithMaxSegmentsAccepted(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxSegmentsAcceptedBuilder
 	// WithMaxSegmentsAcceptedBuilder adds MaxSegmentsAccepted (property field) which is build by the builder
 	WithMaxSegmentsAcceptedBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxSegmentsAcceptedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMaxSegmentsAccepted or returns an error if something is wrong
 	Build() (BACnetConstructedDataMaxSegmentsAccepted, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMaxSegmentsAcceptedBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMaxSegmentsAccepted
 }
 
 func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) WithMandatoryFields(maxSegmentsAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxSegmentsAcceptedBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) deepCopy() *_BACnetConstruct
 	}
 	_BACnetConstructedDataMaxSegmentsAcceptedCopy := &_BACnetConstructedDataMaxSegmentsAccepted{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MaxSegmentsAccepted.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.MaxSegmentsAccepted),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMaxSegmentsAcceptedCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMaxSegmentsAcceptedCopy
 }
 

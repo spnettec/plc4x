@@ -117,6 +117,8 @@ type HistoryReadValueIdBuilder interface {
 	WithContinuationPoint(PascalByteString) HistoryReadValueIdBuilder
 	// WithContinuationPointBuilder adds ContinuationPoint (property field) which is build by the builder
 	WithContinuationPointBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) HistoryReadValueIdBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the HistoryReadValueId or returns an error if something is wrong
 	Build() (HistoryReadValueId, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +142,7 @@ var _ (HistoryReadValueIdBuilder) = (*_HistoryReadValueIdBuilder)(nil)
 
 func (b *_HistoryReadValueIdBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._HistoryReadValueId
 }
 
 func (b *_HistoryReadValueIdBuilder) WithMandatoryFields(nodeId NodeId, indexRange PascalString, dataEncoding QualifiedName, continuationPoint PascalByteString) HistoryReadValueIdBuilder {
@@ -257,8 +260,10 @@ func (b *_HistoryReadValueIdBuilder) MustBuild() HistoryReadValueId {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_HistoryReadValueIdBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -464,12 +469,12 @@ func (m *_HistoryReadValueId) deepCopy() *_HistoryReadValueId {
 	}
 	_HistoryReadValueIdCopy := &_HistoryReadValueId{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
-		m.IndexRange.DeepCopy().(PascalString),
-		m.DataEncoding.DeepCopy().(QualifiedName),
-		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		utils.DeepCopy[NodeId](m.NodeId),
+		utils.DeepCopy[PascalString](m.IndexRange),
+		utils.DeepCopy[QualifiedName](m.DataEncoding),
+		utils.DeepCopy[PascalByteString](m.ContinuationPoint),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_HistoryReadValueIdCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryReadValueIdCopy
 }
 

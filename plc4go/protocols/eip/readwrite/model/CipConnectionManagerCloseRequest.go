@@ -151,6 +151,8 @@ type CipConnectionManagerCloseRequestBuilder interface {
 	WithConnectionPathSize(uint8) CipConnectionManagerCloseRequestBuilder
 	// WithConnectionPaths adds ConnectionPaths (property field)
 	WithConnectionPaths(...PathSegment) CipConnectionManagerCloseRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the CipConnectionManagerCloseRequest or returns an error if something is wrong
 	Build() (CipConnectionManagerCloseRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -174,6 +176,7 @@ var _ (CipConnectionManagerCloseRequestBuilder) = (*_CipConnectionManagerCloseRe
 
 func (b *_CipConnectionManagerCloseRequestBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._CipConnectionManagerCloseRequest
 }
 
 func (b *_CipConnectionManagerCloseRequestBuilder) WithMandatoryFields(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment) CipConnectionManagerCloseRequestBuilder {
@@ -288,8 +291,10 @@ func (b *_CipConnectionManagerCloseRequestBuilder) MustBuild() CipConnectionMana
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipConnectionManagerCloseRequestBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -640,8 +645,8 @@ func (m *_CipConnectionManagerCloseRequest) deepCopy() *_CipConnectionManagerClo
 	_CipConnectionManagerCloseRequestCopy := &_CipConnectionManagerCloseRequest{
 		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.RequestPathSize,
-		m.ClassSegment.DeepCopy().(PathSegment),
-		m.InstanceSegment.DeepCopy().(PathSegment),
+		utils.DeepCopy[PathSegment](m.ClassSegment),
+		utils.DeepCopy[PathSegment](m.InstanceSegment),
 		m.Priority,
 		m.TickTime,
 		m.TimeoutTicks,
@@ -652,7 +657,7 @@ func (m *_CipConnectionManagerCloseRequest) deepCopy() *_CipConnectionManagerClo
 		utils.DeepCopySlice[PathSegment, PathSegment](m.ConnectionPaths),
 		m.reservedField0,
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_CipConnectionManagerCloseRequestCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _CipConnectionManagerCloseRequestCopy
 }
 

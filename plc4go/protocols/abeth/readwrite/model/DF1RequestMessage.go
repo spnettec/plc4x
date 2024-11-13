@@ -111,10 +111,7 @@ type DF1RequestMessageBuilder interface {
 	// WithTransactionCounter adds TransactionCounter (property field)
 	WithTransactionCounter(uint16) DF1RequestMessageBuilder
 	// AsDF1CommandRequestMessage converts this build to a subType of DF1RequestMessage. It is always possible to return to current builder using Done()
-	AsDF1CommandRequestMessage() interface {
-		DF1CommandRequestMessageBuilder
-		Done() DF1RequestMessageBuilder
-	}
+	AsDF1CommandRequestMessage() DF1CommandRequestMessageBuilder
 	// Build builds the DF1RequestMessage or returns an error if something is wrong
 	PartialBuild() (DF1RequestMessageContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -185,14 +182,8 @@ func (b *_DF1RequestMessageBuilder) PartialMustBuild() DF1RequestMessageContract
 	return build
 }
 
-func (b *_DF1RequestMessageBuilder) AsDF1CommandRequestMessage() interface {
-	DF1CommandRequestMessageBuilder
-	Done() DF1RequestMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DF1CommandRequestMessageBuilder
-		Done() DF1RequestMessageBuilder
-	}); ok {
+func (b *_DF1RequestMessageBuilder) AsDF1CommandRequestMessage() DF1CommandRequestMessageBuilder {
+	if cb, ok := b.childBuilder.(DF1CommandRequestMessageBuilder); ok {
 		return cb
 	}
 	cb := NewDF1CommandRequestMessageBuilder().(*_DF1CommandRequestMessageBuilder)

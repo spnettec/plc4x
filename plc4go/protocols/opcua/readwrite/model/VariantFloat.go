@@ -85,6 +85,8 @@ type VariantFloatBuilder interface {
 	WithOptionalArrayLength(int32) VariantFloatBuilder
 	// WithValue adds Value (property field)
 	WithValue(...float32) VariantFloatBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantFloat or returns an error if something is wrong
 	Build() (VariantFloat, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantFloatBuilder) = (*_VariantFloatBuilder)(nil)
 
 func (b *_VariantFloatBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantFloat
 }
 
 func (b *_VariantFloatBuilder) WithMandatoryFields(value []float32) VariantFloatBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantFloatBuilder) MustBuild() VariantFloat {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantFloatBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -320,7 +325,7 @@ func (m *_VariantFloat) deepCopy() *_VariantFloat {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[float32, float32](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantFloatCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantFloatCopy
 }
 

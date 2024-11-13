@@ -84,6 +84,8 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuild
 	WithCharacterValue(BACnetContextTagCharacterString) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder
 	// WithCharacterValueBuilder adds CharacterValue (property field) which is build by the builder
 	WithCharacterValueBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
 	// Build builds the BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBui
 
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) setParent(contract BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract) {
 	b.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = contract
+	contract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = b._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 }
 
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) WithMandatoryFields(characterValue BACnetContextTagCharacterString) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder) Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder().(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 	}
 	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
 		m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).deepCopy(),
-		m.CharacterValue.DeepCopy().(BACnetContextTagCharacterString),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.CharacterValue),
 	}
-	m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = m
+	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterCopy.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = m
 	return _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterCopy
 }
 

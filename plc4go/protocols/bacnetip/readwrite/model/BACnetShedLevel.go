@@ -101,20 +101,11 @@ type BACnetShedLevelBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetShedLevelBuilder
 	// AsBACnetShedLevelPercent converts this build to a subType of BACnetShedLevel. It is always possible to return to current builder using Done()
-	AsBACnetShedLevelPercent() interface {
-		BACnetShedLevelPercentBuilder
-		Done() BACnetShedLevelBuilder
-	}
+	AsBACnetShedLevelPercent() BACnetShedLevelPercentBuilder
 	// AsBACnetShedLevelLevel converts this build to a subType of BACnetShedLevel. It is always possible to return to current builder using Done()
-	AsBACnetShedLevelLevel() interface {
-		BACnetShedLevelLevelBuilder
-		Done() BACnetShedLevelBuilder
-	}
+	AsBACnetShedLevelLevel() BACnetShedLevelLevelBuilder
 	// AsBACnetShedLevelAmount converts this build to a subType of BACnetShedLevel. It is always possible to return to current builder using Done()
-	AsBACnetShedLevelAmount() interface {
-		BACnetShedLevelAmountBuilder
-		Done() BACnetShedLevelBuilder
-	}
+	AsBACnetShedLevelAmount() BACnetShedLevelAmountBuilder
 	// Build builds the BACnetShedLevel or returns an error if something is wrong
 	PartialBuild() (BACnetShedLevelContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -189,14 +180,8 @@ func (b *_BACnetShedLevelBuilder) PartialMustBuild() BACnetShedLevelContract {
 	return build
 }
 
-func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelPercent() interface {
-	BACnetShedLevelPercentBuilder
-	Done() BACnetShedLevelBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetShedLevelPercentBuilder
-		Done() BACnetShedLevelBuilder
-	}); ok {
+func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelPercent() BACnetShedLevelPercentBuilder {
+	if cb, ok := b.childBuilder.(BACnetShedLevelPercentBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetShedLevelPercentBuilder().(*_BACnetShedLevelPercentBuilder)
@@ -205,14 +190,8 @@ func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelPercent() interface {
 	return cb
 }
 
-func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelLevel() interface {
-	BACnetShedLevelLevelBuilder
-	Done() BACnetShedLevelBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetShedLevelLevelBuilder
-		Done() BACnetShedLevelBuilder
-	}); ok {
+func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelLevel() BACnetShedLevelLevelBuilder {
+	if cb, ok := b.childBuilder.(BACnetShedLevelLevelBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetShedLevelLevelBuilder().(*_BACnetShedLevelLevelBuilder)
@@ -221,14 +200,8 @@ func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelLevel() interface {
 	return cb
 }
 
-func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelAmount() interface {
-	BACnetShedLevelAmountBuilder
-	Done() BACnetShedLevelBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetShedLevelAmountBuilder
-		Done() BACnetShedLevelBuilder
-	}); ok {
+func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelAmount() BACnetShedLevelAmountBuilder {
+	if cb, ok := b.childBuilder.(BACnetShedLevelAmountBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetShedLevelAmountBuilder().(*_BACnetShedLevelAmountBuilder)
@@ -458,7 +431,7 @@ func (m *_BACnetShedLevel) deepCopy() *_BACnetShedLevel {
 	}
 	_BACnetShedLevelCopy := &_BACnetShedLevel{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetShedLevelCopy
 }

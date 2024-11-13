@@ -84,6 +84,8 @@ type BACnetOptionalCharacterStringNullBuilder interface {
 	WithNullValue(BACnetApplicationTagNull) BACnetOptionalCharacterStringNullBuilder
 	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
 	WithNullValueBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetOptionalCharacterStringNullBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetOptionalCharacterStringBuilder
 	// Build builds the BACnetOptionalCharacterStringNull or returns an error if something is wrong
 	Build() (BACnetOptionalCharacterStringNull, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetOptionalCharacterStringNullBuilder) = (*_BACnetOptionalCharacterStr
 
 func (b *_BACnetOptionalCharacterStringNullBuilder) setParent(contract BACnetOptionalCharacterStringContract) {
 	b.BACnetOptionalCharacterStringContract = contract
+	contract.(*_BACnetOptionalCharacterString)._SubType = b._BACnetOptionalCharacterStringNull
 }
 
 func (b *_BACnetOptionalCharacterStringNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetOptionalCharacterStringNullBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetOptionalCharacterStringNullBuilder) MustBuild() BACnetOptionalCh
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetOptionalCharacterStringNullBuilder) Done() BACnetOptionalCharacterStringBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetOptionalCharacterStringBuilder().(*_BACnetOptionalCharacterStringBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetOptionalCharacterStringNull) deepCopy() *_BACnetOptionalCharacte
 	}
 	_BACnetOptionalCharacterStringNullCopy := &_BACnetOptionalCharacterStringNull{
 		m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString).deepCopy(),
-		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+		utils.DeepCopy[BACnetApplicationTagNull](m.NullValue),
 	}
-	m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = m
+	_BACnetOptionalCharacterStringNullCopy.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = m
 	return _BACnetOptionalCharacterStringNullCopy
 }
 

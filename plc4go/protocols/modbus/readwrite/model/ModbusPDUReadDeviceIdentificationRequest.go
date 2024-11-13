@@ -88,6 +88,8 @@ type ModbusPDUReadDeviceIdentificationRequestBuilder interface {
 	WithLevel(ModbusDeviceInformationLevel) ModbusPDUReadDeviceIdentificationRequestBuilder
 	// WithObjectId adds ObjectId (property field)
 	WithObjectId(uint8) ModbusPDUReadDeviceIdentificationRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUReadDeviceIdentificationRequest or returns an error if something is wrong
 	Build() (ModbusPDUReadDeviceIdentificationRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -111,6 +113,7 @@ var _ (ModbusPDUReadDeviceIdentificationRequestBuilder) = (*_ModbusPDUReadDevice
 
 func (b *_ModbusPDUReadDeviceIdentificationRequestBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUReadDeviceIdentificationRequest
 }
 
 func (b *_ModbusPDUReadDeviceIdentificationRequestBuilder) WithMandatoryFields(level ModbusDeviceInformationLevel, objectId uint8) ModbusPDUReadDeviceIdentificationRequestBuilder {
@@ -142,8 +145,10 @@ func (b *_ModbusPDUReadDeviceIdentificationRequestBuilder) MustBuild() ModbusPDU
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUReadDeviceIdentificationRequestBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -352,7 +357,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) deepCopy() *_ModbusPDUReadDe
 		m.Level,
 		m.ObjectId,
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUReadDeviceIdentificationRequestCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUReadDeviceIdentificationRequestCopy
 }
 

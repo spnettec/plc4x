@@ -86,6 +86,8 @@ type BACnetConstructedDataBlinkWarnEnableBuilder interface {
 	WithBlinkWarnEnable(BACnetApplicationTagBoolean) BACnetConstructedDataBlinkWarnEnableBuilder
 	// WithBlinkWarnEnableBuilder adds BlinkWarnEnable (property field) which is build by the builder
 	WithBlinkWarnEnableBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBlinkWarnEnableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBlinkWarnEnable or returns an error if something is wrong
 	Build() (BACnetConstructedDataBlinkWarnEnable, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBlinkWarnEnableBuilder) = (*_BACnetConstructedDataBl
 
 func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBlinkWarnEnable
 }
 
 func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) WithMandatoryFields(blinkWarnEnable BACnetApplicationTagBoolean) BACnetConstructedDataBlinkWarnEnableBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBlinkWarnEnableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataBlinkWarnEnableCopy := &_BACnetConstructedDataBlinkWarnEnable{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.BlinkWarnEnable.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.BlinkWarnEnable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBlinkWarnEnableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBlinkWarnEnableCopy
 }
 

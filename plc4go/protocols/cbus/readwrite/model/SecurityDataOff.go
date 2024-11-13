@@ -79,6 +79,8 @@ type SecurityDataOffBuilder interface {
 	WithMandatoryFields(data []byte) SecurityDataOffBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) SecurityDataOffBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataOff or returns an error if something is wrong
 	Build() (SecurityDataOff, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (SecurityDataOffBuilder) = (*_SecurityDataOffBuilder)(nil)
 
 func (b *_SecurityDataOffBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataOff
 }
 
 func (b *_SecurityDataOffBuilder) WithMandatoryFields(data []byte) SecurityDataOffBuilder {
@@ -128,8 +131,10 @@ func (b *_SecurityDataOffBuilder) MustBuild() SecurityDataOff {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataOffBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -284,7 +289,7 @@ func (m *_SecurityDataOff) deepCopy() *_SecurityDataOff {
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataOffCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataOffCopy
 }
 

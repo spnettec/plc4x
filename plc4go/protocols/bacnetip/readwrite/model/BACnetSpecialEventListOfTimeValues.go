@@ -374,9 +374,9 @@ func (m *_BACnetSpecialEventListOfTimeValues) deepCopy() *_BACnetSpecialEventLis
 		return nil
 	}
 	_BACnetSpecialEventListOfTimeValuesCopy := &_BACnetSpecialEventListOfTimeValues{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetTimeValue, BACnetTimeValue](m.ListOfTimeValues),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetSpecialEventListOfTimeValuesCopy

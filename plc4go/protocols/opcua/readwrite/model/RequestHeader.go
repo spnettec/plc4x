@@ -130,6 +130,8 @@ type RequestHeaderBuilder interface {
 	WithAdditionalHeader(ExtensionObject) RequestHeaderBuilder
 	// WithAdditionalHeaderBuilder adds AdditionalHeader (property field) which is build by the builder
 	WithAdditionalHeaderBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) RequestHeaderBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RequestHeader or returns an error if something is wrong
 	Build() (RequestHeader, error)
 	// MustBuild does the same as Build but panics on error
@@ -153,6 +155,7 @@ var _ (RequestHeaderBuilder) = (*_RequestHeaderBuilder)(nil)
 
 func (b *_RequestHeaderBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RequestHeader
 }
 
 func (b *_RequestHeaderBuilder) WithMandatoryFields(authenticationToken NodeId, timestamp int64, requestHandle uint32, returnDiagnostics uint32, auditEntryId PascalString, timeoutHint uint32, additionalHeader ExtensionObject) RequestHeaderBuilder {
@@ -266,8 +269,10 @@ func (b *_RequestHeaderBuilder) MustBuild() RequestHeader {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RequestHeaderBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -524,15 +529,15 @@ func (m *_RequestHeader) deepCopy() *_RequestHeader {
 	}
 	_RequestHeaderCopy := &_RequestHeader{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.AuthenticationToken.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.AuthenticationToken),
 		m.Timestamp,
 		m.RequestHandle,
 		m.ReturnDiagnostics,
-		m.AuditEntryId.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.AuditEntryId),
 		m.TimeoutHint,
-		m.AdditionalHeader.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[ExtensionObject](m.AdditionalHeader),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RequestHeaderCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RequestHeaderCopy
 }
 

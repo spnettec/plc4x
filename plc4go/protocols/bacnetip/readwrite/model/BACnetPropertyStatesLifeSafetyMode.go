@@ -84,6 +84,8 @@ type BACnetPropertyStatesLifeSafetyModeBuilder interface {
 	WithLifeSafetyMode(BACnetLifeSafetyModeTagged) BACnetPropertyStatesLifeSafetyModeBuilder
 	// WithLifeSafetyModeBuilder adds LifeSafetyMode (property field) which is build by the builder
 	WithLifeSafetyModeBuilder(func(BACnetLifeSafetyModeTaggedBuilder) BACnetLifeSafetyModeTaggedBuilder) BACnetPropertyStatesLifeSafetyModeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesLifeSafetyMode or returns an error if something is wrong
 	Build() (BACnetPropertyStatesLifeSafetyMode, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesLifeSafetyModeBuilder) = (*_BACnetPropertyStatesLifeS
 
 func (b *_BACnetPropertyStatesLifeSafetyModeBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesLifeSafetyMode
 }
 
 func (b *_BACnetPropertyStatesLifeSafetyModeBuilder) WithMandatoryFields(lifeSafetyMode BACnetLifeSafetyModeTagged) BACnetPropertyStatesLifeSafetyModeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesLifeSafetyModeBuilder) MustBuild() BACnetPropertyS
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesLifeSafetyModeBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesLifeSafetyMode) deepCopy() *_BACnetPropertyStatesL
 	}
 	_BACnetPropertyStatesLifeSafetyModeCopy := &_BACnetPropertyStatesLifeSafetyMode{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.LifeSafetyMode.DeepCopy().(BACnetLifeSafetyModeTagged),
+		utils.DeepCopy[BACnetLifeSafetyModeTagged](m.LifeSafetyMode),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesLifeSafetyModeCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesLifeSafetyModeCopy
 }
 

@@ -393,7 +393,7 @@ func (m *_BACnetVendorIdTagged) deepCopy() *_BACnetVendorIdTagged {
 		return nil
 	}
 	_BACnetVendorIdTaggedCopy := &_BACnetVendorIdTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.UnknownId,
 		m.TagNumber,

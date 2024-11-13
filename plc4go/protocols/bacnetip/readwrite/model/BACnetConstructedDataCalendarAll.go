@@ -71,6 +71,8 @@ type BACnetConstructedDataCalendarAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataCalendarAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCalendarAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataCalendarAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataCalendarAllBuilder) = (*_BACnetConstructedDataCalend
 
 func (b *_BACnetConstructedDataCalendarAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCalendarAll
 }
 
 func (b *_BACnetConstructedDataCalendarAllBuilder) WithMandatoryFields() BACnetConstructedDataCalendarAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataCalendarAllBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCalendarAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataCalendarAll) deepCopy() *_BACnetConstructedDataCa
 	_BACnetConstructedDataCalendarAllCopy := &_BACnetConstructedDataCalendarAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCalendarAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCalendarAllCopy
 }
 

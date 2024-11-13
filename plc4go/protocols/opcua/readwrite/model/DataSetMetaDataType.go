@@ -147,6 +147,8 @@ type DataSetMetaDataTypeBuilder interface {
 	WithConfigurationVersion(ConfigurationVersionDataType) DataSetMetaDataTypeBuilder
 	// WithConfigurationVersionBuilder adds ConfigurationVersion (property field) which is build by the builder
 	WithConfigurationVersionBuilder(func(ConfigurationVersionDataTypeBuilder) ConfigurationVersionDataTypeBuilder) DataSetMetaDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataSetMetaDataType or returns an error if something is wrong
 	Build() (DataSetMetaDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -170,6 +172,7 @@ var _ (DataSetMetaDataTypeBuilder) = (*_DataSetMetaDataTypeBuilder)(nil)
 
 func (b *_DataSetMetaDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataSetMetaDataType
 }
 
 func (b *_DataSetMetaDataTypeBuilder) WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription, name PascalString, description LocalizedText, fields []FieldMetaData, dataSetClassId GuidValue, configurationVersion ConfigurationVersionDataType) DataSetMetaDataTypeBuilder {
@@ -312,8 +315,10 @@ func (b *_DataSetMetaDataTypeBuilder) MustBuild() DataSetMetaDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataSetMetaDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -708,13 +713,13 @@ func (m *_DataSetMetaDataType) deepCopy() *_DataSetMetaDataType {
 		utils.DeepCopySlice[StructureDescription, StructureDescription](m.StructureDataTypes),
 		utils.DeepCopySlice[EnumDescription, EnumDescription](m.EnumDataTypes),
 		utils.DeepCopySlice[SimpleTypeDescription, SimpleTypeDescription](m.SimpleDataTypes),
-		m.Name.DeepCopy().(PascalString),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[PascalString](m.Name),
+		utils.DeepCopy[LocalizedText](m.Description),
 		utils.DeepCopySlice[FieldMetaData, FieldMetaData](m.Fields),
-		m.DataSetClassId.DeepCopy().(GuidValue),
-		m.ConfigurationVersion.DeepCopy().(ConfigurationVersionDataType),
+		utils.DeepCopy[GuidValue](m.DataSetClassId),
+		utils.DeepCopy[ConfigurationVersionDataType](m.ConfigurationVersion),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataSetMetaDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataSetMetaDataTypeCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetLogRecordLogDatumBooleanValueBuilder interface {
 	WithBooleanValue(BACnetContextTagBoolean) BACnetLogRecordLogDatumBooleanValueBuilder
 	// WithBooleanValueBuilder adds BooleanValue (property field) which is build by the builder
 	WithBooleanValueBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetLogRecordLogDatumBooleanValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogRecordLogDatumBuilder
 	// Build builds the BACnetLogRecordLogDatumBooleanValue or returns an error if something is wrong
 	Build() (BACnetLogRecordLogDatumBooleanValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogRecordLogDatumBooleanValueBuilder) = (*_BACnetLogRecordLogDatumB
 
 func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
 	b.BACnetLogRecordLogDatumContract = contract
+	contract.(*_BACnetLogRecordLogDatum)._SubType = b._BACnetLogRecordLogDatumBooleanValue
 }
 
 func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) WithMandatoryFields(booleanValue BACnetContextTagBoolean) BACnetLogRecordLogDatumBooleanValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) MustBuild() BACnetLogRecor
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogRecordLogDatumBooleanValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogRecordLogDatumBuilder().(*_BACnetLogRecordLogDatumBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) deepCopy() *_BACnetLogRecordLogDa
 	}
 	_BACnetLogRecordLogDatumBooleanValueCopy := &_BACnetLogRecordLogDatumBooleanValue{
 		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
-		m.BooleanValue.DeepCopy().(BACnetContextTagBoolean),
+		utils.DeepCopy[BACnetContextTagBoolean](m.BooleanValue),
 	}
-	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	_BACnetLogRecordLogDatumBooleanValueCopy.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
 	return _BACnetLogRecordLogDatumBooleanValueCopy
 }
 

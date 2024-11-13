@@ -97,6 +97,8 @@ type CipWriteRequestBuilder interface {
 	WithElementNb(uint16) CipWriteRequestBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) CipWriteRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the CipWriteRequest or returns an error if something is wrong
 	Build() (CipWriteRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (CipWriteRequestBuilder) = (*_CipWriteRequestBuilder)(nil)
 
 func (b *_CipWriteRequestBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._CipWriteRequest
 }
 
 func (b *_CipWriteRequestBuilder) WithMandatoryFields(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) CipWriteRequestBuilder {
@@ -161,8 +164,10 @@ func (b *_CipWriteRequestBuilder) MustBuild() CipWriteRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipWriteRequestBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -398,7 +403,7 @@ func (m *_CipWriteRequest) deepCopy() *_CipWriteRequest {
 		m.ElementNb,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_CipWriteRequestCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _CipWriteRequestCopy
 }
 

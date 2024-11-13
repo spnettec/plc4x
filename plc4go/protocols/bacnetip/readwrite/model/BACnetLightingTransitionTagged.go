@@ -393,7 +393,7 @@ func (m *_BACnetLightingTransitionTagged) deepCopy() *_BACnetLightingTransitionT
 		return nil
 	}
 	_BACnetLightingTransitionTaggedCopy := &_BACnetLightingTransitionTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

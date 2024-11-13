@@ -84,6 +84,8 @@ type BACnetEventLogRecordLogDatumLogStatusBuilder interface {
 	WithLogStatus(BACnetLogStatusTagged) BACnetEventLogRecordLogDatumLogStatusBuilder
 	// WithLogStatusBuilder adds LogStatus (property field) which is build by the builder
 	WithLogStatusBuilder(func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetEventLogRecordLogDatumLogStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventLogRecordLogDatumBuilder
 	// Build builds the BACnetEventLogRecordLogDatumLogStatus or returns an error if something is wrong
 	Build() (BACnetEventLogRecordLogDatumLogStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetEventLogRecordLogDatumLogStatusBuilder) = (*_BACnetEventLogRecordLo
 
 func (b *_BACnetEventLogRecordLogDatumLogStatusBuilder) setParent(contract BACnetEventLogRecordLogDatumContract) {
 	b.BACnetEventLogRecordLogDatumContract = contract
+	contract.(*_BACnetEventLogRecordLogDatum)._SubType = b._BACnetEventLogRecordLogDatumLogStatus
 }
 
 func (b *_BACnetEventLogRecordLogDatumLogStatusBuilder) WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetEventLogRecordLogDatumLogStatusBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetEventLogRecordLogDatumLogStatusBuilder) MustBuild() BACnetEventL
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventLogRecordLogDatumLogStatusBuilder) Done() BACnetEventLogRecordLogDatumBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventLogRecordLogDatumBuilder().(*_BACnetEventLogRecordLogDatumBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetEventLogRecordLogDatumLogStatus) deepCopy() *_BACnetEventLogReco
 	}
 	_BACnetEventLogRecordLogDatumLogStatusCopy := &_BACnetEventLogRecordLogDatumLogStatus{
 		m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum).deepCopy(),
-		m.LogStatus.DeepCopy().(BACnetLogStatusTagged),
+		utils.DeepCopy[BACnetLogStatusTagged](m.LogStatus),
 	}
-	m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = m
+	_BACnetEventLogRecordLogDatumLogStatusCopy.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = m
 	return _BACnetEventLogRecordLogDatumLogStatusCopy
 }
 

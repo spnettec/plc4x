@@ -327,8 +327,8 @@ func (m *_BACnetPortPermission) deepCopy() *_BACnetPortPermission {
 		return nil
 	}
 	_BACnetPortPermissionCopy := &_BACnetPortPermission{
-		m.Port.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Enable.DeepCopy().(BACnetContextTagBoolean),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Port),
+		utils.DeepCopy[BACnetContextTagBoolean](m.Enable),
 	}
 	return _BACnetPortPermissionCopy
 }

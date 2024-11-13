@@ -84,6 +84,8 @@ type BACnetPropertyAccessResultAccessResultPropertyValueBuilder interface {
 	WithPropertyValue(BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder
 	// WithPropertyValueBuilder adds PropertyValue (property field) which is build by the builder
 	WithPropertyValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyAccessResultAccessResultBuilder
 	// Build builds the BACnetPropertyAccessResultAccessResultPropertyValue or returns an error if something is wrong
 	Build() (BACnetPropertyAccessResultAccessResultPropertyValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyAccessResultAccessResultPropertyValueBuilder) = (*_BACnetPr
 
 func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) setParent(contract BACnetPropertyAccessResultAccessResultContract) {
 	b.BACnetPropertyAccessResultAccessResultContract = contract
+	contract.(*_BACnetPropertyAccessResultAccessResult)._SubType = b._BACnetPropertyAccessResultAccessResultPropertyValue
 }
 
 func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) WithMandatoryFields(propertyValue BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) MustBuild(
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) Done() BACnetPropertyAccessResultAccessResultBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyAccessResultAccessResultBuilder().(*_BACnetPropertyAccessResultAccessResultBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) deepCopy() *_BACn
 	}
 	_BACnetPropertyAccessResultAccessResultPropertyValueCopy := &_BACnetPropertyAccessResultAccessResultPropertyValue{
 		m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult).deepCopy(),
-		m.PropertyValue.DeepCopy().(BACnetConstructedData),
+		utils.DeepCopy[BACnetConstructedData](m.PropertyValue),
 	}
-	m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = m
+	_BACnetPropertyAccessResultAccessResultPropertyValueCopy.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = m
 	return _BACnetPropertyAccessResultAccessResultPropertyValueCopy
 }
 

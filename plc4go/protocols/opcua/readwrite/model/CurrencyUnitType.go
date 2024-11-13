@@ -107,6 +107,8 @@ type CurrencyUnitTypeBuilder interface {
 	WithCurrency(LocalizedText) CurrencyUnitTypeBuilder
 	// WithCurrencyBuilder adds Currency (property field) which is build by the builder
 	WithCurrencyBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) CurrencyUnitTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CurrencyUnitType or returns an error if something is wrong
 	Build() (CurrencyUnitType, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,6 +132,7 @@ var _ (CurrencyUnitTypeBuilder) = (*_CurrencyUnitTypeBuilder)(nil)
 
 func (b *_CurrencyUnitTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CurrencyUnitType
 }
 
 func (b *_CurrencyUnitTypeBuilder) WithMandatoryFields(numericCode int16, exponent int8, alphabeticCode PascalString, currency LocalizedText) CurrencyUnitTypeBuilder {
@@ -209,8 +212,10 @@ func (b *_CurrencyUnitTypeBuilder) MustBuild() CurrencyUnitType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CurrencyUnitTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -418,10 +423,10 @@ func (m *_CurrencyUnitType) deepCopy() *_CurrencyUnitType {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NumericCode,
 		m.Exponent,
-		m.AlphabeticCode.DeepCopy().(PascalString),
-		m.Currency.DeepCopy().(LocalizedText),
+		utils.DeepCopy[PascalString](m.AlphabeticCode),
+		utils.DeepCopy[LocalizedText](m.Currency),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CurrencyUnitTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CurrencyUnitTypeCopy
 }
 

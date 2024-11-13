@@ -585,13 +585,13 @@ func (m *_BACnetEventSummary) deepCopy() *_BACnetEventSummary {
 		return nil
 	}
 	_BACnetEventSummaryCopy := &_BACnetEventSummary{
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.EventState.DeepCopy().(BACnetEventStateTagged),
-		m.AcknowledgedTransitions.DeepCopy().(BACnetEventTransitionBitsTagged),
-		m.EventTimestamps.DeepCopy().(BACnetEventTimestampsEnclosed),
-		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
-		m.EventEnable.DeepCopy().(BACnetEventTransitionBitsTagged),
-		m.EventPriorities.DeepCopy().(BACnetEventPriorities),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetEventStateTagged](m.EventState),
+		utils.DeepCopy[BACnetEventTransitionBitsTagged](m.AcknowledgedTransitions),
+		utils.DeepCopy[BACnetEventTimestampsEnclosed](m.EventTimestamps),
+		utils.DeepCopy[BACnetNotifyTypeTagged](m.NotifyType),
+		utils.DeepCopy[BACnetEventTransitionBitsTagged](m.EventEnable),
+		utils.DeepCopy[BACnetEventPriorities](m.EventPriorities),
 	}
 	return _BACnetEventSummaryCopy
 }

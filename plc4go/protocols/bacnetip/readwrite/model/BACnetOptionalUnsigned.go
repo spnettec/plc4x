@@ -101,15 +101,9 @@ type BACnetOptionalUnsignedBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalUnsignedBuilder
 	// AsBACnetOptionalUnsignedNull converts this build to a subType of BACnetOptionalUnsigned. It is always possible to return to current builder using Done()
-	AsBACnetOptionalUnsignedNull() interface {
-		BACnetOptionalUnsignedNullBuilder
-		Done() BACnetOptionalUnsignedBuilder
-	}
+	AsBACnetOptionalUnsignedNull() BACnetOptionalUnsignedNullBuilder
 	// AsBACnetOptionalUnsignedValue converts this build to a subType of BACnetOptionalUnsigned. It is always possible to return to current builder using Done()
-	AsBACnetOptionalUnsignedValue() interface {
-		BACnetOptionalUnsignedValueBuilder
-		Done() BACnetOptionalUnsignedBuilder
-	}
+	AsBACnetOptionalUnsignedValue() BACnetOptionalUnsignedValueBuilder
 	// Build builds the BACnetOptionalUnsigned or returns an error if something is wrong
 	PartialBuild() (BACnetOptionalUnsignedContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetOptionalUnsignedBuilder) PartialMustBuild() BACnetOptionalUnsign
 	return build
 }
 
-func (b *_BACnetOptionalUnsignedBuilder) AsBACnetOptionalUnsignedNull() interface {
-	BACnetOptionalUnsignedNullBuilder
-	Done() BACnetOptionalUnsignedBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetOptionalUnsignedNullBuilder
-		Done() BACnetOptionalUnsignedBuilder
-	}); ok {
+func (b *_BACnetOptionalUnsignedBuilder) AsBACnetOptionalUnsignedNull() BACnetOptionalUnsignedNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetOptionalUnsignedNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetOptionalUnsignedNullBuilder().(*_BACnetOptionalUnsignedNullBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetOptionalUnsignedBuilder) AsBACnetOptionalUnsignedNull() interfac
 	return cb
 }
 
-func (b *_BACnetOptionalUnsignedBuilder) AsBACnetOptionalUnsignedValue() interface {
-	BACnetOptionalUnsignedValueBuilder
-	Done() BACnetOptionalUnsignedBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetOptionalUnsignedValueBuilder
-		Done() BACnetOptionalUnsignedBuilder
-	}); ok {
+func (b *_BACnetOptionalUnsignedBuilder) AsBACnetOptionalUnsignedValue() BACnetOptionalUnsignedValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetOptionalUnsignedValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetOptionalUnsignedValueBuilder().(*_BACnetOptionalUnsignedValueBuilder)
@@ -433,7 +415,7 @@ func (m *_BACnetOptionalUnsigned) deepCopy() *_BACnetOptionalUnsigned {
 	}
 	_BACnetOptionalUnsignedCopy := &_BACnetOptionalUnsigned{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetOptionalUnsignedCopy
 }

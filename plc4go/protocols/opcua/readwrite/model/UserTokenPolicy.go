@@ -123,6 +123,8 @@ type UserTokenPolicyBuilder interface {
 	WithSecurityPolicyUri(PascalString) UserTokenPolicyBuilder
 	// WithSecurityPolicyUriBuilder adds SecurityPolicyUri (property field) which is build by the builder
 	WithSecurityPolicyUriBuilder(func(PascalStringBuilder) PascalStringBuilder) UserTokenPolicyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the UserTokenPolicy or returns an error if something is wrong
 	Build() (UserTokenPolicy, error)
 	// MustBuild does the same as Build but panics on error
@@ -146,6 +148,7 @@ var _ (UserTokenPolicyBuilder) = (*_UserTokenPolicyBuilder)(nil)
 
 func (b *_UserTokenPolicyBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._UserTokenPolicy
 }
 
 func (b *_UserTokenPolicyBuilder) WithMandatoryFields(policyId PascalString, tokenType UserTokenType, issuedTokenType PascalString, issuerEndpointUrl PascalString, securityPolicyUri PascalString) UserTokenPolicyBuilder {
@@ -268,8 +271,10 @@ func (b *_UserTokenPolicyBuilder) MustBuild() UserTokenPolicy {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_UserTokenPolicyBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -492,13 +497,13 @@ func (m *_UserTokenPolicy) deepCopy() *_UserTokenPolicy {
 	}
 	_UserTokenPolicyCopy := &_UserTokenPolicy{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.PolicyId.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.PolicyId),
 		m.TokenType,
-		m.IssuedTokenType.DeepCopy().(PascalString),
-		m.IssuerEndpointUrl.DeepCopy().(PascalString),
-		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.IssuedTokenType),
+		utils.DeepCopy[PascalString](m.IssuerEndpointUrl),
+		utils.DeepCopy[PascalString](m.SecurityPolicyUri),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_UserTokenPolicyCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UserTokenPolicyCopy
 }
 

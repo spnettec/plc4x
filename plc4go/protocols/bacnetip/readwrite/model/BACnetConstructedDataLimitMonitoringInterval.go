@@ -86,6 +86,8 @@ type BACnetConstructedDataLimitMonitoringIntervalBuilder interface {
 	WithLimitMonitoringInterval(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLimitMonitoringIntervalBuilder
 	// WithLimitMonitoringIntervalBuilder adds LimitMonitoringInterval (property field) which is build by the builder
 	WithLimitMonitoringIntervalBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLimitMonitoringIntervalBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLimitMonitoringInterval or returns an error if something is wrong
 	Build() (BACnetConstructedDataLimitMonitoringInterval, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLimitMonitoringIntervalBuilder) = (*_BACnetConstruct
 
 func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLimitMonitoringInterval
 }
 
 func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) WithMandatoryFields(limitMonitoringInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLimitMonitoringIntervalBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) deepCopy() *_BACnetConst
 	}
 	_BACnetConstructedDataLimitMonitoringIntervalCopy := &_BACnetConstructedDataLimitMonitoringInterval{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LimitMonitoringInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.LimitMonitoringInterval),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLimitMonitoringIntervalCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLimitMonitoringIntervalCopy
 }
 

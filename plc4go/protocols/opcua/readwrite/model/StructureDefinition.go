@@ -107,6 +107,8 @@ type StructureDefinitionBuilder interface {
 	WithStructureType(StructureType) StructureDefinitionBuilder
 	// WithFields adds Fields (property field)
 	WithFields(...StructureField) StructureDefinitionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the StructureDefinition or returns an error if something is wrong
 	Build() (StructureDefinition, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,6 +132,7 @@ var _ (StructureDefinitionBuilder) = (*_StructureDefinitionBuilder)(nil)
 
 func (b *_StructureDefinitionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._StructureDefinition
 }
 
 func (b *_StructureDefinitionBuilder) WithMandatoryFields(defaultEncodingId NodeId, baseDataType NodeId, structureType StructureType, fields []StructureField) StructureDefinitionBuilder {
@@ -209,8 +212,10 @@ func (b *_StructureDefinitionBuilder) MustBuild() StructureDefinition {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_StructureDefinitionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -436,12 +441,12 @@ func (m *_StructureDefinition) deepCopy() *_StructureDefinition {
 	}
 	_StructureDefinitionCopy := &_StructureDefinition{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.DefaultEncodingId.DeepCopy().(NodeId),
-		m.BaseDataType.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.DefaultEncodingId),
+		utils.DeepCopy[NodeId](m.BaseDataType),
 		m.StructureType,
 		utils.DeepCopySlice[StructureField, StructureField](m.Fields),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_StructureDefinitionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _StructureDefinitionCopy
 }
 

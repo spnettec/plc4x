@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueIntegerBuilder interface {
 	WithIntegerValue(BACnetApplicationTagSignedInteger) BACnetTimerStateChangeValueIntegerBuilder
 	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
 	WithIntegerValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetTimerStateChangeValueIntegerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueInteger or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueInteger, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueIntegerBuilder) = (*_BACnetTimerStateChangeVal
 
 func (b *_BACnetTimerStateChangeValueIntegerBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueInteger
 }
 
 func (b *_BACnetTimerStateChangeValueIntegerBuilder) WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetTimerStateChangeValueIntegerBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueIntegerBuilder) MustBuild() BACnetTimerStat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueIntegerBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimerStateChangeValueInteger) deepCopy() *_BACnetTimerStateChang
 	}
 	_BACnetTimerStateChangeValueIntegerCopy := &_BACnetTimerStateChangeValueInteger{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.IntegerValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueIntegerCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueIntegerCopy
 }
 

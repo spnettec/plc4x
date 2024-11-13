@@ -93,6 +93,8 @@ type MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder interfac
 	WithEnumerateType(byte) MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
 	// WithStart adds Start (property field)
 	WithStart(uint8) MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataEnumerateCategoriesSelectionTracks or returns an error if something is wrong
 	Build() (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error)
 	// MustBuild does the same as Build but panics on error
@@ -116,6 +118,7 @@ var _ (MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) = (*_
 
 func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataEnumerateCategoriesSelectionTracks
 }
 
 func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) WithMandatoryFields(enumerateType byte, start uint8) MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder {
@@ -147,8 +150,10 @@ func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) Mu
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -409,7 +414,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) deepCopy(
 		m.EnumerateType,
 		m.Start,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataEnumerateCategoriesSelectionTracksCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataEnumerateCategoriesSelectionTracksCopy
 }
 

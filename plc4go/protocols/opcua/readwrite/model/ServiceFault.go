@@ -84,6 +84,8 @@ type ServiceFaultBuilder interface {
 	WithResponseHeader(ResponseHeader) ServiceFaultBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
 	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) ServiceFaultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ServiceFault or returns an error if something is wrong
 	Build() (ServiceFault, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (ServiceFaultBuilder) = (*_ServiceFaultBuilder)(nil)
 
 func (b *_ServiceFaultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ServiceFault
 }
 
 func (b *_ServiceFaultBuilder) WithMandatoryFields(responseHeader ResponseHeader) ServiceFaultBuilder {
@@ -152,8 +155,10 @@ func (b *_ServiceFaultBuilder) MustBuild() ServiceFault {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ServiceFaultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_ServiceFault) deepCopy() *_ServiceFault {
 	}
 	_ServiceFaultCopy := &_ServiceFault{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ServiceFaultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ServiceFaultCopy
 }
 

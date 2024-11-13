@@ -94,210 +94,87 @@ type ApduDataExtBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtBuilder
 	// AsApduDataExtOpenRoutingTableRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtOpenRoutingTableRequest() interface {
-		ApduDataExtOpenRoutingTableRequestBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtOpenRoutingTableRequest() ApduDataExtOpenRoutingTableRequestBuilder
 	// AsApduDataExtReadRoutingTableRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtReadRoutingTableRequest() interface {
-		ApduDataExtReadRoutingTableRequestBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtReadRoutingTableRequest() ApduDataExtReadRoutingTableRequestBuilder
 	// AsApduDataExtReadRoutingTableResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtReadRoutingTableResponse() interface {
-		ApduDataExtReadRoutingTableResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtReadRoutingTableResponse() ApduDataExtReadRoutingTableResponseBuilder
 	// AsApduDataExtWriteRoutingTableRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtWriteRoutingTableRequest() interface {
-		ApduDataExtWriteRoutingTableRequestBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtWriteRoutingTableRequest() ApduDataExtWriteRoutingTableRequestBuilder
 	// AsApduDataExtReadRouterMemoryRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtReadRouterMemoryRequest() interface {
-		ApduDataExtReadRouterMemoryRequestBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtReadRouterMemoryRequest() ApduDataExtReadRouterMemoryRequestBuilder
 	// AsApduDataExtReadRouterMemoryResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtReadRouterMemoryResponse() interface {
-		ApduDataExtReadRouterMemoryResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtReadRouterMemoryResponse() ApduDataExtReadRouterMemoryResponseBuilder
 	// AsApduDataExtWriteRouterMemoryRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtWriteRouterMemoryRequest() interface {
-		ApduDataExtWriteRouterMemoryRequestBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtWriteRouterMemoryRequest() ApduDataExtWriteRouterMemoryRequestBuilder
 	// AsApduDataExtReadRouterStatusRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtReadRouterStatusRequest() interface {
-		ApduDataExtReadRouterStatusRequestBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtReadRouterStatusRequest() ApduDataExtReadRouterStatusRequestBuilder
 	// AsApduDataExtReadRouterStatusResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtReadRouterStatusResponse() interface {
-		ApduDataExtReadRouterStatusResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtReadRouterStatusResponse() ApduDataExtReadRouterStatusResponseBuilder
 	// AsApduDataExtWriteRouterStatusRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtWriteRouterStatusRequest() interface {
-		ApduDataExtWriteRouterStatusRequestBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtWriteRouterStatusRequest() ApduDataExtWriteRouterStatusRequestBuilder
 	// AsApduDataExtMemoryBitWrite converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtMemoryBitWrite() interface {
-		ApduDataExtMemoryBitWriteBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtMemoryBitWrite() ApduDataExtMemoryBitWriteBuilder
 	// AsApduDataExtAuthorizeRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtAuthorizeRequest() interface {
-		ApduDataExtAuthorizeRequestBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtAuthorizeRequest() ApduDataExtAuthorizeRequestBuilder
 	// AsApduDataExtAuthorizeResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtAuthorizeResponse() interface {
-		ApduDataExtAuthorizeResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtAuthorizeResponse() ApduDataExtAuthorizeResponseBuilder
 	// AsApduDataExtKeyWrite converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtKeyWrite() interface {
-		ApduDataExtKeyWriteBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtKeyWrite() ApduDataExtKeyWriteBuilder
 	// AsApduDataExtKeyResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtKeyResponse() interface {
-		ApduDataExtKeyResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtKeyResponse() ApduDataExtKeyResponseBuilder
 	// AsApduDataExtPropertyValueRead converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtPropertyValueRead() interface {
-		ApduDataExtPropertyValueReadBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtPropertyValueRead() ApduDataExtPropertyValueReadBuilder
 	// AsApduDataExtPropertyValueResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtPropertyValueResponse() interface {
-		ApduDataExtPropertyValueResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtPropertyValueResponse() ApduDataExtPropertyValueResponseBuilder
 	// AsApduDataExtPropertyValueWrite converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtPropertyValueWrite() interface {
-		ApduDataExtPropertyValueWriteBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtPropertyValueWrite() ApduDataExtPropertyValueWriteBuilder
 	// AsApduDataExtPropertyDescriptionRead converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtPropertyDescriptionRead() interface {
-		ApduDataExtPropertyDescriptionReadBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtPropertyDescriptionRead() ApduDataExtPropertyDescriptionReadBuilder
 	// AsApduDataExtPropertyDescriptionResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtPropertyDescriptionResponse() interface {
-		ApduDataExtPropertyDescriptionResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtPropertyDescriptionResponse() ApduDataExtPropertyDescriptionResponseBuilder
 	// AsApduDataExtNetworkParameterRead converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtNetworkParameterRead() interface {
-		ApduDataExtNetworkParameterReadBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtNetworkParameterRead() ApduDataExtNetworkParameterReadBuilder
 	// AsApduDataExtNetworkParameterResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtNetworkParameterResponse() interface {
-		ApduDataExtNetworkParameterResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtNetworkParameterResponse() ApduDataExtNetworkParameterResponseBuilder
 	// AsApduDataExtIndividualAddressSerialNumberRead converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtIndividualAddressSerialNumberRead() interface {
-		ApduDataExtIndividualAddressSerialNumberReadBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtIndividualAddressSerialNumberRead() ApduDataExtIndividualAddressSerialNumberReadBuilder
 	// AsApduDataExtIndividualAddressSerialNumberResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtIndividualAddressSerialNumberResponse() interface {
-		ApduDataExtIndividualAddressSerialNumberResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtIndividualAddressSerialNumberResponse() ApduDataExtIndividualAddressSerialNumberResponseBuilder
 	// AsApduDataExtIndividualAddressSerialNumberWrite converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtIndividualAddressSerialNumberWrite() interface {
-		ApduDataExtIndividualAddressSerialNumberWriteBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtIndividualAddressSerialNumberWrite() ApduDataExtIndividualAddressSerialNumberWriteBuilder
 	// AsApduDataExtDomainAddressWrite converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtDomainAddressWrite() interface {
-		ApduDataExtDomainAddressWriteBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtDomainAddressWrite() ApduDataExtDomainAddressWriteBuilder
 	// AsApduDataExtDomainAddressRead converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtDomainAddressRead() interface {
-		ApduDataExtDomainAddressReadBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtDomainAddressRead() ApduDataExtDomainAddressReadBuilder
 	// AsApduDataExtDomainAddressResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtDomainAddressResponse() interface {
-		ApduDataExtDomainAddressResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtDomainAddressResponse() ApduDataExtDomainAddressResponseBuilder
 	// AsApduDataExtDomainAddressSelectiveRead converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtDomainAddressSelectiveRead() interface {
-		ApduDataExtDomainAddressSelectiveReadBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtDomainAddressSelectiveRead() ApduDataExtDomainAddressSelectiveReadBuilder
 	// AsApduDataExtNetworkParameterWrite converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtNetworkParameterWrite() interface {
-		ApduDataExtNetworkParameterWriteBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtNetworkParameterWrite() ApduDataExtNetworkParameterWriteBuilder
 	// AsApduDataExtLinkRead converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtLinkRead() interface {
-		ApduDataExtLinkReadBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtLinkRead() ApduDataExtLinkReadBuilder
 	// AsApduDataExtLinkResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtLinkResponse() interface {
-		ApduDataExtLinkResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtLinkResponse() ApduDataExtLinkResponseBuilder
 	// AsApduDataExtLinkWrite converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtLinkWrite() interface {
-		ApduDataExtLinkWriteBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtLinkWrite() ApduDataExtLinkWriteBuilder
 	// AsApduDataExtGroupPropertyValueRead converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtGroupPropertyValueRead() interface {
-		ApduDataExtGroupPropertyValueReadBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtGroupPropertyValueRead() ApduDataExtGroupPropertyValueReadBuilder
 	// AsApduDataExtGroupPropertyValueResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtGroupPropertyValueResponse() interface {
-		ApduDataExtGroupPropertyValueResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtGroupPropertyValueResponse() ApduDataExtGroupPropertyValueResponseBuilder
 	// AsApduDataExtGroupPropertyValueWrite converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtGroupPropertyValueWrite() interface {
-		ApduDataExtGroupPropertyValueWriteBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtGroupPropertyValueWrite() ApduDataExtGroupPropertyValueWriteBuilder
 	// AsApduDataExtGroupPropertyValueInfoReport converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtGroupPropertyValueInfoReport() interface {
-		ApduDataExtGroupPropertyValueInfoReportBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtGroupPropertyValueInfoReport() ApduDataExtGroupPropertyValueInfoReportBuilder
 	// AsApduDataExtDomainAddressSerialNumberRead converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtDomainAddressSerialNumberRead() interface {
-		ApduDataExtDomainAddressSerialNumberReadBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtDomainAddressSerialNumberRead() ApduDataExtDomainAddressSerialNumberReadBuilder
 	// AsApduDataExtDomainAddressSerialNumberResponse converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtDomainAddressSerialNumberResponse() interface {
-		ApduDataExtDomainAddressSerialNumberResponseBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtDomainAddressSerialNumberResponse() ApduDataExtDomainAddressSerialNumberResponseBuilder
 	// AsApduDataExtDomainAddressSerialNumberWrite converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtDomainAddressSerialNumberWrite() interface {
-		ApduDataExtDomainAddressSerialNumberWriteBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtDomainAddressSerialNumberWrite() ApduDataExtDomainAddressSerialNumberWriteBuilder
 	// AsApduDataExtFileStreamInfoReport converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
-	AsApduDataExtFileStreamInfoReport() interface {
-		ApduDataExtFileStreamInfoReportBuilder
-		Done() ApduDataExtBuilder
-	}
+	AsApduDataExtFileStreamInfoReport() ApduDataExtFileStreamInfoReportBuilder
 	// Build builds the ApduDataExt or returns an error if something is wrong
 	PartialBuild() (ApduDataExtContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -348,14 +225,8 @@ func (b *_ApduDataExtBuilder) PartialMustBuild() ApduDataExtContract {
 	return build
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtOpenRoutingTableRequest() interface {
-	ApduDataExtOpenRoutingTableRequestBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtOpenRoutingTableRequestBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtOpenRoutingTableRequest() ApduDataExtOpenRoutingTableRequestBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtOpenRoutingTableRequestBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtOpenRoutingTableRequestBuilder().(*_ApduDataExtOpenRoutingTableRequestBuilder)
@@ -364,14 +235,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtOpenRoutingTableRequest() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtReadRoutingTableRequest() interface {
-	ApduDataExtReadRoutingTableRequestBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtReadRoutingTableRequestBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtReadRoutingTableRequest() ApduDataExtReadRoutingTableRequestBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtReadRoutingTableRequestBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtReadRoutingTableRequestBuilder().(*_ApduDataExtReadRoutingTableRequestBuilder)
@@ -380,14 +245,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtReadRoutingTableRequest() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtReadRoutingTableResponse() interface {
-	ApduDataExtReadRoutingTableResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtReadRoutingTableResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtReadRoutingTableResponse() ApduDataExtReadRoutingTableResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtReadRoutingTableResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtReadRoutingTableResponseBuilder().(*_ApduDataExtReadRoutingTableResponseBuilder)
@@ -396,14 +255,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtReadRoutingTableResponse() interface 
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtWriteRoutingTableRequest() interface {
-	ApduDataExtWriteRoutingTableRequestBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtWriteRoutingTableRequestBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtWriteRoutingTableRequest() ApduDataExtWriteRoutingTableRequestBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtWriteRoutingTableRequestBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtWriteRoutingTableRequestBuilder().(*_ApduDataExtWriteRoutingTableRequestBuilder)
@@ -412,14 +265,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtWriteRoutingTableRequest() interface 
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterMemoryRequest() interface {
-	ApduDataExtReadRouterMemoryRequestBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtReadRouterMemoryRequestBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterMemoryRequest() ApduDataExtReadRouterMemoryRequestBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtReadRouterMemoryRequestBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtReadRouterMemoryRequestBuilder().(*_ApduDataExtReadRouterMemoryRequestBuilder)
@@ -428,14 +275,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterMemoryRequest() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterMemoryResponse() interface {
-	ApduDataExtReadRouterMemoryResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtReadRouterMemoryResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterMemoryResponse() ApduDataExtReadRouterMemoryResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtReadRouterMemoryResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtReadRouterMemoryResponseBuilder().(*_ApduDataExtReadRouterMemoryResponseBuilder)
@@ -444,14 +285,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterMemoryResponse() interface 
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtWriteRouterMemoryRequest() interface {
-	ApduDataExtWriteRouterMemoryRequestBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtWriteRouterMemoryRequestBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtWriteRouterMemoryRequest() ApduDataExtWriteRouterMemoryRequestBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtWriteRouterMemoryRequestBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtWriteRouterMemoryRequestBuilder().(*_ApduDataExtWriteRouterMemoryRequestBuilder)
@@ -460,14 +295,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtWriteRouterMemoryRequest() interface 
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterStatusRequest() interface {
-	ApduDataExtReadRouterStatusRequestBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtReadRouterStatusRequestBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterStatusRequest() ApduDataExtReadRouterStatusRequestBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtReadRouterStatusRequestBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtReadRouterStatusRequestBuilder().(*_ApduDataExtReadRouterStatusRequestBuilder)
@@ -476,14 +305,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterStatusRequest() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterStatusResponse() interface {
-	ApduDataExtReadRouterStatusResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtReadRouterStatusResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterStatusResponse() ApduDataExtReadRouterStatusResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtReadRouterStatusResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtReadRouterStatusResponseBuilder().(*_ApduDataExtReadRouterStatusResponseBuilder)
@@ -492,14 +315,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtReadRouterStatusResponse() interface 
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtWriteRouterStatusRequest() interface {
-	ApduDataExtWriteRouterStatusRequestBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtWriteRouterStatusRequestBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtWriteRouterStatusRequest() ApduDataExtWriteRouterStatusRequestBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtWriteRouterStatusRequestBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtWriteRouterStatusRequestBuilder().(*_ApduDataExtWriteRouterStatusRequestBuilder)
@@ -508,14 +325,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtWriteRouterStatusRequest() interface 
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtMemoryBitWrite() interface {
-	ApduDataExtMemoryBitWriteBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtMemoryBitWriteBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtMemoryBitWrite() ApduDataExtMemoryBitWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtMemoryBitWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtMemoryBitWriteBuilder().(*_ApduDataExtMemoryBitWriteBuilder)
@@ -524,14 +335,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtMemoryBitWrite() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtAuthorizeRequest() interface {
-	ApduDataExtAuthorizeRequestBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtAuthorizeRequestBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtAuthorizeRequest() ApduDataExtAuthorizeRequestBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtAuthorizeRequestBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtAuthorizeRequestBuilder().(*_ApduDataExtAuthorizeRequestBuilder)
@@ -540,14 +345,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtAuthorizeRequest() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtAuthorizeResponse() interface {
-	ApduDataExtAuthorizeResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtAuthorizeResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtAuthorizeResponse() ApduDataExtAuthorizeResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtAuthorizeResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtAuthorizeResponseBuilder().(*_ApduDataExtAuthorizeResponseBuilder)
@@ -556,14 +355,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtAuthorizeResponse() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtKeyWrite() interface {
-	ApduDataExtKeyWriteBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtKeyWriteBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtKeyWrite() ApduDataExtKeyWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtKeyWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtKeyWriteBuilder().(*_ApduDataExtKeyWriteBuilder)
@@ -572,14 +365,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtKeyWrite() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtKeyResponse() interface {
-	ApduDataExtKeyResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtKeyResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtKeyResponse() ApduDataExtKeyResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtKeyResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtKeyResponseBuilder().(*_ApduDataExtKeyResponseBuilder)
@@ -588,14 +375,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtKeyResponse() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtPropertyValueRead() interface {
-	ApduDataExtPropertyValueReadBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtPropertyValueReadBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtPropertyValueRead() ApduDataExtPropertyValueReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtPropertyValueReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtPropertyValueReadBuilder().(*_ApduDataExtPropertyValueReadBuilder)
@@ -604,14 +385,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtPropertyValueRead() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtPropertyValueResponse() interface {
-	ApduDataExtPropertyValueResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtPropertyValueResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtPropertyValueResponse() ApduDataExtPropertyValueResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtPropertyValueResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtPropertyValueResponseBuilder().(*_ApduDataExtPropertyValueResponseBuilder)
@@ -620,14 +395,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtPropertyValueResponse() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtPropertyValueWrite() interface {
-	ApduDataExtPropertyValueWriteBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtPropertyValueWriteBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtPropertyValueWrite() ApduDataExtPropertyValueWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtPropertyValueWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtPropertyValueWriteBuilder().(*_ApduDataExtPropertyValueWriteBuilder)
@@ -636,14 +405,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtPropertyValueWrite() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtPropertyDescriptionRead() interface {
-	ApduDataExtPropertyDescriptionReadBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtPropertyDescriptionReadBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtPropertyDescriptionRead() ApduDataExtPropertyDescriptionReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtPropertyDescriptionReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtPropertyDescriptionReadBuilder().(*_ApduDataExtPropertyDescriptionReadBuilder)
@@ -652,14 +415,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtPropertyDescriptionRead() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtPropertyDescriptionResponse() interface {
-	ApduDataExtPropertyDescriptionResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtPropertyDescriptionResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtPropertyDescriptionResponse() ApduDataExtPropertyDescriptionResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtPropertyDescriptionResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtPropertyDescriptionResponseBuilder().(*_ApduDataExtPropertyDescriptionResponseBuilder)
@@ -668,14 +425,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtPropertyDescriptionResponse() interfa
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtNetworkParameterRead() interface {
-	ApduDataExtNetworkParameterReadBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtNetworkParameterReadBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtNetworkParameterRead() ApduDataExtNetworkParameterReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtNetworkParameterReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtNetworkParameterReadBuilder().(*_ApduDataExtNetworkParameterReadBuilder)
@@ -684,14 +435,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtNetworkParameterRead() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtNetworkParameterResponse() interface {
-	ApduDataExtNetworkParameterResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtNetworkParameterResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtNetworkParameterResponse() ApduDataExtNetworkParameterResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtNetworkParameterResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtNetworkParameterResponseBuilder().(*_ApduDataExtNetworkParameterResponseBuilder)
@@ -700,14 +445,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtNetworkParameterResponse() interface 
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtIndividualAddressSerialNumberRead() interface {
-	ApduDataExtIndividualAddressSerialNumberReadBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtIndividualAddressSerialNumberReadBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtIndividualAddressSerialNumberRead() ApduDataExtIndividualAddressSerialNumberReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtIndividualAddressSerialNumberReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtIndividualAddressSerialNumberReadBuilder().(*_ApduDataExtIndividualAddressSerialNumberReadBuilder)
@@ -716,14 +455,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtIndividualAddressSerialNumberRead() i
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtIndividualAddressSerialNumberResponse() interface {
-	ApduDataExtIndividualAddressSerialNumberResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtIndividualAddressSerialNumberResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtIndividualAddressSerialNumberResponse() ApduDataExtIndividualAddressSerialNumberResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtIndividualAddressSerialNumberResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtIndividualAddressSerialNumberResponseBuilder().(*_ApduDataExtIndividualAddressSerialNumberResponseBuilder)
@@ -732,14 +465,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtIndividualAddressSerialNumberResponse
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtIndividualAddressSerialNumberWrite() interface {
-	ApduDataExtIndividualAddressSerialNumberWriteBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtIndividualAddressSerialNumberWriteBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtIndividualAddressSerialNumberWrite() ApduDataExtIndividualAddressSerialNumberWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtIndividualAddressSerialNumberWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtIndividualAddressSerialNumberWriteBuilder().(*_ApduDataExtIndividualAddressSerialNumberWriteBuilder)
@@ -748,14 +475,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtIndividualAddressSerialNumberWrite() 
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressWrite() interface {
-	ApduDataExtDomainAddressWriteBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtDomainAddressWriteBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressWrite() ApduDataExtDomainAddressWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtDomainAddressWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtDomainAddressWriteBuilder().(*_ApduDataExtDomainAddressWriteBuilder)
@@ -764,14 +485,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressWrite() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressRead() interface {
-	ApduDataExtDomainAddressReadBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtDomainAddressReadBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressRead() ApduDataExtDomainAddressReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtDomainAddressReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtDomainAddressReadBuilder().(*_ApduDataExtDomainAddressReadBuilder)
@@ -780,14 +495,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressRead() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressResponse() interface {
-	ApduDataExtDomainAddressResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtDomainAddressResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressResponse() ApduDataExtDomainAddressResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtDomainAddressResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtDomainAddressResponseBuilder().(*_ApduDataExtDomainAddressResponseBuilder)
@@ -796,14 +505,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressResponse() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSelectiveRead() interface {
-	ApduDataExtDomainAddressSelectiveReadBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtDomainAddressSelectiveReadBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSelectiveRead() ApduDataExtDomainAddressSelectiveReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtDomainAddressSelectiveReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtDomainAddressSelectiveReadBuilder().(*_ApduDataExtDomainAddressSelectiveReadBuilder)
@@ -812,14 +515,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSelectiveRead() interfac
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtNetworkParameterWrite() interface {
-	ApduDataExtNetworkParameterWriteBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtNetworkParameterWriteBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtNetworkParameterWrite() ApduDataExtNetworkParameterWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtNetworkParameterWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtNetworkParameterWriteBuilder().(*_ApduDataExtNetworkParameterWriteBuilder)
@@ -828,14 +525,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtNetworkParameterWrite() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtLinkRead() interface {
-	ApduDataExtLinkReadBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtLinkReadBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtLinkRead() ApduDataExtLinkReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtLinkReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtLinkReadBuilder().(*_ApduDataExtLinkReadBuilder)
@@ -844,14 +535,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtLinkRead() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtLinkResponse() interface {
-	ApduDataExtLinkResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtLinkResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtLinkResponse() ApduDataExtLinkResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtLinkResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtLinkResponseBuilder().(*_ApduDataExtLinkResponseBuilder)
@@ -860,14 +545,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtLinkResponse() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtLinkWrite() interface {
-	ApduDataExtLinkWriteBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtLinkWriteBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtLinkWrite() ApduDataExtLinkWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtLinkWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtLinkWriteBuilder().(*_ApduDataExtLinkWriteBuilder)
@@ -876,14 +555,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtLinkWrite() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueRead() interface {
-	ApduDataExtGroupPropertyValueReadBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtGroupPropertyValueReadBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueRead() ApduDataExtGroupPropertyValueReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtGroupPropertyValueReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtGroupPropertyValueReadBuilder().(*_ApduDataExtGroupPropertyValueReadBuilder)
@@ -892,14 +565,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueRead() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueResponse() interface {
-	ApduDataExtGroupPropertyValueResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtGroupPropertyValueResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueResponse() ApduDataExtGroupPropertyValueResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtGroupPropertyValueResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtGroupPropertyValueResponseBuilder().(*_ApduDataExtGroupPropertyValueResponseBuilder)
@@ -908,14 +575,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueResponse() interfac
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueWrite() interface {
-	ApduDataExtGroupPropertyValueWriteBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtGroupPropertyValueWriteBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueWrite() ApduDataExtGroupPropertyValueWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtGroupPropertyValueWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtGroupPropertyValueWriteBuilder().(*_ApduDataExtGroupPropertyValueWriteBuilder)
@@ -924,14 +585,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueWrite() interface {
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueInfoReport() interface {
-	ApduDataExtGroupPropertyValueInfoReportBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtGroupPropertyValueInfoReportBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueInfoReport() ApduDataExtGroupPropertyValueInfoReportBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtGroupPropertyValueInfoReportBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtGroupPropertyValueInfoReportBuilder().(*_ApduDataExtGroupPropertyValueInfoReportBuilder)
@@ -940,14 +595,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtGroupPropertyValueInfoReport() interf
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSerialNumberRead() interface {
-	ApduDataExtDomainAddressSerialNumberReadBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtDomainAddressSerialNumberReadBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSerialNumberRead() ApduDataExtDomainAddressSerialNumberReadBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtDomainAddressSerialNumberReadBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtDomainAddressSerialNumberReadBuilder().(*_ApduDataExtDomainAddressSerialNumberReadBuilder)
@@ -956,14 +605,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSerialNumberRead() inter
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSerialNumberResponse() interface {
-	ApduDataExtDomainAddressSerialNumberResponseBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtDomainAddressSerialNumberResponseBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSerialNumberResponse() ApduDataExtDomainAddressSerialNumberResponseBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtDomainAddressSerialNumberResponseBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtDomainAddressSerialNumberResponseBuilder().(*_ApduDataExtDomainAddressSerialNumberResponseBuilder)
@@ -972,14 +615,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSerialNumberResponse() i
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSerialNumberWrite() interface {
-	ApduDataExtDomainAddressSerialNumberWriteBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtDomainAddressSerialNumberWriteBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSerialNumberWrite() ApduDataExtDomainAddressSerialNumberWriteBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtDomainAddressSerialNumberWriteBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtDomainAddressSerialNumberWriteBuilder().(*_ApduDataExtDomainAddressSerialNumberWriteBuilder)
@@ -988,14 +625,8 @@ func (b *_ApduDataExtBuilder) AsApduDataExtDomainAddressSerialNumberWrite() inte
 	return cb
 }
 
-func (b *_ApduDataExtBuilder) AsApduDataExtFileStreamInfoReport() interface {
-	ApduDataExtFileStreamInfoReportBuilder
-	Done() ApduDataExtBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ApduDataExtFileStreamInfoReportBuilder
-		Done() ApduDataExtBuilder
-	}); ok {
+func (b *_ApduDataExtBuilder) AsApduDataExtFileStreamInfoReport() ApduDataExtFileStreamInfoReportBuilder {
+	if cb, ok := b.childBuilder.(ApduDataExtFileStreamInfoReportBuilder); ok {
 		return cb
 	}
 	cb := NewApduDataExtFileStreamInfoReportBuilder().(*_ApduDataExtFileStreamInfoReportBuilder)

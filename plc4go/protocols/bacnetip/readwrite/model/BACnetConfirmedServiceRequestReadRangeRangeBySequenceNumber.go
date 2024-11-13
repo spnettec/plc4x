@@ -95,6 +95,8 @@ type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder interfac
 	WithCount(BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
 	// WithCountBuilder adds Count (property field) which is build by the builder
 	WithCountBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
 	// Build builds the BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) = (*_
 
 func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) setParent(contract BACnetConfirmedServiceRequestReadRangeRangeContract) {
 	b.BACnetConfirmedServiceRequestReadRangeRangeContract = contract
+	contract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = b._BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
 }
 
 func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) WithMandatoryFields(referenceSequenceNumber BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder {
@@ -187,8 +190,10 @@ func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) Mu
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestReadRangeRangeBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -357,10 +362,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) deepCopy(
 	}
 	_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberCopy := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
 		m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).deepCopy(),
-		m.ReferenceSequenceNumber.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.Count.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ReferenceSequenceNumber),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.Count),
 	}
-	m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = m
+	_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberCopy.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = m
 	return _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberCopy
 }
 

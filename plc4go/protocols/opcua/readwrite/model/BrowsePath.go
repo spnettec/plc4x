@@ -95,6 +95,8 @@ type BrowsePathBuilder interface {
 	WithRelativePath(RelativePath) BrowsePathBuilder
 	// WithRelativePathBuilder adds RelativePath (property field) which is build by the builder
 	WithRelativePathBuilder(func(RelativePathBuilder) RelativePathBuilder) BrowsePathBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BrowsePath or returns an error if something is wrong
 	Build() (BrowsePath, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (BrowsePathBuilder) = (*_BrowsePathBuilder)(nil)
 
 func (b *_BrowsePathBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BrowsePath
 }
 
 func (b *_BrowsePathBuilder) WithMandatoryFields(startingNode NodeId, relativePath RelativePath) BrowsePathBuilder {
@@ -187,8 +190,10 @@ func (b *_BrowsePathBuilder) MustBuild() BrowsePath {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BrowsePathBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_BrowsePath) deepCopy() *_BrowsePath {
 	}
 	_BrowsePathCopy := &_BrowsePath{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.StartingNode.DeepCopy().(NodeId),
-		m.RelativePath.DeepCopy().(RelativePath),
+		utils.DeepCopy[NodeId](m.StartingNode),
+		utils.DeepCopy[RelativePath](m.RelativePath),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BrowsePathCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowsePathCopy
 }
 

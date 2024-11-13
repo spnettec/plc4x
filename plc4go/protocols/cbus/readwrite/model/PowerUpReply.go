@@ -84,6 +84,8 @@ type PowerUpReplyBuilder interface {
 	WithPowerUpIndicator(PowerUp) PowerUpReplyBuilder
 	// WithPowerUpIndicatorBuilder adds PowerUpIndicator (property field) which is build by the builder
 	WithPowerUpIndicatorBuilder(func(PowerUpBuilder) PowerUpBuilder) PowerUpReplyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ReplyBuilder
 	// Build builds the PowerUpReply or returns an error if something is wrong
 	Build() (PowerUpReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (PowerUpReplyBuilder) = (*_PowerUpReplyBuilder)(nil)
 
 func (b *_PowerUpReplyBuilder) setParent(contract ReplyContract) {
 	b.ReplyContract = contract
+	contract.(*_Reply)._SubType = b._PowerUpReply
 }
 
 func (b *_PowerUpReplyBuilder) WithMandatoryFields(powerUpIndicator PowerUp) PowerUpReplyBuilder {
@@ -152,8 +155,10 @@ func (b *_PowerUpReplyBuilder) MustBuild() PowerUpReply {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PowerUpReplyBuilder) Done() ReplyBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewReplyBuilder().(*_ReplyBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_PowerUpReply) deepCopy() *_PowerUpReply {
 	}
 	_PowerUpReplyCopy := &_PowerUpReply{
 		m.ReplyContract.(*_Reply).deepCopy(),
-		m.PowerUpIndicator.DeepCopy().(PowerUp),
+		utils.DeepCopy[PowerUp](m.PowerUpIndicator),
 	}
-	m.ReplyContract.(*_Reply)._SubType = m
+	_PowerUpReplyCopy.ReplyContract.(*_Reply)._SubType = m
 	return _PowerUpReplyCopy
 }
 

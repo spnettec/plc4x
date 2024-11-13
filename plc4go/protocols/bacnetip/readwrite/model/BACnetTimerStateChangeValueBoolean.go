@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueBooleanBuilder interface {
 	WithBooleanValue(BACnetApplicationTagBoolean) BACnetTimerStateChangeValueBooleanBuilder
 	// WithBooleanValueBuilder adds BooleanValue (property field) which is build by the builder
 	WithBooleanValueBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetTimerStateChangeValueBooleanBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueBoolean or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueBoolean, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueBooleanBuilder) = (*_BACnetTimerStateChangeVal
 
 func (b *_BACnetTimerStateChangeValueBooleanBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueBoolean
 }
 
 func (b *_BACnetTimerStateChangeValueBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetTimerStateChangeValueBooleanBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueBooleanBuilder) MustBuild() BACnetTimerStat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueBooleanBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimerStateChangeValueBoolean) deepCopy() *_BACnetTimerStateChang
 	}
 	_BACnetTimerStateChangeValueBooleanCopy := &_BACnetTimerStateChangeValueBoolean{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.BooleanValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueBooleanCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueBooleanCopy
 }
 

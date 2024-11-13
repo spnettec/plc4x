@@ -79,6 +79,8 @@ type BACnetConstructedDataTimerAlarmValuesBuilder interface {
 	WithMandatoryFields(alarmValues []BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder
 	// WithAlarmValues adds AlarmValues (property field)
 	WithAlarmValues(...BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTimerAlarmValues or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimerAlarmValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataTimerAlarmValuesBuilder) = (*_BACnetConstructedDataT
 
 func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTimerAlarmValues
 }
 
 func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTimerAlarmValuesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataTimerAlarmValues) deepCopy() *_BACnetConstructedD
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetTimerStateTagged, BACnetTimerStateTagged](m.AlarmValues),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTimerAlarmValuesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimerAlarmValuesCopy
 }
 

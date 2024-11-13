@@ -85,6 +85,8 @@ type VariantXmlElementBuilder interface {
 	WithOptionalArrayLength(int32) VariantXmlElementBuilder
 	// WithValue adds Value (property field)
 	WithValue(...PascalString) VariantXmlElementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantXmlElement or returns an error if something is wrong
 	Build() (VariantXmlElement, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantXmlElementBuilder) = (*_VariantXmlElementBuilder)(nil)
 
 func (b *_VariantXmlElementBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantXmlElement
 }
 
 func (b *_VariantXmlElementBuilder) WithMandatoryFields(value []PascalString) VariantXmlElementBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantXmlElementBuilder) MustBuild() VariantXmlElement {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantXmlElementBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -325,7 +330,7 @@ func (m *_VariantXmlElement) deepCopy() *_VariantXmlElement {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[PascalString, PascalString](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantXmlElementCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantXmlElementCopy
 }
 

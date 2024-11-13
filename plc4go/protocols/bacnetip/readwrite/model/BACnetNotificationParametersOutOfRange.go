@@ -139,6 +139,8 @@ type BACnetNotificationParametersOutOfRangeBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersOutOfRangeBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersOutOfRangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersBuilder
 	// Build builds the BACnetNotificationParametersOutOfRange or returns an error if something is wrong
 	Build() (BACnetNotificationParametersOutOfRange, error)
 	// MustBuild does the same as Build but panics on error
@@ -162,6 +164,7 @@ var _ (BACnetNotificationParametersOutOfRangeBuilder) = (*_BACnetNotificationPar
 
 func (b *_BACnetNotificationParametersOutOfRangeBuilder) setParent(contract BACnetNotificationParametersContract) {
 	b.BACnetNotificationParametersContract = contract
+	contract.(*_BACnetNotificationParameters)._SubType = b._BACnetNotificationParametersOutOfRange
 }
 
 func (b *_BACnetNotificationParametersOutOfRangeBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagReal, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagReal, exceededLimit BACnetContextTagReal, innerClosingTag BACnetClosingTag) BACnetNotificationParametersOutOfRangeBuilder {
@@ -327,8 +330,10 @@ func (b *_BACnetNotificationParametersOutOfRangeBuilder) MustBuild() BACnetNotif
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersOutOfRangeBuilder) Done() BACnetNotificationParametersBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -564,14 +569,14 @@ func (m *_BACnetNotificationParametersOutOfRange) deepCopy() *_BACnetNotificatio
 	}
 	_BACnetNotificationParametersOutOfRangeCopy := &_BACnetNotificationParametersOutOfRange{
 		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.ExceedingValue.DeepCopy().(BACnetContextTagReal),
-		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
-		m.Deadband.DeepCopy().(BACnetContextTagReal),
-		m.ExceededLimit.DeepCopy().(BACnetContextTagReal),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
+		utils.DeepCopy[BACnetContextTagReal](m.ExceedingValue),
+		utils.DeepCopy[BACnetStatusFlagsTagged](m.StatusFlags),
+		utils.DeepCopy[BACnetContextTagReal](m.Deadband),
+		utils.DeepCopy[BACnetContextTagReal](m.ExceededLimit),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	_BACnetNotificationParametersOutOfRangeCopy.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
 	return _BACnetNotificationParametersOutOfRangeCopy
 }
 

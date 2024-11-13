@@ -71,6 +71,8 @@ type SysexCommandSysexRealtimeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SysexCommandSysexRealtimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandSysexRealtime or returns an error if something is wrong
 	Build() (SysexCommandSysexRealtime, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SysexCommandSysexRealtimeBuilder) = (*_SysexCommandSysexRealtimeBuilder)(
 
 func (b *_SysexCommandSysexRealtimeBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandSysexRealtime
 }
 
 func (b *_SysexCommandSysexRealtimeBuilder) WithMandatoryFields() SysexCommandSysexRealtimeBuilder {
@@ -115,8 +118,10 @@ func (b *_SysexCommandSysexRealtimeBuilder) MustBuild() SysexCommandSysexRealtim
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandSysexRealtimeBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -249,7 +254,7 @@ func (m *_SysexCommandSysexRealtime) deepCopy() *_SysexCommandSysexRealtime {
 	_SysexCommandSysexRealtimeCopy := &_SysexCommandSysexRealtime{
 		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandSysexRealtimeCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandSysexRealtimeCopy
 }
 

@@ -113,6 +113,8 @@ type MeasurementDataChannelMeasurementDataBuilder interface {
 	WithMsb(uint8) MeasurementDataChannelMeasurementDataBuilder
 	// WithLsb adds Lsb (property field)
 	WithLsb(uint8) MeasurementDataChannelMeasurementDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MeasurementDataBuilder
 	// Build builds the MeasurementDataChannelMeasurementData or returns an error if something is wrong
 	Build() (MeasurementDataChannelMeasurementData, error)
 	// MustBuild does the same as Build but panics on error
@@ -136,6 +138,7 @@ var _ (MeasurementDataChannelMeasurementDataBuilder) = (*_MeasurementDataChannel
 
 func (b *_MeasurementDataChannelMeasurementDataBuilder) setParent(contract MeasurementDataContract) {
 	b.MeasurementDataContract = contract
+	contract.(*_MeasurementData)._SubType = b._MeasurementDataChannelMeasurementData
 }
 
 func (b *_MeasurementDataChannelMeasurementDataBuilder) WithMandatoryFields(deviceId uint8, channel uint8, units MeasurementUnits, multiplier int8, msb uint8, lsb uint8) MeasurementDataChannelMeasurementDataBuilder {
@@ -187,8 +190,10 @@ func (b *_MeasurementDataChannelMeasurementDataBuilder) MustBuild() MeasurementD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MeasurementDataChannelMeasurementDataBuilder) Done() MeasurementDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMeasurementDataBuilder().(*_MeasurementDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -480,7 +485,7 @@ func (m *_MeasurementDataChannelMeasurementData) deepCopy() *_MeasurementDataCha
 		m.Msb,
 		m.Lsb,
 	}
-	m.MeasurementDataContract.(*_MeasurementData)._SubType = m
+	_MeasurementDataChannelMeasurementDataCopy.MeasurementDataContract.(*_MeasurementData)._SubType = m
 	return _MeasurementDataChannelMeasurementDataCopy
 }
 

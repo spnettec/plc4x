@@ -439,10 +439,10 @@ func (m *_ListOfCovNotificationsValue) deepCopy() *_ListOfCovNotificationsValue 
 		return nil
 	}
 	_ListOfCovNotificationsValueCopy := &_ListOfCovNotificationsValue{
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.PropertyValue.DeepCopy().(BACnetConstructedData),
-		m.TimeOfChange.DeepCopy().(BACnetContextTagTime),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
+		utils.DeepCopy[BACnetConstructedData](m.PropertyValue),
+		utils.DeepCopy[BACnetContextTagTime](m.TimeOfChange),
 		m.ObjectTypeArgument,
 	}
 	return _ListOfCovNotificationsValueCopy

@@ -90,6 +90,8 @@ type BrowsePathResultBuilder interface {
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) BrowsePathResultBuilder
 	// WithTargets adds Targets (property field)
 	WithTargets(...BrowsePathTarget) BrowsePathResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BrowsePathResult or returns an error if something is wrong
 	Build() (BrowsePathResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (BrowsePathResultBuilder) = (*_BrowsePathResultBuilder)(nil)
 
 func (b *_BrowsePathResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BrowsePathResult
 }
 
 func (b *_BrowsePathResultBuilder) WithMandatoryFields(statusCode StatusCode, targets []BrowsePathTarget) BrowsePathResultBuilder {
@@ -163,8 +166,10 @@ func (b *_BrowsePathResultBuilder) MustBuild() BrowsePathResult {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BrowsePathResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_BrowsePathResult) deepCopy() *_BrowsePathResult {
 	}
 	_BrowsePathResultCopy := &_BrowsePathResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.StatusCode.DeepCopy().(StatusCode),
+		utils.DeepCopy[StatusCode](m.StatusCode),
 		utils.DeepCopySlice[BrowsePathTarget, BrowsePathTarget](m.Targets),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BrowsePathResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowsePathResultCopy
 }
 

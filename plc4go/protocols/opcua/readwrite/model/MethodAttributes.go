@@ -127,6 +127,8 @@ type MethodAttributesBuilder interface {
 	WithUserExecutable(bool) MethodAttributesBuilder
 	// WithExecutable adds Executable (property field)
 	WithExecutable(bool) MethodAttributesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the MethodAttributes or returns an error if something is wrong
 	Build() (MethodAttributes, error)
 	// MustBuild does the same as Build but panics on error
@@ -150,6 +152,7 @@ var _ (MethodAttributesBuilder) = (*_MethodAttributesBuilder)(nil)
 
 func (b *_MethodAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._MethodAttributes
 }
 
 func (b *_MethodAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, userExecutable bool, executable bool) MethodAttributesBuilder {
@@ -244,8 +247,10 @@ func (b *_MethodAttributesBuilder) MustBuild() MethodAttributes {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MethodAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -516,15 +521,15 @@ func (m *_MethodAttributes) deepCopy() *_MethodAttributes {
 	_MethodAttributesCopy := &_MethodAttributes{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedAttributes,
-		m.DisplayName.DeepCopy().(LocalizedText),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.DisplayName),
+		utils.DeepCopy[LocalizedText](m.Description),
 		m.WriteMask,
 		m.UserWriteMask,
 		m.UserExecutable,
 		m.Executable,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_MethodAttributesCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _MethodAttributesCopy
 }
 

@@ -79,6 +79,8 @@ type SecurityDataDisplayMessageBuilder interface {
 	WithMandatoryFields(message string) SecurityDataDisplayMessageBuilder
 	// WithMessage adds Message (property field)
 	WithMessage(string) SecurityDataDisplayMessageBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataDisplayMessage or returns an error if something is wrong
 	Build() (SecurityDataDisplayMessage, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (SecurityDataDisplayMessageBuilder) = (*_SecurityDataDisplayMessageBuilder
 
 func (b *_SecurityDataDisplayMessageBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataDisplayMessage
 }
 
 func (b *_SecurityDataDisplayMessageBuilder) WithMandatoryFields(message string) SecurityDataDisplayMessageBuilder {
@@ -128,8 +131,10 @@ func (b *_SecurityDataDisplayMessageBuilder) MustBuild() SecurityDataDisplayMess
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataDisplayMessageBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -282,7 +287,7 @@ func (m *_SecurityDataDisplayMessage) deepCopy() *_SecurityDataDisplayMessage {
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		m.Message,
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataDisplayMessageCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataDisplayMessageCopy
 }
 

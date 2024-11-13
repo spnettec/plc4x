@@ -86,6 +86,8 @@ type BACnetConstructedDataLargeAnalogValueResolutionBuilder interface {
 	WithResolution(BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueResolutionBuilder
 	// WithResolutionBuilder adds Resolution (property field) which is build by the builder
 	WithResolutionBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueResolutionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLargeAnalogValueResolution or returns an error if something is wrong
 	Build() (BACnetConstructedDataLargeAnalogValueResolution, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLargeAnalogValueResolutionBuilder) = (*_BACnetConstr
 
 func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLargeAnalogValueResolution
 }
 
 func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) WithMandatoryFields(resolution BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueResolutionBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) MustBuild() BA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) deepCopy() *_BACnetCo
 	}
 	_BACnetConstructedDataLargeAnalogValueResolutionCopy := &_BACnetConstructedDataLargeAnalogValueResolution{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Resolution.DeepCopy().(BACnetApplicationTagDouble),
+		utils.DeepCopy[BACnetApplicationTagDouble](m.Resolution),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLargeAnalogValueResolutionCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLargeAnalogValueResolutionCopy
 }
 

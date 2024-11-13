@@ -86,6 +86,8 @@ type BACnetApplicationTagRealBuilder interface {
 	WithPayload(BACnetTagPayloadReal) BACnetApplicationTagRealBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadRealBuilder) BACnetTagPayloadRealBuilder) BACnetApplicationTagRealBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetApplicationTagBuilder
 	// Build builds the BACnetApplicationTagReal or returns an error if something is wrong
 	Build() (BACnetApplicationTagReal, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetApplicationTagRealBuilder) = (*_BACnetApplicationTagRealBuilder)(ni
 
 func (b *_BACnetApplicationTagRealBuilder) setParent(contract BACnetApplicationTagContract) {
 	b.BACnetApplicationTagContract = contract
+	contract.(*_BACnetApplicationTag)._SubType = b._BACnetApplicationTagReal
 }
 
 func (b *_BACnetApplicationTagRealBuilder) WithMandatoryFields(payload BACnetTagPayloadReal) BACnetApplicationTagRealBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetApplicationTagRealBuilder) MustBuild() BACnetApplicationTagReal 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetApplicationTagRealBuilder) Done() BACnetApplicationTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetApplicationTagBuilder().(*_BACnetApplicationTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -335,9 +340,9 @@ func (m *_BACnetApplicationTagReal) deepCopy() *_BACnetApplicationTagReal {
 	}
 	_BACnetApplicationTagRealCopy := &_BACnetApplicationTagReal{
 		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadReal),
+		utils.DeepCopy[BACnetTagPayloadReal](m.Payload),
 	}
-	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	_BACnetApplicationTagRealCopy.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
 	return _BACnetApplicationTagRealCopy
 }
 

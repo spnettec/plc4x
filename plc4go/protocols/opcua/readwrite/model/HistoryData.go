@@ -79,6 +79,8 @@ type HistoryDataBuilder interface {
 	WithMandatoryFields(dataValues []DataValue) HistoryDataBuilder
 	// WithDataValues adds DataValues (property field)
 	WithDataValues(...DataValue) HistoryDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the HistoryData or returns an error if something is wrong
 	Build() (HistoryData, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (HistoryDataBuilder) = (*_HistoryDataBuilder)(nil)
 
 func (b *_HistoryDataBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._HistoryData
 }
 
 func (b *_HistoryDataBuilder) WithMandatoryFields(dataValues []DataValue) HistoryDataBuilder {
@@ -128,8 +131,10 @@ func (b *_HistoryDataBuilder) MustBuild() HistoryData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_HistoryDataBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -306,7 +311,7 @@ func (m *_HistoryData) deepCopy() *_HistoryData {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		utils.DeepCopySlice[DataValue, DataValue](m.DataValues),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_HistoryDataCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryDataCopy
 }
 

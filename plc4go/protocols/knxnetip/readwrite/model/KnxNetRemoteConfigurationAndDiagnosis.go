@@ -79,6 +79,8 @@ type KnxNetRemoteConfigurationAndDiagnosisBuilder interface {
 	WithMandatoryFields(version uint8) KnxNetRemoteConfigurationAndDiagnosisBuilder
 	// WithVersion adds Version (property field)
 	WithVersion(uint8) KnxNetRemoteConfigurationAndDiagnosisBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ServiceIdBuilder
 	// Build builds the KnxNetRemoteConfigurationAndDiagnosis or returns an error if something is wrong
 	Build() (KnxNetRemoteConfigurationAndDiagnosis, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (KnxNetRemoteConfigurationAndDiagnosisBuilder) = (*_KnxNetRemoteConfigurat
 
 func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) setParent(contract ServiceIdContract) {
 	b.ServiceIdContract = contract
+	contract.(*_ServiceId)._SubType = b._KnxNetRemoteConfigurationAndDiagnosis
 }
 
 func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) WithMandatoryFields(version uint8) KnxNetRemoteConfigurationAndDiagnosisBuilder {
@@ -128,8 +131,10 @@ func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) MustBuild() KnxNetRemote
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) Done() ServiceIdBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewServiceIdBuilder().(*_ServiceIdBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) deepCopy() *_KnxNetRemoteConfig
 		m.ServiceIdContract.(*_ServiceId).deepCopy(),
 		m.Version,
 	}
-	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	_KnxNetRemoteConfigurationAndDiagnosisCopy.ServiceIdContract.(*_ServiceId)._SubType = m
 	return _KnxNetRemoteConfigurationAndDiagnosisCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder interface {
 	WithDoubleValue(BACnetApplicationTagDouble) BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
 	// WithDoubleValueBuilder adds DoubleValue (property field) which is build by the builder
 	WithDoubleValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
 	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryDouble or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultExtendedParametersEntryDouble, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) = (*_BACne
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
 	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
+	contract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = b._BACnetFaultParameterFaultExtendedParametersEntryDouble
 }
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) MustBui
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterFaultExtendedParametersEntryBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) deepCopy() *_B
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryDoubleCopy := &_BACnetFaultParameterFaultExtendedParametersEntryDouble{
 		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
-		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+		utils.DeepCopy[BACnetApplicationTagDouble](m.DoubleValue),
 	}
-	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	_BACnetFaultParameterFaultExtendedParametersEntryDoubleCopy.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
 	return _BACnetFaultParameterFaultExtendedParametersEntryDoubleCopy
 }
 

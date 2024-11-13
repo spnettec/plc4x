@@ -71,6 +71,8 @@ type BACnetConstructedDataFileAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataFileAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataFileAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataFileAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataFileAllBuilder) = (*_BACnetConstructedDataFileAllBui
 
 func (b *_BACnetConstructedDataFileAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataFileAll
 }
 
 func (b *_BACnetConstructedDataFileAllBuilder) WithMandatoryFields() BACnetConstructedDataFileAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataFileAllBuilder) MustBuild() BACnetConstructedData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataFileAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataFileAll) deepCopy() *_BACnetConstructedDataFileAl
 	_BACnetConstructedDataFileAllCopy := &_BACnetConstructedDataFileAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataFileAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataFileAllCopy
 }
 

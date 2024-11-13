@@ -79,6 +79,8 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder interface {
 	WithMandatoryFields(items []byte) S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder
 	// WithItems adds Items (property field)
 	WithItems(...byte) S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadUserDataItemCpuFunctionAlarmQueryResponse or returns an error if something is wrong
 	Build() (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) = (*_S7Payload
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) WithMandatoryFields(items []byte) S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) MustBuild()
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -297,7 +302,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) deepCopy() *_S7Pay
 		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Items),
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemCpuFunctionAlarmQueryResponseCopy
 }
 

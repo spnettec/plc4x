@@ -84,6 +84,8 @@ type BACnetPropertyStatesAccessCredentialDisableBuilder interface {
 	WithAccessCredentialDisable(BACnetAccessCredentialDisableTagged) BACnetPropertyStatesAccessCredentialDisableBuilder
 	// WithAccessCredentialDisableBuilder adds AccessCredentialDisable (property field) which is build by the builder
 	WithAccessCredentialDisableBuilder(func(BACnetAccessCredentialDisableTaggedBuilder) BACnetAccessCredentialDisableTaggedBuilder) BACnetPropertyStatesAccessCredentialDisableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesAccessCredentialDisable or returns an error if something is wrong
 	Build() (BACnetPropertyStatesAccessCredentialDisable, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesAccessCredentialDisableBuilder) = (*_BACnetPropertySt
 
 func (b *_BACnetPropertyStatesAccessCredentialDisableBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesAccessCredentialDisable
 }
 
 func (b *_BACnetPropertyStatesAccessCredentialDisableBuilder) WithMandatoryFields(accessCredentialDisable BACnetAccessCredentialDisableTagged) BACnetPropertyStatesAccessCredentialDisableBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesAccessCredentialDisableBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesAccessCredentialDisableBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) deepCopy() *_BACnetProper
 	}
 	_BACnetPropertyStatesAccessCredentialDisableCopy := &_BACnetPropertyStatesAccessCredentialDisable{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.AccessCredentialDisable.DeepCopy().(BACnetAccessCredentialDisableTagged),
+		utils.DeepCopy[BACnetAccessCredentialDisableTagged](m.AccessCredentialDisable),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesAccessCredentialDisableCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesAccessCredentialDisableCopy
 }
 

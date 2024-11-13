@@ -394,9 +394,9 @@ func (m *_BACnetRecipientEnclosed) deepCopy() *_BACnetRecipientEnclosed {
 		return nil
 	}
 	_BACnetRecipientEnclosedCopy := &_BACnetRecipientEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.Recipient.DeepCopy().(BACnetRecipient),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetRecipient](m.Recipient),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetRecipientEnclosedCopy

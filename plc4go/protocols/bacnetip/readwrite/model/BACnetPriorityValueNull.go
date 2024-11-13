@@ -84,6 +84,8 @@ type BACnetPriorityValueNullBuilder interface {
 	WithNullValue(BACnetApplicationTagNull) BACnetPriorityValueNullBuilder
 	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
 	WithNullValueBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetPriorityValueNullBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPriorityValueBuilder
 	// Build builds the BACnetPriorityValueNull or returns an error if something is wrong
 	Build() (BACnetPriorityValueNull, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPriorityValueNullBuilder) = (*_BACnetPriorityValueNullBuilder)(nil)
 
 func (b *_BACnetPriorityValueNullBuilder) setParent(contract BACnetPriorityValueContract) {
 	b.BACnetPriorityValueContract = contract
+	contract.(*_BACnetPriorityValue)._SubType = b._BACnetPriorityValueNull
 }
 
 func (b *_BACnetPriorityValueNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetPriorityValueNullBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPriorityValueNullBuilder) MustBuild() BACnetPriorityValueNull {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPriorityValueNullBuilder) Done() BACnetPriorityValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPriorityValueNull) deepCopy() *_BACnetPriorityValueNull {
 	}
 	_BACnetPriorityValueNullCopy := &_BACnetPriorityValueNull{
 		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
-		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+		utils.DeepCopy[BACnetApplicationTagNull](m.NullValue),
 	}
-	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	_BACnetPriorityValueNullCopy.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
 	return _BACnetPriorityValueNullCopy
 }
 

@@ -381,9 +381,9 @@ func (m *_BACnetSpecialEvent) deepCopy() *_BACnetSpecialEvent {
 		return nil
 	}
 	_BACnetSpecialEventCopy := &_BACnetSpecialEvent{
-		m.Period.DeepCopy().(BACnetSpecialEventPeriod),
-		m.ListOfTimeValues.DeepCopy().(BACnetSpecialEventListOfTimeValues),
-		m.EventPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetSpecialEventPeriod](m.Period),
+		utils.DeepCopy[BACnetSpecialEventListOfTimeValues](m.ListOfTimeValues),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.EventPriority),
 	}
 	return _BACnetSpecialEventCopy
 }

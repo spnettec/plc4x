@@ -86,6 +86,8 @@ type BACnetConstructedDataNetworkInterfaceNameBuilder interface {
 	WithNetworkInterfaceName(BACnetApplicationTagCharacterString) BACnetConstructedDataNetworkInterfaceNameBuilder
 	// WithNetworkInterfaceNameBuilder adds NetworkInterfaceName (property field) which is build by the builder
 	WithNetworkInterfaceNameBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataNetworkInterfaceNameBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNetworkInterfaceName or returns an error if something is wrong
 	Build() (BACnetConstructedDataNetworkInterfaceName, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataNetworkInterfaceNameBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNetworkInterfaceName
 }
 
 func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) WithMandatoryFields(networkInterfaceName BACnetApplicationTagCharacterString) BACnetConstructedDataNetworkInterfaceNameBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataNetworkInterfaceNameCopy := &_BACnetConstructedDataNetworkInterfaceName{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NetworkInterfaceName.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.NetworkInterfaceName),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNetworkInterfaceNameCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNetworkInterfaceNameCopy
 }
 

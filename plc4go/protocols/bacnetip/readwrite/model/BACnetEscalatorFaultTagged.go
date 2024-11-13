@@ -393,7 +393,7 @@ func (m *_BACnetEscalatorFaultTagged) deepCopy() *_BACnetEscalatorFaultTagged {
 		return nil
 	}
 	_BACnetEscalatorFaultTaggedCopy := &_BACnetEscalatorFaultTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

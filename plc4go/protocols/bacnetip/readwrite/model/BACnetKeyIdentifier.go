@@ -330,8 +330,8 @@ func (m *_BACnetKeyIdentifier) deepCopy() *_BACnetKeyIdentifier {
 		return nil
 	}
 	_BACnetKeyIdentifierCopy := &_BACnetKeyIdentifier{
-		m.Algorithm.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.KeyId.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Algorithm),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.KeyId),
 	}
 	return _BACnetKeyIdentifierCopy
 }

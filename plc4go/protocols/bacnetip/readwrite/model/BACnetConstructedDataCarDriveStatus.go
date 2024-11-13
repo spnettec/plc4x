@@ -86,6 +86,8 @@ type BACnetConstructedDataCarDriveStatusBuilder interface {
 	WithCarDriveStatus(BACnetLiftCarDriveStatusTagged) BACnetConstructedDataCarDriveStatusBuilder
 	// WithCarDriveStatusBuilder adds CarDriveStatus (property field) which is build by the builder
 	WithCarDriveStatusBuilder(func(BACnetLiftCarDriveStatusTaggedBuilder) BACnetLiftCarDriveStatusTaggedBuilder) BACnetConstructedDataCarDriveStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCarDriveStatus or returns an error if something is wrong
 	Build() (BACnetConstructedDataCarDriveStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataCarDriveStatusBuilder) = (*_BACnetConstructedDataCar
 
 func (b *_BACnetConstructedDataCarDriveStatusBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCarDriveStatus
 }
 
 func (b *_BACnetConstructedDataCarDriveStatusBuilder) WithMandatoryFields(carDriveStatus BACnetLiftCarDriveStatusTagged) BACnetConstructedDataCarDriveStatusBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataCarDriveStatusBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCarDriveStatusBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataCarDriveStatus) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataCarDriveStatusCopy := &_BACnetConstructedDataCarDriveStatus{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CarDriveStatus.DeepCopy().(BACnetLiftCarDriveStatusTagged),
+		utils.DeepCopy[BACnetLiftCarDriveStatusTagged](m.CarDriveStatus),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCarDriveStatusCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCarDriveStatusCopy
 }
 

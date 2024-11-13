@@ -86,6 +86,8 @@ type BACnetConstructedDataAutoSlaveDiscoveryBuilder interface {
 	WithAutoSlaveDiscovery(BACnetApplicationTagBoolean) BACnetConstructedDataAutoSlaveDiscoveryBuilder
 	// WithAutoSlaveDiscoveryBuilder adds AutoSlaveDiscovery (property field) which is build by the builder
 	WithAutoSlaveDiscoveryBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAutoSlaveDiscoveryBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAutoSlaveDiscovery or returns an error if something is wrong
 	Build() (BACnetConstructedDataAutoSlaveDiscovery, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAutoSlaveDiscoveryBuilder) = (*_BACnetConstructedDat
 
 func (b *_BACnetConstructedDataAutoSlaveDiscoveryBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAutoSlaveDiscovery
 }
 
 func (b *_BACnetConstructedDataAutoSlaveDiscoveryBuilder) WithMandatoryFields(autoSlaveDiscovery BACnetApplicationTagBoolean) BACnetConstructedDataAutoSlaveDiscoveryBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAutoSlaveDiscoveryBuilder) MustBuild() BACnetCons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAutoSlaveDiscoveryBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) deepCopy() *_BACnetConstructe
 	}
 	_BACnetConstructedDataAutoSlaveDiscoveryCopy := &_BACnetConstructedDataAutoSlaveDiscovery{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AutoSlaveDiscovery.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.AutoSlaveDiscovery),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAutoSlaveDiscoveryCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAutoSlaveDiscoveryCopy
 }
 

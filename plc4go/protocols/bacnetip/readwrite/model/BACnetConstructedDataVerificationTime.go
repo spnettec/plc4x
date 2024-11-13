@@ -86,6 +86,8 @@ type BACnetConstructedDataVerificationTimeBuilder interface {
 	WithVerificationTime(BACnetApplicationTagSignedInteger) BACnetConstructedDataVerificationTimeBuilder
 	// WithVerificationTimeBuilder adds VerificationTime (property field) which is build by the builder
 	WithVerificationTimeBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataVerificationTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataVerificationTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataVerificationTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataVerificationTimeBuilder) = (*_BACnetConstructedDataV
 
 func (b *_BACnetConstructedDataVerificationTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataVerificationTime
 }
 
 func (b *_BACnetConstructedDataVerificationTimeBuilder) WithMandatoryFields(verificationTime BACnetApplicationTagSignedInteger) BACnetConstructedDataVerificationTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataVerificationTimeBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataVerificationTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataVerificationTime) deepCopy() *_BACnetConstructedD
 	}
 	_BACnetConstructedDataVerificationTimeCopy := &_BACnetConstructedDataVerificationTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.VerificationTime.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.VerificationTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataVerificationTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataVerificationTimeCopy
 }
 

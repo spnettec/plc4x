@@ -127,6 +127,8 @@ type PublishResponseBuilder interface {
 	WithResults(...StatusCode) PublishResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) PublishResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PublishResponse or returns an error if something is wrong
 	Build() (PublishResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -150,6 +152,7 @@ var _ (PublishResponseBuilder) = (*_PublishResponseBuilder)(nil)
 
 func (b *_PublishResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PublishResponse
 }
 
 func (b *_PublishResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, subscriptionId uint32, availableSequenceNumbers []uint32, moreNotifications bool, notificationMessage NotificationMessage, results []StatusCode, diagnosticInfos []DiagnosticInfo) PublishResponseBuilder {
@@ -244,8 +247,10 @@ func (b *_PublishResponseBuilder) MustBuild() PublishResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PublishResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -570,16 +575,16 @@ func (m *_PublishResponse) deepCopy() *_PublishResponse {
 	}
 	_PublishResponseCopy := &_PublishResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		m.SubscriptionId,
 		utils.DeepCopySlice[uint32, uint32](m.AvailableSequenceNumbers),
 		m.MoreNotifications,
-		m.NotificationMessage.DeepCopy().(NotificationMessage),
+		utils.DeepCopy[NotificationMessage](m.NotificationMessage),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PublishResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PublishResponseCopy
 }
 

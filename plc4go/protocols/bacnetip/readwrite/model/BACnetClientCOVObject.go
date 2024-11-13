@@ -84,6 +84,8 @@ type BACnetClientCOVObjectBuilder interface {
 	WithRealIncrement(BACnetApplicationTagReal) BACnetClientCOVObjectBuilder
 	// WithRealIncrementBuilder adds RealIncrement (property field) which is build by the builder
 	WithRealIncrementBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetClientCOVObjectBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetClientCOVBuilder
 	// Build builds the BACnetClientCOVObject or returns an error if something is wrong
 	Build() (BACnetClientCOVObject, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetClientCOVObjectBuilder) = (*_BACnetClientCOVObjectBuilder)(nil)
 
 func (b *_BACnetClientCOVObjectBuilder) setParent(contract BACnetClientCOVContract) {
 	b.BACnetClientCOVContract = contract
+	contract.(*_BACnetClientCOV)._SubType = b._BACnetClientCOVObject
 }
 
 func (b *_BACnetClientCOVObjectBuilder) WithMandatoryFields(realIncrement BACnetApplicationTagReal) BACnetClientCOVObjectBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetClientCOVObjectBuilder) MustBuild() BACnetClientCOVObject {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetClientCOVObjectBuilder) Done() BACnetClientCOVBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetClientCOVBuilder().(*_BACnetClientCOVBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetClientCOVObject) deepCopy() *_BACnetClientCOVObject {
 	}
 	_BACnetClientCOVObjectCopy := &_BACnetClientCOVObject{
 		m.BACnetClientCOVContract.(*_BACnetClientCOV).deepCopy(),
-		m.RealIncrement.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.RealIncrement),
 	}
-	m.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = m
+	_BACnetClientCOVObjectCopy.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = m
 	return _BACnetClientCOVObjectCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataIntegerValueLowLimitBuilder interface {
 	WithLowLimit(BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueLowLimitBuilder
 	// WithLowLimitBuilder adds LowLimit (property field) which is build by the builder
 	WithLowLimitBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueLowLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIntegerValueLowLimit or returns an error if something is wrong
 	Build() (BACnetConstructedDataIntegerValueLowLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIntegerValueLowLimitBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIntegerValueLowLimit
 }
 
 func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) WithMandatoryFields(lowLimit BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueLowLimitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIntegerValueLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataIntegerValueLowLimit) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataIntegerValueLowLimitCopy := &_BACnetConstructedDataIntegerValueLowLimit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LowLimit.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.LowLimit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIntegerValueLowLimitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIntegerValueLowLimitCopy
 }
 

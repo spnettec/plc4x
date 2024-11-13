@@ -85,6 +85,8 @@ type VariantQualifiedNameBuilder interface {
 	WithOptionalArrayLength(int32) VariantQualifiedNameBuilder
 	// WithValue adds Value (property field)
 	WithValue(...QualifiedName) VariantQualifiedNameBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantQualifiedName or returns an error if something is wrong
 	Build() (VariantQualifiedName, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantQualifiedNameBuilder) = (*_VariantQualifiedNameBuilder)(nil)
 
 func (b *_VariantQualifiedNameBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantQualifiedName
 }
 
 func (b *_VariantQualifiedNameBuilder) WithMandatoryFields(value []QualifiedName) VariantQualifiedNameBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantQualifiedNameBuilder) MustBuild() VariantQualifiedName {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantQualifiedNameBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -325,7 +330,7 @@ func (m *_VariantQualifiedName) deepCopy() *_VariantQualifiedName {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[QualifiedName, QualifiedName](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantQualifiedNameCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantQualifiedNameCopy
 }
 

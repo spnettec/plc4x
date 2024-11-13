@@ -374,9 +374,9 @@ func (m *_BACnetAuthenticationPolicyList) deepCopy() *_BACnetAuthenticationPolic
 		return nil
 	}
 	_BACnetAuthenticationPolicyListCopy := &_BACnetAuthenticationPolicyList{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetAuthenticationPolicyListEntry, BACnetAuthenticationPolicyListEntry](m.Entries),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetAuthenticationPolicyListCopy

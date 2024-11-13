@@ -217,6 +217,8 @@ type DataSetReaderDataTypeBuilder interface {
 	WithSubscribedDataSet(ExtensionObject) DataSetReaderDataTypeBuilder
 	// WithSubscribedDataSetBuilder adds SubscribedDataSet (property field) which is build by the builder
 	WithSubscribedDataSetBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetReaderDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataSetReaderDataType or returns an error if something is wrong
 	Build() (DataSetReaderDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -240,6 +242,7 @@ var _ (DataSetReaderDataTypeBuilder) = (*_DataSetReaderDataTypeBuilder)(nil)
 
 func (b *_DataSetReaderDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataSetReaderDataType
 }
 
 func (b *_DataSetReaderDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, publisherId Variant, writerGroupId uint16, dataSetWriterId uint16, dataSetMetaData DataSetMetaDataType, dataSetFieldContentMask DataSetFieldContentMask, messageReceiveTimeout float64, keyFrameCount uint32, headerLayoutUri PascalString, securityMode MessageSecurityMode, securityGroupId PascalString, securityKeyServices []EndpointDescription, dataSetReaderProperties []KeyValuePair, transportSettings ExtensionObject, messageSettings ExtensionObject, subscribedDataSet ExtensionObject) DataSetReaderDataTypeBuilder {
@@ -498,8 +501,10 @@ func (b *_DataSetReaderDataTypeBuilder) MustBuild() DataSetReaderDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataSetReaderDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -979,26 +984,26 @@ func (m *_DataSetReaderDataType) deepCopy() *_DataSetReaderDataType {
 	}
 	_DataSetReaderDataTypeCopy := &_DataSetReaderDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Name),
 		m.Enabled,
-		m.PublisherId.DeepCopy().(Variant),
+		utils.DeepCopy[Variant](m.PublisherId),
 		m.WriterGroupId,
 		m.DataSetWriterId,
-		m.DataSetMetaData.DeepCopy().(DataSetMetaDataType),
+		utils.DeepCopy[DataSetMetaDataType](m.DataSetMetaData),
 		m.DataSetFieldContentMask,
 		m.MessageReceiveTimeout,
 		m.KeyFrameCount,
-		m.HeaderLayoutUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.HeaderLayoutUri),
 		m.SecurityMode,
-		m.SecurityGroupId.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.SecurityGroupId),
 		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.SecurityKeyServices),
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.DataSetReaderProperties),
-		m.TransportSettings.DeepCopy().(ExtensionObject),
-		m.MessageSettings.DeepCopy().(ExtensionObject),
-		m.SubscribedDataSet.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[ExtensionObject](m.TransportSettings),
+		utils.DeepCopy[ExtensionObject](m.MessageSettings),
+		utils.DeepCopy[ExtensionObject](m.SubscribedDataSet),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataSetReaderDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataSetReaderDataTypeCopy
 }
 

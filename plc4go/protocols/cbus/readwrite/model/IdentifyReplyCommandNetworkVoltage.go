@@ -89,6 +89,8 @@ type IdentifyReplyCommandNetworkVoltageBuilder interface {
 	WithVolts(string) IdentifyReplyCommandNetworkVoltageBuilder
 	// WithVoltsDecimalPlace adds VoltsDecimalPlace (property field)
 	WithVoltsDecimalPlace(string) IdentifyReplyCommandNetworkVoltageBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() IdentifyReplyCommandBuilder
 	// Build builds the IdentifyReplyCommandNetworkVoltage or returns an error if something is wrong
 	Build() (IdentifyReplyCommandNetworkVoltage, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (IdentifyReplyCommandNetworkVoltageBuilder) = (*_IdentifyReplyCommandNetwo
 
 func (b *_IdentifyReplyCommandNetworkVoltageBuilder) setParent(contract IdentifyReplyCommandContract) {
 	b.IdentifyReplyCommandContract = contract
+	contract.(*_IdentifyReplyCommand)._SubType = b._IdentifyReplyCommandNetworkVoltage
 }
 
 func (b *_IdentifyReplyCommandNetworkVoltageBuilder) WithMandatoryFields(volts string, voltsDecimalPlace string) IdentifyReplyCommandNetworkVoltageBuilder {
@@ -143,8 +146,10 @@ func (b *_IdentifyReplyCommandNetworkVoltageBuilder) MustBuild() IdentifyReplyCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentifyReplyCommandNetworkVoltageBuilder) Done() IdentifyReplyCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -362,7 +367,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) deepCopy() *_IdentifyReplyCommandN
 		m.Volts,
 		m.VoltsDecimalPlace,
 	}
-	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	_IdentifyReplyCommandNetworkVoltageCopy.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
 	return _IdentifyReplyCommandNetworkVoltageCopy
 }
 

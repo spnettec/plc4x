@@ -101,20 +101,11 @@ type BACnetHostAddressBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetHostAddressBuilder
 	// AsBACnetHostAddressNull converts this build to a subType of BACnetHostAddress. It is always possible to return to current builder using Done()
-	AsBACnetHostAddressNull() interface {
-		BACnetHostAddressNullBuilder
-		Done() BACnetHostAddressBuilder
-	}
+	AsBACnetHostAddressNull() BACnetHostAddressNullBuilder
 	// AsBACnetHostAddressIpAddress converts this build to a subType of BACnetHostAddress. It is always possible to return to current builder using Done()
-	AsBACnetHostAddressIpAddress() interface {
-		BACnetHostAddressIpAddressBuilder
-		Done() BACnetHostAddressBuilder
-	}
+	AsBACnetHostAddressIpAddress() BACnetHostAddressIpAddressBuilder
 	// AsBACnetHostAddressName converts this build to a subType of BACnetHostAddress. It is always possible to return to current builder using Done()
-	AsBACnetHostAddressName() interface {
-		BACnetHostAddressNameBuilder
-		Done() BACnetHostAddressBuilder
-	}
+	AsBACnetHostAddressName() BACnetHostAddressNameBuilder
 	// Build builds the BACnetHostAddress or returns an error if something is wrong
 	PartialBuild() (BACnetHostAddressContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -189,14 +180,8 @@ func (b *_BACnetHostAddressBuilder) PartialMustBuild() BACnetHostAddressContract
 	return build
 }
 
-func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressNull() interface {
-	BACnetHostAddressNullBuilder
-	Done() BACnetHostAddressBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetHostAddressNullBuilder
-		Done() BACnetHostAddressBuilder
-	}); ok {
+func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressNull() BACnetHostAddressNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetHostAddressNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetHostAddressNullBuilder().(*_BACnetHostAddressNullBuilder)
@@ -205,14 +190,8 @@ func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressNull() interface {
 	return cb
 }
 
-func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressIpAddress() interface {
-	BACnetHostAddressIpAddressBuilder
-	Done() BACnetHostAddressBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetHostAddressIpAddressBuilder
-		Done() BACnetHostAddressBuilder
-	}); ok {
+func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressIpAddress() BACnetHostAddressIpAddressBuilder {
+	if cb, ok := b.childBuilder.(BACnetHostAddressIpAddressBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetHostAddressIpAddressBuilder().(*_BACnetHostAddressIpAddressBuilder)
@@ -221,14 +200,8 @@ func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressIpAddress() interface {
 	return cb
 }
 
-func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressName() interface {
-	BACnetHostAddressNameBuilder
-	Done() BACnetHostAddressBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetHostAddressNameBuilder
-		Done() BACnetHostAddressBuilder
-	}); ok {
+func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressName() BACnetHostAddressNameBuilder {
+	if cb, ok := b.childBuilder.(BACnetHostAddressNameBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetHostAddressNameBuilder().(*_BACnetHostAddressNameBuilder)
@@ -458,7 +431,7 @@ func (m *_BACnetHostAddress) deepCopy() *_BACnetHostAddress {
 	}
 	_BACnetHostAddressCopy := &_BACnetHostAddress{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetHostAddressCopy
 }

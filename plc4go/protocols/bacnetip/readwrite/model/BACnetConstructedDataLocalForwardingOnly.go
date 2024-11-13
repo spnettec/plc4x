@@ -86,6 +86,8 @@ type BACnetConstructedDataLocalForwardingOnlyBuilder interface {
 	WithLocalForwardingOnly(BACnetApplicationTagBoolean) BACnetConstructedDataLocalForwardingOnlyBuilder
 	// WithLocalForwardingOnlyBuilder adds LocalForwardingOnly (property field) which is build by the builder
 	WithLocalForwardingOnlyBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLocalForwardingOnlyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLocalForwardingOnly or returns an error if something is wrong
 	Build() (BACnetConstructedDataLocalForwardingOnly, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLocalForwardingOnlyBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLocalForwardingOnly
 }
 
 func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) WithMandatoryFields(localForwardingOnly BACnetApplicationTagBoolean) BACnetConstructedDataLocalForwardingOnlyBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLocalForwardingOnlyBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) deepCopy() *_BACnetConstruct
 	}
 	_BACnetConstructedDataLocalForwardingOnlyCopy := &_BACnetConstructedDataLocalForwardingOnly{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LocalForwardingOnly.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.LocalForwardingOnly),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLocalForwardingOnlyCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLocalForwardingOnlyCopy
 }
 

@@ -112,6 +112,8 @@ type WriteValueBuilder interface {
 	WithValue(DataValue) WriteValueBuilder
 	// WithValueBuilder adds Value (property field) which is build by the builder
 	WithValueBuilder(func(DataValueBuilder) DataValueBuilder) WriteValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the WriteValue or returns an error if something is wrong
 	Build() (WriteValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (WriteValueBuilder) = (*_WriteValueBuilder)(nil)
 
 func (b *_WriteValueBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._WriteValue
 }
 
 func (b *_WriteValueBuilder) WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) WriteValueBuilder {
@@ -233,8 +236,10 @@ func (b *_WriteValueBuilder) MustBuild() WriteValue {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_WriteValueBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -440,12 +445,12 @@ func (m *_WriteValue) deepCopy() *_WriteValue {
 	}
 	_WriteValueCopy := &_WriteValue{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.NodeId),
 		m.AttributeId,
-		m.IndexRange.DeepCopy().(PascalString),
-		m.Value.DeepCopy().(DataValue),
+		utils.DeepCopy[PascalString](m.IndexRange),
+		utils.DeepCopy[DataValue](m.Value),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_WriteValueCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _WriteValueCopy
 }
 

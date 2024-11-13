@@ -84,6 +84,8 @@ type BACnetPropertyStatesLiftCarDoorCommandBuilder interface {
 	WithLiftCarDoorCommand(BACnetLiftCarDoorCommandTagged) BACnetPropertyStatesLiftCarDoorCommandBuilder
 	// WithLiftCarDoorCommandBuilder adds LiftCarDoorCommand (property field) which is build by the builder
 	WithLiftCarDoorCommandBuilder(func(BACnetLiftCarDoorCommandTaggedBuilder) BACnetLiftCarDoorCommandTaggedBuilder) BACnetPropertyStatesLiftCarDoorCommandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesLiftCarDoorCommand or returns an error if something is wrong
 	Build() (BACnetPropertyStatesLiftCarDoorCommand, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesLiftCarDoorCommandBuilder) = (*_BACnetPropertyStatesL
 
 func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesLiftCarDoorCommand
 }
 
 func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) WithMandatoryFields(liftCarDoorCommand BACnetLiftCarDoorCommandTagged) BACnetPropertyStatesLiftCarDoorCommandBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) MustBuild() BACnetPrope
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesLiftCarDoorCommandBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) deepCopy() *_BACnetPropertySta
 	}
 	_BACnetPropertyStatesLiftCarDoorCommandCopy := &_BACnetPropertyStatesLiftCarDoorCommand{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.LiftCarDoorCommand.DeepCopy().(BACnetLiftCarDoorCommandTagged),
+		utils.DeepCopy[BACnetLiftCarDoorCommandTagged](m.LiftCarDoorCommand),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesLiftCarDoorCommandCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesLiftCarDoorCommandCopy
 }
 

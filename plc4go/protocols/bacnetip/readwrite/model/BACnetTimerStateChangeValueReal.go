@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueRealBuilder interface {
 	WithRealValue(BACnetApplicationTagReal) BACnetTimerStateChangeValueRealBuilder
 	// WithRealValueBuilder adds RealValue (property field) which is build by the builder
 	WithRealValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetTimerStateChangeValueRealBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueReal or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueReal, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueRealBuilder) = (*_BACnetTimerStateChangeValueR
 
 func (b *_BACnetTimerStateChangeValueRealBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueReal
 }
 
 func (b *_BACnetTimerStateChangeValueRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetTimerStateChangeValueRealBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueRealBuilder) MustBuild() BACnetTimerStateCh
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueRealBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimerStateChangeValueReal) deepCopy() *_BACnetTimerStateChangeVa
 	}
 	_BACnetTimerStateChangeValueRealCopy := &_BACnetTimerStateChangeValueReal{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.RealValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueRealCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueRealCopy
 }
 

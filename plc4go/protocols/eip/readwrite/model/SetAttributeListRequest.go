@@ -71,6 +71,8 @@ type SetAttributeListRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SetAttributeListRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the SetAttributeListRequest or returns an error if something is wrong
 	Build() (SetAttributeListRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SetAttributeListRequestBuilder) = (*_SetAttributeListRequestBuilder)(nil)
 
 func (b *_SetAttributeListRequestBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._SetAttributeListRequest
 }
 
 func (b *_SetAttributeListRequestBuilder) WithMandatoryFields() SetAttributeListRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_SetAttributeListRequestBuilder) MustBuild() SetAttributeListRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SetAttributeListRequestBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -253,7 +258,7 @@ func (m *_SetAttributeListRequest) deepCopy() *_SetAttributeListRequest {
 	_SetAttributeListRequestCopy := &_SetAttributeListRequest{
 		m.CipServiceContract.(*_CipService).deepCopy(),
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_SetAttributeListRequestCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _SetAttributeListRequestCopy
 }
 

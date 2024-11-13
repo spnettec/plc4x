@@ -477,11 +477,11 @@ func (m *_BACnetAccessRule) deepCopy() *_BACnetAccessRule {
 		return nil
 	}
 	_BACnetAccessRuleCopy := &_BACnetAccessRule{
-		m.TimeRangeSpecifier.DeepCopy().(BACnetAccessRuleTimeRangeSpecifierTagged),
-		m.TimeRange.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
-		m.LocationSpecifier.DeepCopy().(BACnetAccessRuleLocationSpecifierTagged),
-		m.Location.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
-		m.Enable.DeepCopy().(BACnetContextTagBoolean),
+		utils.DeepCopy[BACnetAccessRuleTimeRangeSpecifierTagged](m.TimeRangeSpecifier),
+		utils.DeepCopy[BACnetDeviceObjectPropertyReferenceEnclosed](m.TimeRange),
+		utils.DeepCopy[BACnetAccessRuleLocationSpecifierTagged](m.LocationSpecifier),
+		utils.DeepCopy[BACnetDeviceObjectReferenceEnclosed](m.Location),
+		utils.DeepCopy[BACnetContextTagBoolean](m.Enable),
 	}
 	return _BACnetAccessRuleCopy
 }

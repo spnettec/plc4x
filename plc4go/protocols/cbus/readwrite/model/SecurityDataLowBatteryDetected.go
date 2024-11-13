@@ -71,6 +71,8 @@ type SecurityDataLowBatteryDetectedBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataLowBatteryDetectedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataLowBatteryDetected or returns an error if something is wrong
 	Build() (SecurityDataLowBatteryDetected, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataLowBatteryDetectedBuilder) = (*_SecurityDataLowBatteryDetecte
 
 func (b *_SecurityDataLowBatteryDetectedBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataLowBatteryDetected
 }
 
 func (b *_SecurityDataLowBatteryDetectedBuilder) WithMandatoryFields() SecurityDataLowBatteryDetectedBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataLowBatteryDetectedBuilder) MustBuild() SecurityDataLowBatt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataLowBatteryDetectedBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataLowBatteryDetected) deepCopy() *_SecurityDataLowBatteryDet
 	_SecurityDataLowBatteryDetectedCopy := &_SecurityDataLowBatteryDetected{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataLowBatteryDetectedCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataLowBatteryDetectedCopy
 }
 

@@ -106,6 +106,8 @@ type StructureDescriptionBuilder interface {
 	WithStructureDefinition(StructureDefinition) StructureDescriptionBuilder
 	// WithStructureDefinitionBuilder adds StructureDefinition (property field) which is build by the builder
 	WithStructureDefinitionBuilder(func(StructureDefinitionBuilder) StructureDefinitionBuilder) StructureDescriptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the StructureDescription or returns an error if something is wrong
 	Build() (StructureDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (StructureDescriptionBuilder) = (*_StructureDescriptionBuilder)(nil)
 
 func (b *_StructureDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._StructureDescription
 }
 
 func (b *_StructureDescriptionBuilder) WithMandatoryFields(dataTypeId NodeId, name QualifiedName, structureDefinition StructureDefinition) StructureDescriptionBuilder {
@@ -222,8 +225,10 @@ func (b *_StructureDescriptionBuilder) MustBuild() StructureDescription {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_StructureDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,11 +417,11 @@ func (m *_StructureDescription) deepCopy() *_StructureDescription {
 	}
 	_StructureDescriptionCopy := &_StructureDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.DataTypeId.DeepCopy().(NodeId),
-		m.Name.DeepCopy().(QualifiedName),
-		m.StructureDefinition.DeepCopy().(StructureDefinition),
+		utils.DeepCopy[NodeId](m.DataTypeId),
+		utils.DeepCopy[QualifiedName](m.Name),
+		utils.DeepCopy[StructureDefinition](m.StructureDefinition),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_StructureDescriptionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _StructureDescriptionCopy
 }
 

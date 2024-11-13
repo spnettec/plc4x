@@ -276,7 +276,7 @@ func (m *_BACnetSetpointReference) deepCopy() *_BACnetSetpointReference {
 		return nil
 	}
 	_BACnetSetpointReferenceCopy := &_BACnetSetpointReference{
-		m.SetPointReference.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
+		utils.DeepCopy[BACnetObjectPropertyReferenceEnclosed](m.SetPointReference),
 	}
 	return _BACnetSetpointReferenceCopy
 }

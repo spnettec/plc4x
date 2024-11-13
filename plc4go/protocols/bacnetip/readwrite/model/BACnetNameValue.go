@@ -327,8 +327,8 @@ func (m *_BACnetNameValue) deepCopy() *_BACnetNameValue {
 		return nil
 	}
 	_BACnetNameValueCopy := &_BACnetNameValue{
-		m.Name.DeepCopy().(BACnetContextTagCharacterString),
-		m.Value.DeepCopy().(BACnetConstructedData),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.Name),
+		utils.DeepCopy[BACnetConstructedData](m.Value),
 	}
 	return _BACnetNameValueCopy
 }

@@ -103,6 +103,8 @@ type DF1RequestProtectedTypedLogicalReadBuilder interface {
 	WithElementNumber(uint8) DF1RequestProtectedTypedLogicalReadBuilder
 	// WithSubElementNumber adds SubElementNumber (property field)
 	WithSubElementNumber(uint8) DF1RequestProtectedTypedLogicalReadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() DF1RequestCommandBuilder
 	// Build builds the DF1RequestProtectedTypedLogicalRead or returns an error if something is wrong
 	Build() (DF1RequestProtectedTypedLogicalRead, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (DF1RequestProtectedTypedLogicalReadBuilder) = (*_DF1RequestProtectedTyped
 
 func (b *_DF1RequestProtectedTypedLogicalReadBuilder) setParent(contract DF1RequestCommandContract) {
 	b.DF1RequestCommandContract = contract
+	contract.(*_DF1RequestCommand)._SubType = b._DF1RequestProtectedTypedLogicalRead
 }
 
 func (b *_DF1RequestProtectedTypedLogicalReadBuilder) WithMandatoryFields(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) DF1RequestProtectedTypedLogicalReadBuilder {
@@ -172,8 +175,10 @@ func (b *_DF1RequestProtectedTypedLogicalReadBuilder) MustBuild() DF1RequestProt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DF1RequestProtectedTypedLogicalReadBuilder) Done() DF1RequestCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewDF1RequestCommandBuilder().(*_DF1RequestCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -402,7 +407,7 @@ func (m *_DF1RequestProtectedTypedLogicalRead) deepCopy() *_DF1RequestProtectedT
 		m.ElementNumber,
 		m.SubElementNumber,
 	}
-	m.DF1RequestCommandContract.(*_DF1RequestCommand)._SubType = m
+	_DF1RequestProtectedTypedLogicalReadCopy.DF1RequestCommandContract.(*_DF1RequestCommand)._SubType = m
 	return _DF1RequestProtectedTypedLogicalReadCopy
 }
 

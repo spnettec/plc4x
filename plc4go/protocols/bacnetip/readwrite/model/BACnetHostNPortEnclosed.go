@@ -394,9 +394,9 @@ func (m *_BACnetHostNPortEnclosed) deepCopy() *_BACnetHostNPortEnclosed {
 		return nil
 	}
 	_BACnetHostNPortEnclosedCopy := &_BACnetHostNPortEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.BacnetHostNPort.DeepCopy().(BACnetHostNPort),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetHostNPort](m.BacnetHostNPort),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetHostNPortEnclosedCopy

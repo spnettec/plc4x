@@ -86,6 +86,8 @@ type BACnetConstructedDataDeadbandBuilder interface {
 	WithDeadband(BACnetApplicationTagReal) BACnetConstructedDataDeadbandBuilder
 	// WithDeadbandBuilder adds Deadband (property field) which is build by the builder
 	WithDeadbandBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDeadbandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDeadband or returns an error if something is wrong
 	Build() (BACnetConstructedDataDeadband, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDeadbandBuilder) = (*_BACnetConstructedDataDeadbandB
 
 func (b *_BACnetConstructedDataDeadbandBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDeadband
 }
 
 func (b *_BACnetConstructedDataDeadbandBuilder) WithMandatoryFields(deadband BACnetApplicationTagReal) BACnetConstructedDataDeadbandBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDeadbandBuilder) MustBuild() BACnetConstructedDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDeadbandBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDeadband) deepCopy() *_BACnetConstructedDataDeadb
 	}
 	_BACnetConstructedDataDeadbandCopy := &_BACnetConstructedDataDeadband{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Deadband.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.Deadband),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDeadbandCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDeadbandCopy
 }
 

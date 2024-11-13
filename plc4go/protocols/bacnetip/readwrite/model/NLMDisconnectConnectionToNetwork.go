@@ -79,6 +79,8 @@ type NLMDisconnectConnectionToNetworkBuilder interface {
 	WithMandatoryFields(destinationNetworkAddress uint16) NLMDisconnectConnectionToNetworkBuilder
 	// WithDestinationNetworkAddress adds DestinationNetworkAddress (property field)
 	WithDestinationNetworkAddress(uint16) NLMDisconnectConnectionToNetworkBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMDisconnectConnectionToNetwork or returns an error if something is wrong
 	Build() (NLMDisconnectConnectionToNetwork, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (NLMDisconnectConnectionToNetworkBuilder) = (*_NLMDisconnectConnectionToNe
 
 func (b *_NLMDisconnectConnectionToNetworkBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMDisconnectConnectionToNetwork
 }
 
 func (b *_NLMDisconnectConnectionToNetworkBuilder) WithMandatoryFields(destinationNetworkAddress uint16) NLMDisconnectConnectionToNetworkBuilder {
@@ -128,8 +131,10 @@ func (b *_NLMDisconnectConnectionToNetworkBuilder) MustBuild() NLMDisconnectConn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMDisconnectConnectionToNetworkBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_NLMDisconnectConnectionToNetwork) deepCopy() *_NLMDisconnectConnection
 		m.NLMContract.(*_NLM).deepCopy(),
 		m.DestinationNetworkAddress,
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMDisconnectConnectionToNetworkCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMDisconnectConnectionToNetworkCopy
 }
 

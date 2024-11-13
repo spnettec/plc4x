@@ -113,6 +113,8 @@ type DatagramConnectionTransport2DataTypeBuilder interface {
 	WithQosCategoryBuilder(func(PascalStringBuilder) PascalStringBuilder) DatagramConnectionTransport2DataTypeBuilder
 	// WithDatagramQos adds DatagramQos (property field)
 	WithDatagramQos(...ExtensionObject) DatagramConnectionTransport2DataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DatagramConnectionTransport2DataType or returns an error if something is wrong
 	Build() (DatagramConnectionTransport2DataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -136,6 +138,7 @@ var _ (DatagramConnectionTransport2DataTypeBuilder) = (*_DatagramConnectionTrans
 
 func (b *_DatagramConnectionTransport2DataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DatagramConnectionTransport2DataType
 }
 
 func (b *_DatagramConnectionTransport2DataTypeBuilder) WithMandatoryFields(discoveryAddress ExtensionObject, discoveryAnnounceRate uint32, discoveryMaxMessageSize uint32, qosCategory PascalString, datagramQos []ExtensionObject) DatagramConnectionTransport2DataTypeBuilder {
@@ -220,8 +223,10 @@ func (b *_DatagramConnectionTransport2DataTypeBuilder) MustBuild() DatagramConne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DatagramConnectionTransport2DataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -464,13 +469,13 @@ func (m *_DatagramConnectionTransport2DataType) deepCopy() *_DatagramConnectionT
 	}
 	_DatagramConnectionTransport2DataTypeCopy := &_DatagramConnectionTransport2DataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.DiscoveryAddress.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[ExtensionObject](m.DiscoveryAddress),
 		m.DiscoveryAnnounceRate,
 		m.DiscoveryMaxMessageSize,
-		m.QosCategory.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.QosCategory),
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DatagramQos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DatagramConnectionTransport2DataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DatagramConnectionTransport2DataTypeCopy
 }
 

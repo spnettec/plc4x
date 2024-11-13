@@ -86,6 +86,8 @@ type BACnetConstructedDataTriggerBuilder interface {
 	WithTrigger(BACnetApplicationTagBoolean) BACnetConstructedDataTriggerBuilder
 	// WithTriggerBuilder adds Trigger (property field) which is build by the builder
 	WithTriggerBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataTriggerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTrigger or returns an error if something is wrong
 	Build() (BACnetConstructedDataTrigger, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTriggerBuilder) = (*_BACnetConstructedDataTriggerBui
 
 func (b *_BACnetConstructedDataTriggerBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTrigger
 }
 
 func (b *_BACnetConstructedDataTriggerBuilder) WithMandatoryFields(trigger BACnetApplicationTagBoolean) BACnetConstructedDataTriggerBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTriggerBuilder) MustBuild() BACnetConstructedData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTriggerBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataTrigger) deepCopy() *_BACnetConstructedDataTrigge
 	}
 	_BACnetConstructedDataTriggerCopy := &_BACnetConstructedDataTrigger{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Trigger.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.Trigger),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTriggerCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTriggerCopy
 }
 

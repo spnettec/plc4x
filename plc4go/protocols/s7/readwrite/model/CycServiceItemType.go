@@ -102,15 +102,9 @@ type CycServiceItemTypeBuilder interface {
 	// WithSyntaxId adds SyntaxId (property field)
 	WithSyntaxId(uint8) CycServiceItemTypeBuilder
 	// AsCycServiceItemAnyType converts this build to a subType of CycServiceItemType. It is always possible to return to current builder using Done()
-	AsCycServiceItemAnyType() interface {
-		CycServiceItemAnyTypeBuilder
-		Done() CycServiceItemTypeBuilder
-	}
+	AsCycServiceItemAnyType() CycServiceItemAnyTypeBuilder
 	// AsCycServiceItemDbReadType converts this build to a subType of CycServiceItemType. It is always possible to return to current builder using Done()
-	AsCycServiceItemDbReadType() interface {
-		CycServiceItemDbReadTypeBuilder
-		Done() CycServiceItemTypeBuilder
-	}
+	AsCycServiceItemDbReadType() CycServiceItemDbReadTypeBuilder
 	// Build builds the CycServiceItemType or returns an error if something is wrong
 	PartialBuild() (CycServiceItemTypeContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -171,14 +165,8 @@ func (b *_CycServiceItemTypeBuilder) PartialMustBuild() CycServiceItemTypeContra
 	return build
 }
 
-func (b *_CycServiceItemTypeBuilder) AsCycServiceItemAnyType() interface {
-	CycServiceItemAnyTypeBuilder
-	Done() CycServiceItemTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CycServiceItemAnyTypeBuilder
-		Done() CycServiceItemTypeBuilder
-	}); ok {
+func (b *_CycServiceItemTypeBuilder) AsCycServiceItemAnyType() CycServiceItemAnyTypeBuilder {
+	if cb, ok := b.childBuilder.(CycServiceItemAnyTypeBuilder); ok {
 		return cb
 	}
 	cb := NewCycServiceItemAnyTypeBuilder().(*_CycServiceItemAnyTypeBuilder)
@@ -187,14 +175,8 @@ func (b *_CycServiceItemTypeBuilder) AsCycServiceItemAnyType() interface {
 	return cb
 }
 
-func (b *_CycServiceItemTypeBuilder) AsCycServiceItemDbReadType() interface {
-	CycServiceItemDbReadTypeBuilder
-	Done() CycServiceItemTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CycServiceItemDbReadTypeBuilder
-		Done() CycServiceItemTypeBuilder
-	}); ok {
+func (b *_CycServiceItemTypeBuilder) AsCycServiceItemDbReadType() CycServiceItemDbReadTypeBuilder {
+	if cb, ok := b.childBuilder.(CycServiceItemDbReadTypeBuilder); ok {
 		return cb
 	}
 	cb := NewCycServiceItemDbReadTypeBuilder().(*_CycServiceItemDbReadTypeBuilder)

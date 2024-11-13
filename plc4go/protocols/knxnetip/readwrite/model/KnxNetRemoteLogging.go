@@ -79,6 +79,8 @@ type KnxNetRemoteLoggingBuilder interface {
 	WithMandatoryFields(version uint8) KnxNetRemoteLoggingBuilder
 	// WithVersion adds Version (property field)
 	WithVersion(uint8) KnxNetRemoteLoggingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ServiceIdBuilder
 	// Build builds the KnxNetRemoteLogging or returns an error if something is wrong
 	Build() (KnxNetRemoteLogging, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (KnxNetRemoteLoggingBuilder) = (*_KnxNetRemoteLoggingBuilder)(nil)
 
 func (b *_KnxNetRemoteLoggingBuilder) setParent(contract ServiceIdContract) {
 	b.ServiceIdContract = contract
+	contract.(*_ServiceId)._SubType = b._KnxNetRemoteLogging
 }
 
 func (b *_KnxNetRemoteLoggingBuilder) WithMandatoryFields(version uint8) KnxNetRemoteLoggingBuilder {
@@ -128,8 +131,10 @@ func (b *_KnxNetRemoteLoggingBuilder) MustBuild() KnxNetRemoteLogging {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_KnxNetRemoteLoggingBuilder) Done() ServiceIdBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewServiceIdBuilder().(*_ServiceIdBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_KnxNetRemoteLogging) deepCopy() *_KnxNetRemoteLogging {
 		m.ServiceIdContract.(*_ServiceId).deepCopy(),
 		m.Version,
 	}
-	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	_KnxNetRemoteLoggingCopy.ServiceIdContract.(*_ServiceId)._SubType = m
 	return _KnxNetRemoteLoggingCopy
 }
 

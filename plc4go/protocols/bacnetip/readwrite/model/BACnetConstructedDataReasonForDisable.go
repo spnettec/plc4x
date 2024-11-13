@@ -79,6 +79,8 @@ type BACnetConstructedDataReasonForDisableBuilder interface {
 	WithMandatoryFields(reasonForDisable []BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder
 	// WithReasonForDisable adds ReasonForDisable (property field)
 	WithReasonForDisable(...BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataReasonForDisable or returns an error if something is wrong
 	Build() (BACnetConstructedDataReasonForDisable, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataReasonForDisableBuilder) = (*_BACnetConstructedDataR
 
 func (b *_BACnetConstructedDataReasonForDisableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataReasonForDisable
 }
 
 func (b *_BACnetConstructedDataReasonForDisableBuilder) WithMandatoryFields(reasonForDisable []BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataReasonForDisableBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataReasonForDisableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataReasonForDisable) deepCopy() *_BACnetConstructedD
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAccessCredentialDisableReasonTagged, BACnetAccessCredentialDisableReasonTagged](m.ReasonForDisable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataReasonForDisableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataReasonForDisableCopy
 }
 

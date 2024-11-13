@@ -99,15 +99,9 @@ type DF1CommandBuilder interface {
 	// WithTransactionCounter adds TransactionCounter (property field)
 	WithTransactionCounter(uint16) DF1CommandBuilder
 	// AsDF1UnprotectedReadRequest converts this build to a subType of DF1Command. It is always possible to return to current builder using Done()
-	AsDF1UnprotectedReadRequest() interface {
-		DF1UnprotectedReadRequestBuilder
-		Done() DF1CommandBuilder
-	}
+	AsDF1UnprotectedReadRequest() DF1UnprotectedReadRequestBuilder
 	// AsDF1UnprotectedReadResponse converts this build to a subType of DF1Command. It is always possible to return to current builder using Done()
-	AsDF1UnprotectedReadResponse() interface {
-		DF1UnprotectedReadResponseBuilder
-		Done() DF1CommandBuilder
-	}
+	AsDF1UnprotectedReadResponse() DF1UnprotectedReadResponseBuilder
 	// Build builds the DF1Command or returns an error if something is wrong
 	PartialBuild() (DF1CommandContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -168,14 +162,8 @@ func (b *_DF1CommandBuilder) PartialMustBuild() DF1CommandContract {
 	return build
 }
 
-func (b *_DF1CommandBuilder) AsDF1UnprotectedReadRequest() interface {
-	DF1UnprotectedReadRequestBuilder
-	Done() DF1CommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DF1UnprotectedReadRequestBuilder
-		Done() DF1CommandBuilder
-	}); ok {
+func (b *_DF1CommandBuilder) AsDF1UnprotectedReadRequest() DF1UnprotectedReadRequestBuilder {
+	if cb, ok := b.childBuilder.(DF1UnprotectedReadRequestBuilder); ok {
 		return cb
 	}
 	cb := NewDF1UnprotectedReadRequestBuilder().(*_DF1UnprotectedReadRequestBuilder)
@@ -184,14 +172,8 @@ func (b *_DF1CommandBuilder) AsDF1UnprotectedReadRequest() interface {
 	return cb
 }
 
-func (b *_DF1CommandBuilder) AsDF1UnprotectedReadResponse() interface {
-	DF1UnprotectedReadResponseBuilder
-	Done() DF1CommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DF1UnprotectedReadResponseBuilder
-		Done() DF1CommandBuilder
-	}); ok {
+func (b *_DF1CommandBuilder) AsDF1UnprotectedReadResponse() DF1UnprotectedReadResponseBuilder {
+	if cb, ok := b.childBuilder.(DF1UnprotectedReadResponseBuilder); ok {
 		return cb
 	}
 	cb := NewDF1UnprotectedReadResponseBuilder().(*_DF1UnprotectedReadResponseBuilder)

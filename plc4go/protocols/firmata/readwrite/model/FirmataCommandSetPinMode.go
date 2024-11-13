@@ -85,6 +85,8 @@ type FirmataCommandSetPinModeBuilder interface {
 	WithPin(uint8) FirmataCommandSetPinModeBuilder
 	// WithMode adds Mode (property field)
 	WithMode(PinMode) FirmataCommandSetPinModeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() FirmataCommandBuilder
 	// Build builds the FirmataCommandSetPinMode or returns an error if something is wrong
 	Build() (FirmataCommandSetPinMode, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (FirmataCommandSetPinModeBuilder) = (*_FirmataCommandSetPinModeBuilder)(ni
 
 func (b *_FirmataCommandSetPinModeBuilder) setParent(contract FirmataCommandContract) {
 	b.FirmataCommandContract = contract
+	contract.(*_FirmataCommand)._SubType = b._FirmataCommandSetPinMode
 }
 
 func (b *_FirmataCommandSetPinModeBuilder) WithMandatoryFields(pin uint8, mode PinMode) FirmataCommandSetPinModeBuilder {
@@ -139,8 +142,10 @@ func (b *_FirmataCommandSetPinModeBuilder) MustBuild() FirmataCommandSetPinMode 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FirmataCommandSetPinModeBuilder) Done() FirmataCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewFirmataCommandBuilder().(*_FirmataCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_FirmataCommandSetPinMode) deepCopy() *_FirmataCommandSetPinMode {
 		m.Pin,
 		m.Mode,
 	}
-	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	_FirmataCommandSetPinModeCopy.FirmataCommandContract.(*_FirmataCommand)._SubType = m
 	return _FirmataCommandSetPinModeCopy
 }
 

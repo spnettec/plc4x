@@ -86,6 +86,8 @@ type BACnetConstructedDataCurrentCommandPriorityBuilder interface {
 	WithCurrentCommandPriority(BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder
 	// WithCurrentCommandPriorityBuilder adds CurrentCommandPriority (property field) which is build by the builder
 	WithCurrentCommandPriorityBuilder(func(BACnetOptionalUnsignedBuilder) BACnetOptionalUnsignedBuilder) BACnetConstructedDataCurrentCommandPriorityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCurrentCommandPriority or returns an error if something is wrong
 	Build() (BACnetConstructedDataCurrentCommandPriority, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataCurrentCommandPriorityBuilder) = (*_BACnetConstructe
 
 func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCurrentCommandPriority
 }
 
 func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) WithMandatoryFields(currentCommandPriority BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCurrentCommandPriorityBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) deepCopy() *_BACnetConstr
 	}
 	_BACnetConstructedDataCurrentCommandPriorityCopy := &_BACnetConstructedDataCurrentCommandPriority{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CurrentCommandPriority.DeepCopy().(BACnetOptionalUnsigned),
+		utils.DeepCopy[BACnetOptionalUnsigned](m.CurrentCommandPriority),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCurrentCommandPriorityCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCurrentCommandPriorityCopy
 }
 

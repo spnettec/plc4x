@@ -86,6 +86,8 @@ type BACnetConstructedDataControlledVariableValueBuilder interface {
 	WithControlledVariableValue(BACnetApplicationTagReal) BACnetConstructedDataControlledVariableValueBuilder
 	// WithControlledVariableValueBuilder adds ControlledVariableValue (property field) which is build by the builder
 	WithControlledVariableValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataControlledVariableValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataControlledVariableValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataControlledVariableValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataControlledVariableValueBuilder) = (*_BACnetConstruct
 
 func (b *_BACnetConstructedDataControlledVariableValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataControlledVariableValue
 }
 
 func (b *_BACnetConstructedDataControlledVariableValueBuilder) WithMandatoryFields(controlledVariableValue BACnetApplicationTagReal) BACnetConstructedDataControlledVariableValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataControlledVariableValueBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataControlledVariableValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataControlledVariableValue) deepCopy() *_BACnetConst
 	}
 	_BACnetConstructedDataControlledVariableValueCopy := &_BACnetConstructedDataControlledVariableValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ControlledVariableValue.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.ControlledVariableValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataControlledVariableValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataControlledVariableValueCopy
 }
 

@@ -89,6 +89,8 @@ type BACnetConstructedDataUnspecifiedBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataUnspecifiedBuilder
 	// WithData adds Data (property field)
 	WithData(...BACnetConstructedDataElement) BACnetConstructedDataUnspecifiedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataUnspecified or returns an error if something is wrong
 	Build() (BACnetConstructedDataUnspecified, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataUnspecifiedBuilder) = (*_BACnetConstructedDataUnspec
 
 func (b *_BACnetConstructedDataUnspecifiedBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataUnspecified
 }
 
 func (b *_BACnetConstructedDataUnspecifiedBuilder) WithMandatoryFields(data []BACnetConstructedDataElement) BACnetConstructedDataUnspecifiedBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataUnspecifiedBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataUnspecifiedBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataUnspecified) deepCopy() *_BACnetConstructedDataUn
 	}
 	_BACnetConstructedDataUnspecifiedCopy := &_BACnetConstructedDataUnspecified{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetConstructedDataElement, BACnetConstructedDataElement](m.Data),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataUnspecifiedCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataUnspecifiedCopy
 }
 

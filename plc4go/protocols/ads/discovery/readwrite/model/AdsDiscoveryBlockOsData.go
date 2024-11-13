@@ -79,6 +79,8 @@ type AdsDiscoveryBlockOsDataBuilder interface {
 	WithMandatoryFields(osData []byte) AdsDiscoveryBlockOsDataBuilder
 	// WithOsData adds OsData (property field)
 	WithOsData(...byte) AdsDiscoveryBlockOsDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AdsDiscoveryBlockBuilder
 	// Build builds the AdsDiscoveryBlockOsData or returns an error if something is wrong
 	Build() (AdsDiscoveryBlockOsData, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (AdsDiscoveryBlockOsDataBuilder) = (*_AdsDiscoveryBlockOsDataBuilder)(nil)
 
 func (b *_AdsDiscoveryBlockOsDataBuilder) setParent(contract AdsDiscoveryBlockContract) {
 	b.AdsDiscoveryBlockContract = contract
+	contract.(*_AdsDiscoveryBlock)._SubType = b._AdsDiscoveryBlockOsData
 }
 
 func (b *_AdsDiscoveryBlockOsDataBuilder) WithMandatoryFields(osData []byte) AdsDiscoveryBlockOsDataBuilder {
@@ -128,8 +131,10 @@ func (b *_AdsDiscoveryBlockOsDataBuilder) MustBuild() AdsDiscoveryBlockOsData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsDiscoveryBlockOsDataBuilder) Done() AdsDiscoveryBlockBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAdsDiscoveryBlockBuilder().(*_AdsDiscoveryBlockBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -301,7 +306,7 @@ func (m *_AdsDiscoveryBlockOsData) deepCopy() *_AdsDiscoveryBlockOsData {
 		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.OsData),
 	}
-	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	_AdsDiscoveryBlockOsDataCopy.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
 	return _AdsDiscoveryBlockOsDataCopy
 }
 

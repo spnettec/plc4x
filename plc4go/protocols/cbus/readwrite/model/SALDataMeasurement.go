@@ -84,6 +84,8 @@ type SALDataMeasurementBuilder interface {
 	WithMeasurementData(MeasurementData) SALDataMeasurementBuilder
 	// WithMeasurementDataBuilder adds MeasurementData (property field) which is build by the builder
 	WithMeasurementDataBuilder(func(MeasurementDataBuilder) MeasurementDataBuilder) SALDataMeasurementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataMeasurement or returns an error if something is wrong
 	Build() (SALDataMeasurement, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (SALDataMeasurementBuilder) = (*_SALDataMeasurementBuilder)(nil)
 
 func (b *_SALDataMeasurementBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataMeasurement
 }
 
 func (b *_SALDataMeasurementBuilder) WithMandatoryFields(measurementData MeasurementData) SALDataMeasurementBuilder {
@@ -152,8 +155,10 @@ func (b *_SALDataMeasurementBuilder) MustBuild() SALDataMeasurement {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataMeasurementBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_SALDataMeasurement) deepCopy() *_SALDataMeasurement {
 	}
 	_SALDataMeasurementCopy := &_SALDataMeasurement{
 		m.SALDataContract.(*_SALData).deepCopy(),
-		m.MeasurementData.DeepCopy().(MeasurementData),
+		utils.DeepCopy[MeasurementData](m.MeasurementData),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataMeasurementCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataMeasurementCopy
 }
 

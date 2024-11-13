@@ -79,6 +79,8 @@ type BACnetConstructedDataVTClassesSupportedBuilder interface {
 	WithMandatoryFields(vtClassesSupported []BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder
 	// WithVtClassesSupported adds VtClassesSupported (property field)
 	WithVtClassesSupported(...BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataVTClassesSupported or returns an error if something is wrong
 	Build() (BACnetConstructedDataVTClassesSupported, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataVTClassesSupportedBuilder) = (*_BACnetConstructedDat
 
 func (b *_BACnetConstructedDataVTClassesSupportedBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataVTClassesSupported
 }
 
 func (b *_BACnetConstructedDataVTClassesSupportedBuilder) WithMandatoryFields(vtClassesSupported []BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataVTClassesSupportedBuilder) MustBuild() BACnetCons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataVTClassesSupportedBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataVTClassesSupported) deepCopy() *_BACnetConstructe
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetVTClassTagged, BACnetVTClassTagged](m.VtClassesSupported),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataVTClassesSupportedCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataVTClassesSupportedCopy
 }
 

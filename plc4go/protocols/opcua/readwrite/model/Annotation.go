@@ -101,6 +101,8 @@ type AnnotationBuilder interface {
 	WithUserNameBuilder(func(PascalStringBuilder) PascalStringBuilder) AnnotationBuilder
 	// WithAnnotationTime adds AnnotationTime (property field)
 	WithAnnotationTime(int64) AnnotationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the Annotation or returns an error if something is wrong
 	Build() (Annotation, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (AnnotationBuilder) = (*_AnnotationBuilder)(nil)
 
 func (b *_AnnotationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._Annotation
 }
 
 func (b *_AnnotationBuilder) WithMandatoryFields(message PascalString, userName PascalString, annotationTime int64) AnnotationBuilder {
@@ -198,8 +201,10 @@ func (b *_AnnotationBuilder) MustBuild() Annotation {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AnnotationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -388,11 +393,11 @@ func (m *_Annotation) deepCopy() *_Annotation {
 	}
 	_AnnotationCopy := &_Annotation{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Message.DeepCopy().(PascalString),
-		m.UserName.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Message),
+		utils.DeepCopy[PascalString](m.UserName),
 		m.AnnotationTime,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AnnotationCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AnnotationCopy
 }
 

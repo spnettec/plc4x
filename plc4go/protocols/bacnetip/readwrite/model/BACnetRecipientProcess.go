@@ -327,8 +327,8 @@ func (m *_BACnetRecipientProcess) deepCopy() *_BACnetRecipientProcess {
 		return nil
 	}
 	_BACnetRecipientProcessCopy := &_BACnetRecipientProcess{
-		m.Recipient.DeepCopy().(BACnetRecipientEnclosed),
-		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetRecipientEnclosed](m.Recipient),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ProcessIdentifier),
 	}
 	return _BACnetRecipientProcessCopy
 }

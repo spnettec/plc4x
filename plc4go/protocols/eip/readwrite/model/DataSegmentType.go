@@ -89,10 +89,7 @@ type DataSegmentTypeBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DataSegmentTypeBuilder
 	// AsAnsiExtendedSymbolSegment converts this build to a subType of DataSegmentType. It is always possible to return to current builder using Done()
-	AsAnsiExtendedSymbolSegment() interface {
-		AnsiExtendedSymbolSegmentBuilder
-		Done() DataSegmentTypeBuilder
-	}
+	AsAnsiExtendedSymbolSegment() AnsiExtendedSymbolSegmentBuilder
 	// Build builds the DataSegmentType or returns an error if something is wrong
 	PartialBuild() (DataSegmentTypeContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -143,14 +140,8 @@ func (b *_DataSegmentTypeBuilder) PartialMustBuild() DataSegmentTypeContract {
 	return build
 }
 
-func (b *_DataSegmentTypeBuilder) AsAnsiExtendedSymbolSegment() interface {
-	AnsiExtendedSymbolSegmentBuilder
-	Done() DataSegmentTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AnsiExtendedSymbolSegmentBuilder
-		Done() DataSegmentTypeBuilder
-	}); ok {
+func (b *_DataSegmentTypeBuilder) AsAnsiExtendedSymbolSegment() AnsiExtendedSymbolSegmentBuilder {
+	if cb, ok := b.childBuilder.(AnsiExtendedSymbolSegmentBuilder); ok {
 		return cb
 	}
 	cb := NewAnsiExtendedSymbolSegmentBuilder().(*_AnsiExtendedSymbolSegmentBuilder)

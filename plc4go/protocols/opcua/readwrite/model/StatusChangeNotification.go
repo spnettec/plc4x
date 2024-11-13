@@ -95,6 +95,8 @@ type StatusChangeNotificationBuilder interface {
 	WithDiagnosticInfo(DiagnosticInfo) StatusChangeNotificationBuilder
 	// WithDiagnosticInfoBuilder adds DiagnosticInfo (property field) which is build by the builder
 	WithDiagnosticInfoBuilder(func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) StatusChangeNotificationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the StatusChangeNotification or returns an error if something is wrong
 	Build() (StatusChangeNotification, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (StatusChangeNotificationBuilder) = (*_StatusChangeNotificationBuilder)(ni
 
 func (b *_StatusChangeNotificationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._StatusChangeNotification
 }
 
 func (b *_StatusChangeNotificationBuilder) WithMandatoryFields(status StatusCode, diagnosticInfo DiagnosticInfo) StatusChangeNotificationBuilder {
@@ -187,8 +190,10 @@ func (b *_StatusChangeNotificationBuilder) MustBuild() StatusChangeNotification 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_StatusChangeNotificationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_StatusChangeNotification) deepCopy() *_StatusChangeNotification {
 	}
 	_StatusChangeNotificationCopy := &_StatusChangeNotification{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Status.DeepCopy().(StatusCode),
-		m.DiagnosticInfo.DeepCopy().(DiagnosticInfo),
+		utils.DeepCopy[StatusCode](m.Status),
+		utils.DeepCopy[DiagnosticInfo](m.DiagnosticInfo),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_StatusChangeNotificationCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _StatusChangeNotificationCopy
 }
 

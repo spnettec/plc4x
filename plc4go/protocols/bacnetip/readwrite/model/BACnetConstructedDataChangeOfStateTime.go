@@ -86,6 +86,8 @@ type BACnetConstructedDataChangeOfStateTimeBuilder interface {
 	WithChangeOfStateTime(BACnetDateTime) BACnetConstructedDataChangeOfStateTimeBuilder
 	// WithChangeOfStateTimeBuilder adds ChangeOfStateTime (property field) which is build by the builder
 	WithChangeOfStateTimeBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataChangeOfStateTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataChangeOfStateTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataChangeOfStateTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataChangeOfStateTimeBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataChangeOfStateTime
 }
 
 func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) WithMandatoryFields(changeOfStateTime BACnetDateTime) BACnetConstructedDataChangeOfStateTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataChangeOfStateTime) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataChangeOfStateTimeCopy := &_BACnetConstructedDataChangeOfStateTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ChangeOfStateTime.DeepCopy().(BACnetDateTime),
+		utils.DeepCopy[BACnetDateTime](m.ChangeOfStateTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataChangeOfStateTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataChangeOfStateTimeCopy
 }
 

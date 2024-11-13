@@ -112,6 +112,8 @@ type SimpleTypeDescriptionBuilder interface {
 	WithBaseDataTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) SimpleTypeDescriptionBuilder
 	// WithBuiltInType adds BuiltInType (property field)
 	WithBuiltInType(uint8) SimpleTypeDescriptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SimpleTypeDescription or returns an error if something is wrong
 	Build() (SimpleTypeDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (SimpleTypeDescriptionBuilder) = (*_SimpleTypeDescriptionBuilder)(nil)
 
 func (b *_SimpleTypeDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SimpleTypeDescription
 }
 
 func (b *_SimpleTypeDescriptionBuilder) WithMandatoryFields(dataTypeId NodeId, name QualifiedName, baseDataType NodeId, builtInType uint8) SimpleTypeDescriptionBuilder {
@@ -233,8 +236,10 @@ func (b *_SimpleTypeDescriptionBuilder) MustBuild() SimpleTypeDescription {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SimpleTypeDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -440,12 +445,12 @@ func (m *_SimpleTypeDescription) deepCopy() *_SimpleTypeDescription {
 	}
 	_SimpleTypeDescriptionCopy := &_SimpleTypeDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.DataTypeId.DeepCopy().(NodeId),
-		m.Name.DeepCopy().(QualifiedName),
-		m.BaseDataType.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.DataTypeId),
+		utils.DeepCopy[QualifiedName](m.Name),
+		utils.DeepCopy[NodeId](m.BaseDataType),
 		m.BuiltInType,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SimpleTypeDescriptionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SimpleTypeDescriptionCopy
 }
 

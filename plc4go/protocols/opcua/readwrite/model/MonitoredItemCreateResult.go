@@ -113,6 +113,8 @@ type MonitoredItemCreateResultBuilder interface {
 	WithFilterResult(ExtensionObject) MonitoredItemCreateResultBuilder
 	// WithFilterResultBuilder adds FilterResult (property field) which is build by the builder
 	WithFilterResultBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoredItemCreateResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the MonitoredItemCreateResult or returns an error if something is wrong
 	Build() (MonitoredItemCreateResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -136,6 +138,7 @@ var _ (MonitoredItemCreateResultBuilder) = (*_MonitoredItemCreateResultBuilder)(
 
 func (b *_MonitoredItemCreateResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._MonitoredItemCreateResult
 }
 
 func (b *_MonitoredItemCreateResultBuilder) WithMandatoryFields(statusCode StatusCode, monitoredItemId uint32, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) MonitoredItemCreateResultBuilder {
@@ -220,8 +223,10 @@ func (b *_MonitoredItemCreateResultBuilder) MustBuild() MonitoredItemCreateResul
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MonitoredItemCreateResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -444,13 +449,13 @@ func (m *_MonitoredItemCreateResult) deepCopy() *_MonitoredItemCreateResult {
 	}
 	_MonitoredItemCreateResultCopy := &_MonitoredItemCreateResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.StatusCode.DeepCopy().(StatusCode),
+		utils.DeepCopy[StatusCode](m.StatusCode),
 		m.MonitoredItemId,
 		m.RevisedSamplingInterval,
 		m.RevisedQueueSize,
-		m.FilterResult.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[ExtensionObject](m.FilterResult),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_MonitoredItemCreateResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _MonitoredItemCreateResultCopy
 }
 

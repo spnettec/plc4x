@@ -99,15 +99,9 @@ type CBusPointToMultiPointCommandBuilder interface {
 	// WithPeekedApplication adds PeekedApplication (property field)
 	WithPeekedApplication(byte) CBusPointToMultiPointCommandBuilder
 	// AsCBusPointToMultiPointCommandStatus converts this build to a subType of CBusPointToMultiPointCommand. It is always possible to return to current builder using Done()
-	AsCBusPointToMultiPointCommandStatus() interface {
-		CBusPointToMultiPointCommandStatusBuilder
-		Done() CBusPointToMultiPointCommandBuilder
-	}
+	AsCBusPointToMultiPointCommandStatus() CBusPointToMultiPointCommandStatusBuilder
 	// AsCBusPointToMultiPointCommandNormal converts this build to a subType of CBusPointToMultiPointCommand. It is always possible to return to current builder using Done()
-	AsCBusPointToMultiPointCommandNormal() interface {
-		CBusPointToMultiPointCommandNormalBuilder
-		Done() CBusPointToMultiPointCommandBuilder
-	}
+	AsCBusPointToMultiPointCommandNormal() CBusPointToMultiPointCommandNormalBuilder
 	// Build builds the CBusPointToMultiPointCommand or returns an error if something is wrong
 	PartialBuild() (CBusPointToMultiPointCommandContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -163,14 +157,8 @@ func (b *_CBusPointToMultiPointCommandBuilder) PartialMustBuild() CBusPointToMul
 	return build
 }
 
-func (b *_CBusPointToMultiPointCommandBuilder) AsCBusPointToMultiPointCommandStatus() interface {
-	CBusPointToMultiPointCommandStatusBuilder
-	Done() CBusPointToMultiPointCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CBusPointToMultiPointCommandStatusBuilder
-		Done() CBusPointToMultiPointCommandBuilder
-	}); ok {
+func (b *_CBusPointToMultiPointCommandBuilder) AsCBusPointToMultiPointCommandStatus() CBusPointToMultiPointCommandStatusBuilder {
+	if cb, ok := b.childBuilder.(CBusPointToMultiPointCommandStatusBuilder); ok {
 		return cb
 	}
 	cb := NewCBusPointToMultiPointCommandStatusBuilder().(*_CBusPointToMultiPointCommandStatusBuilder)
@@ -179,14 +167,8 @@ func (b *_CBusPointToMultiPointCommandBuilder) AsCBusPointToMultiPointCommandSta
 	return cb
 }
 
-func (b *_CBusPointToMultiPointCommandBuilder) AsCBusPointToMultiPointCommandNormal() interface {
-	CBusPointToMultiPointCommandNormalBuilder
-	Done() CBusPointToMultiPointCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CBusPointToMultiPointCommandNormalBuilder
-		Done() CBusPointToMultiPointCommandBuilder
-	}); ok {
+func (b *_CBusPointToMultiPointCommandBuilder) AsCBusPointToMultiPointCommandNormal() CBusPointToMultiPointCommandNormalBuilder {
+	if cb, ok := b.childBuilder.(CBusPointToMultiPointCommandNormalBuilder); ok {
 		return cb
 	}
 	cb := NewCBusPointToMultiPointCommandNormalBuilder().(*_CBusPointToMultiPointCommandNormalBuilder)

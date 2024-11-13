@@ -85,6 +85,8 @@ type ApduDataGroupValueWriteBuilder interface {
 	WithDataFirstByte(int8) ApduDataGroupValueWriteBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) ApduDataGroupValueWriteBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataGroupValueWrite or returns an error if something is wrong
 	Build() (ApduDataGroupValueWrite, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (ApduDataGroupValueWriteBuilder) = (*_ApduDataGroupValueWriteBuilder)(nil)
 
 func (b *_ApduDataGroupValueWriteBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataGroupValueWrite
 }
 
 func (b *_ApduDataGroupValueWriteBuilder) WithMandatoryFields(dataFirstByte int8, data []byte) ApduDataGroupValueWriteBuilder {
@@ -139,8 +142,10 @@ func (b *_ApduDataGroupValueWriteBuilder) MustBuild() ApduDataGroupValueWrite {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataGroupValueWriteBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -317,7 +322,7 @@ func (m *_ApduDataGroupValueWrite) deepCopy() *_ApduDataGroupValueWrite {
 		m.DataFirstByte,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataGroupValueWriteCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataGroupValueWriteCopy
 }
 

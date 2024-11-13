@@ -330,8 +330,8 @@ func (m *_BACnetAssignedAccessRights) deepCopy() *_BACnetAssignedAccessRights {
 		return nil
 	}
 	_BACnetAssignedAccessRightsCopy := &_BACnetAssignedAccessRights{
-		m.AssignedAccessRights.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
-		m.Enable.DeepCopy().(BACnetContextTagBoolean),
+		utils.DeepCopy[BACnetDeviceObjectReferenceEnclosed](m.AssignedAccessRights),
+		utils.DeepCopy[BACnetContextTagBoolean](m.Enable),
 	}
 	return _BACnetAssignedAccessRightsCopy
 }

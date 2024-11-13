@@ -71,6 +71,8 @@ type ApduDataExtNetworkParameterWriteBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtNetworkParameterWriteBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtNetworkParameterWrite or returns an error if something is wrong
 	Build() (ApduDataExtNetworkParameterWrite, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataExtNetworkParameterWriteBuilder) = (*_ApduDataExtNetworkParameter
 
 func (b *_ApduDataExtNetworkParameterWriteBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtNetworkParameterWrite
 }
 
 func (b *_ApduDataExtNetworkParameterWriteBuilder) WithMandatoryFields() ApduDataExtNetworkParameterWriteBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataExtNetworkParameterWriteBuilder) MustBuild() ApduDataExtNetwor
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtNetworkParameterWriteBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataExtNetworkParameterWrite) deepCopy() *_ApduDataExtNetworkParam
 	_ApduDataExtNetworkParameterWriteCopy := &_ApduDataExtNetworkParameterWrite{
 		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtNetworkParameterWriteCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtNetworkParameterWriteCopy
 }
 

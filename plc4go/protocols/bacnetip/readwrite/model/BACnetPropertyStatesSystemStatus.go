@@ -84,6 +84,8 @@ type BACnetPropertyStatesSystemStatusBuilder interface {
 	WithSystemStatus(BACnetDeviceStatusTagged) BACnetPropertyStatesSystemStatusBuilder
 	// WithSystemStatusBuilder adds SystemStatus (property field) which is build by the builder
 	WithSystemStatusBuilder(func(BACnetDeviceStatusTaggedBuilder) BACnetDeviceStatusTaggedBuilder) BACnetPropertyStatesSystemStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesSystemStatus or returns an error if something is wrong
 	Build() (BACnetPropertyStatesSystemStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesSystemStatusBuilder) = (*_BACnetPropertyStatesSystemS
 
 func (b *_BACnetPropertyStatesSystemStatusBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesSystemStatus
 }
 
 func (b *_BACnetPropertyStatesSystemStatusBuilder) WithMandatoryFields(systemStatus BACnetDeviceStatusTagged) BACnetPropertyStatesSystemStatusBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesSystemStatusBuilder) MustBuild() BACnetPropertySta
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesSystemStatusBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesSystemStatus) deepCopy() *_BACnetPropertyStatesSys
 	}
 	_BACnetPropertyStatesSystemStatusCopy := &_BACnetPropertyStatesSystemStatus{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.SystemStatus.DeepCopy().(BACnetDeviceStatusTagged),
+		utils.DeepCopy[BACnetDeviceStatusTagged](m.SystemStatus),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesSystemStatusCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesSystemStatusCopy
 }
 

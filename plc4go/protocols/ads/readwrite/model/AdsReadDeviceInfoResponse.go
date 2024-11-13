@@ -103,6 +103,8 @@ type AdsReadDeviceInfoResponseBuilder interface {
 	WithVersion(uint16) AdsReadDeviceInfoResponseBuilder
 	// WithDevice adds Device (property field)
 	WithDevice(...byte) AdsReadDeviceInfoResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AmsPacketBuilder
 	// Build builds the AdsReadDeviceInfoResponse or returns an error if something is wrong
 	Build() (AdsReadDeviceInfoResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (AdsReadDeviceInfoResponseBuilder) = (*_AdsReadDeviceInfoResponseBuilder)(
 
 func (b *_AdsReadDeviceInfoResponseBuilder) setParent(contract AmsPacketContract) {
 	b.AmsPacketContract = contract
+	contract.(*_AmsPacket)._SubType = b._AdsReadDeviceInfoResponse
 }
 
 func (b *_AdsReadDeviceInfoResponseBuilder) WithMandatoryFields(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) AdsReadDeviceInfoResponseBuilder {
@@ -172,8 +175,10 @@ func (b *_AdsReadDeviceInfoResponseBuilder) MustBuild() AdsReadDeviceInfoRespons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsReadDeviceInfoResponseBuilder) Done() AmsPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAmsPacketBuilder().(*_AmsPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -408,7 +413,7 @@ func (m *_AdsReadDeviceInfoResponse) deepCopy() *_AdsReadDeviceInfoResponse {
 		m.Version,
 		utils.DeepCopySlice[byte, byte](m.Device),
 	}
-	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	_AdsReadDeviceInfoResponseCopy.AmsPacketContract.(*_AmsPacket)._SubType = m
 	return _AdsReadDeviceInfoResponseCopy
 }
 

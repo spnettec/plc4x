@@ -393,7 +393,7 @@ func (m *_BACnetEscalatorOperationDirectionTagged) deepCopy() *_BACnetEscalatorO
 		return nil
 	}
 	_BACnetEscalatorOperationDirectionTaggedCopy := &_BACnetEscalatorOperationDirectionTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

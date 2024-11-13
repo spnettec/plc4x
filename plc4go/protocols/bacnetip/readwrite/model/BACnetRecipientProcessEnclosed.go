@@ -394,9 +394,9 @@ func (m *_BACnetRecipientProcessEnclosed) deepCopy() *_BACnetRecipientProcessEnc
 		return nil
 	}
 	_BACnetRecipientProcessEnclosedCopy := &_BACnetRecipientProcessEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.RecipientProcess.DeepCopy().(BACnetRecipientProcess),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetRecipientProcess](m.RecipientProcess),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetRecipientProcessEnclosedCopy

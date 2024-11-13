@@ -94,6 +94,8 @@ type RequestDirectCommandAccessBuilder interface {
 	WithOptionalAlpha(Alpha) RequestDirectCommandAccessBuilder
 	// WithOptionalAlphaBuilder adds Alpha (property field) which is build by the builder
 	WithOptionalAlphaBuilder(func(AlphaBuilder) AlphaBuilder) RequestDirectCommandAccessBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() RequestBuilder
 	// Build builds the RequestDirectCommandAccess or returns an error if something is wrong
 	Build() (RequestDirectCommandAccess, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,6 +119,7 @@ var _ (RequestDirectCommandAccessBuilder) = (*_RequestDirectCommandAccessBuilder
 
 func (b *_RequestDirectCommandAccessBuilder) setParent(contract RequestContract) {
 	b.RequestContract = contract
+	contract.(*_Request)._SubType = b._RequestDirectCommandAccess
 }
 
 func (b *_RequestDirectCommandAccessBuilder) WithMandatoryFields(calData CALData) RequestDirectCommandAccessBuilder {
@@ -180,8 +183,10 @@ func (b *_RequestDirectCommandAccessBuilder) MustBuild() RequestDirectCommandAcc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RequestDirectCommandAccessBuilder) Done() RequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewRequestBuilder().(*_RequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,10 +417,10 @@ func (m *_RequestDirectCommandAccess) deepCopy() *_RequestDirectCommandAccess {
 	}
 	_RequestDirectCommandAccessCopy := &_RequestDirectCommandAccess{
 		m.RequestContract.(*_Request).deepCopy(),
-		m.CalData.DeepCopy().(CALData),
-		m.Alpha.DeepCopy().(Alpha),
+		utils.DeepCopy[CALData](m.CalData),
+		utils.DeepCopy[Alpha](m.Alpha),
 	}
-	m.RequestContract.(*_Request)._SubType = m
+	_RequestDirectCommandAccessCopy.RequestContract.(*_Request)._SubType = m
 	return _RequestDirectCommandAccessCopy
 }
 

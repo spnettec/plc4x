@@ -71,6 +71,8 @@ type BACnetConstructedDataNotificationForwarderAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataNotificationForwarderAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNotificationForwarderAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataNotificationForwarderAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataNotificationForwarderAllBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNotificationForwarderAll
 }
 
 func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) WithMandatoryFields() BACnetConstructedDataNotificationForwarderAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNotificationForwarderAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -255,7 +260,7 @@ func (m *_BACnetConstructedDataNotificationForwarderAll) deepCopy() *_BACnetCons
 	_BACnetConstructedDataNotificationForwarderAllCopy := &_BACnetConstructedDataNotificationForwarderAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNotificationForwarderAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNotificationForwarderAllCopy
 }
 

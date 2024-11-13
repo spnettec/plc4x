@@ -79,6 +79,8 @@ type BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder interface {
 	WithMandatoryFields(alarmValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder
 	// WithAlarmValues adds AlarmValues (property field)
 	WithAlarmValues(...BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLifeSafetyZoneAlarmValues or returns an error if something is wrong
 	Build() (BACnetConstructedDataLifeSafetyZoneAlarmValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) = (*_BACnetConstru
 
 func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLifeSafetyZoneAlarmValues
 }
 
 func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLifeSafetyZoneAlarmValuesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataLifeSafetyZoneAlarmValues) deepCopy() *_BACnetCon
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.AlarmValues),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLifeSafetyZoneAlarmValuesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLifeSafetyZoneAlarmValuesCopy
 }
 

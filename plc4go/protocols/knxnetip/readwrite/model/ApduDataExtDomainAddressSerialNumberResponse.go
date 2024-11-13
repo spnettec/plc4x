@@ -71,6 +71,8 @@ type ApduDataExtDomainAddressSerialNumberResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtDomainAddressSerialNumberResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtDomainAddressSerialNumberResponse or returns an error if something is wrong
 	Build() (ApduDataExtDomainAddressSerialNumberResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataExtDomainAddressSerialNumberResponseBuilder) = (*_ApduDataExtDoma
 
 func (b *_ApduDataExtDomainAddressSerialNumberResponseBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtDomainAddressSerialNumberResponse
 }
 
 func (b *_ApduDataExtDomainAddressSerialNumberResponseBuilder) WithMandatoryFields() ApduDataExtDomainAddressSerialNumberResponseBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataExtDomainAddressSerialNumberResponseBuilder) MustBuild() ApduD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtDomainAddressSerialNumberResponseBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -246,7 +251,7 @@ func (m *_ApduDataExtDomainAddressSerialNumberResponse) deepCopy() *_ApduDataExt
 	_ApduDataExtDomainAddressSerialNumberResponseCopy := &_ApduDataExtDomainAddressSerialNumberResponse{
 		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtDomainAddressSerialNumberResponseCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtDomainAddressSerialNumberResponseCopy
 }
 

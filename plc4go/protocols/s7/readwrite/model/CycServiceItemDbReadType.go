@@ -85,6 +85,8 @@ type CycServiceItemDbReadTypeBuilder interface {
 	WithNumberOfAreas(uint8) CycServiceItemDbReadTypeBuilder
 	// WithItems adds Items (property field)
 	WithItems(...SubItem) CycServiceItemDbReadTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CycServiceItemTypeBuilder
 	// Build builds the CycServiceItemDbReadType or returns an error if something is wrong
 	Build() (CycServiceItemDbReadType, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (CycServiceItemDbReadTypeBuilder) = (*_CycServiceItemDbReadTypeBuilder)(ni
 
 func (b *_CycServiceItemDbReadTypeBuilder) setParent(contract CycServiceItemTypeContract) {
 	b.CycServiceItemTypeContract = contract
+	contract.(*_CycServiceItemType)._SubType = b._CycServiceItemDbReadType
 }
 
 func (b *_CycServiceItemDbReadTypeBuilder) WithMandatoryFields(numberOfAreas uint8, items []SubItem) CycServiceItemDbReadTypeBuilder {
@@ -139,8 +142,10 @@ func (b *_CycServiceItemDbReadTypeBuilder) MustBuild() CycServiceItemDbReadType 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CycServiceItemDbReadTypeBuilder) Done() CycServiceItemTypeBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCycServiceItemTypeBuilder().(*_CycServiceItemTypeBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -318,7 +323,7 @@ func (m *_CycServiceItemDbReadType) deepCopy() *_CycServiceItemDbReadType {
 		m.NumberOfAreas,
 		utils.DeepCopySlice[SubItem, SubItem](m.Items),
 	}
-	m.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = m
+	_CycServiceItemDbReadTypeCopy.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = m
 	return _CycServiceItemDbReadTypeCopy
 }
 

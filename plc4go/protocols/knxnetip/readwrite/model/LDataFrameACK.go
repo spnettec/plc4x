@@ -71,6 +71,8 @@ type LDataFrameACKBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() LDataFrameACKBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LDataFrameBuilder
 	// Build builds the LDataFrameACK or returns an error if something is wrong
 	Build() (LDataFrameACK, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (LDataFrameACKBuilder) = (*_LDataFrameACKBuilder)(nil)
 
 func (b *_LDataFrameACKBuilder) setParent(contract LDataFrameContract) {
 	b.LDataFrameContract = contract
+	contract.(*_LDataFrame)._SubType = b._LDataFrameACK
 }
 
 func (b *_LDataFrameACKBuilder) WithMandatoryFields() LDataFrameACKBuilder {
@@ -115,8 +118,10 @@ func (b *_LDataFrameACKBuilder) MustBuild() LDataFrameACK {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LDataFrameACKBuilder) Done() LDataFrameBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLDataFrameBuilder().(*_LDataFrameBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -249,7 +254,7 @@ func (m *_LDataFrameACK) deepCopy() *_LDataFrameACK {
 	_LDataFrameACKCopy := &_LDataFrameACK{
 		m.LDataFrameContract.(*_LDataFrame).deepCopy(),
 	}
-	m.LDataFrameContract.(*_LDataFrame)._SubType = m
+	_LDataFrameACKCopy.LDataFrameContract.(*_LDataFrame)._SubType = m
 	return _LDataFrameACKCopy
 }
 

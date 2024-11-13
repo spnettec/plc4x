@@ -102,6 +102,8 @@ type IdentifyReplyCommandOutputUnitSummaryBuilder interface {
 	WithOptionalGavStoreEnabledByte2(byte) IdentifyReplyCommandOutputUnitSummaryBuilder
 	// WithTimeFromLastRecoverOfMainsInSeconds adds TimeFromLastRecoverOfMainsInSeconds (property field)
 	WithTimeFromLastRecoverOfMainsInSeconds(uint8) IdentifyReplyCommandOutputUnitSummaryBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() IdentifyReplyCommandBuilder
 	// Build builds the IdentifyReplyCommandOutputUnitSummary or returns an error if something is wrong
 	Build() (IdentifyReplyCommandOutputUnitSummary, error)
 	// MustBuild does the same as Build but panics on error
@@ -125,6 +127,7 @@ var _ (IdentifyReplyCommandOutputUnitSummaryBuilder) = (*_IdentifyReplyCommandOu
 
 func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) setParent(contract IdentifyReplyCommandContract) {
 	b.IdentifyReplyCommandContract = contract
+	contract.(*_IdentifyReplyCommand)._SubType = b._IdentifyReplyCommandOutputUnitSummary
 }
 
 func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithMandatoryFields(unitFlags IdentifyReplyCommandUnitSummary, timeFromLastRecoverOfMainsInSeconds uint8) IdentifyReplyCommandOutputUnitSummaryBuilder {
@@ -185,8 +188,10 @@ func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) MustBuild() IdentifyRepl
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentifyReplyCommandOutputUnitSummaryBuilder) Done() IdentifyReplyCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -398,12 +403,12 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) deepCopy() *_IdentifyReplyComma
 	}
 	_IdentifyReplyCommandOutputUnitSummaryCopy := &_IdentifyReplyCommandOutputUnitSummary{
 		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
-		m.UnitFlags.DeepCopy().(IdentifyReplyCommandUnitSummary),
+		utils.DeepCopy[IdentifyReplyCommandUnitSummary](m.UnitFlags),
 		utils.CopyPtr[byte](m.GavStoreEnabledByte1),
 		utils.CopyPtr[byte](m.GavStoreEnabledByte2),
 		m.TimeFromLastRecoverOfMainsInSeconds,
 	}
-	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	_IdentifyReplyCommandOutputUnitSummaryCopy.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
 	return _IdentifyReplyCommandOutputUnitSummaryCopy
 }
 

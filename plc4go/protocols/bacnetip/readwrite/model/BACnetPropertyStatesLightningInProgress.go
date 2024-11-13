@@ -84,6 +84,8 @@ type BACnetPropertyStatesLightningInProgressBuilder interface {
 	WithLightningInProgress(BACnetLightingInProgressTagged) BACnetPropertyStatesLightningInProgressBuilder
 	// WithLightningInProgressBuilder adds LightningInProgress (property field) which is build by the builder
 	WithLightningInProgressBuilder(func(BACnetLightingInProgressTaggedBuilder) BACnetLightingInProgressTaggedBuilder) BACnetPropertyStatesLightningInProgressBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesLightningInProgress or returns an error if something is wrong
 	Build() (BACnetPropertyStatesLightningInProgress, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesLightningInProgressBuilder) = (*_BACnetPropertyStates
 
 func (b *_BACnetPropertyStatesLightningInProgressBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesLightningInProgress
 }
 
 func (b *_BACnetPropertyStatesLightningInProgressBuilder) WithMandatoryFields(lightningInProgress BACnetLightingInProgressTagged) BACnetPropertyStatesLightningInProgressBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesLightningInProgressBuilder) MustBuild() BACnetProp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesLightningInProgressBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesLightningInProgress) deepCopy() *_BACnetPropertySt
 	}
 	_BACnetPropertyStatesLightningInProgressCopy := &_BACnetPropertyStatesLightningInProgress{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.LightningInProgress.DeepCopy().(BACnetLightingInProgressTagged),
+		utils.DeepCopy[BACnetLightingInProgressTagged](m.LightningInProgress),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesLightningInProgressCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesLightningInProgressCopy
 }
 

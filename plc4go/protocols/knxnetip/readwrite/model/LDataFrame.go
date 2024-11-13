@@ -116,20 +116,11 @@ type LDataFrameBuilder interface {
 	// WithErrorFlag adds ErrorFlag (property field)
 	WithErrorFlag(bool) LDataFrameBuilder
 	// AsLDataExtended converts this build to a subType of LDataFrame. It is always possible to return to current builder using Done()
-	AsLDataExtended() interface {
-		LDataExtendedBuilder
-		Done() LDataFrameBuilder
-	}
+	AsLDataExtended() LDataExtendedBuilder
 	// AsLPollData converts this build to a subType of LDataFrame. It is always possible to return to current builder using Done()
-	AsLPollData() interface {
-		LPollDataBuilder
-		Done() LDataFrameBuilder
-	}
+	AsLPollData() LPollDataBuilder
 	// AsLDataFrameACK converts this build to a subType of LDataFrame. It is always possible to return to current builder using Done()
-	AsLDataFrameACK() interface {
-		LDataFrameACKBuilder
-		Done() LDataFrameBuilder
-	}
+	AsLDataFrameACK() LDataFrameACKBuilder
 	// Build builds the LDataFrame or returns an error if something is wrong
 	PartialBuild() (LDataFrameContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -205,14 +196,8 @@ func (b *_LDataFrameBuilder) PartialMustBuild() LDataFrameContract {
 	return build
 }
 
-func (b *_LDataFrameBuilder) AsLDataExtended() interface {
-	LDataExtendedBuilder
-	Done() LDataFrameBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LDataExtendedBuilder
-		Done() LDataFrameBuilder
-	}); ok {
+func (b *_LDataFrameBuilder) AsLDataExtended() LDataExtendedBuilder {
+	if cb, ok := b.childBuilder.(LDataExtendedBuilder); ok {
 		return cb
 	}
 	cb := NewLDataExtendedBuilder().(*_LDataExtendedBuilder)
@@ -221,14 +206,8 @@ func (b *_LDataFrameBuilder) AsLDataExtended() interface {
 	return cb
 }
 
-func (b *_LDataFrameBuilder) AsLPollData() interface {
-	LPollDataBuilder
-	Done() LDataFrameBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LPollDataBuilder
-		Done() LDataFrameBuilder
-	}); ok {
+func (b *_LDataFrameBuilder) AsLPollData() LPollDataBuilder {
+	if cb, ok := b.childBuilder.(LPollDataBuilder); ok {
 		return cb
 	}
 	cb := NewLPollDataBuilder().(*_LPollDataBuilder)
@@ -237,14 +216,8 @@ func (b *_LDataFrameBuilder) AsLPollData() interface {
 	return cb
 }
 
-func (b *_LDataFrameBuilder) AsLDataFrameACK() interface {
-	LDataFrameACKBuilder
-	Done() LDataFrameBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LDataFrameACKBuilder
-		Done() LDataFrameBuilder
-	}); ok {
+func (b *_LDataFrameBuilder) AsLDataFrameACK() LDataFrameACKBuilder {
+	if cb, ok := b.childBuilder.(LDataFrameACKBuilder); ok {
 		return cb
 	}
 	cb := NewLDataFrameACKBuilder().(*_LDataFrameACKBuilder)

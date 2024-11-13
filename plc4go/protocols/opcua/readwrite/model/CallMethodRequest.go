@@ -101,6 +101,8 @@ type CallMethodRequestBuilder interface {
 	WithMethodIdBuilder(func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder
 	// WithInputArguments adds InputArguments (property field)
 	WithInputArguments(...Variant) CallMethodRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CallMethodRequest or returns an error if something is wrong
 	Build() (CallMethodRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (CallMethodRequestBuilder) = (*_CallMethodRequestBuilder)(nil)
 
 func (b *_CallMethodRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CallMethodRequest
 }
 
 func (b *_CallMethodRequestBuilder) WithMandatoryFields(objectId NodeId, methodId NodeId, inputArguments []Variant) CallMethodRequestBuilder {
@@ -198,8 +201,10 @@ func (b *_CallMethodRequestBuilder) MustBuild() CallMethodRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CallMethodRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -408,11 +413,11 @@ func (m *_CallMethodRequest) deepCopy() *_CallMethodRequest {
 	}
 	_CallMethodRequestCopy := &_CallMethodRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ObjectId.DeepCopy().(NodeId),
-		m.MethodId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.ObjectId),
+		utils.DeepCopy[NodeId](m.MethodId),
 		utils.DeepCopySlice[Variant, Variant](m.InputArguments),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CallMethodRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CallMethodRequestCopy
 }
 

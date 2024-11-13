@@ -86,6 +86,8 @@ type BACnetConstructedDataElevatorGroupBuilder interface {
 	WithElevatorGroup(BACnetApplicationTagObjectIdentifier) BACnetConstructedDataElevatorGroupBuilder
 	// WithElevatorGroupBuilder adds ElevatorGroup (property field) which is build by the builder
 	WithElevatorGroupBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataElevatorGroupBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataElevatorGroup or returns an error if something is wrong
 	Build() (BACnetConstructedDataElevatorGroup, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataElevatorGroupBuilder) = (*_BACnetConstructedDataElev
 
 func (b *_BACnetConstructedDataElevatorGroupBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataElevatorGroup
 }
 
 func (b *_BACnetConstructedDataElevatorGroupBuilder) WithMandatoryFields(elevatorGroup BACnetApplicationTagObjectIdentifier) BACnetConstructedDataElevatorGroupBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataElevatorGroupBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataElevatorGroupBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataElevatorGroup) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataElevatorGroupCopy := &_BACnetConstructedDataElevatorGroup{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ElevatorGroup.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ElevatorGroup),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataElevatorGroupCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataElevatorGroupCopy
 }
 

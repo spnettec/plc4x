@@ -86,6 +86,8 @@ type BACnetConstructedDataShedDurationBuilder interface {
 	WithShedDuration(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedDurationBuilder
 	// WithShedDurationBuilder adds ShedDuration (property field) which is build by the builder
 	WithShedDurationBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataShedDurationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataShedDuration or returns an error if something is wrong
 	Build() (BACnetConstructedDataShedDuration, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataShedDurationBuilder) = (*_BACnetConstructedDataShedD
 
 func (b *_BACnetConstructedDataShedDurationBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataShedDuration
 }
 
 func (b *_BACnetConstructedDataShedDurationBuilder) WithMandatoryFields(shedDuration BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedDurationBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataShedDurationBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataShedDurationBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataShedDuration) deepCopy() *_BACnetConstructedDataS
 	}
 	_BACnetConstructedDataShedDurationCopy := &_BACnetConstructedDataShedDuration{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ShedDuration.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ShedDuration),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataShedDurationCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataShedDurationCopy
 }
 

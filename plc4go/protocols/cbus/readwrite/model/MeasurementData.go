@@ -96,10 +96,7 @@ type MeasurementDataBuilder interface {
 	// WithCommandTypeContainer adds CommandTypeContainer (property field)
 	WithCommandTypeContainer(MeasurementCommandTypeContainer) MeasurementDataBuilder
 	// AsMeasurementDataChannelMeasurementData converts this build to a subType of MeasurementData. It is always possible to return to current builder using Done()
-	AsMeasurementDataChannelMeasurementData() interface {
-		MeasurementDataChannelMeasurementDataBuilder
-		Done() MeasurementDataBuilder
-	}
+	AsMeasurementDataChannelMeasurementData() MeasurementDataChannelMeasurementDataBuilder
 	// Build builds the MeasurementData or returns an error if something is wrong
 	PartialBuild() (MeasurementDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,14 +152,8 @@ func (b *_MeasurementDataBuilder) PartialMustBuild() MeasurementDataContract {
 	return build
 }
 
-func (b *_MeasurementDataBuilder) AsMeasurementDataChannelMeasurementData() interface {
-	MeasurementDataChannelMeasurementDataBuilder
-	Done() MeasurementDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeasurementDataChannelMeasurementDataBuilder
-		Done() MeasurementDataBuilder
-	}); ok {
+func (b *_MeasurementDataBuilder) AsMeasurementDataChannelMeasurementData() MeasurementDataChannelMeasurementDataBuilder {
+	if cb, ok := b.childBuilder.(MeasurementDataChannelMeasurementDataBuilder); ok {
 		return cb
 	}
 	cb := NewMeasurementDataChannelMeasurementDataBuilder().(*_MeasurementDataChannelMeasurementDataBuilder)

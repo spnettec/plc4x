@@ -96,6 +96,8 @@ type HistoryReadResponseBuilder interface {
 	WithResults(...HistoryReadResult) HistoryReadResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) HistoryReadResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the HistoryReadResponse or returns an error if something is wrong
 	Build() (HistoryReadResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (HistoryReadResponseBuilder) = (*_HistoryReadResponseBuilder)(nil)
 
 func (b *_HistoryReadResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._HistoryReadResponse
 }
 
 func (b *_HistoryReadResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []HistoryReadResult, diagnosticInfos []DiagnosticInfo) HistoryReadResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_HistoryReadResponseBuilder) MustBuild() HistoryReadResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_HistoryReadResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_HistoryReadResponse) deepCopy() *_HistoryReadResponse {
 	}
 	_HistoryReadResponseCopy := &_HistoryReadResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[HistoryReadResult, HistoryReadResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_HistoryReadResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryReadResponseCopy
 }
 

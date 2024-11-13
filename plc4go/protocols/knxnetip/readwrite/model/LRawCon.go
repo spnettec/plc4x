@@ -71,6 +71,8 @@ type LRawConBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() LRawConBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the LRawCon or returns an error if something is wrong
 	Build() (LRawCon, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (LRawConBuilder) = (*_LRawConBuilder)(nil)
 
 func (b *_LRawConBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._LRawCon
 }
 
 func (b *_LRawConBuilder) WithMandatoryFields() LRawConBuilder {
@@ -115,8 +118,10 @@ func (b *_LRawConBuilder) MustBuild() LRawCon {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LRawConBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_LRawCon) deepCopy() *_LRawCon {
 	_LRawConCopy := &_LRawCon{
 		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_LRawConCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _LRawConCopy
 }
 

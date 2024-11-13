@@ -86,6 +86,8 @@ type BACnetConstructedDataMaximumValueBuilder interface {
 	WithMaximumValue(BACnetApplicationTagReal) BACnetConstructedDataMaximumValueBuilder
 	// WithMaximumValueBuilder adds MaximumValue (property field) which is build by the builder
 	WithMaximumValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMaximumValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMaximumValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataMaximumValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMaximumValueBuilder) = (*_BACnetConstructedDataMaxim
 
 func (b *_BACnetConstructedDataMaximumValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMaximumValue
 }
 
 func (b *_BACnetConstructedDataMaximumValueBuilder) WithMandatoryFields(maximumValue BACnetApplicationTagReal) BACnetConstructedDataMaximumValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMaximumValueBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMaximumValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataMaximumValue) deepCopy() *_BACnetConstructedDataM
 	}
 	_BACnetConstructedDataMaximumValueCopy := &_BACnetConstructedDataMaximumValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MaximumValue.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.MaximumValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMaximumValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMaximumValueCopy
 }
 

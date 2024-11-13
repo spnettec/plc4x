@@ -112,6 +112,8 @@ type StandaloneSubscribedDataSetDataTypeBuilder interface {
 	WithSubscribedDataSet(ExtensionObject) StandaloneSubscribedDataSetDataTypeBuilder
 	// WithSubscribedDataSetBuilder adds SubscribedDataSet (property field) which is build by the builder
 	WithSubscribedDataSetBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) StandaloneSubscribedDataSetDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the StandaloneSubscribedDataSetDataType or returns an error if something is wrong
 	Build() (StandaloneSubscribedDataSetDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (StandaloneSubscribedDataSetDataTypeBuilder) = (*_StandaloneSubscribedData
 
 func (b *_StandaloneSubscribedDataSetDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._StandaloneSubscribedDataSetDataType
 }
 
 func (b *_StandaloneSubscribedDataSetDataTypeBuilder) WithMandatoryFields(name PascalString, dataSetFolder []PascalString, dataSetMetaData DataSetMetaDataType, subscribedDataSet ExtensionObject) StandaloneSubscribedDataSetDataTypeBuilder {
@@ -233,8 +236,10 @@ func (b *_StandaloneSubscribedDataSetDataTypeBuilder) MustBuild() StandaloneSubs
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_StandaloneSubscribedDataSetDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -460,12 +465,12 @@ func (m *_StandaloneSubscribedDataSetDataType) deepCopy() *_StandaloneSubscribed
 	}
 	_StandaloneSubscribedDataSetDataTypeCopy := &_StandaloneSubscribedDataSetDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Name),
 		utils.DeepCopySlice[PascalString, PascalString](m.DataSetFolder),
-		m.DataSetMetaData.DeepCopy().(DataSetMetaDataType),
-		m.SubscribedDataSet.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[DataSetMetaDataType](m.DataSetMetaData),
+		utils.DeepCopy[ExtensionObject](m.SubscribedDataSet),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_StandaloneSubscribedDataSetDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _StandaloneSubscribedDataSetDataTypeCopy
 }
 

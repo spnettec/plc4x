@@ -374,9 +374,9 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) deepCopy() *_VTCloseErrorListO
 		return nil
 	}
 	_VTCloseErrorListOfVTSessionIdentifiersCopy := &_VTCloseErrorListOfVTSessionIdentifiers{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ListOfVtSessionIdentifiers),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _VTCloseErrorListOfVTSessionIdentifiersCopy

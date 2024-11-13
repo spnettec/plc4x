@@ -84,6 +84,8 @@ type UserIdentityTokenBuilder interface {
 	WithPolicyId(PascalString) UserIdentityTokenBuilder
 	// WithPolicyIdBuilder adds PolicyId (property field) which is build by the builder
 	WithPolicyIdBuilder(func(PascalStringBuilder) PascalStringBuilder) UserIdentityTokenBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the UserIdentityToken or returns an error if something is wrong
 	Build() (UserIdentityToken, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (UserIdentityTokenBuilder) = (*_UserIdentityTokenBuilder)(nil)
 
 func (b *_UserIdentityTokenBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._UserIdentityToken
 }
 
 func (b *_UserIdentityTokenBuilder) WithMandatoryFields(policyId PascalString) UserIdentityTokenBuilder {
@@ -152,8 +155,10 @@ func (b *_UserIdentityTokenBuilder) MustBuild() UserIdentityToken {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_UserIdentityTokenBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_UserIdentityToken) deepCopy() *_UserIdentityToken {
 	}
 	_UserIdentityTokenCopy := &_UserIdentityToken{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.PolicyId.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.PolicyId),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_UserIdentityTokenCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UserIdentityTokenCopy
 }
 

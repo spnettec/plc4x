@@ -86,6 +86,8 @@ type BACnetConstructedDataTimeDelayBuilder interface {
 	WithTimeDelay(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeDelayBuilder
 	// WithTimeDelayBuilder adds TimeDelay (property field) which is build by the builder
 	WithTimeDelayBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimeDelayBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTimeDelay or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimeDelay, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTimeDelayBuilder) = (*_BACnetConstructedDataTimeDela
 
 func (b *_BACnetConstructedDataTimeDelayBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTimeDelay
 }
 
 func (b *_BACnetConstructedDataTimeDelayBuilder) WithMandatoryFields(timeDelay BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeDelayBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTimeDelayBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTimeDelayBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataTimeDelay) deepCopy() *_BACnetConstructedDataTime
 	}
 	_BACnetConstructedDataTimeDelayCopy := &_BACnetConstructedDataTimeDelay{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.TimeDelay.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.TimeDelay),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTimeDelayCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimeDelayCopy
 }
 

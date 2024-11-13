@@ -111,15 +111,9 @@ type CBusPointToPointCommandBuilder interface {
 	// WithCalDataBuilder adds CalData (property field) which is build by the builder
 	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) CBusPointToPointCommandBuilder
 	// AsCBusPointToPointCommandDirect converts this build to a subType of CBusPointToPointCommand. It is always possible to return to current builder using Done()
-	AsCBusPointToPointCommandDirect() interface {
-		CBusPointToPointCommandDirectBuilder
-		Done() CBusPointToPointCommandBuilder
-	}
+	AsCBusPointToPointCommandDirect() CBusPointToPointCommandDirectBuilder
 	// AsCBusPointToPointCommandIndirect converts this build to a subType of CBusPointToPointCommand. It is always possible to return to current builder using Done()
-	AsCBusPointToPointCommandIndirect() interface {
-		CBusPointToPointCommandIndirectBuilder
-		Done() CBusPointToPointCommandBuilder
-	}
+	AsCBusPointToPointCommandIndirect() CBusPointToPointCommandIndirectBuilder
 	// Build builds the CBusPointToPointCommand or returns an error if something is wrong
 	PartialBuild() (CBusPointToPointCommandContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -199,14 +193,8 @@ func (b *_CBusPointToPointCommandBuilder) PartialMustBuild() CBusPointToPointCom
 	return build
 }
 
-func (b *_CBusPointToPointCommandBuilder) AsCBusPointToPointCommandDirect() interface {
-	CBusPointToPointCommandDirectBuilder
-	Done() CBusPointToPointCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CBusPointToPointCommandDirectBuilder
-		Done() CBusPointToPointCommandBuilder
-	}); ok {
+func (b *_CBusPointToPointCommandBuilder) AsCBusPointToPointCommandDirect() CBusPointToPointCommandDirectBuilder {
+	if cb, ok := b.childBuilder.(CBusPointToPointCommandDirectBuilder); ok {
 		return cb
 	}
 	cb := NewCBusPointToPointCommandDirectBuilder().(*_CBusPointToPointCommandDirectBuilder)
@@ -215,14 +203,8 @@ func (b *_CBusPointToPointCommandBuilder) AsCBusPointToPointCommandDirect() inte
 	return cb
 }
 
-func (b *_CBusPointToPointCommandBuilder) AsCBusPointToPointCommandIndirect() interface {
-	CBusPointToPointCommandIndirectBuilder
-	Done() CBusPointToPointCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CBusPointToPointCommandIndirectBuilder
-		Done() CBusPointToPointCommandBuilder
-	}); ok {
+func (b *_CBusPointToPointCommandBuilder) AsCBusPointToPointCommandIndirect() CBusPointToPointCommandIndirectBuilder {
+	if cb, ok := b.childBuilder.(CBusPointToPointCommandIndirectBuilder); ok {
 		return cb
 	}
 	cb := NewCBusPointToPointCommandIndirectBuilder().(*_CBusPointToPointCommandIndirectBuilder)
@@ -476,7 +458,7 @@ func (m *_CBusPointToPointCommand) deepCopy() *_CBusPointToPointCommand {
 	_CBusPointToPointCommandCopy := &_CBusPointToPointCommand{
 		nil, // will be set by child
 		m.BridgeAddressCountPeek,
-		m.CalData.DeepCopy().(CALData),
+		utils.DeepCopy[CALData](m.CalData),
 		m.CBusOptions,
 	}
 	return _CBusPointToPointCommandCopy

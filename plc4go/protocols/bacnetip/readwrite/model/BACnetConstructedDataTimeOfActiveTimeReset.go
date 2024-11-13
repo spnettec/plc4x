@@ -86,6 +86,8 @@ type BACnetConstructedDataTimeOfActiveTimeResetBuilder interface {
 	WithTimeOfActiveTimeReset(BACnetDateTime) BACnetConstructedDataTimeOfActiveTimeResetBuilder
 	// WithTimeOfActiveTimeResetBuilder adds TimeOfActiveTimeReset (property field) which is build by the builder
 	WithTimeOfActiveTimeResetBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataTimeOfActiveTimeResetBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTimeOfActiveTimeReset or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimeOfActiveTimeReset, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTimeOfActiveTimeResetBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTimeOfActiveTimeReset
 }
 
 func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) WithMandatoryFields(timeOfActiveTimeReset BACnetDateTime) BACnetConstructedDataTimeOfActiveTimeResetBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataTimeOfActiveTimeReset) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataTimeOfActiveTimeResetCopy := &_BACnetConstructedDataTimeOfActiveTimeReset{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.TimeOfActiveTimeReset.DeepCopy().(BACnetDateTime),
+		utils.DeepCopy[BACnetDateTime](m.TimeOfActiveTimeReset),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTimeOfActiveTimeResetCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimeOfActiveTimeResetCopy
 }
 

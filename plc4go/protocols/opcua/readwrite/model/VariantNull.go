@@ -71,6 +71,8 @@ type VariantNullBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() VariantNullBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantNull or returns an error if something is wrong
 	Build() (VariantNull, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (VariantNullBuilder) = (*_VariantNullBuilder)(nil)
 
 func (b *_VariantNullBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantNull
 }
 
 func (b *_VariantNullBuilder) WithMandatoryFields() VariantNullBuilder {
@@ -115,8 +118,10 @@ func (b *_VariantNullBuilder) MustBuild() VariantNull {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantNullBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_VariantNull) deepCopy() *_VariantNull {
 	_VariantNullCopy := &_VariantNull{
 		m.VariantContract.(*_Variant).deepCopy(),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantNullCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantNullCopy
 }
 

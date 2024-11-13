@@ -96,6 +96,8 @@ type AddNodesResponseBuilder interface {
 	WithResults(...AddNodesResult) AddNodesResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) AddNodesResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AddNodesResponse or returns an error if something is wrong
 	Build() (AddNodesResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (AddNodesResponseBuilder) = (*_AddNodesResponseBuilder)(nil)
 
 func (b *_AddNodesResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AddNodesResponse
 }
 
 func (b *_AddNodesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []AddNodesResult, diagnosticInfos []DiagnosticInfo) AddNodesResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_AddNodesResponseBuilder) MustBuild() AddNodesResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AddNodesResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_AddNodesResponse) deepCopy() *_AddNodesResponse {
 	}
 	_AddNodesResponseCopy := &_AddNodesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[AddNodesResult, AddNodesResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AddNodesResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AddNodesResponseCopy
 }
 

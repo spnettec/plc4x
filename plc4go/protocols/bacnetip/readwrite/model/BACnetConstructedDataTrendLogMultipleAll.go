@@ -71,6 +71,8 @@ type BACnetConstructedDataTrendLogMultipleAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataTrendLogMultipleAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTrendLogMultipleAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataTrendLogMultipleAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataTrendLogMultipleAllBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTrendLogMultipleAll
 }
 
 func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) WithMandatoryFields() BACnetConstructedDataTrendLogMultipleAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTrendLogMultipleAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataTrendLogMultipleAll) deepCopy() *_BACnetConstruct
 	_BACnetConstructedDataTrendLogMultipleAllCopy := &_BACnetConstructedDataTrendLogMultipleAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTrendLogMultipleAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTrendLogMultipleAllCopy
 }
 

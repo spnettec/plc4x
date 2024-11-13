@@ -86,6 +86,8 @@ type BACnetConstructedDataCredentialDisableBuilder interface {
 	WithCredentialDisable(BACnetAccessCredentialDisableTagged) BACnetConstructedDataCredentialDisableBuilder
 	// WithCredentialDisableBuilder adds CredentialDisable (property field) which is build by the builder
 	WithCredentialDisableBuilder(func(BACnetAccessCredentialDisableTaggedBuilder) BACnetAccessCredentialDisableTaggedBuilder) BACnetConstructedDataCredentialDisableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCredentialDisable or returns an error if something is wrong
 	Build() (BACnetConstructedDataCredentialDisable, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataCredentialDisableBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataCredentialDisableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCredentialDisable
 }
 
 func (b *_BACnetConstructedDataCredentialDisableBuilder) WithMandatoryFields(credentialDisable BACnetAccessCredentialDisableTagged) BACnetConstructedDataCredentialDisableBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataCredentialDisableBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCredentialDisableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataCredentialDisable) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataCredentialDisableCopy := &_BACnetConstructedDataCredentialDisable{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CredentialDisable.DeepCopy().(BACnetAccessCredentialDisableTagged),
+		utils.DeepCopy[BACnetAccessCredentialDisableTagged](m.CredentialDisable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCredentialDisableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCredentialDisableCopy
 }
 

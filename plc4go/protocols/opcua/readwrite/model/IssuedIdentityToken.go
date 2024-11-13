@@ -106,6 +106,8 @@ type IssuedIdentityTokenBuilder interface {
 	WithEncryptionAlgorithm(PascalString) IssuedIdentityTokenBuilder
 	// WithEncryptionAlgorithmBuilder adds EncryptionAlgorithm (property field) which is build by the builder
 	WithEncryptionAlgorithmBuilder(func(PascalStringBuilder) PascalStringBuilder) IssuedIdentityTokenBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the IssuedIdentityToken or returns an error if something is wrong
 	Build() (IssuedIdentityToken, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (IssuedIdentityTokenBuilder) = (*_IssuedIdentityTokenBuilder)(nil)
 
 func (b *_IssuedIdentityTokenBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._IssuedIdentityToken
 }
 
 func (b *_IssuedIdentityTokenBuilder) WithMandatoryFields(policyId PascalString, tokenData PascalByteString, encryptionAlgorithm PascalString) IssuedIdentityTokenBuilder {
@@ -222,8 +225,10 @@ func (b *_IssuedIdentityTokenBuilder) MustBuild() IssuedIdentityToken {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IssuedIdentityTokenBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,11 +417,11 @@ func (m *_IssuedIdentityToken) deepCopy() *_IssuedIdentityToken {
 	}
 	_IssuedIdentityTokenCopy := &_IssuedIdentityToken{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.PolicyId.DeepCopy().(PascalString),
-		m.TokenData.DeepCopy().(PascalByteString),
-		m.EncryptionAlgorithm.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.PolicyId),
+		utils.DeepCopy[PascalByteString](m.TokenData),
+		utils.DeepCopy[PascalString](m.EncryptionAlgorithm),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_IssuedIdentityTokenCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _IssuedIdentityTokenCopy
 }
 

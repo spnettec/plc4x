@@ -86,6 +86,8 @@ type BACnetConstructedDataBACnetIPMulticastAddressBuilder interface {
 	WithIpMulticastAddress(BACnetApplicationTagOctetString) BACnetConstructedDataBACnetIPMulticastAddressBuilder
 	// WithIpMulticastAddressBuilder adds IpMulticastAddress (property field) which is build by the builder
 	WithIpMulticastAddressBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataBACnetIPMulticastAddressBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBACnetIPMulticastAddress or returns an error if something is wrong
 	Build() (BACnetConstructedDataBACnetIPMulticastAddress, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBACnetIPMulticastAddressBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataBACnetIPMulticastAddressBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBACnetIPMulticastAddress
 }
 
 func (b *_BACnetConstructedDataBACnetIPMulticastAddressBuilder) WithMandatoryFields(ipMulticastAddress BACnetApplicationTagOctetString) BACnetConstructedDataBACnetIPMulticastAddressBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBACnetIPMulticastAddressBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBACnetIPMulticastAddressBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) deepCopy() *_BACnetCons
 	}
 	_BACnetConstructedDataBACnetIPMulticastAddressCopy := &_BACnetConstructedDataBACnetIPMulticastAddress{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.IpMulticastAddress.DeepCopy().(BACnetApplicationTagOctetString),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.IpMulticastAddress),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBACnetIPMulticastAddressCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBACnetIPMulticastAddressCopy
 }
 

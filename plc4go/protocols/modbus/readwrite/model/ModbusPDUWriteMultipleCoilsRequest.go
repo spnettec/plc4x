@@ -91,6 +91,8 @@ type ModbusPDUWriteMultipleCoilsRequestBuilder interface {
 	WithQuantity(uint16) ModbusPDUWriteMultipleCoilsRequestBuilder
 	// WithValue adds Value (property field)
 	WithValue(...byte) ModbusPDUWriteMultipleCoilsRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUWriteMultipleCoilsRequest or returns an error if something is wrong
 	Build() (ModbusPDUWriteMultipleCoilsRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (ModbusPDUWriteMultipleCoilsRequestBuilder) = (*_ModbusPDUWriteMultipleCoi
 
 func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUWriteMultipleCoilsRequest
 }
 
 func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16, value []byte) ModbusPDUWriteMultipleCoilsRequestBuilder {
@@ -150,8 +153,10 @@ func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) MustBuild() ModbusPDUWriteM
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUWriteMultipleCoilsRequestBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -367,7 +372,7 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) deepCopy() *_ModbusPDUWriteMultipl
 		m.Quantity,
 		utils.DeepCopySlice[byte, byte](m.Value),
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUWriteMultipleCoilsRequestCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUWriteMultipleCoilsRequestCopy
 }
 

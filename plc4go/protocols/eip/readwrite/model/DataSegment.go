@@ -84,6 +84,8 @@ type DataSegmentBuilder interface {
 	WithSegmentType(DataSegmentType) DataSegmentBuilder
 	// WithSegmentTypeBuilder adds SegmentType (property field) which is build by the builder
 	WithSegmentTypeBuilder(func(DataSegmentTypeBuilder) DataSegmentTypeBuilder) DataSegmentBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() PathSegmentBuilder
 	// Build builds the DataSegment or returns an error if something is wrong
 	Build() (DataSegment, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (DataSegmentBuilder) = (*_DataSegmentBuilder)(nil)
 
 func (b *_DataSegmentBuilder) setParent(contract PathSegmentContract) {
 	b.PathSegmentContract = contract
+	contract.(*_PathSegment)._SubType = b._DataSegment
 }
 
 func (b *_DataSegmentBuilder) WithMandatoryFields(segmentType DataSegmentType) DataSegmentBuilder {
@@ -152,8 +155,10 @@ func (b *_DataSegmentBuilder) MustBuild() DataSegment {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataSegmentBuilder) Done() PathSegmentBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewPathSegmentBuilder().(*_PathSegmentBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_DataSegment) deepCopy() *_DataSegment {
 	}
 	_DataSegmentCopy := &_DataSegment{
 		m.PathSegmentContract.(*_PathSegment).deepCopy(),
-		m.SegmentType.DeepCopy().(DataSegmentType),
+		utils.DeepCopy[DataSegmentType](m.SegmentType),
 	}
-	m.PathSegmentContract.(*_PathSegment)._SubType = m
+	_DataSegmentCopy.PathSegmentContract.(*_PathSegment)._SubType = m
 	return _DataSegmentCopy
 }
 

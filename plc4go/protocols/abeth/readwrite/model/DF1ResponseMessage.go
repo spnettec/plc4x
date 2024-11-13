@@ -117,10 +117,7 @@ type DF1ResponseMessageBuilder interface {
 	// WithTransactionCounter adds TransactionCounter (property field)
 	WithTransactionCounter(uint16) DF1ResponseMessageBuilder
 	// AsDF1CommandResponseMessageProtectedTypedLogicalRead converts this build to a subType of DF1ResponseMessage. It is always possible to return to current builder using Done()
-	AsDF1CommandResponseMessageProtectedTypedLogicalRead() interface {
-		DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
-		Done() DF1ResponseMessageBuilder
-	}
+	AsDF1CommandResponseMessageProtectedTypedLogicalRead() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
 	// Build builds the DF1ResponseMessage or returns an error if something is wrong
 	PartialBuild() (DF1ResponseMessageContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -191,14 +188,8 @@ func (b *_DF1ResponseMessageBuilder) PartialMustBuild() DF1ResponseMessageContra
 	return build
 }
 
-func (b *_DF1ResponseMessageBuilder) AsDF1CommandResponseMessageProtectedTypedLogicalRead() interface {
-	DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
-	Done() DF1ResponseMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
-		Done() DF1ResponseMessageBuilder
-	}); ok {
+func (b *_DF1ResponseMessageBuilder) AsDF1CommandResponseMessageProtectedTypedLogicalRead() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	if cb, ok := b.childBuilder.(DF1CommandResponseMessageProtectedTypedLogicalReadBuilder); ok {
 		return cb
 	}
 	cb := NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder().(*_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder)

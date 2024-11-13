@@ -79,6 +79,8 @@ type BACnetConstructedDataSubscribedRecipientsBuilder interface {
 	WithMandatoryFields(subscribedRecipients []BACnetEventNotificationSubscription) BACnetConstructedDataSubscribedRecipientsBuilder
 	// WithSubscribedRecipients adds SubscribedRecipients (property field)
 	WithSubscribedRecipients(...BACnetEventNotificationSubscription) BACnetConstructedDataSubscribedRecipientsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataSubscribedRecipients or returns an error if something is wrong
 	Build() (BACnetConstructedDataSubscribedRecipients, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataSubscribedRecipientsBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataSubscribedRecipients
 }
 
 func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) WithMandatoryFields(subscribedRecipients []BACnetEventNotificationSubscription) BACnetConstructedDataSubscribedRecipientsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataSubscribedRecipientsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataSubscribedRecipients) deepCopy() *_BACnetConstruc
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetEventNotificationSubscription, BACnetEventNotificationSubscription](m.SubscribedRecipients),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataSubscribedRecipientsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataSubscribedRecipientsCopy
 }
 

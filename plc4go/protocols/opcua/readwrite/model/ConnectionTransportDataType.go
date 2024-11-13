@@ -71,6 +71,8 @@ type ConnectionTransportDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ConnectionTransportDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ConnectionTransportDataType or returns an error if something is wrong
 	Build() (ConnectionTransportDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ConnectionTransportDataTypeBuilder) = (*_ConnectionTransportDataTypeBuild
 
 func (b *_ConnectionTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ConnectionTransportDataType
 }
 
 func (b *_ConnectionTransportDataTypeBuilder) WithMandatoryFields() ConnectionTransportDataTypeBuilder {
@@ -115,8 +118,10 @@ func (b *_ConnectionTransportDataTypeBuilder) MustBuild() ConnectionTransportDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ConnectionTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ConnectionTransportDataType) deepCopy() *_ConnectionTransportDataType 
 	_ConnectionTransportDataTypeCopy := &_ConnectionTransportDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ConnectionTransportDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ConnectionTransportDataTypeCopy
 }
 

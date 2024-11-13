@@ -79,6 +79,8 @@ type BACnetConstructedDataExitPointsBuilder interface {
 	WithMandatoryFields(exitPoints []BACnetDeviceObjectReference) BACnetConstructedDataExitPointsBuilder
 	// WithExitPoints adds ExitPoints (property field)
 	WithExitPoints(...BACnetDeviceObjectReference) BACnetConstructedDataExitPointsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataExitPoints or returns an error if something is wrong
 	Build() (BACnetConstructedDataExitPoints, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataExitPointsBuilder) = (*_BACnetConstructedDataExitPoi
 
 func (b *_BACnetConstructedDataExitPointsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataExitPoints
 }
 
 func (b *_BACnetConstructedDataExitPointsBuilder) WithMandatoryFields(exitPoints []BACnetDeviceObjectReference) BACnetConstructedDataExitPointsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataExitPointsBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataExitPointsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataExitPoints) deepCopy() *_BACnetConstructedDataExi
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.ExitPoints),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataExitPointsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataExitPointsCopy
 }
 

@@ -88,6 +88,8 @@ type RequestSmartConnectShortcutBuilder interface {
 	WithPipePeek(RequestType) RequestSmartConnectShortcutBuilder
 	// WithSecondPipe adds SecondPipe (property field)
 	WithOptionalSecondPipe(byte) RequestSmartConnectShortcutBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() RequestBuilder
 	// Build builds the RequestSmartConnectShortcut or returns an error if something is wrong
 	Build() (RequestSmartConnectShortcut, error)
 	// MustBuild does the same as Build but panics on error
@@ -111,6 +113,7 @@ var _ (RequestSmartConnectShortcutBuilder) = (*_RequestSmartConnectShortcutBuild
 
 func (b *_RequestSmartConnectShortcutBuilder) setParent(contract RequestContract) {
 	b.RequestContract = contract
+	contract.(*_Request)._SubType = b._RequestSmartConnectShortcut
 }
 
 func (b *_RequestSmartConnectShortcutBuilder) WithMandatoryFields(pipePeek RequestType) RequestSmartConnectShortcutBuilder {
@@ -142,8 +145,10 @@ func (b *_RequestSmartConnectShortcutBuilder) MustBuild() RequestSmartConnectSho
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RequestSmartConnectShortcutBuilder) Done() RequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewRequestBuilder().(*_RequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -336,7 +341,7 @@ func (m *_RequestSmartConnectShortcut) deepCopy() *_RequestSmartConnectShortcut 
 		m.PipePeek,
 		utils.CopyPtr[byte](m.SecondPipe),
 	}
-	m.RequestContract.(*_Request)._SubType = m
+	_RequestSmartConnectShortcutCopy.RequestContract.(*_Request)._SubType = m
 	return _RequestSmartConnectShortcutCopy
 }
 

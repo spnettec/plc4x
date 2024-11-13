@@ -84,6 +84,8 @@ type BVLCWriteBroadcastDistributionTableBuilder interface {
 	WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder
 	// WithTable adds Table (property field)
 	WithTable(...BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BVLCBuilder
 	// Build builds the BVLCWriteBroadcastDistributionTable or returns an error if something is wrong
 	Build() (BVLCWriteBroadcastDistributionTable, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BVLCWriteBroadcastDistributionTableBuilder) = (*_BVLCWriteBroadcastDistri
 
 func (b *_BVLCWriteBroadcastDistributionTableBuilder) setParent(contract BVLCContract) {
 	b.BVLCContract = contract
+	contract.(*_BVLC)._SubType = b._BVLCWriteBroadcastDistributionTable
 }
 
 func (b *_BVLCWriteBroadcastDistributionTableBuilder) WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder {
@@ -133,8 +136,10 @@ func (b *_BVLCWriteBroadcastDistributionTableBuilder) MustBuild() BVLCWriteBroad
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BVLCWriteBroadcastDistributionTableBuilder) Done() BVLCBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBVLCBuilder().(*_BVLCBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -306,7 +311,7 @@ func (m *_BVLCWriteBroadcastDistributionTable) deepCopy() *_BVLCWriteBroadcastDi
 		utils.DeepCopySlice[BVLCBroadcastDistributionTableEntry, BVLCBroadcastDistributionTableEntry](m.Table),
 		m.BvlcPayloadLength,
 	}
-	m.BVLCContract.(*_BVLC)._SubType = m
+	_BVLCWriteBroadcastDistributionTableCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCWriteBroadcastDistributionTableCopy
 }
 

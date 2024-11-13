@@ -84,6 +84,8 @@ type PortSegmentBuilder interface {
 	WithSegmentType(PortSegmentType) PortSegmentBuilder
 	// WithSegmentTypeBuilder adds SegmentType (property field) which is build by the builder
 	WithSegmentTypeBuilder(func(PortSegmentTypeBuilder) PortSegmentTypeBuilder) PortSegmentBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() PathSegmentBuilder
 	// Build builds the PortSegment or returns an error if something is wrong
 	Build() (PortSegment, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (PortSegmentBuilder) = (*_PortSegmentBuilder)(nil)
 
 func (b *_PortSegmentBuilder) setParent(contract PathSegmentContract) {
 	b.PathSegmentContract = contract
+	contract.(*_PathSegment)._SubType = b._PortSegment
 }
 
 func (b *_PortSegmentBuilder) WithMandatoryFields(segmentType PortSegmentType) PortSegmentBuilder {
@@ -152,8 +155,10 @@ func (b *_PortSegmentBuilder) MustBuild() PortSegment {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PortSegmentBuilder) Done() PathSegmentBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewPathSegmentBuilder().(*_PathSegmentBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_PortSegment) deepCopy() *_PortSegment {
 	}
 	_PortSegmentCopy := &_PortSegment{
 		m.PathSegmentContract.(*_PathSegment).deepCopy(),
-		m.SegmentType.DeepCopy().(PortSegmentType),
+		utils.DeepCopy[PortSegmentType](m.SegmentType),
 	}
-	m.PathSegmentContract.(*_PathSegment)._SubType = m
+	_PortSegmentCopy.PathSegmentContract.(*_PathSegment)._SubType = m
 	return _PortSegmentCopy
 }
 

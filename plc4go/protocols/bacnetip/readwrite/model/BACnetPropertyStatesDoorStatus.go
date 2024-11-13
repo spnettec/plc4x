@@ -84,6 +84,8 @@ type BACnetPropertyStatesDoorStatusBuilder interface {
 	WithDoorStatus(BACnetDoorStatusTagged) BACnetPropertyStatesDoorStatusBuilder
 	// WithDoorStatusBuilder adds DoorStatus (property field) which is build by the builder
 	WithDoorStatusBuilder(func(BACnetDoorStatusTaggedBuilder) BACnetDoorStatusTaggedBuilder) BACnetPropertyStatesDoorStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesDoorStatus or returns an error if something is wrong
 	Build() (BACnetPropertyStatesDoorStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesDoorStatusBuilder) = (*_BACnetPropertyStatesDoorStatu
 
 func (b *_BACnetPropertyStatesDoorStatusBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesDoorStatus
 }
 
 func (b *_BACnetPropertyStatesDoorStatusBuilder) WithMandatoryFields(doorStatus BACnetDoorStatusTagged) BACnetPropertyStatesDoorStatusBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesDoorStatusBuilder) MustBuild() BACnetPropertyState
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesDoorStatusBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesDoorStatus) deepCopy() *_BACnetPropertyStatesDoorS
 	}
 	_BACnetPropertyStatesDoorStatusCopy := &_BACnetPropertyStatesDoorStatus{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.DoorStatus.DeepCopy().(BACnetDoorStatusTagged),
+		utils.DeepCopy[BACnetDoorStatusTagged](m.DoorStatus),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesDoorStatusCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesDoorStatusCopy
 }
 

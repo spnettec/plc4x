@@ -86,6 +86,8 @@ type BACnetConstructedDataValidSamplesBuilder interface {
 	WithValidSamples(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValidSamplesBuilder
 	// WithValidSamplesBuilder adds ValidSamples (property field) which is build by the builder
 	WithValidSamplesBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValidSamplesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataValidSamples or returns an error if something is wrong
 	Build() (BACnetConstructedDataValidSamples, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataValidSamplesBuilder) = (*_BACnetConstructedDataValid
 
 func (b *_BACnetConstructedDataValidSamplesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataValidSamples
 }
 
 func (b *_BACnetConstructedDataValidSamplesBuilder) WithMandatoryFields(validSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValidSamplesBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataValidSamplesBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataValidSamplesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataValidSamples) deepCopy() *_BACnetConstructedDataV
 	}
 	_BACnetConstructedDataValidSamplesCopy := &_BACnetConstructedDataValidSamples{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ValidSamples.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ValidSamples),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataValidSamplesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataValidSamplesCopy
 }
 

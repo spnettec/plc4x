@@ -86,6 +86,8 @@ type BACnetConstructedDataRecordsSinceNotificationBuilder interface {
 	WithRecordsSinceNotifications(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRecordsSinceNotificationBuilder
 	// WithRecordsSinceNotificationsBuilder adds RecordsSinceNotifications (property field) which is build by the builder
 	WithRecordsSinceNotificationsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRecordsSinceNotificationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataRecordsSinceNotification or returns an error if something is wrong
 	Build() (BACnetConstructedDataRecordsSinceNotification, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataRecordsSinceNotificationBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataRecordsSinceNotification
 }
 
 func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) WithMandatoryFields(recordsSinceNotifications BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRecordsSinceNotificationBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataRecordsSinceNotificationBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) deepCopy() *_BACnetCons
 	}
 	_BACnetConstructedDataRecordsSinceNotificationCopy := &_BACnetConstructedDataRecordsSinceNotification{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.RecordsSinceNotifications.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.RecordsSinceNotifications),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataRecordsSinceNotificationCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataRecordsSinceNotificationCopy
 }
 

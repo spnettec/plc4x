@@ -77,6 +77,8 @@ type EipConnectionResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() EipConnectionResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EipPacketBuilder
 	// Build builds the EipConnectionResponse or returns an error if something is wrong
 	Build() (EipConnectionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -100,6 +102,7 @@ var _ (EipConnectionResponseBuilder) = (*_EipConnectionResponseBuilder)(nil)
 
 func (b *_EipConnectionResponseBuilder) setParent(contract EipPacketContract) {
 	b.EipPacketContract = contract
+	contract.(*_EipPacket)._SubType = b._EipConnectionResponse
 }
 
 func (b *_EipConnectionResponseBuilder) WithMandatoryFields() EipConnectionResponseBuilder {
@@ -121,8 +124,10 @@ func (b *_EipConnectionResponseBuilder) MustBuild() EipConnectionResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EipConnectionResponseBuilder) Done() EipPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEipPacketBuilder().(*_EipPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -303,7 +308,7 @@ func (m *_EipConnectionResponse) deepCopy() *_EipConnectionResponse {
 	_EipConnectionResponseCopy := &_EipConnectionResponse{
 		m.EipPacketContract.(*_EipPacket).deepCopy(),
 	}
-	m.EipPacketContract.(*_EipPacket)._SubType = m
+	_EipConnectionResponseCopy.EipPacketContract.(*_EipPacket)._SubType = m
 	return _EipConnectionResponseCopy
 }
 

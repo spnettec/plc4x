@@ -84,6 +84,8 @@ type ParameterChangeReplyBuilder interface {
 	WithParameterChange(ParameterChange) ParameterChangeReplyBuilder
 	// WithParameterChangeBuilder adds ParameterChange (property field) which is build by the builder
 	WithParameterChangeBuilder(func(ParameterChangeBuilder) ParameterChangeBuilder) ParameterChangeReplyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ReplyBuilder
 	// Build builds the ParameterChangeReply or returns an error if something is wrong
 	Build() (ParameterChangeReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (ParameterChangeReplyBuilder) = (*_ParameterChangeReplyBuilder)(nil)
 
 func (b *_ParameterChangeReplyBuilder) setParent(contract ReplyContract) {
 	b.ReplyContract = contract
+	contract.(*_Reply)._SubType = b._ParameterChangeReply
 }
 
 func (b *_ParameterChangeReplyBuilder) WithMandatoryFields(parameterChange ParameterChange) ParameterChangeReplyBuilder {
@@ -152,8 +155,10 @@ func (b *_ParameterChangeReplyBuilder) MustBuild() ParameterChangeReply {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ParameterChangeReplyBuilder) Done() ReplyBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewReplyBuilder().(*_ReplyBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_ParameterChangeReply) deepCopy() *_ParameterChangeReply {
 	}
 	_ParameterChangeReplyCopy := &_ParameterChangeReply{
 		m.ReplyContract.(*_Reply).deepCopy(),
-		m.ParameterChange.DeepCopy().(ParameterChange),
+		utils.DeepCopy[ParameterChange](m.ParameterChange),
 	}
-	m.ReplyContract.(*_Reply)._SubType = m
+	_ParameterChangeReplyCopy.ReplyContract.(*_Reply)._SubType = m
 	return _ParameterChangeReplyCopy
 }
 

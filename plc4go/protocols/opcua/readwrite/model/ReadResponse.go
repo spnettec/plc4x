@@ -96,6 +96,8 @@ type ReadResponseBuilder interface {
 	WithResults(...DataValue) ReadResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) ReadResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReadResponse or returns an error if something is wrong
 	Build() (ReadResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (ReadResponseBuilder) = (*_ReadResponseBuilder)(nil)
 
 func (b *_ReadResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReadResponse
 }
 
 func (b *_ReadResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []DataValue, diagnosticInfos []DiagnosticInfo) ReadResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_ReadResponseBuilder) MustBuild() ReadResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReadResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_ReadResponse) deepCopy() *_ReadResponse {
 	}
 	_ReadResponseCopy := &_ReadResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[DataValue, DataValue](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReadResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReadResponseCopy
 }
 

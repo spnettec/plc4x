@@ -86,6 +86,8 @@ type BACnetConstructedDataAuthenticationStatusBuilder interface {
 	WithAuthenticationStatus(BACnetAuthenticationStatusTagged) BACnetConstructedDataAuthenticationStatusBuilder
 	// WithAuthenticationStatusBuilder adds AuthenticationStatus (property field) which is build by the builder
 	WithAuthenticationStatusBuilder(func(BACnetAuthenticationStatusTaggedBuilder) BACnetAuthenticationStatusTaggedBuilder) BACnetConstructedDataAuthenticationStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAuthenticationStatus or returns an error if something is wrong
 	Build() (BACnetConstructedDataAuthenticationStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAuthenticationStatusBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataAuthenticationStatusBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAuthenticationStatus
 }
 
 func (b *_BACnetConstructedDataAuthenticationStatusBuilder) WithMandatoryFields(authenticationStatus BACnetAuthenticationStatusTagged) BACnetConstructedDataAuthenticationStatusBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAuthenticationStatusBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAuthenticationStatusBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataAuthenticationStatus) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataAuthenticationStatusCopy := &_BACnetConstructedDataAuthenticationStatus{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AuthenticationStatus.DeepCopy().(BACnetAuthenticationStatusTagged),
+		utils.DeepCopy[BACnetAuthenticationStatusTagged](m.AuthenticationStatus),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAuthenticationStatusCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAuthenticationStatusCopy
 }
 

@@ -96,6 +96,8 @@ type SetMonitoringModeResponseBuilder interface {
 	WithResults(...StatusCode) SetMonitoringModeResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) SetMonitoringModeResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SetMonitoringModeResponse or returns an error if something is wrong
 	Build() (SetMonitoringModeResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (SetMonitoringModeResponseBuilder) = (*_SetMonitoringModeResponseBuilder)(
 
 func (b *_SetMonitoringModeResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SetMonitoringModeResponse
 }
 
 func (b *_SetMonitoringModeResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) SetMonitoringModeResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_SetMonitoringModeResponseBuilder) MustBuild() SetMonitoringModeRespons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SetMonitoringModeResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_SetMonitoringModeResponse) deepCopy() *_SetMonitoringModeResponse {
 	}
 	_SetMonitoringModeResponseCopy := &_SetMonitoringModeResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SetMonitoringModeResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SetMonitoringModeResponseCopy
 }
 

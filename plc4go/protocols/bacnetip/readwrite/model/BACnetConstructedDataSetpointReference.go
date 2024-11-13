@@ -86,6 +86,8 @@ type BACnetConstructedDataSetpointReferenceBuilder interface {
 	WithSetpointReference(BACnetSetpointReference) BACnetConstructedDataSetpointReferenceBuilder
 	// WithSetpointReferenceBuilder adds SetpointReference (property field) which is build by the builder
 	WithSetpointReferenceBuilder(func(BACnetSetpointReferenceBuilder) BACnetSetpointReferenceBuilder) BACnetConstructedDataSetpointReferenceBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataSetpointReference or returns an error if something is wrong
 	Build() (BACnetConstructedDataSetpointReference, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataSetpointReferenceBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataSetpointReferenceBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataSetpointReference
 }
 
 func (b *_BACnetConstructedDataSetpointReferenceBuilder) WithMandatoryFields(setpointReference BACnetSetpointReference) BACnetConstructedDataSetpointReferenceBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataSetpointReferenceBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataSetpointReferenceBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataSetpointReference) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataSetpointReferenceCopy := &_BACnetConstructedDataSetpointReference{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.SetpointReference.DeepCopy().(BACnetSetpointReference),
+		utils.DeepCopy[BACnetSetpointReference](m.SetpointReference),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataSetpointReferenceCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataSetpointReferenceCopy
 }
 

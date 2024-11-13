@@ -84,6 +84,8 @@ type ParameterValueCustomManufacturerBuilder interface {
 	WithValue(CustomManufacturer) ParameterValueCustomManufacturerBuilder
 	// WithValueBuilder adds Value (property field) which is build by the builder
 	WithValueBuilder(func(CustomManufacturerBuilder) CustomManufacturerBuilder) ParameterValueCustomManufacturerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ParameterValueBuilder
 	// Build builds the ParameterValueCustomManufacturer or returns an error if something is wrong
 	Build() (ParameterValueCustomManufacturer, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (ParameterValueCustomManufacturerBuilder) = (*_ParameterValueCustomManufac
 
 func (b *_ParameterValueCustomManufacturerBuilder) setParent(contract ParameterValueContract) {
 	b.ParameterValueContract = contract
+	contract.(*_ParameterValue)._SubType = b._ParameterValueCustomManufacturer
 }
 
 func (b *_ParameterValueCustomManufacturerBuilder) WithMandatoryFields(value CustomManufacturer) ParameterValueCustomManufacturerBuilder {
@@ -152,8 +155,10 @@ func (b *_ParameterValueCustomManufacturerBuilder) MustBuild() ParameterValueCus
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ParameterValueCustomManufacturerBuilder) Done() ParameterValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewParameterValueBuilder().(*_ParameterValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_ParameterValueCustomManufacturer) deepCopy() *_ParameterValueCustomMan
 	}
 	_ParameterValueCustomManufacturerCopy := &_ParameterValueCustomManufacturer{
 		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
-		m.Value.DeepCopy().(CustomManufacturer),
+		utils.DeepCopy[CustomManufacturer](m.Value),
 	}
-	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	_ParameterValueCustomManufacturerCopy.ParameterValueContract.(*_ParameterValue)._SubType = m
 	return _ParameterValueCustomManufacturerCopy
 }
 

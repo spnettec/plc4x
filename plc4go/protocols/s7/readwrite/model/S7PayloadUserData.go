@@ -79,6 +79,8 @@ type S7PayloadUserDataBuilder interface {
 	WithMandatoryFields(items []S7PayloadUserDataItem) S7PayloadUserDataBuilder
 	// WithItems adds Items (property field)
 	WithItems(...S7PayloadUserDataItem) S7PayloadUserDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadBuilder
 	// Build builds the S7PayloadUserData or returns an error if something is wrong
 	Build() (S7PayloadUserData, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (S7PayloadUserDataBuilder) = (*_S7PayloadUserDataBuilder)(nil)
 
 func (b *_S7PayloadUserDataBuilder) setParent(contract S7PayloadContract) {
 	b.S7PayloadContract = contract
+	contract.(*_S7Payload)._SubType = b._S7PayloadUserData
 }
 
 func (b *_S7PayloadUserDataBuilder) WithMandatoryFields(items []S7PayloadUserDataItem) S7PayloadUserDataBuilder {
@@ -128,8 +131,10 @@ func (b *_S7PayloadUserDataBuilder) MustBuild() S7PayloadUserData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataBuilder) Done() S7PayloadBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadBuilder().(*_S7PayloadBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -297,7 +302,7 @@ func (m *_S7PayloadUserData) deepCopy() *_S7PayloadUserData {
 		m.S7PayloadContract.(*_S7Payload).deepCopy(),
 		utils.DeepCopySlice[S7PayloadUserDataItem, S7PayloadUserDataItem](m.Items),
 	}
-	m.S7PayloadContract.(*_S7Payload)._SubType = m
+	_S7PayloadUserDataCopy.S7PayloadContract.(*_S7Payload)._SubType = m
 	return _S7PayloadUserDataCopy
 }
 

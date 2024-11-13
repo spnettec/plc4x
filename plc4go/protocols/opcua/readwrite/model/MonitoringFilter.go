@@ -71,6 +71,8 @@ type MonitoringFilterBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() MonitoringFilterBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the MonitoringFilter or returns an error if something is wrong
 	Build() (MonitoringFilter, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (MonitoringFilterBuilder) = (*_MonitoringFilterBuilder)(nil)
 
 func (b *_MonitoringFilterBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._MonitoringFilter
 }
 
 func (b *_MonitoringFilterBuilder) WithMandatoryFields() MonitoringFilterBuilder {
@@ -115,8 +118,10 @@ func (b *_MonitoringFilterBuilder) MustBuild() MonitoringFilter {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MonitoringFilterBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_MonitoringFilter) deepCopy() *_MonitoringFilter {
 	_MonitoringFilterCopy := &_MonitoringFilter{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_MonitoringFilterCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _MonitoringFilterCopy
 }
 

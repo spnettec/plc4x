@@ -89,6 +89,8 @@ type BACnetConstructedDataAssignedAccessRightsBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAssignedAccessRightsBuilder
 	// WithAssignedAccessRights adds AssignedAccessRights (property field)
 	WithAssignedAccessRights(...BACnetAssignedAccessRights) BACnetConstructedDataAssignedAccessRightsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAssignedAccessRights or returns an error if something is wrong
 	Build() (BACnetConstructedDataAssignedAccessRights, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataAssignedAccessRightsBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAssignedAccessRights
 }
 
 func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) WithMandatoryFields(assignedAccessRights []BACnetAssignedAccessRights) BACnetConstructedDataAssignedAccessRightsBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAssignedAccessRightsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataAssignedAccessRights) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataAssignedAccessRightsCopy := &_BACnetConstructedDataAssignedAccessRights{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetAssignedAccessRights, BACnetAssignedAccessRights](m.AssignedAccessRights),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAssignedAccessRightsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAssignedAccessRightsCopy
 }
 

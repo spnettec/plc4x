@@ -84,6 +84,8 @@ type BACnetPropertyStatesReasonForHaltBuilder interface {
 	WithReasonForHalt(BACnetProgramErrorTagged) BACnetPropertyStatesReasonForHaltBuilder
 	// WithReasonForHaltBuilder adds ReasonForHalt (property field) which is build by the builder
 	WithReasonForHaltBuilder(func(BACnetProgramErrorTaggedBuilder) BACnetProgramErrorTaggedBuilder) BACnetPropertyStatesReasonForHaltBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesReasonForHalt or returns an error if something is wrong
 	Build() (BACnetPropertyStatesReasonForHalt, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesReasonForHaltBuilder) = (*_BACnetPropertyStatesReason
 
 func (b *_BACnetPropertyStatesReasonForHaltBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesReasonForHalt
 }
 
 func (b *_BACnetPropertyStatesReasonForHaltBuilder) WithMandatoryFields(reasonForHalt BACnetProgramErrorTagged) BACnetPropertyStatesReasonForHaltBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesReasonForHaltBuilder) MustBuild() BACnetPropertySt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesReasonForHaltBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesReasonForHalt) deepCopy() *_BACnetPropertyStatesRe
 	}
 	_BACnetPropertyStatesReasonForHaltCopy := &_BACnetPropertyStatesReasonForHalt{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.ReasonForHalt.DeepCopy().(BACnetProgramErrorTagged),
+		utils.DeepCopy[BACnetProgramErrorTagged](m.ReasonForHalt),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesReasonForHaltCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesReasonForHaltCopy
 }
 

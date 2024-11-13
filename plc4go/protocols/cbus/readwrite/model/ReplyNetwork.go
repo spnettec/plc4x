@@ -330,8 +330,8 @@ func (m *_ReplyNetwork) deepCopy() *_ReplyNetwork {
 		return nil
 	}
 	_ReplyNetworkCopy := &_ReplyNetwork{
-		m.NetworkRoute.DeepCopy().(NetworkRoute),
-		m.UnitAddress.DeepCopy().(UnitAddress),
+		utils.DeepCopy[NetworkRoute](m.NetworkRoute),
+		utils.DeepCopy[UnitAddress](m.UnitAddress),
 	}
 	return _ReplyNetworkCopy
 }

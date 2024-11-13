@@ -86,6 +86,8 @@ type FirmataMessageCommandBuilder interface {
 	WithCommand(FirmataCommand) FirmataMessageCommandBuilder
 	// WithCommandBuilder adds Command (property field) which is build by the builder
 	WithCommandBuilder(func(FirmataCommandBuilder) FirmataCommandBuilder) FirmataMessageCommandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() FirmataMessageBuilder
 	// Build builds the FirmataMessageCommand or returns an error if something is wrong
 	Build() (FirmataMessageCommand, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (FirmataMessageCommandBuilder) = (*_FirmataMessageCommandBuilder)(nil)
 
 func (b *_FirmataMessageCommandBuilder) setParent(contract FirmataMessageContract) {
 	b.FirmataMessageContract = contract
+	contract.(*_FirmataMessage)._SubType = b._FirmataMessageCommand
 }
 
 func (b *_FirmataMessageCommandBuilder) WithMandatoryFields(command FirmataCommand) FirmataMessageCommandBuilder {
@@ -154,8 +157,10 @@ func (b *_FirmataMessageCommandBuilder) MustBuild() FirmataMessageCommand {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FirmataMessageCommandBuilder) Done() FirmataMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewFirmataMessageBuilder().(*_FirmataMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -310,9 +315,9 @@ func (m *_FirmataMessageCommand) deepCopy() *_FirmataMessageCommand {
 	}
 	_FirmataMessageCommandCopy := &_FirmataMessageCommand{
 		m.FirmataMessageContract.(*_FirmataMessage).deepCopy(),
-		m.Command.DeepCopy().(FirmataCommand),
+		utils.DeepCopy[FirmataCommand](m.Command),
 	}
-	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	_FirmataMessageCommandCopy.FirmataMessageContract.(*_FirmataMessage)._SubType = m
 	return _FirmataMessageCommandCopy
 }
 

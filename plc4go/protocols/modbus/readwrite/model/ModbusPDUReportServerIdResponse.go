@@ -79,6 +79,8 @@ type ModbusPDUReportServerIdResponseBuilder interface {
 	WithMandatoryFields(value []byte) ModbusPDUReportServerIdResponseBuilder
 	// WithValue adds Value (property field)
 	WithValue(...byte) ModbusPDUReportServerIdResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUReportServerIdResponse or returns an error if something is wrong
 	Build() (ModbusPDUReportServerIdResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ModbusPDUReportServerIdResponseBuilder) = (*_ModbusPDUReportServerIdRespo
 
 func (b *_ModbusPDUReportServerIdResponseBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUReportServerIdResponse
 }
 
 func (b *_ModbusPDUReportServerIdResponseBuilder) WithMandatoryFields(value []byte) ModbusPDUReportServerIdResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_ModbusPDUReportServerIdResponseBuilder) MustBuild() ModbusPDUReportSer
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUReportServerIdResponseBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -309,7 +314,7 @@ func (m *_ModbusPDUReportServerIdResponse) deepCopy() *_ModbusPDUReportServerIdR
 		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Value),
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUReportServerIdResponseCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUReportServerIdResponseCopy
 }
 

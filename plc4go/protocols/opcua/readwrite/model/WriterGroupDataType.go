@@ -196,6 +196,8 @@ type WriterGroupDataTypeBuilder interface {
 	WithMessageSettingsBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) WriterGroupDataTypeBuilder
 	// WithDataSetWriters adds DataSetWriters (property field)
 	WithDataSetWriters(...DataSetWriterDataType) WriterGroupDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the WriterGroupDataType or returns an error if something is wrong
 	Build() (WriterGroupDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -219,6 +221,7 @@ var _ (WriterGroupDataTypeBuilder) = (*_WriterGroupDataTypeBuilder)(nil)
 
 func (b *_WriterGroupDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._WriterGroupDataType
 }
 
 func (b *_WriterGroupDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, securityKeyServices []EndpointDescription, maxNetworkMessageSize uint32, groupProperties []KeyValuePair, writerGroupId uint16, publishingInterval float64, keepAliveTime float64, priority uint8, localeIds []PascalString, headerLayoutUri PascalString, transportSettings ExtensionObject, messageSettings ExtensionObject, dataSetWriters []DataSetWriterDataType) WriterGroupDataTypeBuilder {
@@ -415,8 +418,10 @@ func (b *_WriterGroupDataTypeBuilder) MustBuild() WriterGroupDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_WriterGroupDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -919,10 +924,10 @@ func (m *_WriterGroupDataType) deepCopy() *_WriterGroupDataType {
 	}
 	_WriterGroupDataTypeCopy := &_WriterGroupDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Name),
 		m.Enabled,
 		m.SecurityMode,
-		m.SecurityGroupId.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.SecurityGroupId),
 		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.SecurityKeyServices),
 		m.MaxNetworkMessageSize,
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.GroupProperties),
@@ -931,13 +936,13 @@ func (m *_WriterGroupDataType) deepCopy() *_WriterGroupDataType {
 		m.KeepAliveTime,
 		m.Priority,
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
-		m.HeaderLayoutUri.DeepCopy().(PascalString),
-		m.TransportSettings.DeepCopy().(ExtensionObject),
-		m.MessageSettings.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[PascalString](m.HeaderLayoutUri),
+		utils.DeepCopy[ExtensionObject](m.TransportSettings),
+		utils.DeepCopy[ExtensionObject](m.MessageSettings),
 		utils.DeepCopySlice[DataSetWriterDataType, DataSetWriterDataType](m.DataSetWriters),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_WriterGroupDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _WriterGroupDataTypeCopy
 }
 

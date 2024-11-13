@@ -84,6 +84,8 @@ type BACnetValueSourceNoneBuilder interface {
 	WithNone(BACnetContextTagNull) BACnetValueSourceNoneBuilder
 	// WithNoneBuilder adds None (property field) which is build by the builder
 	WithNoneBuilder(func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetValueSourceNoneBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetValueSourceBuilder
 	// Build builds the BACnetValueSourceNone or returns an error if something is wrong
 	Build() (BACnetValueSourceNone, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetValueSourceNoneBuilder) = (*_BACnetValueSourceNoneBuilder)(nil)
 
 func (b *_BACnetValueSourceNoneBuilder) setParent(contract BACnetValueSourceContract) {
 	b.BACnetValueSourceContract = contract
+	contract.(*_BACnetValueSource)._SubType = b._BACnetValueSourceNone
 }
 
 func (b *_BACnetValueSourceNoneBuilder) WithMandatoryFields(none BACnetContextTagNull) BACnetValueSourceNoneBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetValueSourceNoneBuilder) MustBuild() BACnetValueSourceNone {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetValueSourceNoneBuilder) Done() BACnetValueSourceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetValueSourceBuilder().(*_BACnetValueSourceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetValueSourceNone) deepCopy() *_BACnetValueSourceNone {
 	}
 	_BACnetValueSourceNoneCopy := &_BACnetValueSourceNone{
 		m.BACnetValueSourceContract.(*_BACnetValueSource).deepCopy(),
-		m.None.DeepCopy().(BACnetContextTagNull),
+		utils.DeepCopy[BACnetContextTagNull](m.None),
 	}
-	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	_BACnetValueSourceNoneCopy.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
 	return _BACnetValueSourceNoneCopy
 }
 

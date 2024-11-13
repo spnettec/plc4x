@@ -86,6 +86,8 @@ type BACnetConstructedDataLimitEnableBuilder interface {
 	WithLimitEnable(BACnetLimitEnableTagged) BACnetConstructedDataLimitEnableBuilder
 	// WithLimitEnableBuilder adds LimitEnable (property field) which is build by the builder
 	WithLimitEnableBuilder(func(BACnetLimitEnableTaggedBuilder) BACnetLimitEnableTaggedBuilder) BACnetConstructedDataLimitEnableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLimitEnable or returns an error if something is wrong
 	Build() (BACnetConstructedDataLimitEnable, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLimitEnableBuilder) = (*_BACnetConstructedDataLimitE
 
 func (b *_BACnetConstructedDataLimitEnableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLimitEnable
 }
 
 func (b *_BACnetConstructedDataLimitEnableBuilder) WithMandatoryFields(limitEnable BACnetLimitEnableTagged) BACnetConstructedDataLimitEnableBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLimitEnableBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLimitEnableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLimitEnable) deepCopy() *_BACnetConstructedDataLi
 	}
 	_BACnetConstructedDataLimitEnableCopy := &_BACnetConstructedDataLimitEnable{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LimitEnable.DeepCopy().(BACnetLimitEnableTagged),
+		utils.DeepCopy[BACnetLimitEnableTagged](m.LimitEnable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLimitEnableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLimitEnableCopy
 }
 

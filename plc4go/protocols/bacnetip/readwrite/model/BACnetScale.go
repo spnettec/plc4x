@@ -101,15 +101,9 @@ type BACnetScaleBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetScaleBuilder
 	// AsBACnetScaleFloatScale converts this build to a subType of BACnetScale. It is always possible to return to current builder using Done()
-	AsBACnetScaleFloatScale() interface {
-		BACnetScaleFloatScaleBuilder
-		Done() BACnetScaleBuilder
-	}
+	AsBACnetScaleFloatScale() BACnetScaleFloatScaleBuilder
 	// AsBACnetScaleIntegerScale converts this build to a subType of BACnetScale. It is always possible to return to current builder using Done()
-	AsBACnetScaleIntegerScale() interface {
-		BACnetScaleIntegerScaleBuilder
-		Done() BACnetScaleBuilder
-	}
+	AsBACnetScaleIntegerScale() BACnetScaleIntegerScaleBuilder
 	// Build builds the BACnetScale or returns an error if something is wrong
 	PartialBuild() (BACnetScaleContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetScaleBuilder) PartialMustBuild() BACnetScaleContract {
 	return build
 }
 
-func (b *_BACnetScaleBuilder) AsBACnetScaleFloatScale() interface {
-	BACnetScaleFloatScaleBuilder
-	Done() BACnetScaleBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetScaleFloatScaleBuilder
-		Done() BACnetScaleBuilder
-	}); ok {
+func (b *_BACnetScaleBuilder) AsBACnetScaleFloatScale() BACnetScaleFloatScaleBuilder {
+	if cb, ok := b.childBuilder.(BACnetScaleFloatScaleBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetScaleFloatScaleBuilder().(*_BACnetScaleFloatScaleBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetScaleBuilder) AsBACnetScaleFloatScale() interface {
 	return cb
 }
 
-func (b *_BACnetScaleBuilder) AsBACnetScaleIntegerScale() interface {
-	BACnetScaleIntegerScaleBuilder
-	Done() BACnetScaleBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetScaleIntegerScaleBuilder
-		Done() BACnetScaleBuilder
-	}); ok {
+func (b *_BACnetScaleBuilder) AsBACnetScaleIntegerScale() BACnetScaleIntegerScaleBuilder {
+	if cb, ok := b.childBuilder.(BACnetScaleIntegerScaleBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetScaleIntegerScaleBuilder().(*_BACnetScaleIntegerScaleBuilder)
@@ -433,7 +415,7 @@ func (m *_BACnetScale) deepCopy() *_BACnetScale {
 	}
 	_BACnetScaleCopy := &_BACnetScale{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetScaleCopy
 }

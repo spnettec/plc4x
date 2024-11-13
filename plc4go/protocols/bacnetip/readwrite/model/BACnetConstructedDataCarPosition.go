@@ -86,6 +86,8 @@ type BACnetConstructedDataCarPositionBuilder interface {
 	WithCarPosition(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarPositionBuilder
 	// WithCarPositionBuilder adds CarPosition (property field) which is build by the builder
 	WithCarPositionBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarPositionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCarPosition or returns an error if something is wrong
 	Build() (BACnetConstructedDataCarPosition, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataCarPositionBuilder) = (*_BACnetConstructedDataCarPos
 
 func (b *_BACnetConstructedDataCarPositionBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCarPosition
 }
 
 func (b *_BACnetConstructedDataCarPositionBuilder) WithMandatoryFields(carPosition BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarPositionBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataCarPositionBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCarPositionBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataCarPosition) deepCopy() *_BACnetConstructedDataCa
 	}
 	_BACnetConstructedDataCarPositionCopy := &_BACnetConstructedDataCarPosition{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CarPosition.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.CarPosition),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCarPositionCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCarPositionCopy
 }
 

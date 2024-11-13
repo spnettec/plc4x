@@ -405,8 +405,8 @@ func (m *_BACnetAddress) deepCopy() *_BACnetAddress {
 		return nil
 	}
 	_BACnetAddressCopy := &_BACnetAddress{
-		m.NetworkNumber.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.MacAddress.DeepCopy().(BACnetApplicationTagOctetString),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NetworkNumber),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.MacAddress),
 	}
 	return _BACnetAddressCopy
 }

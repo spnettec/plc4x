@@ -119,6 +119,8 @@ type GenericAttributesBuilder interface {
 	WithUserWriteMask(uint32) GenericAttributesBuilder
 	// WithAttributeValues adds AttributeValues (property field)
 	WithAttributeValues(...GenericAttributeValue) GenericAttributesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the GenericAttributes or returns an error if something is wrong
 	Build() (GenericAttributes, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,6 +144,7 @@ var _ (GenericAttributesBuilder) = (*_GenericAttributesBuilder)(nil)
 
 func (b *_GenericAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._GenericAttributes
 }
 
 func (b *_GenericAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, attributeValues []GenericAttributeValue) GenericAttributesBuilder {
@@ -231,8 +234,10 @@ func (b *_GenericAttributesBuilder) MustBuild() GenericAttributes {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_GenericAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -493,13 +498,13 @@ func (m *_GenericAttributes) deepCopy() *_GenericAttributes {
 	_GenericAttributesCopy := &_GenericAttributes{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedAttributes,
-		m.DisplayName.DeepCopy().(LocalizedText),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.DisplayName),
+		utils.DeepCopy[LocalizedText](m.Description),
 		m.WriteMask,
 		m.UserWriteMask,
 		utils.DeepCopySlice[GenericAttributeValue, GenericAttributeValue](m.AttributeValues),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_GenericAttributesCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _GenericAttributesCopy
 }
 

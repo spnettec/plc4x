@@ -79,6 +79,8 @@ type MediaTransportControlDataSelectionNameBuilder interface {
 	WithMandatoryFields(selectionName string) MediaTransportControlDataSelectionNameBuilder
 	// WithSelectionName adds SelectionName (property field)
 	WithSelectionName(string) MediaTransportControlDataSelectionNameBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataSelectionName or returns an error if something is wrong
 	Build() (MediaTransportControlDataSelectionName, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (MediaTransportControlDataSelectionNameBuilder) = (*_MediaTransportControl
 
 func (b *_MediaTransportControlDataSelectionNameBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataSelectionName
 }
 
 func (b *_MediaTransportControlDataSelectionNameBuilder) WithMandatoryFields(selectionName string) MediaTransportControlDataSelectionNameBuilder {
@@ -128,8 +131,10 @@ func (b *_MediaTransportControlDataSelectionNameBuilder) MustBuild() MediaTransp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataSelectionNameBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -282,7 +287,7 @@ func (m *_MediaTransportControlDataSelectionName) deepCopy() *_MediaTransportCon
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.SelectionName,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataSelectionNameCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataSelectionNameCopy
 }
 

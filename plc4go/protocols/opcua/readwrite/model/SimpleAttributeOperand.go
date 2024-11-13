@@ -107,6 +107,8 @@ type SimpleAttributeOperandBuilder interface {
 	WithIndexRange(PascalString) SimpleAttributeOperandBuilder
 	// WithIndexRangeBuilder adds IndexRange (property field) which is build by the builder
 	WithIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) SimpleAttributeOperandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SimpleAttributeOperand or returns an error if something is wrong
 	Build() (SimpleAttributeOperand, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,6 +132,7 @@ var _ (SimpleAttributeOperandBuilder) = (*_SimpleAttributeOperandBuilder)(nil)
 
 func (b *_SimpleAttributeOperandBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SimpleAttributeOperand
 }
 
 func (b *_SimpleAttributeOperandBuilder) WithMandatoryFields(typeDefinitionId NodeId, browsePath []QualifiedName, attributeId uint32, indexRange PascalString) SimpleAttributeOperandBuilder {
@@ -209,8 +212,10 @@ func (b *_SimpleAttributeOperandBuilder) MustBuild() SimpleAttributeOperand {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SimpleAttributeOperandBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -436,12 +441,12 @@ func (m *_SimpleAttributeOperand) deepCopy() *_SimpleAttributeOperand {
 	}
 	_SimpleAttributeOperandCopy := &_SimpleAttributeOperand{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.TypeDefinitionId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.TypeDefinitionId),
 		utils.DeepCopySlice[QualifiedName, QualifiedName](m.BrowsePath),
 		m.AttributeId,
-		m.IndexRange.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.IndexRange),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SimpleAttributeOperandCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SimpleAttributeOperandCopy
 }
 

@@ -101,45 +101,21 @@ type BACnetFaultParameterBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultParameterBuilder
 	// AsBACnetFaultParameterNone converts this build to a subType of BACnetFaultParameter. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterNone() interface {
-		BACnetFaultParameterNoneBuilder
-		Done() BACnetFaultParameterBuilder
-	}
+	AsBACnetFaultParameterNone() BACnetFaultParameterNoneBuilder
 	// AsBACnetFaultParameterFaultCharacterString converts this build to a subType of BACnetFaultParameter. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultCharacterString() interface {
-		BACnetFaultParameterFaultCharacterStringBuilder
-		Done() BACnetFaultParameterBuilder
-	}
+	AsBACnetFaultParameterFaultCharacterString() BACnetFaultParameterFaultCharacterStringBuilder
 	// AsBACnetFaultParameterFaultExtended converts this build to a subType of BACnetFaultParameter. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultExtended() interface {
-		BACnetFaultParameterFaultExtendedBuilder
-		Done() BACnetFaultParameterBuilder
-	}
+	AsBACnetFaultParameterFaultExtended() BACnetFaultParameterFaultExtendedBuilder
 	// AsBACnetFaultParameterFaultLifeSafety converts this build to a subType of BACnetFaultParameter. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultLifeSafety() interface {
-		BACnetFaultParameterFaultLifeSafetyBuilder
-		Done() BACnetFaultParameterBuilder
-	}
+	AsBACnetFaultParameterFaultLifeSafety() BACnetFaultParameterFaultLifeSafetyBuilder
 	// AsBACnetFaultParameterFaultState converts this build to a subType of BACnetFaultParameter. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultState() interface {
-		BACnetFaultParameterFaultStateBuilder
-		Done() BACnetFaultParameterBuilder
-	}
+	AsBACnetFaultParameterFaultState() BACnetFaultParameterFaultStateBuilder
 	// AsBACnetFaultParameterFaultStatusFlags converts this build to a subType of BACnetFaultParameter. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultStatusFlags() interface {
-		BACnetFaultParameterFaultStatusFlagsBuilder
-		Done() BACnetFaultParameterBuilder
-	}
+	AsBACnetFaultParameterFaultStatusFlags() BACnetFaultParameterFaultStatusFlagsBuilder
 	// AsBACnetFaultParameterFaultOutOfRange converts this build to a subType of BACnetFaultParameter. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultOutOfRange() interface {
-		BACnetFaultParameterFaultOutOfRangeBuilder
-		Done() BACnetFaultParameterBuilder
-	}
+	AsBACnetFaultParameterFaultOutOfRange() BACnetFaultParameterFaultOutOfRangeBuilder
 	// AsBACnetFaultParameterFaultListed converts this build to a subType of BACnetFaultParameter. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultListed() interface {
-		BACnetFaultParameterFaultListedBuilder
-		Done() BACnetFaultParameterBuilder
-	}
+	AsBACnetFaultParameterFaultListed() BACnetFaultParameterFaultListedBuilder
 	// Build builds the BACnetFaultParameter or returns an error if something is wrong
 	PartialBuild() (BACnetFaultParameterContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -214,14 +190,8 @@ func (b *_BACnetFaultParameterBuilder) PartialMustBuild() BACnetFaultParameterCo
 	return build
 }
 
-func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterNone() interface {
-	BACnetFaultParameterNoneBuilder
-	Done() BACnetFaultParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterNoneBuilder
-		Done() BACnetFaultParameterBuilder
-	}); ok {
+func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterNone() BACnetFaultParameterNoneBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterNoneBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterNoneBuilder().(*_BACnetFaultParameterNoneBuilder)
@@ -230,14 +200,8 @@ func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterNone() interface {
 	return cb
 }
 
-func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultCharacterString() interface {
-	BACnetFaultParameterFaultCharacterStringBuilder
-	Done() BACnetFaultParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultCharacterStringBuilder
-		Done() BACnetFaultParameterBuilder
-	}); ok {
+func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultCharacterString() BACnetFaultParameterFaultCharacterStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultCharacterStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultCharacterStringBuilder().(*_BACnetFaultParameterFaultCharacterStringBuilder)
@@ -246,14 +210,8 @@ func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultCharacterStrin
 	return cb
 }
 
-func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultExtended() interface {
-	BACnetFaultParameterFaultExtendedBuilder
-	Done() BACnetFaultParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultExtendedBuilder
-		Done() BACnetFaultParameterBuilder
-	}); ok {
+func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultExtended() BACnetFaultParameterFaultExtendedBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultExtendedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultExtendedBuilder().(*_BACnetFaultParameterFaultExtendedBuilder)
@@ -262,14 +220,8 @@ func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultExtended() int
 	return cb
 }
 
-func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultLifeSafety() interface {
-	BACnetFaultParameterFaultLifeSafetyBuilder
-	Done() BACnetFaultParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultLifeSafetyBuilder
-		Done() BACnetFaultParameterBuilder
-	}); ok {
+func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultLifeSafety() BACnetFaultParameterFaultLifeSafetyBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultLifeSafetyBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultLifeSafetyBuilder().(*_BACnetFaultParameterFaultLifeSafetyBuilder)
@@ -278,14 +230,8 @@ func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultLifeSafety() i
 	return cb
 }
 
-func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultState() interface {
-	BACnetFaultParameterFaultStateBuilder
-	Done() BACnetFaultParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultStateBuilder
-		Done() BACnetFaultParameterBuilder
-	}); ok {
+func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultState() BACnetFaultParameterFaultStateBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultStateBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultStateBuilder().(*_BACnetFaultParameterFaultStateBuilder)
@@ -294,14 +240,8 @@ func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultState() interf
 	return cb
 }
 
-func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultStatusFlags() interface {
-	BACnetFaultParameterFaultStatusFlagsBuilder
-	Done() BACnetFaultParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultStatusFlagsBuilder
-		Done() BACnetFaultParameterBuilder
-	}); ok {
+func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultStatusFlags() BACnetFaultParameterFaultStatusFlagsBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultStatusFlagsBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultStatusFlagsBuilder().(*_BACnetFaultParameterFaultStatusFlagsBuilder)
@@ -310,14 +250,8 @@ func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultStatusFlags() 
 	return cb
 }
 
-func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultOutOfRange() interface {
-	BACnetFaultParameterFaultOutOfRangeBuilder
-	Done() BACnetFaultParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultOutOfRangeBuilder
-		Done() BACnetFaultParameterBuilder
-	}); ok {
+func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultOutOfRange() BACnetFaultParameterFaultOutOfRangeBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultOutOfRangeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultOutOfRangeBuilder().(*_BACnetFaultParameterFaultOutOfRangeBuilder)
@@ -326,14 +260,8 @@ func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultOutOfRange() i
 	return cb
 }
 
-func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultListed() interface {
-	BACnetFaultParameterFaultListedBuilder
-	Done() BACnetFaultParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultListedBuilder
-		Done() BACnetFaultParameterBuilder
-	}); ok {
+func (b *_BACnetFaultParameterBuilder) AsBACnetFaultParameterFaultListed() BACnetFaultParameterFaultListedBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultListedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultListedBuilder().(*_BACnetFaultParameterFaultListedBuilder)
@@ -583,7 +511,7 @@ func (m *_BACnetFaultParameter) deepCopy() *_BACnetFaultParameter {
 	}
 	_BACnetFaultParameterCopy := &_BACnetFaultParameter{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetFaultParameterCopy
 }

@@ -86,6 +86,8 @@ type BACnetConstructedDataDoorPulseTimeBuilder interface {
 	WithDoorPulseTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorPulseTimeBuilder
 	// WithDoorPulseTimeBuilder adds DoorPulseTime (property field) which is build by the builder
 	WithDoorPulseTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorPulseTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDoorPulseTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataDoorPulseTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDoorPulseTimeBuilder) = (*_BACnetConstructedDataDoor
 
 func (b *_BACnetConstructedDataDoorPulseTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDoorPulseTime
 }
 
 func (b *_BACnetConstructedDataDoorPulseTimeBuilder) WithMandatoryFields(doorPulseTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorPulseTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDoorPulseTimeBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDoorPulseTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDoorPulseTime) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataDoorPulseTimeCopy := &_BACnetConstructedDataDoorPulseTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DoorPulseTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.DoorPulseTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDoorPulseTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDoorPulseTimeCopy
 }
 

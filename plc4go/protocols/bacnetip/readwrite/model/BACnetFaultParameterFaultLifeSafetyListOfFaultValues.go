@@ -375,9 +375,9 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) deepCopy() *_BAC
 		return nil
 	}
 	_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesCopy := &_BACnetFaultParameterFaultLifeSafetyListOfFaultValues{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.ListIfFaultValues),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetFaultParameterFaultLifeSafetyListOfFaultValuesCopy

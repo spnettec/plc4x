@@ -112,6 +112,8 @@ type OpenChannelMessageRequestBuilder interface {
 	WithReceiverCertificateThumbprint(PascalByteString) OpenChannelMessageRequestBuilder
 	// WithReceiverCertificateThumbprintBuilder adds ReceiverCertificateThumbprint (property field) which is build by the builder
 	WithReceiverCertificateThumbprintBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) OpenChannelMessageRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() OpenChannelMessageBuilder
 	// Build builds the OpenChannelMessageRequest or returns an error if something is wrong
 	Build() (OpenChannelMessageRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (OpenChannelMessageRequestBuilder) = (*_OpenChannelMessageRequestBuilder)(
 
 func (b *_OpenChannelMessageRequestBuilder) setParent(contract OpenChannelMessageContract) {
 	b.OpenChannelMessageContract = contract
+	contract.(*_OpenChannelMessage)._SubType = b._OpenChannelMessageRequest
 }
 
 func (b *_OpenChannelMessageRequestBuilder) WithMandatoryFields(secureChannelId int32, endpoint PascalString, senderCertificate PascalByteString, receiverCertificateThumbprint PascalByteString) OpenChannelMessageRequestBuilder {
@@ -233,8 +236,10 @@ func (b *_OpenChannelMessageRequestBuilder) MustBuild() OpenChannelMessageReques
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_OpenChannelMessageRequestBuilder) Done() OpenChannelMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewOpenChannelMessageBuilder().(*_OpenChannelMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -441,11 +446,11 @@ func (m *_OpenChannelMessageRequest) deepCopy() *_OpenChannelMessageRequest {
 	_OpenChannelMessageRequestCopy := &_OpenChannelMessageRequest{
 		m.OpenChannelMessageContract.(*_OpenChannelMessage).deepCopy(),
 		m.SecureChannelId,
-		m.Endpoint.DeepCopy().(PascalString),
-		m.SenderCertificate.DeepCopy().(PascalByteString),
-		m.ReceiverCertificateThumbprint.DeepCopy().(PascalByteString),
+		utils.DeepCopy[PascalString](m.Endpoint),
+		utils.DeepCopy[PascalByteString](m.SenderCertificate),
+		utils.DeepCopy[PascalByteString](m.ReceiverCertificateThumbprint),
 	}
-	m.OpenChannelMessageContract.(*_OpenChannelMessage)._SubType = m
+	_OpenChannelMessageRequestCopy.OpenChannelMessageContract.(*_OpenChannelMessage)._SubType = m
 	return _OpenChannelMessageRequestCopy
 }
 

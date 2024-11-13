@@ -87,20 +87,11 @@ type ComObjectTableBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ComObjectTableBuilder
 	// AsComObjectTableRealisationType1 converts this build to a subType of ComObjectTable. It is always possible to return to current builder using Done()
-	AsComObjectTableRealisationType1() interface {
-		ComObjectTableRealisationType1Builder
-		Done() ComObjectTableBuilder
-	}
+	AsComObjectTableRealisationType1() ComObjectTableRealisationType1Builder
 	// AsComObjectTableRealisationType2 converts this build to a subType of ComObjectTable. It is always possible to return to current builder using Done()
-	AsComObjectTableRealisationType2() interface {
-		ComObjectTableRealisationType2Builder
-		Done() ComObjectTableBuilder
-	}
+	AsComObjectTableRealisationType2() ComObjectTableRealisationType2Builder
 	// AsComObjectTableRealisationType6 converts this build to a subType of ComObjectTable. It is always possible to return to current builder using Done()
-	AsComObjectTableRealisationType6() interface {
-		ComObjectTableRealisationType6Builder
-		Done() ComObjectTableBuilder
-	}
+	AsComObjectTableRealisationType6() ComObjectTableRealisationType6Builder
 	// Build builds the ComObjectTable or returns an error if something is wrong
 	PartialBuild() (ComObjectTableContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,14 +142,8 @@ func (b *_ComObjectTableBuilder) PartialMustBuild() ComObjectTableContract {
 	return build
 }
 
-func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType1() interface {
-	ComObjectTableRealisationType1Builder
-	Done() ComObjectTableBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ComObjectTableRealisationType1Builder
-		Done() ComObjectTableBuilder
-	}); ok {
+func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType1() ComObjectTableRealisationType1Builder {
+	if cb, ok := b.childBuilder.(ComObjectTableRealisationType1Builder); ok {
 		return cb
 	}
 	cb := NewComObjectTableRealisationType1Builder().(*_ComObjectTableRealisationType1Builder)
@@ -167,14 +152,8 @@ func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType1() interface {
 	return cb
 }
 
-func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType2() interface {
-	ComObjectTableRealisationType2Builder
-	Done() ComObjectTableBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ComObjectTableRealisationType2Builder
-		Done() ComObjectTableBuilder
-	}); ok {
+func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType2() ComObjectTableRealisationType2Builder {
+	if cb, ok := b.childBuilder.(ComObjectTableRealisationType2Builder); ok {
 		return cb
 	}
 	cb := NewComObjectTableRealisationType2Builder().(*_ComObjectTableRealisationType2Builder)
@@ -183,14 +162,8 @@ func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType2() interface {
 	return cb
 }
 
-func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType6() interface {
-	ComObjectTableRealisationType6Builder
-	Done() ComObjectTableBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ComObjectTableRealisationType6Builder
-		Done() ComObjectTableBuilder
-	}); ok {
+func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType6() ComObjectTableRealisationType6Builder {
+	if cb, ok := b.childBuilder.(ComObjectTableRealisationType6Builder); ok {
 		return cb
 	}
 	cb := NewComObjectTableRealisationType6Builder().(*_ComObjectTableRealisationType6Builder)

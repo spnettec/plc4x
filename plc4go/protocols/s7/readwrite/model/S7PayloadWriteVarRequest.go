@@ -79,6 +79,8 @@ type S7PayloadWriteVarRequestBuilder interface {
 	WithMandatoryFields(items []S7VarPayloadDataItem) S7PayloadWriteVarRequestBuilder
 	// WithItems adds Items (property field)
 	WithItems(...S7VarPayloadDataItem) S7PayloadWriteVarRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadBuilder
 	// Build builds the S7PayloadWriteVarRequest or returns an error if something is wrong
 	Build() (S7PayloadWriteVarRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (S7PayloadWriteVarRequestBuilder) = (*_S7PayloadWriteVarRequestBuilder)(ni
 
 func (b *_S7PayloadWriteVarRequestBuilder) setParent(contract S7PayloadContract) {
 	b.S7PayloadContract = contract
+	contract.(*_S7Payload)._SubType = b._S7PayloadWriteVarRequest
 }
 
 func (b *_S7PayloadWriteVarRequestBuilder) WithMandatoryFields(items []S7VarPayloadDataItem) S7PayloadWriteVarRequestBuilder {
@@ -128,8 +131,10 @@ func (b *_S7PayloadWriteVarRequestBuilder) MustBuild() S7PayloadWriteVarRequest 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadWriteVarRequestBuilder) Done() S7PayloadBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadBuilder().(*_S7PayloadBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -297,7 +302,7 @@ func (m *_S7PayloadWriteVarRequest) deepCopy() *_S7PayloadWriteVarRequest {
 		m.S7PayloadContract.(*_S7Payload).deepCopy(),
 		utils.DeepCopySlice[S7VarPayloadDataItem, S7VarPayloadDataItem](m.Items),
 	}
-	m.S7PayloadContract.(*_S7Payload)._SubType = m
+	_S7PayloadWriteVarRequestCopy.S7PayloadContract.(*_S7Payload)._SubType = m
 	return _S7PayloadWriteVarRequestCopy
 }
 

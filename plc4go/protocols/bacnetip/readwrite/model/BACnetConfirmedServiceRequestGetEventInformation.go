@@ -81,6 +81,8 @@ type BACnetConfirmedServiceRequestGetEventInformationBuilder interface {
 	WithOptionalLastReceivedObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestGetEventInformationBuilder
 	// WithOptionalLastReceivedObjectIdentifierBuilder adds LastReceivedObjectIdentifier (property field) which is build by the builder
 	WithOptionalLastReceivedObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestGetEventInformationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestGetEventInformation or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestGetEventInformation, error)
 	// MustBuild does the same as Build but panics on error
@@ -104,6 +106,7 @@ var _ (BACnetConfirmedServiceRequestGetEventInformationBuilder) = (*_BACnetConfi
 
 func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestGetEventInformation
 }
 
 func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithMandatoryFields() BACnetConfirmedServiceRequestGetEventInformationBuilder {
@@ -143,8 +146,10 @@ func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) MustBuild() B
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -306,9 +311,9 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) deepCopy() *_BACnetC
 	}
 	_BACnetConfirmedServiceRequestGetEventInformationCopy := &_BACnetConfirmedServiceRequestGetEventInformation{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.LastReceivedObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.LastReceivedObjectIdentifier),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestGetEventInformationCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestGetEventInformationCopy
 }
 

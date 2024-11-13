@@ -324,8 +324,8 @@ func (m *_BACnetVMACEntry) deepCopy() *_BACnetVMACEntry {
 		return nil
 	}
 	_BACnetVMACEntryCopy := &_BACnetVMACEntry{
-		m.VirtualMacAddress.DeepCopy().(BACnetContextTagOctetString),
-		m.NativeMacAddress.DeepCopy().(BACnetContextTagOctetString),
+		utils.DeepCopy[BACnetContextTagOctetString](m.VirtualMacAddress),
+		utils.DeepCopy[BACnetContextTagOctetString](m.NativeMacAddress),
 	}
 	return _BACnetVMACEntryCopy
 }

@@ -361,9 +361,9 @@ func (m *_BACnetActionList) deepCopy() *_BACnetActionList {
 		return nil
 	}
 	_BACnetActionListCopy := &_BACnetActionList{
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
 		utils.DeepCopySlice[BACnetActionCommand, BACnetActionCommand](m.Action),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
 	return _BACnetActionListCopy
 }

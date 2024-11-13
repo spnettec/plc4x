@@ -103,6 +103,8 @@ type SessionlessInvokeRequestTypeBuilder interface {
 	WithLocaleIds(...PascalString) SessionlessInvokeRequestTypeBuilder
 	// WithServiceId adds ServiceId (property field)
 	WithServiceId(uint32) SessionlessInvokeRequestTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SessionlessInvokeRequestType or returns an error if something is wrong
 	Build() (SessionlessInvokeRequestType, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (SessionlessInvokeRequestTypeBuilder) = (*_SessionlessInvokeRequestTypeBui
 
 func (b *_SessionlessInvokeRequestTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SessionlessInvokeRequestType
 }
 
 func (b *_SessionlessInvokeRequestTypeBuilder) WithMandatoryFields(urisVersion uint32, namespaceUris []PascalString, serverUris []PascalString, localeIds []PascalString, serviceId uint32) SessionlessInvokeRequestTypeBuilder {
@@ -172,8 +175,10 @@ func (b *_SessionlessInvokeRequestTypeBuilder) MustBuild() SessionlessInvokeRequ
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SessionlessInvokeRequestTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -462,7 +467,7 @@ func (m *_SessionlessInvokeRequestType) deepCopy() *_SessionlessInvokeRequestTyp
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
 		m.ServiceId,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SessionlessInvokeRequestTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SessionlessInvokeRequestTypeCopy
 }
 

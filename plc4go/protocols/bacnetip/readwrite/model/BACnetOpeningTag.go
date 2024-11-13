@@ -307,7 +307,7 @@ func (m *_BACnetOpeningTag) deepCopy() *_BACnetOpeningTag {
 		return nil
 	}
 	_BACnetOpeningTagCopy := &_BACnetOpeningTag{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.TagNumberArgument,
 	}
 	return _BACnetOpeningTagCopy

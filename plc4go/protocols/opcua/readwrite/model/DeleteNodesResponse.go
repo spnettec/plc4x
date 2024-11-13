@@ -96,6 +96,8 @@ type DeleteNodesResponseBuilder interface {
 	WithResults(...StatusCode) DeleteNodesResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) DeleteNodesResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DeleteNodesResponse or returns an error if something is wrong
 	Build() (DeleteNodesResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (DeleteNodesResponseBuilder) = (*_DeleteNodesResponseBuilder)(nil)
 
 func (b *_DeleteNodesResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DeleteNodesResponse
 }
 
 func (b *_DeleteNodesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) DeleteNodesResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_DeleteNodesResponseBuilder) MustBuild() DeleteNodesResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeleteNodesResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_DeleteNodesResponse) deepCopy() *_DeleteNodesResponse {
 	}
 	_DeleteNodesResponseCopy := &_DeleteNodesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DeleteNodesResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteNodesResponseCopy
 }
 

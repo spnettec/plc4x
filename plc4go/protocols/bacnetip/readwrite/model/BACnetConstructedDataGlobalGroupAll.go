@@ -71,6 +71,8 @@ type BACnetConstructedDataGlobalGroupAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataGlobalGroupAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataGlobalGroupAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataGlobalGroupAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataGlobalGroupAllBuilder) = (*_BACnetConstructedDataGlo
 
 func (b *_BACnetConstructedDataGlobalGroupAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataGlobalGroupAll
 }
 
 func (b *_BACnetConstructedDataGlobalGroupAllBuilder) WithMandatoryFields() BACnetConstructedDataGlobalGroupAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataGlobalGroupAllBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataGlobalGroupAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataGlobalGroupAll) deepCopy() *_BACnetConstructedDat
 	_BACnetConstructedDataGlobalGroupAllCopy := &_BACnetConstructedDataGlobalGroupAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataGlobalGroupAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataGlobalGroupAllCopy
 }
 

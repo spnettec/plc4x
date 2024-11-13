@@ -393,7 +393,7 @@ func (m *_BACnetLiftCarDirectionTagged) deepCopy() *_BACnetLiftCarDirectionTagge
 		return nil
 	}
 	_BACnetLiftCarDirectionTaggedCopy := &_BACnetLiftCarDirectionTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

@@ -327,8 +327,8 @@ func (m *_BACnetReadAccessResult) deepCopy() *_BACnetReadAccessResult {
 		return nil
 	}
 	_BACnetReadAccessResultCopy := &_BACnetReadAccessResult{
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.ListOfResults.DeepCopy().(BACnetReadAccessResultListOfResults),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetReadAccessResultListOfResults](m.ListOfResults),
 	}
 	return _BACnetReadAccessResultCopy
 }

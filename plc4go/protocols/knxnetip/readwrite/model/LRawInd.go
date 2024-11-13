@@ -71,6 +71,8 @@ type LRawIndBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() LRawIndBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the LRawInd or returns an error if something is wrong
 	Build() (LRawInd, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (LRawIndBuilder) = (*_LRawIndBuilder)(nil)
 
 func (b *_LRawIndBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._LRawInd
 }
 
 func (b *_LRawIndBuilder) WithMandatoryFields() LRawIndBuilder {
@@ -115,8 +118,10 @@ func (b *_LRawIndBuilder) MustBuild() LRawInd {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LRawIndBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_LRawInd) deepCopy() *_LRawInd {
 	_LRawIndCopy := &_LRawInd{
 		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_LRawIndCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _LRawIndCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetPriorityValueDateTimeBuilder interface {
 	WithDateTimeValue(BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder
 	// WithDateTimeValueBuilder adds DateTimeValue (property field) which is build by the builder
 	WithDateTimeValueBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetPriorityValueDateTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPriorityValueBuilder
 	// Build builds the BACnetPriorityValueDateTime or returns an error if something is wrong
 	Build() (BACnetPriorityValueDateTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPriorityValueDateTimeBuilder) = (*_BACnetPriorityValueDateTimeBuild
 
 func (b *_BACnetPriorityValueDateTimeBuilder) setParent(contract BACnetPriorityValueContract) {
 	b.BACnetPriorityValueContract = contract
+	contract.(*_BACnetPriorityValue)._SubType = b._BACnetPriorityValueDateTime
 }
 
 func (b *_BACnetPriorityValueDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPriorityValueDateTimeBuilder) MustBuild() BACnetPriorityValueDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPriorityValueDateTimeBuilder) Done() BACnetPriorityValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPriorityValueDateTime) deepCopy() *_BACnetPriorityValueDateTime 
 	}
 	_BACnetPriorityValueDateTimeCopy := &_BACnetPriorityValueDateTime{
 		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
-		m.DateTimeValue.DeepCopy().(BACnetDateTimeEnclosed),
+		utils.DeepCopy[BACnetDateTimeEnclosed](m.DateTimeValue),
 	}
-	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	_BACnetPriorityValueDateTimeCopy.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
 	return _BACnetPriorityValueDateTimeCopy
 }
 

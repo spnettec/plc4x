@@ -86,6 +86,8 @@ type BACnetConstructedDataIntegerValueCOVIncrementBuilder interface {
 	WithCovIncrement(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueCOVIncrementBuilder
 	// WithCovIncrementBuilder adds CovIncrement (property field) which is build by the builder
 	WithCovIncrementBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntegerValueCOVIncrementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIntegerValueCOVIncrement or returns an error if something is wrong
 	Build() (BACnetConstructedDataIntegerValueCOVIncrement, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIntegerValueCOVIncrementBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIntegerValueCOVIncrement
 }
 
 func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueCOVIncrementBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIntegerValueCOVIncrementBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataIntegerValueCOVIncrement) deepCopy() *_BACnetCons
 	}
 	_BACnetConstructedDataIntegerValueCOVIncrementCopy := &_BACnetConstructedDataIntegerValueCOVIncrement{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CovIncrement.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.CovIncrement),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIntegerValueCOVIncrementCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIntegerValueCOVIncrementCopy
 }
 

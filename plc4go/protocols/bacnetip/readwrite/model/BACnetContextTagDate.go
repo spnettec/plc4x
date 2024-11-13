@@ -84,6 +84,8 @@ type BACnetContextTagDateBuilder interface {
 	WithPayload(BACnetTagPayloadDate) BACnetContextTagDateBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadDateBuilder) BACnetTagPayloadDateBuilder) BACnetContextTagDateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetContextTagBuilder
 	// Build builds the BACnetContextTagDate or returns an error if something is wrong
 	Build() (BACnetContextTagDate, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetContextTagDateBuilder) = (*_BACnetContextTagDateBuilder)(nil)
 
 func (b *_BACnetContextTagDateBuilder) setParent(contract BACnetContextTagContract) {
 	b.BACnetContextTagContract = contract
+	contract.(*_BACnetContextTag)._SubType = b._BACnetContextTagDate
 }
 
 func (b *_BACnetContextTagDateBuilder) WithMandatoryFields(payload BACnetTagPayloadDate) BACnetContextTagDateBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetContextTagDateBuilder) MustBuild() BACnetContextTagDate {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetContextTagDateBuilder) Done() BACnetContextTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetContextTagBuilder().(*_BACnetContextTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_BACnetContextTagDate) deepCopy() *_BACnetContextTagDate {
 	}
 	_BACnetContextTagDateCopy := &_BACnetContextTagDate{
 		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadDate),
+		utils.DeepCopy[BACnetTagPayloadDate](m.Payload),
 	}
-	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	_BACnetContextTagDateCopy.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
 	return _BACnetContextTagDateCopy
 }
 

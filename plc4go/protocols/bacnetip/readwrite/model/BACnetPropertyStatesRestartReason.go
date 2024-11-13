@@ -84,6 +84,8 @@ type BACnetPropertyStatesRestartReasonBuilder interface {
 	WithRestartReason(BACnetRestartReasonTagged) BACnetPropertyStatesRestartReasonBuilder
 	// WithRestartReasonBuilder adds RestartReason (property field) which is build by the builder
 	WithRestartReasonBuilder(func(BACnetRestartReasonTaggedBuilder) BACnetRestartReasonTaggedBuilder) BACnetPropertyStatesRestartReasonBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesRestartReason or returns an error if something is wrong
 	Build() (BACnetPropertyStatesRestartReason, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesRestartReasonBuilder) = (*_BACnetPropertyStatesRestar
 
 func (b *_BACnetPropertyStatesRestartReasonBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesRestartReason
 }
 
 func (b *_BACnetPropertyStatesRestartReasonBuilder) WithMandatoryFields(restartReason BACnetRestartReasonTagged) BACnetPropertyStatesRestartReasonBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesRestartReasonBuilder) MustBuild() BACnetPropertySt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesRestartReasonBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesRestartReason) deepCopy() *_BACnetPropertyStatesRe
 	}
 	_BACnetPropertyStatesRestartReasonCopy := &_BACnetPropertyStatesRestartReason{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.RestartReason.DeepCopy().(BACnetRestartReasonTagged),
+		utils.DeepCopy[BACnetRestartReasonTagged](m.RestartReason),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesRestartReasonCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesRestartReasonCopy
 }
 

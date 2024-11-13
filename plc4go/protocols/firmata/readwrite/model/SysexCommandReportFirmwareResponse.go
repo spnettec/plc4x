@@ -91,6 +91,8 @@ type SysexCommandReportFirmwareResponseBuilder interface {
 	WithMinorVersion(uint8) SysexCommandReportFirmwareResponseBuilder
 	// WithFileName adds FileName (property field)
 	WithFileName(...byte) SysexCommandReportFirmwareResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandReportFirmwareResponse or returns an error if something is wrong
 	Build() (SysexCommandReportFirmwareResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (SysexCommandReportFirmwareResponseBuilder) = (*_SysexCommandReportFirmwar
 
 func (b *_SysexCommandReportFirmwareResponseBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandReportFirmwareResponse
 }
 
 func (b *_SysexCommandReportFirmwareResponseBuilder) WithMandatoryFields(majorVersion uint8, minorVersion uint8, fileName []byte) SysexCommandReportFirmwareResponseBuilder {
@@ -150,8 +153,10 @@ func (b *_SysexCommandReportFirmwareResponseBuilder) MustBuild() SysexCommandRep
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandReportFirmwareResponseBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -350,7 +355,7 @@ func (m *_SysexCommandReportFirmwareResponse) deepCopy() *_SysexCommandReportFir
 		m.MinorVersion,
 		utils.DeepCopySlice[byte, byte](m.FileName),
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandReportFirmwareResponseCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandReportFirmwareResponseCopy
 }
 

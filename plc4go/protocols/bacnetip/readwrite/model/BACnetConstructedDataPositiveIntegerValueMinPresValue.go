@@ -86,6 +86,8 @@ type BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder interface {
 	WithMinPresValue(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
 	// WithMinPresValueBuilder adds MinPresValue (property field) which is build by the builder
 	WithMinPresValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPositiveIntegerValueMinPresValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataPositiveIntegerValueMinPresValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) = (*_BACnet
 
 func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPositiveIntegerValueMinPresValue
 }
 
 func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) MustBuil
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) deepCopy() *_BA
 	}
 	_BACnetConstructedDataPositiveIntegerValueMinPresValueCopy := &_BACnetConstructedDataPositiveIntegerValueMinPresValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MinPresValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.MinPresValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPositiveIntegerValueMinPresValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPositiveIntegerValueMinPresValueCopy
 }
 

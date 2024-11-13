@@ -86,6 +86,8 @@ type BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder interface {
 	WithMaxPresValue(BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder
 	// WithMaxPresValueBuilder adds MaxPresValue (property field) which is build by the builder
 	WithMaxPresValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLargeAnalogValueMaxPresValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataLargeAnalogValueMaxPresValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) = (*_BACnetCons
 
 func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLargeAnalogValueMaxPresValue
 }
 
 func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLargeAnalogValueMaxPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLargeAnalogValueMaxPresValue) deepCopy() *_BACnet
 	}
 	_BACnetConstructedDataLargeAnalogValueMaxPresValueCopy := &_BACnetConstructedDataLargeAnalogValueMaxPresValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MaxPresValue.DeepCopy().(BACnetApplicationTagDouble),
+		utils.DeepCopy[BACnetApplicationTagDouble](m.MaxPresValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLargeAnalogValueMaxPresValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLargeAnalogValueMaxPresValueCopy
 }
 

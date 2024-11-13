@@ -107,6 +107,8 @@ type FindServersRequestBuilder interface {
 	WithLocaleIds(...PascalString) FindServersRequestBuilder
 	// WithServerUris adds ServerUris (property field)
 	WithServerUris(...PascalString) FindServersRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the FindServersRequest or returns an error if something is wrong
 	Build() (FindServersRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,6 +132,7 @@ var _ (FindServersRequestBuilder) = (*_FindServersRequestBuilder)(nil)
 
 func (b *_FindServersRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._FindServersRequest
 }
 
 func (b *_FindServersRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, endpointUrl PascalString, localeIds []PascalString, serverUris []PascalString) FindServersRequestBuilder {
@@ -209,8 +212,10 @@ func (b *_FindServersRequestBuilder) MustBuild() FindServersRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FindServersRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -456,12 +461,12 @@ func (m *_FindServersRequest) deepCopy() *_FindServersRequest {
 	}
 	_FindServersRequestCopy := &_FindServersRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
-		m.EndpointUrl.DeepCopy().(PascalString),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
+		utils.DeepCopy[PascalString](m.EndpointUrl),
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
 		utils.DeepCopySlice[PascalString, PascalString](m.ServerUris),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_FindServersRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _FindServersRequestCopy
 }
 

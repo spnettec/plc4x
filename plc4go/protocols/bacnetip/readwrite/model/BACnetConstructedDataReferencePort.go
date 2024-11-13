@@ -86,6 +86,8 @@ type BACnetConstructedDataReferencePortBuilder interface {
 	WithReferencePort(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataReferencePortBuilder
 	// WithReferencePortBuilder adds ReferencePort (property field) which is build by the builder
 	WithReferencePortBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataReferencePortBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataReferencePort or returns an error if something is wrong
 	Build() (BACnetConstructedDataReferencePort, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataReferencePortBuilder) = (*_BACnetConstructedDataRefe
 
 func (b *_BACnetConstructedDataReferencePortBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataReferencePort
 }
 
 func (b *_BACnetConstructedDataReferencePortBuilder) WithMandatoryFields(referencePort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataReferencePortBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataReferencePortBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataReferencePortBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataReferencePort) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataReferencePortCopy := &_BACnetConstructedDataReferencePort{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ReferencePort.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ReferencePort),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataReferencePortCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataReferencePortCopy
 }
 

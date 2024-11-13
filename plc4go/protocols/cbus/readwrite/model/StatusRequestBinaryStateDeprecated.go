@@ -82,6 +82,8 @@ type StatusRequestBinaryStateDeprecatedBuilder interface {
 	WithMandatoryFields(application ApplicationIdContainer) StatusRequestBinaryStateDeprecatedBuilder
 	// WithApplication adds Application (property field)
 	WithApplication(ApplicationIdContainer) StatusRequestBinaryStateDeprecatedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() StatusRequestBuilder
 	// Build builds the StatusRequestBinaryStateDeprecated or returns an error if something is wrong
 	Build() (StatusRequestBinaryStateDeprecated, error)
 	// MustBuild does the same as Build but panics on error
@@ -105,6 +107,7 @@ var _ (StatusRequestBinaryStateDeprecatedBuilder) = (*_StatusRequestBinaryStateD
 
 func (b *_StatusRequestBinaryStateDeprecatedBuilder) setParent(contract StatusRequestContract) {
 	b.StatusRequestContract = contract
+	contract.(*_StatusRequest)._SubType = b._StatusRequestBinaryStateDeprecated
 }
 
 func (b *_StatusRequestBinaryStateDeprecatedBuilder) WithMandatoryFields(application ApplicationIdContainer) StatusRequestBinaryStateDeprecatedBuilder {
@@ -131,8 +134,10 @@ func (b *_StatusRequestBinaryStateDeprecatedBuilder) MustBuild() StatusRequestBi
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_StatusRequestBinaryStateDeprecatedBuilder) Done() StatusRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewStatusRequestBuilder().(*_StatusRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -313,7 +318,7 @@ func (m *_StatusRequestBinaryStateDeprecated) deepCopy() *_StatusRequestBinarySt
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.StatusRequestContract.(*_StatusRequest)._SubType = m
+	_StatusRequestBinaryStateDeprecatedCopy.StatusRequestContract.(*_StatusRequest)._SubType = m
 	return _StatusRequestBinaryStateDeprecatedCopy
 }
 

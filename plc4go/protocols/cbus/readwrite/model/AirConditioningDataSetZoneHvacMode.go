@@ -131,6 +131,8 @@ type AirConditioningDataSetZoneHvacModeBuilder interface {
 	WithOptionalAuxLevel(HVACAuxiliaryLevel) AirConditioningDataSetZoneHvacModeBuilder
 	// WithOptionalAuxLevelBuilder adds AuxLevel (property field) which is build by the builder
 	WithOptionalAuxLevelBuilder(func(HVACAuxiliaryLevelBuilder) HVACAuxiliaryLevelBuilder) AirConditioningDataSetZoneHvacModeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AirConditioningDataBuilder
 	// Build builds the AirConditioningDataSetZoneHvacMode or returns an error if something is wrong
 	Build() (AirConditioningDataSetZoneHvacMode, error)
 	// MustBuild does the same as Build but panics on error
@@ -154,6 +156,7 @@ var _ (AirConditioningDataSetZoneHvacModeBuilder) = (*_AirConditioningDataSetZon
 
 func (b *_AirConditioningDataSetZoneHvacModeBuilder) setParent(contract AirConditioningDataContract) {
 	b.AirConditioningDataContract = contract
+	contract.(*_AirConditioningData)._SubType = b._AirConditioningDataSetZoneHvacMode
 }
 
 func (b *_AirConditioningDataSetZoneHvacModeBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, hvacModeAndFlags HVACModeAndFlags, hvacType HVACType) AirConditioningDataSetZoneHvacModeBuilder {
@@ -287,8 +290,10 @@ func (b *_AirConditioningDataSetZoneHvacModeBuilder) MustBuild() AirConditioning
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AirConditioningDataSetZoneHvacModeBuilder) Done() AirConditioningDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAirConditioningDataBuilder().(*_AirConditioningDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -560,14 +565,14 @@ func (m *_AirConditioningDataSetZoneHvacMode) deepCopy() *_AirConditioningDataSe
 	_AirConditioningDataSetZoneHvacModeCopy := &_AirConditioningDataSetZoneHvacMode{
 		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
 		m.ZoneGroup,
-		m.ZoneList.DeepCopy().(HVACZoneList),
-		m.HvacModeAndFlags.DeepCopy().(HVACModeAndFlags),
+		utils.DeepCopy[HVACZoneList](m.ZoneList),
+		utils.DeepCopy[HVACModeAndFlags](m.HvacModeAndFlags),
 		m.HvacType,
-		m.Level.DeepCopy().(HVACTemperature),
-		m.RawLevel.DeepCopy().(HVACRawLevels),
-		m.AuxLevel.DeepCopy().(HVACAuxiliaryLevel),
+		utils.DeepCopy[HVACTemperature](m.Level),
+		utils.DeepCopy[HVACRawLevels](m.RawLevel),
+		utils.DeepCopy[HVACAuxiliaryLevel](m.AuxLevel),
 	}
-	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	_AirConditioningDataSetZoneHvacModeCopy.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
 	return _AirConditioningDataSetZoneHvacModeCopy
 }
 

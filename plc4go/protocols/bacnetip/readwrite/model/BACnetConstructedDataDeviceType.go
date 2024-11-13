@@ -86,6 +86,8 @@ type BACnetConstructedDataDeviceTypeBuilder interface {
 	WithDeviceType(BACnetApplicationTagCharacterString) BACnetConstructedDataDeviceTypeBuilder
 	// WithDeviceTypeBuilder adds DeviceType (property field) which is build by the builder
 	WithDeviceTypeBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDeviceTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDeviceType or returns an error if something is wrong
 	Build() (BACnetConstructedDataDeviceType, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDeviceTypeBuilder) = (*_BACnetConstructedDataDeviceT
 
 func (b *_BACnetConstructedDataDeviceTypeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDeviceType
 }
 
 func (b *_BACnetConstructedDataDeviceTypeBuilder) WithMandatoryFields(deviceType BACnetApplicationTagCharacterString) BACnetConstructedDataDeviceTypeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDeviceTypeBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDeviceTypeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDeviceType) deepCopy() *_BACnetConstructedDataDev
 	}
 	_BACnetConstructedDataDeviceTypeCopy := &_BACnetConstructedDataDeviceType{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DeviceType.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.DeviceType),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDeviceTypeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDeviceTypeCopy
 }
 

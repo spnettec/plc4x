@@ -330,8 +330,8 @@ func (m *_BACnetCredentialAuthenticationFactor) deepCopy() *_BACnetCredentialAut
 		return nil
 	}
 	_BACnetCredentialAuthenticationFactorCopy := &_BACnetCredentialAuthenticationFactor{
-		m.Disable.DeepCopy().(BACnetAccessAuthenticationFactorDisableTagged),
-		m.AuthenticationFactor.DeepCopy().(BACnetAuthenticationFactorEnclosed),
+		utils.DeepCopy[BACnetAccessAuthenticationFactorDisableTagged](m.Disable),
+		utils.DeepCopy[BACnetAuthenticationFactorEnclosed](m.AuthenticationFactor),
 	}
 	return _BACnetCredentialAuthenticationFactorCopy
 }

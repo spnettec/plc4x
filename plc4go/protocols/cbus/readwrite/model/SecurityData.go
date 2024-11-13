@@ -103,245 +103,101 @@ type SecurityDataBuilder interface {
 	// WithArgument adds Argument (property field)
 	WithArgument(byte) SecurityDataBuilder
 	// AsSecurityDataSystemArmedDisarmed converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataSystemArmedDisarmed() interface {
-		SecurityDataSystemArmedDisarmedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataSystemArmedDisarmed() SecurityDataSystemArmedDisarmedBuilder
 	// AsSecurityDataSystemDisarmed converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataSystemDisarmed() interface {
-		SecurityDataSystemDisarmedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataSystemDisarmed() SecurityDataSystemDisarmedBuilder
 	// AsSecurityDataExitDelayStarted converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataExitDelayStarted() interface {
-		SecurityDataExitDelayStartedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataExitDelayStarted() SecurityDataExitDelayStartedBuilder
 	// AsSecurityDataEntryDelayStarted converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataEntryDelayStarted() interface {
-		SecurityDataEntryDelayStartedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataEntryDelayStarted() SecurityDataEntryDelayStartedBuilder
 	// AsSecurityDataAlarmOn converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataAlarmOn() interface {
-		SecurityDataAlarmOnBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataAlarmOn() SecurityDataAlarmOnBuilder
 	// AsSecurityDataAlarmOff converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataAlarmOff() interface {
-		SecurityDataAlarmOffBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataAlarmOff() SecurityDataAlarmOffBuilder
 	// AsSecurityDataTamperOn converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataTamperOn() interface {
-		SecurityDataTamperOnBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataTamperOn() SecurityDataTamperOnBuilder
 	// AsSecurityDataTamperOff converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataTamperOff() interface {
-		SecurityDataTamperOffBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataTamperOff() SecurityDataTamperOffBuilder
 	// AsSecurityDataPanicActivated converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataPanicActivated() interface {
-		SecurityDataPanicActivatedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataPanicActivated() SecurityDataPanicActivatedBuilder
 	// AsSecurityDataPanicCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataPanicCleared() interface {
-		SecurityDataPanicClearedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataPanicCleared() SecurityDataPanicClearedBuilder
 	// AsSecurityDataZoneUnsealed converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataZoneUnsealed() interface {
-		SecurityDataZoneUnsealedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataZoneUnsealed() SecurityDataZoneUnsealedBuilder
 	// AsSecurityDataZoneSealed converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataZoneSealed() interface {
-		SecurityDataZoneSealedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataZoneSealed() SecurityDataZoneSealedBuilder
 	// AsSecurityDataZoneOpen converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataZoneOpen() interface {
-		SecurityDataZoneOpenBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataZoneOpen() SecurityDataZoneOpenBuilder
 	// AsSecurityDataZoneShort converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataZoneShort() interface {
-		SecurityDataZoneShortBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataZoneShort() SecurityDataZoneShortBuilder
 	// AsSecurityDataZoneIsolated converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataZoneIsolated() interface {
-		SecurityDataZoneIsolatedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataZoneIsolated() SecurityDataZoneIsolatedBuilder
 	// AsSecurityDataLowBatteryDetected converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataLowBatteryDetected() interface {
-		SecurityDataLowBatteryDetectedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataLowBatteryDetected() SecurityDataLowBatteryDetectedBuilder
 	// AsSecurityDataLowBatteryCorrected converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataLowBatteryCorrected() interface {
-		SecurityDataLowBatteryCorrectedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataLowBatteryCorrected() SecurityDataLowBatteryCorrectedBuilder
 	// AsSecurityDataLowBatteryCharging converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataLowBatteryCharging() interface {
-		SecurityDataLowBatteryChargingBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataLowBatteryCharging() SecurityDataLowBatteryChargingBuilder
 	// AsSecurityDataZoneName converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataZoneName() interface {
-		SecurityDataZoneNameBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataZoneName() SecurityDataZoneNameBuilder
 	// AsSecurityDataStatusReport1 converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataStatusReport1() interface {
-		SecurityDataStatusReport1Builder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataStatusReport1() SecurityDataStatusReport1Builder
 	// AsSecurityDataStatusReport2 converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataStatusReport2() interface {
-		SecurityDataStatusReport2Builder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataStatusReport2() SecurityDataStatusReport2Builder
 	// AsSecurityDataPasswordEntryStatus converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataPasswordEntryStatus() interface {
-		SecurityDataPasswordEntryStatusBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataPasswordEntryStatus() SecurityDataPasswordEntryStatusBuilder
 	// AsSecurityDataMainsFailure converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataMainsFailure() interface {
-		SecurityDataMainsFailureBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataMainsFailure() SecurityDataMainsFailureBuilder
 	// AsSecurityDataMainsRestoredOrApplied converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataMainsRestoredOrApplied() interface {
-		SecurityDataMainsRestoredOrAppliedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataMainsRestoredOrApplied() SecurityDataMainsRestoredOrAppliedBuilder
 	// AsSecurityDataArmReadyNotReady converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataArmReadyNotReady() interface {
-		SecurityDataArmReadyNotReadyBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataArmReadyNotReady() SecurityDataArmReadyNotReadyBuilder
 	// AsSecurityDataCurrentAlarmType converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataCurrentAlarmType() interface {
-		SecurityDataCurrentAlarmTypeBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataCurrentAlarmType() SecurityDataCurrentAlarmTypeBuilder
 	// AsSecurityDataLineCutAlarmRaised converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataLineCutAlarmRaised() interface {
-		SecurityDataLineCutAlarmRaisedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataLineCutAlarmRaised() SecurityDataLineCutAlarmRaisedBuilder
 	// AsSecurityDataLineCutAlarmCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataLineCutAlarmCleared() interface {
-		SecurityDataLineCutAlarmClearedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataLineCutAlarmCleared() SecurityDataLineCutAlarmClearedBuilder
 	// AsSecurityDataArmFailedRaised converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataArmFailedRaised() interface {
-		SecurityDataArmFailedRaisedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataArmFailedRaised() SecurityDataArmFailedRaisedBuilder
 	// AsSecurityDataArmFailedCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataArmFailedCleared() interface {
-		SecurityDataArmFailedClearedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataArmFailedCleared() SecurityDataArmFailedClearedBuilder
 	// AsSecurityDataFireAlarmRaised converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataFireAlarmRaised() interface {
-		SecurityDataFireAlarmRaisedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataFireAlarmRaised() SecurityDataFireAlarmRaisedBuilder
 	// AsSecurityDataFireAlarmCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataFireAlarmCleared() interface {
-		SecurityDataFireAlarmClearedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataFireAlarmCleared() SecurityDataFireAlarmClearedBuilder
 	// AsSecurityDataGasAlarmRaised converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataGasAlarmRaised() interface {
-		SecurityDataGasAlarmRaisedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataGasAlarmRaised() SecurityDataGasAlarmRaisedBuilder
 	// AsSecurityDataGasAlarmCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataGasAlarmCleared() interface {
-		SecurityDataGasAlarmClearedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataGasAlarmCleared() SecurityDataGasAlarmClearedBuilder
 	// AsSecurityDataOtherAlarmRaised converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataOtherAlarmRaised() interface {
-		SecurityDataOtherAlarmRaisedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataOtherAlarmRaised() SecurityDataOtherAlarmRaisedBuilder
 	// AsSecurityDataOtherAlarmCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataOtherAlarmCleared() interface {
-		SecurityDataOtherAlarmClearedBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataOtherAlarmCleared() SecurityDataOtherAlarmClearedBuilder
 	// AsSecurityDataStatus1Request converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataStatus1Request() interface {
-		SecurityDataStatus1RequestBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataStatus1Request() SecurityDataStatus1RequestBuilder
 	// AsSecurityDataStatus2Request converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataStatus2Request() interface {
-		SecurityDataStatus2RequestBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataStatus2Request() SecurityDataStatus2RequestBuilder
 	// AsSecurityDataArmSystem converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataArmSystem() interface {
-		SecurityDataArmSystemBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataArmSystem() SecurityDataArmSystemBuilder
 	// AsSecurityDataRaiseTamper converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataRaiseTamper() interface {
-		SecurityDataRaiseTamperBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataRaiseTamper() SecurityDataRaiseTamperBuilder
 	// AsSecurityDataDropTamper converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataDropTamper() interface {
-		SecurityDataDropTamperBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataDropTamper() SecurityDataDropTamperBuilder
 	// AsSecurityDataRaiseAlarm converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataRaiseAlarm() interface {
-		SecurityDataRaiseAlarmBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataRaiseAlarm() SecurityDataRaiseAlarmBuilder
 	// AsSecurityDataEmulatedKeypad converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataEmulatedKeypad() interface {
-		SecurityDataEmulatedKeypadBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataEmulatedKeypad() SecurityDataEmulatedKeypadBuilder
 	// AsSecurityDataDisplayMessage converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataDisplayMessage() interface {
-		SecurityDataDisplayMessageBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataDisplayMessage() SecurityDataDisplayMessageBuilder
 	// AsSecurityDataRequestZoneName converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataRequestZoneName() interface {
-		SecurityDataRequestZoneNameBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataRequestZoneName() SecurityDataRequestZoneNameBuilder
 	// AsSecurityDataOff converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataOff() interface {
-		SecurityDataOffBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataOff() SecurityDataOffBuilder
 	// AsSecurityDataOn converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataOn() interface {
-		SecurityDataOnBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataOn() SecurityDataOnBuilder
 	// AsSecurityDataEvent converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
-	AsSecurityDataEvent() interface {
-		SecurityDataEventBuilder
-		Done() SecurityDataBuilder
-	}
+	AsSecurityDataEvent() SecurityDataEventBuilder
 	// Build builds the SecurityData or returns an error if something is wrong
 	PartialBuild() (SecurityDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -402,14 +258,8 @@ func (b *_SecurityDataBuilder) PartialMustBuild() SecurityDataContract {
 	return build
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataSystemArmedDisarmed() interface {
-	SecurityDataSystemArmedDisarmedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataSystemArmedDisarmedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataSystemArmedDisarmed() SecurityDataSystemArmedDisarmedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataSystemArmedDisarmedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataSystemArmedDisarmedBuilder().(*_SecurityDataSystemArmedDisarmedBuilder)
@@ -418,14 +268,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataSystemArmedDisarmed() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataSystemDisarmed() interface {
-	SecurityDataSystemDisarmedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataSystemDisarmedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataSystemDisarmed() SecurityDataSystemDisarmedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataSystemDisarmedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataSystemDisarmedBuilder().(*_SecurityDataSystemDisarmedBuilder)
@@ -434,14 +278,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataSystemDisarmed() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataExitDelayStarted() interface {
-	SecurityDataExitDelayStartedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataExitDelayStartedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataExitDelayStarted() SecurityDataExitDelayStartedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataExitDelayStartedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataExitDelayStartedBuilder().(*_SecurityDataExitDelayStartedBuilder)
@@ -450,14 +288,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataExitDelayStarted() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataEntryDelayStarted() interface {
-	SecurityDataEntryDelayStartedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataEntryDelayStartedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataEntryDelayStarted() SecurityDataEntryDelayStartedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataEntryDelayStartedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataEntryDelayStartedBuilder().(*_SecurityDataEntryDelayStartedBuilder)
@@ -466,14 +298,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataEntryDelayStarted() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataAlarmOn() interface {
-	SecurityDataAlarmOnBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataAlarmOnBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataAlarmOn() SecurityDataAlarmOnBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataAlarmOnBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataAlarmOnBuilder().(*_SecurityDataAlarmOnBuilder)
@@ -482,14 +308,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataAlarmOn() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataAlarmOff() interface {
-	SecurityDataAlarmOffBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataAlarmOffBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataAlarmOff() SecurityDataAlarmOffBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataAlarmOffBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataAlarmOffBuilder().(*_SecurityDataAlarmOffBuilder)
@@ -498,14 +318,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataAlarmOff() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataTamperOn() interface {
-	SecurityDataTamperOnBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataTamperOnBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataTamperOn() SecurityDataTamperOnBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataTamperOnBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataTamperOnBuilder().(*_SecurityDataTamperOnBuilder)
@@ -514,14 +328,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataTamperOn() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataTamperOff() interface {
-	SecurityDataTamperOffBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataTamperOffBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataTamperOff() SecurityDataTamperOffBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataTamperOffBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataTamperOffBuilder().(*_SecurityDataTamperOffBuilder)
@@ -530,14 +338,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataTamperOff() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataPanicActivated() interface {
-	SecurityDataPanicActivatedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataPanicActivatedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataPanicActivated() SecurityDataPanicActivatedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataPanicActivatedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataPanicActivatedBuilder().(*_SecurityDataPanicActivatedBuilder)
@@ -546,14 +348,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataPanicActivated() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataPanicCleared() interface {
-	SecurityDataPanicClearedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataPanicClearedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataPanicCleared() SecurityDataPanicClearedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataPanicClearedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataPanicClearedBuilder().(*_SecurityDataPanicClearedBuilder)
@@ -562,14 +358,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataPanicCleared() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataZoneUnsealed() interface {
-	SecurityDataZoneUnsealedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataZoneUnsealedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataZoneUnsealed() SecurityDataZoneUnsealedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataZoneUnsealedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataZoneUnsealedBuilder().(*_SecurityDataZoneUnsealedBuilder)
@@ -578,14 +368,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataZoneUnsealed() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataZoneSealed() interface {
-	SecurityDataZoneSealedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataZoneSealedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataZoneSealed() SecurityDataZoneSealedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataZoneSealedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataZoneSealedBuilder().(*_SecurityDataZoneSealedBuilder)
@@ -594,14 +378,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataZoneSealed() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataZoneOpen() interface {
-	SecurityDataZoneOpenBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataZoneOpenBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataZoneOpen() SecurityDataZoneOpenBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataZoneOpenBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataZoneOpenBuilder().(*_SecurityDataZoneOpenBuilder)
@@ -610,14 +388,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataZoneOpen() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataZoneShort() interface {
-	SecurityDataZoneShortBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataZoneShortBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataZoneShort() SecurityDataZoneShortBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataZoneShortBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataZoneShortBuilder().(*_SecurityDataZoneShortBuilder)
@@ -626,14 +398,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataZoneShort() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataZoneIsolated() interface {
-	SecurityDataZoneIsolatedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataZoneIsolatedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataZoneIsolated() SecurityDataZoneIsolatedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataZoneIsolatedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataZoneIsolatedBuilder().(*_SecurityDataZoneIsolatedBuilder)
@@ -642,14 +408,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataZoneIsolated() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryDetected() interface {
-	SecurityDataLowBatteryDetectedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataLowBatteryDetectedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryDetected() SecurityDataLowBatteryDetectedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataLowBatteryDetectedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataLowBatteryDetectedBuilder().(*_SecurityDataLowBatteryDetectedBuilder)
@@ -658,14 +418,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryDetected() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryCorrected() interface {
-	SecurityDataLowBatteryCorrectedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataLowBatteryCorrectedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryCorrected() SecurityDataLowBatteryCorrectedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataLowBatteryCorrectedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataLowBatteryCorrectedBuilder().(*_SecurityDataLowBatteryCorrectedBuilder)
@@ -674,14 +428,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryCorrected() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryCharging() interface {
-	SecurityDataLowBatteryChargingBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataLowBatteryChargingBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryCharging() SecurityDataLowBatteryChargingBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataLowBatteryChargingBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataLowBatteryChargingBuilder().(*_SecurityDataLowBatteryChargingBuilder)
@@ -690,14 +438,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryCharging() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataZoneName() interface {
-	SecurityDataZoneNameBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataZoneNameBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataZoneName() SecurityDataZoneNameBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataZoneNameBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataZoneNameBuilder().(*_SecurityDataZoneNameBuilder)
@@ -706,14 +448,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataZoneName() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataStatusReport1() interface {
-	SecurityDataStatusReport1Builder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataStatusReport1Builder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataStatusReport1() SecurityDataStatusReport1Builder {
+	if cb, ok := b.childBuilder.(SecurityDataStatusReport1Builder); ok {
 		return cb
 	}
 	cb := NewSecurityDataStatusReport1Builder().(*_SecurityDataStatusReport1Builder)
@@ -722,14 +458,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataStatusReport1() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataStatusReport2() interface {
-	SecurityDataStatusReport2Builder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataStatusReport2Builder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataStatusReport2() SecurityDataStatusReport2Builder {
+	if cb, ok := b.childBuilder.(SecurityDataStatusReport2Builder); ok {
 		return cb
 	}
 	cb := NewSecurityDataStatusReport2Builder().(*_SecurityDataStatusReport2Builder)
@@ -738,14 +468,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataStatusReport2() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataPasswordEntryStatus() interface {
-	SecurityDataPasswordEntryStatusBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataPasswordEntryStatusBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataPasswordEntryStatus() SecurityDataPasswordEntryStatusBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataPasswordEntryStatusBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataPasswordEntryStatusBuilder().(*_SecurityDataPasswordEntryStatusBuilder)
@@ -754,14 +478,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataPasswordEntryStatus() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataMainsFailure() interface {
-	SecurityDataMainsFailureBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataMainsFailureBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataMainsFailure() SecurityDataMainsFailureBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataMainsFailureBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataMainsFailureBuilder().(*_SecurityDataMainsFailureBuilder)
@@ -770,14 +488,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataMainsFailure() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataMainsRestoredOrApplied() interface {
-	SecurityDataMainsRestoredOrAppliedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataMainsRestoredOrAppliedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataMainsRestoredOrApplied() SecurityDataMainsRestoredOrAppliedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataMainsRestoredOrAppliedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataMainsRestoredOrAppliedBuilder().(*_SecurityDataMainsRestoredOrAppliedBuilder)
@@ -786,14 +498,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataMainsRestoredOrApplied() interface 
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataArmReadyNotReady() interface {
-	SecurityDataArmReadyNotReadyBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataArmReadyNotReadyBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataArmReadyNotReady() SecurityDataArmReadyNotReadyBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataArmReadyNotReadyBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataArmReadyNotReadyBuilder().(*_SecurityDataArmReadyNotReadyBuilder)
@@ -802,14 +508,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataArmReadyNotReady() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataCurrentAlarmType() interface {
-	SecurityDataCurrentAlarmTypeBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataCurrentAlarmTypeBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataCurrentAlarmType() SecurityDataCurrentAlarmTypeBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataCurrentAlarmTypeBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataCurrentAlarmTypeBuilder().(*_SecurityDataCurrentAlarmTypeBuilder)
@@ -818,14 +518,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataCurrentAlarmType() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataLineCutAlarmRaised() interface {
-	SecurityDataLineCutAlarmRaisedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataLineCutAlarmRaisedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataLineCutAlarmRaised() SecurityDataLineCutAlarmRaisedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataLineCutAlarmRaisedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataLineCutAlarmRaisedBuilder().(*_SecurityDataLineCutAlarmRaisedBuilder)
@@ -834,14 +528,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataLineCutAlarmRaised() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataLineCutAlarmCleared() interface {
-	SecurityDataLineCutAlarmClearedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataLineCutAlarmClearedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataLineCutAlarmCleared() SecurityDataLineCutAlarmClearedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataLineCutAlarmClearedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataLineCutAlarmClearedBuilder().(*_SecurityDataLineCutAlarmClearedBuilder)
@@ -850,14 +538,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataLineCutAlarmCleared() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataArmFailedRaised() interface {
-	SecurityDataArmFailedRaisedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataArmFailedRaisedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataArmFailedRaised() SecurityDataArmFailedRaisedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataArmFailedRaisedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataArmFailedRaisedBuilder().(*_SecurityDataArmFailedRaisedBuilder)
@@ -866,14 +548,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataArmFailedRaised() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataArmFailedCleared() interface {
-	SecurityDataArmFailedClearedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataArmFailedClearedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataArmFailedCleared() SecurityDataArmFailedClearedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataArmFailedClearedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataArmFailedClearedBuilder().(*_SecurityDataArmFailedClearedBuilder)
@@ -882,14 +558,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataArmFailedCleared() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataFireAlarmRaised() interface {
-	SecurityDataFireAlarmRaisedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataFireAlarmRaisedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataFireAlarmRaised() SecurityDataFireAlarmRaisedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataFireAlarmRaisedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataFireAlarmRaisedBuilder().(*_SecurityDataFireAlarmRaisedBuilder)
@@ -898,14 +568,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataFireAlarmRaised() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataFireAlarmCleared() interface {
-	SecurityDataFireAlarmClearedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataFireAlarmClearedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataFireAlarmCleared() SecurityDataFireAlarmClearedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataFireAlarmClearedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataFireAlarmClearedBuilder().(*_SecurityDataFireAlarmClearedBuilder)
@@ -914,14 +578,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataFireAlarmCleared() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataGasAlarmRaised() interface {
-	SecurityDataGasAlarmRaisedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataGasAlarmRaisedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataGasAlarmRaised() SecurityDataGasAlarmRaisedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataGasAlarmRaisedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataGasAlarmRaisedBuilder().(*_SecurityDataGasAlarmRaisedBuilder)
@@ -930,14 +588,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataGasAlarmRaised() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataGasAlarmCleared() interface {
-	SecurityDataGasAlarmClearedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataGasAlarmClearedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataGasAlarmCleared() SecurityDataGasAlarmClearedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataGasAlarmClearedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataGasAlarmClearedBuilder().(*_SecurityDataGasAlarmClearedBuilder)
@@ -946,14 +598,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataGasAlarmCleared() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataOtherAlarmRaised() interface {
-	SecurityDataOtherAlarmRaisedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataOtherAlarmRaisedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataOtherAlarmRaised() SecurityDataOtherAlarmRaisedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataOtherAlarmRaisedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataOtherAlarmRaisedBuilder().(*_SecurityDataOtherAlarmRaisedBuilder)
@@ -962,14 +608,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataOtherAlarmRaised() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataOtherAlarmCleared() interface {
-	SecurityDataOtherAlarmClearedBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataOtherAlarmClearedBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataOtherAlarmCleared() SecurityDataOtherAlarmClearedBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataOtherAlarmClearedBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataOtherAlarmClearedBuilder().(*_SecurityDataOtherAlarmClearedBuilder)
@@ -978,14 +618,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataOtherAlarmCleared() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataStatus1Request() interface {
-	SecurityDataStatus1RequestBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataStatus1RequestBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataStatus1Request() SecurityDataStatus1RequestBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataStatus1RequestBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataStatus1RequestBuilder().(*_SecurityDataStatus1RequestBuilder)
@@ -994,14 +628,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataStatus1Request() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataStatus2Request() interface {
-	SecurityDataStatus2RequestBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataStatus2RequestBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataStatus2Request() SecurityDataStatus2RequestBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataStatus2RequestBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataStatus2RequestBuilder().(*_SecurityDataStatus2RequestBuilder)
@@ -1010,14 +638,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataStatus2Request() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataArmSystem() interface {
-	SecurityDataArmSystemBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataArmSystemBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataArmSystem() SecurityDataArmSystemBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataArmSystemBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataArmSystemBuilder().(*_SecurityDataArmSystemBuilder)
@@ -1026,14 +648,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataArmSystem() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataRaiseTamper() interface {
-	SecurityDataRaiseTamperBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataRaiseTamperBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataRaiseTamper() SecurityDataRaiseTamperBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataRaiseTamperBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataRaiseTamperBuilder().(*_SecurityDataRaiseTamperBuilder)
@@ -1042,14 +658,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataRaiseTamper() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataDropTamper() interface {
-	SecurityDataDropTamperBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataDropTamperBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataDropTamper() SecurityDataDropTamperBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataDropTamperBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataDropTamperBuilder().(*_SecurityDataDropTamperBuilder)
@@ -1058,14 +668,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataDropTamper() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataRaiseAlarm() interface {
-	SecurityDataRaiseAlarmBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataRaiseAlarmBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataRaiseAlarm() SecurityDataRaiseAlarmBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataRaiseAlarmBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataRaiseAlarmBuilder().(*_SecurityDataRaiseAlarmBuilder)
@@ -1074,14 +678,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataRaiseAlarm() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataEmulatedKeypad() interface {
-	SecurityDataEmulatedKeypadBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataEmulatedKeypadBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataEmulatedKeypad() SecurityDataEmulatedKeypadBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataEmulatedKeypadBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataEmulatedKeypadBuilder().(*_SecurityDataEmulatedKeypadBuilder)
@@ -1090,14 +688,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataEmulatedKeypad() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataDisplayMessage() interface {
-	SecurityDataDisplayMessageBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataDisplayMessageBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataDisplayMessage() SecurityDataDisplayMessageBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataDisplayMessageBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataDisplayMessageBuilder().(*_SecurityDataDisplayMessageBuilder)
@@ -1106,14 +698,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataDisplayMessage() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataRequestZoneName() interface {
-	SecurityDataRequestZoneNameBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataRequestZoneNameBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataRequestZoneName() SecurityDataRequestZoneNameBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataRequestZoneNameBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataRequestZoneNameBuilder().(*_SecurityDataRequestZoneNameBuilder)
@@ -1122,14 +708,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataRequestZoneName() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataOff() interface {
-	SecurityDataOffBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataOffBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataOff() SecurityDataOffBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataOffBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataOffBuilder().(*_SecurityDataOffBuilder)
@@ -1138,14 +718,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataOff() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataOn() interface {
-	SecurityDataOnBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataOnBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataOn() SecurityDataOnBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataOnBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataOnBuilder().(*_SecurityDataOnBuilder)
@@ -1154,14 +728,8 @@ func (b *_SecurityDataBuilder) AsSecurityDataOn() interface {
 	return cb
 }
 
-func (b *_SecurityDataBuilder) AsSecurityDataEvent() interface {
-	SecurityDataEventBuilder
-	Done() SecurityDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SecurityDataEventBuilder
-		Done() SecurityDataBuilder
-	}); ok {
+func (b *_SecurityDataBuilder) AsSecurityDataEvent() SecurityDataEventBuilder {
+	if cb, ok := b.childBuilder.(SecurityDataEventBuilder); ok {
 		return cb
 	}
 	cb := NewSecurityDataEventBuilder().(*_SecurityDataEventBuilder)

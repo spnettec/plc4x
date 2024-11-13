@@ -106,6 +106,8 @@ type PubSubConfigurationValueDataTypeBuilder interface {
 	WithIdentifier(Variant) PubSubConfigurationValueDataTypeBuilder
 	// WithIdentifierBuilder adds Identifier (property field) which is build by the builder
 	WithIdentifierBuilder(func(VariantBuilder) VariantBuilder) PubSubConfigurationValueDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PubSubConfigurationValueDataType or returns an error if something is wrong
 	Build() (PubSubConfigurationValueDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (PubSubConfigurationValueDataTypeBuilder) = (*_PubSubConfigurationValueDat
 
 func (b *_PubSubConfigurationValueDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PubSubConfigurationValueDataType
 }
 
 func (b *_PubSubConfigurationValueDataTypeBuilder) WithMandatoryFields(configurationElement PubSubConfigurationRefDataType, name PascalString, identifier Variant) PubSubConfigurationValueDataTypeBuilder {
@@ -222,8 +225,10 @@ func (b *_PubSubConfigurationValueDataTypeBuilder) MustBuild() PubSubConfigurati
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PubSubConfigurationValueDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,11 +417,11 @@ func (m *_PubSubConfigurationValueDataType) deepCopy() *_PubSubConfigurationValu
 	}
 	_PubSubConfigurationValueDataTypeCopy := &_PubSubConfigurationValueDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ConfigurationElement.DeepCopy().(PubSubConfigurationRefDataType),
-		m.Name.DeepCopy().(PascalString),
-		m.Identifier.DeepCopy().(Variant),
+		utils.DeepCopy[PubSubConfigurationRefDataType](m.ConfigurationElement),
+		utils.DeepCopy[PascalString](m.Name),
+		utils.DeepCopy[Variant](m.Identifier),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PubSubConfigurationValueDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PubSubConfigurationValueDataTypeCopy
 }
 

@@ -103,6 +103,8 @@ type ReferenceListEntryDataTypeBuilder interface {
 	WithTargetNode(ExpandedNodeId) ReferenceListEntryDataTypeBuilder
 	// WithTargetNodeBuilder adds TargetNode (property field) which is build by the builder
 	WithTargetNodeBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceListEntryDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReferenceListEntryDataType or returns an error if something is wrong
 	Build() (ReferenceListEntryDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (ReferenceListEntryDataTypeBuilder) = (*_ReferenceListEntryDataTypeBuilder
 
 func (b *_ReferenceListEntryDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReferenceListEntryDataType
 }
 
 func (b *_ReferenceListEntryDataTypeBuilder) WithMandatoryFields(referenceType NodeId, isForward bool, targetNode ExpandedNodeId) ReferenceListEntryDataTypeBuilder {
@@ -200,8 +203,10 @@ func (b *_ReferenceListEntryDataTypeBuilder) MustBuild() ReferenceListEntryDataT
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReferenceListEntryDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -403,12 +408,12 @@ func (m *_ReferenceListEntryDataType) deepCopy() *_ReferenceListEntryDataType {
 	}
 	_ReferenceListEntryDataTypeCopy := &_ReferenceListEntryDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ReferenceType.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.ReferenceType),
 		m.IsForward,
-		m.TargetNode.DeepCopy().(ExpandedNodeId),
+		utils.DeepCopy[ExpandedNodeId](m.TargetNode),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReferenceListEntryDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReferenceListEntryDataTypeCopy
 }
 

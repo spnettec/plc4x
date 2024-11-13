@@ -71,6 +71,8 @@ type ListServicesRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ListServicesRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EipPacketBuilder
 	// Build builds the ListServicesRequest or returns an error if something is wrong
 	Build() (ListServicesRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ListServicesRequestBuilder) = (*_ListServicesRequestBuilder)(nil)
 
 func (b *_ListServicesRequestBuilder) setParent(contract EipPacketContract) {
 	b.EipPacketContract = contract
+	contract.(*_EipPacket)._SubType = b._ListServicesRequest
 }
 
 func (b *_ListServicesRequestBuilder) WithMandatoryFields() ListServicesRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_ListServicesRequestBuilder) MustBuild() ListServicesRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ListServicesRequestBuilder) Done() EipPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEipPacketBuilder().(*_EipPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -253,7 +258,7 @@ func (m *_ListServicesRequest) deepCopy() *_ListServicesRequest {
 	_ListServicesRequestCopy := &_ListServicesRequest{
 		m.EipPacketContract.(*_EipPacket).deepCopy(),
 	}
-	m.EipPacketContract.(*_EipPacket)._SubType = m
+	_ListServicesRequestCopy.EipPacketContract.(*_EipPacket)._SubType = m
 	return _ListServicesRequestCopy
 }
 

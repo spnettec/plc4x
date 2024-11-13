@@ -86,6 +86,8 @@ type BACnetConstructedDataLargeAnalogValueLowLimitBuilder interface {
 	WithLowLimit(BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueLowLimitBuilder
 	// WithLowLimitBuilder adds LowLimit (property field) which is build by the builder
 	WithLowLimitBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueLowLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLargeAnalogValueLowLimit or returns an error if something is wrong
 	Build() (BACnetConstructedDataLargeAnalogValueLowLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLargeAnalogValueLowLimitBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLargeAnalogValueLowLimit
 }
 
 func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) WithMandatoryFields(lowLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueLowLimitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) deepCopy() *_BACnetCons
 	}
 	_BACnetConstructedDataLargeAnalogValueLowLimitCopy := &_BACnetConstructedDataLargeAnalogValueLowLimit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LowLimit.DeepCopy().(BACnetApplicationTagDouble),
+		utils.DeepCopy[BACnetApplicationTagDouble](m.LowLimit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLargeAnalogValueLowLimitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLargeAnalogValueLowLimitCopy
 }
 

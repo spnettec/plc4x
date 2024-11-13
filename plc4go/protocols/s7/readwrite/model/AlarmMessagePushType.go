@@ -367,7 +367,7 @@ func (m *_AlarmMessagePushType) deepCopy() *_AlarmMessagePushType {
 		return nil
 	}
 	_AlarmMessagePushTypeCopy := &_AlarmMessagePushType{
-		m.TimeStamp.DeepCopy().(DateAndTime),
+		utils.DeepCopy[DateAndTime](m.TimeStamp),
 		m.FunctionId,
 		m.NumberOfObjects,
 		utils.DeepCopySlice[AlarmMessageObjectPushType, AlarmMessageObjectPushType](m.MessageObjects),

@@ -84,6 +84,8 @@ type CloseSecureChannelResponseBuilder interface {
 	WithResponseHeader(ResponseHeader) CloseSecureChannelResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
 	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) CloseSecureChannelResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CloseSecureChannelResponse or returns an error if something is wrong
 	Build() (CloseSecureChannelResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (CloseSecureChannelResponseBuilder) = (*_CloseSecureChannelResponseBuilder
 
 func (b *_CloseSecureChannelResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CloseSecureChannelResponse
 }
 
 func (b *_CloseSecureChannelResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader) CloseSecureChannelResponseBuilder {
@@ -152,8 +155,10 @@ func (b *_CloseSecureChannelResponseBuilder) MustBuild() CloseSecureChannelRespo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CloseSecureChannelResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_CloseSecureChannelResponse) deepCopy() *_CloseSecureChannelResponse {
 	}
 	_CloseSecureChannelResponseCopy := &_CloseSecureChannelResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CloseSecureChannelResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CloseSecureChannelResponseCopy
 }
 

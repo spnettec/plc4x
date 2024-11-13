@@ -71,6 +71,8 @@ type SysexCommandAnalogMappingQueryRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SysexCommandAnalogMappingQueryRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandAnalogMappingQueryRequest or returns an error if something is wrong
 	Build() (SysexCommandAnalogMappingQueryRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SysexCommandAnalogMappingQueryRequestBuilder) = (*_SysexCommandAnalogMapp
 
 func (b *_SysexCommandAnalogMappingQueryRequestBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandAnalogMappingQueryRequest
 }
 
 func (b *_SysexCommandAnalogMappingQueryRequestBuilder) WithMandatoryFields() SysexCommandAnalogMappingQueryRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_SysexCommandAnalogMappingQueryRequestBuilder) MustBuild() SysexCommand
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandAnalogMappingQueryRequestBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -249,7 +254,7 @@ func (m *_SysexCommandAnalogMappingQueryRequest) deepCopy() *_SysexCommandAnalog
 	_SysexCommandAnalogMappingQueryRequestCopy := &_SysexCommandAnalogMappingQueryRequest{
 		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandAnalogMappingQueryRequestCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandAnalogMappingQueryRequestCopy
 }
 

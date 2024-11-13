@@ -204,6 +204,8 @@ type BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder interfac
 	WithOptionalEventValues(BACnetNotificationParameters) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
 	// WithOptionalEventValuesBuilder adds EventValues (property field) which is build by the builder
 	WithOptionalEventValuesBuilder(func(BACnetNotificationParametersBuilder) BACnetNotificationParametersBuilder) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetUnconfirmedServiceRequestBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestUnconfirmedEventNotification or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestUnconfirmedEventNotification, error)
 	// MustBuild does the same as Build but panics on error
@@ -227,6 +229,7 @@ var _ (BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) = (*_
 
 func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
 	b.BACnetUnconfirmedServiceRequestContract = contract
+	contract.(*_BACnetUnconfirmedServiceRequest)._SubType = b._BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 }
 
 func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) WithMandatoryFields(processIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, eventObjectIdentifier BACnetContextTagObjectIdentifier, timestamp BACnetTimeStampEnclosed, notificationClass BACnetContextTagUnsignedInteger, priority BACnetContextTagUnsignedInteger, eventType BACnetEventTypeTagged, notifyType BACnetNotifyTypeTagged, toState BACnetEventStateTagged) BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder {
@@ -536,8 +539,10 @@ func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) Mu
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetUnconfirmedServiceRequestBuilder().(*_BACnetUnconfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -921,21 +926,21 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) deepCopy(
 	}
 	_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationCopy := &_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
 		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
-		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.EventObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.Timestamp.DeepCopy().(BACnetTimeStampEnclosed),
-		m.NotificationClass.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.EventType.DeepCopy().(BACnetEventTypeTagged),
-		m.MessageText.DeepCopy().(BACnetContextTagCharacterString),
-		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
-		m.AckRequired.DeepCopy().(BACnetContextTagBoolean),
-		m.FromState.DeepCopy().(BACnetEventStateTagged),
-		m.ToState.DeepCopy().(BACnetEventStateTagged),
-		m.EventValues.DeepCopy().(BACnetNotificationParameters),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ProcessIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.InitiatingDeviceIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.EventObjectIdentifier),
+		utils.DeepCopy[BACnetTimeStampEnclosed](m.Timestamp),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.NotificationClass),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Priority),
+		utils.DeepCopy[BACnetEventTypeTagged](m.EventType),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.MessageText),
+		utils.DeepCopy[BACnetNotifyTypeTagged](m.NotifyType),
+		utils.DeepCopy[BACnetContextTagBoolean](m.AckRequired),
+		utils.DeepCopy[BACnetEventStateTagged](m.FromState),
+		utils.DeepCopy[BACnetEventStateTagged](m.ToState),
+		utils.DeepCopy[BACnetNotificationParameters](m.EventValues),
 	}
-	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationCopy.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
 	return _BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationCopy
 }
 

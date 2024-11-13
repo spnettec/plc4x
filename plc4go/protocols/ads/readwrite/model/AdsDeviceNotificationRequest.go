@@ -91,6 +91,8 @@ type AdsDeviceNotificationRequestBuilder interface {
 	WithStamps(uint32) AdsDeviceNotificationRequestBuilder
 	// WithAdsStampHeaders adds AdsStampHeaders (property field)
 	WithAdsStampHeaders(...AdsStampHeader) AdsDeviceNotificationRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AmsPacketBuilder
 	// Build builds the AdsDeviceNotificationRequest or returns an error if something is wrong
 	Build() (AdsDeviceNotificationRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (AdsDeviceNotificationRequestBuilder) = (*_AdsDeviceNotificationRequestBui
 
 func (b *_AdsDeviceNotificationRequestBuilder) setParent(contract AmsPacketContract) {
 	b.AmsPacketContract = contract
+	contract.(*_AmsPacket)._SubType = b._AdsDeviceNotificationRequest
 }
 
 func (b *_AdsDeviceNotificationRequestBuilder) WithMandatoryFields(length uint32, stamps uint32, adsStampHeaders []AdsStampHeader) AdsDeviceNotificationRequestBuilder {
@@ -150,8 +153,10 @@ func (b *_AdsDeviceNotificationRequestBuilder) MustBuild() AdsDeviceNotification
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsDeviceNotificationRequestBuilder) Done() AmsPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAmsPacketBuilder().(*_AmsPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -355,7 +360,7 @@ func (m *_AdsDeviceNotificationRequest) deepCopy() *_AdsDeviceNotificationReques
 		m.Stamps,
 		utils.DeepCopySlice[AdsStampHeader, AdsStampHeader](m.AdsStampHeaders),
 	}
-	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	_AdsDeviceNotificationRequestCopy.AmsPacketContract.(*_AmsPacket)._SubType = m
 	return _AdsDeviceNotificationRequestCopy
 }
 

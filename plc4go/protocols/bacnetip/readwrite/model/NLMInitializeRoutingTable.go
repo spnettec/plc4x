@@ -85,6 +85,8 @@ type NLMInitializeRoutingTableBuilder interface {
 	WithNumberOfPorts(uint8) NLMInitializeRoutingTableBuilder
 	// WithPortMappings adds PortMappings (property field)
 	WithPortMappings(...NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMInitializeRoutingTable or returns an error if something is wrong
 	Build() (NLMInitializeRoutingTable, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (NLMInitializeRoutingTableBuilder) = (*_NLMInitializeRoutingTableBuilder)(
 
 func (b *_NLMInitializeRoutingTableBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMInitializeRoutingTable
 }
 
 func (b *_NLMInitializeRoutingTableBuilder) WithMandatoryFields(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableBuilder {
@@ -139,8 +142,10 @@ func (b *_NLMInitializeRoutingTableBuilder) MustBuild() NLMInitializeRoutingTabl
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMInitializeRoutingTableBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -322,7 +327,7 @@ func (m *_NLMInitializeRoutingTable) deepCopy() *_NLMInitializeRoutingTable {
 		m.NumberOfPorts,
 		utils.DeepCopySlice[NLMInitializeRoutingTablePortMapping, NLMInitializeRoutingTablePortMapping](m.PortMappings),
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMInitializeRoutingTableCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMInitializeRoutingTableCopy
 }
 

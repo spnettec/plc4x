@@ -119,6 +119,8 @@ type LDataExtendedBuilder interface {
 	WithApdu(Apdu) LDataExtendedBuilder
 	// WithApduBuilder adds Apdu (property field) which is build by the builder
 	WithApduBuilder(func(ApduBuilder) ApduBuilder) LDataExtendedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LDataFrameBuilder
 	// Build builds the LDataExtended or returns an error if something is wrong
 	Build() (LDataExtended, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,6 +144,7 @@ var _ (LDataExtendedBuilder) = (*_LDataExtendedBuilder)(nil)
 
 func (b *_LDataExtendedBuilder) setParent(contract LDataFrameContract) {
 	b.LDataFrameContract = contract
+	contract.(*_LDataFrame)._SubType = b._LDataExtended
 }
 
 func (b *_LDataExtendedBuilder) WithMandatoryFields(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress KnxAddress, destinationAddress []byte, apdu Apdu) LDataExtendedBuilder {
@@ -231,8 +234,10 @@ func (b *_LDataExtendedBuilder) MustBuild() LDataExtended {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LDataExtendedBuilder) Done() LDataFrameBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLDataFrameBuilder().(*_LDataFrameBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -494,11 +499,11 @@ func (m *_LDataExtended) deepCopy() *_LDataExtended {
 		m.GroupAddress,
 		m.HopCount,
 		m.ExtendedFrameFormat,
-		m.SourceAddress.DeepCopy().(KnxAddress),
+		utils.DeepCopy[KnxAddress](m.SourceAddress),
 		utils.DeepCopySlice[byte, byte](m.DestinationAddress),
-		m.Apdu.DeepCopy().(Apdu),
+		utils.DeepCopy[Apdu](m.Apdu),
 	}
-	m.LDataFrameContract.(*_LDataFrame)._SubType = m
+	_LDataExtendedCopy.LDataFrameContract.(*_LDataFrame)._SubType = m
 	return _LDataExtendedCopy
 }
 

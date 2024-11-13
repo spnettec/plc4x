@@ -71,6 +71,8 @@ type SecurityDataMainsFailureBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataMainsFailureBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataMainsFailure or returns an error if something is wrong
 	Build() (SecurityDataMainsFailure, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataMainsFailureBuilder) = (*_SecurityDataMainsFailureBuilder)(ni
 
 func (b *_SecurityDataMainsFailureBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataMainsFailure
 }
 
 func (b *_SecurityDataMainsFailureBuilder) WithMandatoryFields() SecurityDataMainsFailureBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataMainsFailureBuilder) MustBuild() SecurityDataMainsFailure 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataMainsFailureBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataMainsFailure) deepCopy() *_SecurityDataMainsFailure {
 	_SecurityDataMainsFailureCopy := &_SecurityDataMainsFailure{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataMainsFailureCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataMainsFailureCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetServiceAckVTOpenBuilder interface {
 	WithRemoteVtSessionIdentifier(BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTOpenBuilder
 	// WithRemoteVtSessionIdentifierBuilder adds RemoteVtSessionIdentifier (property field) which is build by the builder
 	WithRemoteVtSessionIdentifierBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTOpenBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckVTOpen or returns an error if something is wrong
 	Build() (BACnetServiceAckVTOpen, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetServiceAckVTOpenBuilder) = (*_BACnetServiceAckVTOpenBuilder)(nil)
 
 func (b *_BACnetServiceAckVTOpenBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckVTOpen
 }
 
 func (b *_BACnetServiceAckVTOpenBuilder) WithMandatoryFields(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTOpenBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetServiceAckVTOpenBuilder) MustBuild() BACnetServiceAckVTOpen {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckVTOpenBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_BACnetServiceAckVTOpen) deepCopy() *_BACnetServiceAckVTOpen {
 	}
 	_BACnetServiceAckVTOpenCopy := &_BACnetServiceAckVTOpen{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
-		m.RemoteVtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.RemoteVtSessionIdentifier),
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckVTOpenCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckVTOpenCopy
 }
 

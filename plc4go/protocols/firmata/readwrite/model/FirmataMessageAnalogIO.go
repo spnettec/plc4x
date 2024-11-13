@@ -87,6 +87,8 @@ type FirmataMessageAnalogIOBuilder interface {
 	WithPin(uint8) FirmataMessageAnalogIOBuilder
 	// WithData adds Data (property field)
 	WithData(...int8) FirmataMessageAnalogIOBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() FirmataMessageBuilder
 	// Build builds the FirmataMessageAnalogIO or returns an error if something is wrong
 	Build() (FirmataMessageAnalogIO, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (FirmataMessageAnalogIOBuilder) = (*_FirmataMessageAnalogIOBuilder)(nil)
 
 func (b *_FirmataMessageAnalogIOBuilder) setParent(contract FirmataMessageContract) {
 	b.FirmataMessageContract = contract
+	contract.(*_FirmataMessage)._SubType = b._FirmataMessageAnalogIO
 }
 
 func (b *_FirmataMessageAnalogIOBuilder) WithMandatoryFields(pin uint8, data []int8) FirmataMessageAnalogIOBuilder {
@@ -141,8 +144,10 @@ func (b *_FirmataMessageAnalogIOBuilder) MustBuild() FirmataMessageAnalogIO {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FirmataMessageAnalogIOBuilder) Done() FirmataMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewFirmataMessageBuilder().(*_FirmataMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -319,7 +324,7 @@ func (m *_FirmataMessageAnalogIO) deepCopy() *_FirmataMessageAnalogIO {
 		m.Pin,
 		utils.DeepCopySlice[int8, int8](m.Data),
 	}
-	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	_FirmataMessageAnalogIOCopy.FirmataMessageContract.(*_FirmataMessage)._SubType = m
 	return _FirmataMessageAnalogIOCopy
 }
 

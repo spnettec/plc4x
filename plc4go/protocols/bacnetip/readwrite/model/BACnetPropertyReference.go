@@ -327,8 +327,8 @@ func (m *_BACnetPropertyReference) deepCopy() *_BACnetPropertyReference {
 		return nil
 	}
 	_BACnetPropertyReferenceCopy := &_BACnetPropertyReference{
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
 	}
 	return _BACnetPropertyReferenceCopy
 }

@@ -333,7 +333,7 @@ func (m *_BACnetAccessRuleLocationSpecifierTagged) deepCopy() *_BACnetAccessRule
 		return nil
 	}
 	_BACnetAccessRuleLocationSpecifierTaggedCopy := &_BACnetAccessRuleLocationSpecifierTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

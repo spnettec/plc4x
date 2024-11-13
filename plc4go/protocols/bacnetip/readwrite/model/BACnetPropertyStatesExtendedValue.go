@@ -84,6 +84,8 @@ type BACnetPropertyStatesExtendedValueBuilder interface {
 	WithExtendedValue(BACnetContextTagUnsignedInteger) BACnetPropertyStatesExtendedValueBuilder
 	// WithExtendedValueBuilder adds ExtendedValue (property field) which is build by the builder
 	WithExtendedValueBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyStatesExtendedValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesExtendedValue or returns an error if something is wrong
 	Build() (BACnetPropertyStatesExtendedValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesExtendedValueBuilder) = (*_BACnetPropertyStatesExtend
 
 func (b *_BACnetPropertyStatesExtendedValueBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesExtendedValue
 }
 
 func (b *_BACnetPropertyStatesExtendedValueBuilder) WithMandatoryFields(extendedValue BACnetContextTagUnsignedInteger) BACnetPropertyStatesExtendedValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesExtendedValueBuilder) MustBuild() BACnetPropertySt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesExtendedValueBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesExtendedValue) deepCopy() *_BACnetPropertyStatesEx
 	}
 	_BACnetPropertyStatesExtendedValueCopy := &_BACnetPropertyStatesExtendedValue{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.ExtendedValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ExtendedValue),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesExtendedValueCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesExtendedValueCopy
 }
 

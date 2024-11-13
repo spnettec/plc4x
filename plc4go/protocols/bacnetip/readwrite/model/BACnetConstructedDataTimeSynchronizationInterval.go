@@ -86,6 +86,8 @@ type BACnetConstructedDataTimeSynchronizationIntervalBuilder interface {
 	WithTimeSynchronization(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeSynchronizationIntervalBuilder
 	// WithTimeSynchronizationBuilder adds TimeSynchronization (property field) which is build by the builder
 	WithTimeSynchronizationBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimeSynchronizationIntervalBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTimeSynchronizationInterval or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimeSynchronizationInterval, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTimeSynchronizationIntervalBuilder) = (*_BACnetConst
 
 func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTimeSynchronizationInterval
 }
 
 func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) WithMandatoryFields(timeSynchronization BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeSynchronizationIntervalBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) MustBuild() B
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTimeSynchronizationIntervalBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) deepCopy() *_BACnetC
 	}
 	_BACnetConstructedDataTimeSynchronizationIntervalCopy := &_BACnetConstructedDataTimeSynchronizationInterval{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.TimeSynchronization.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.TimeSynchronization),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTimeSynchronizationIntervalCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimeSynchronizationIntervalCopy
 }
 

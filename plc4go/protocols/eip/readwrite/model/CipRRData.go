@@ -91,6 +91,8 @@ type CipRRDataBuilder interface {
 	WithTimeout(uint16) CipRRDataBuilder
 	// WithTypeIds adds TypeIds (property field)
 	WithTypeIds(...TypeId) CipRRDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EipPacketBuilder
 	// Build builds the CipRRData or returns an error if something is wrong
 	Build() (CipRRData, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (CipRRDataBuilder) = (*_CipRRDataBuilder)(nil)
 
 func (b *_CipRRDataBuilder) setParent(contract EipPacketContract) {
 	b.EipPacketContract = contract
+	contract.(*_EipPacket)._SubType = b._CipRRData
 }
 
 func (b *_CipRRDataBuilder) WithMandatoryFields(interfaceHandle uint32, timeout uint16, typeIds []TypeId) CipRRDataBuilder {
@@ -150,8 +153,10 @@ func (b *_CipRRDataBuilder) MustBuild() CipRRData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipRRDataBuilder) Done() EipPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEipPacketBuilder().(*_EipPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -372,7 +377,7 @@ func (m *_CipRRData) deepCopy() *_CipRRData {
 		m.Timeout,
 		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
 	}
-	m.EipPacketContract.(*_EipPacket)._SubType = m
+	_CipRRDataCopy.EipPacketContract.(*_EipPacket)._SubType = m
 	return _CipRRDataCopy
 }
 

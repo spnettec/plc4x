@@ -96,6 +96,8 @@ type ModificationInfoBuilder interface {
 	WithUserName(PascalString) ModificationInfoBuilder
 	// WithUserNameBuilder adds UserName (property field) which is build by the builder
 	WithUserNameBuilder(func(PascalStringBuilder) PascalStringBuilder) ModificationInfoBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ModificationInfo or returns an error if something is wrong
 	Build() (ModificationInfo, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (ModificationInfoBuilder) = (*_ModificationInfoBuilder)(nil)
 
 func (b *_ModificationInfoBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ModificationInfo
 }
 
 func (b *_ModificationInfoBuilder) WithMandatoryFields(modificationTime int64, updateType HistoryUpdateType, userName PascalString) ModificationInfoBuilder {
@@ -174,8 +177,10 @@ func (b *_ModificationInfoBuilder) MustBuild() ModificationInfo {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModificationInfoBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -366,9 +371,9 @@ func (m *_ModificationInfo) deepCopy() *_ModificationInfo {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ModificationTime,
 		m.UpdateType,
-		m.UserName.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.UserName),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ModificationInfoCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ModificationInfoCopy
 }
 

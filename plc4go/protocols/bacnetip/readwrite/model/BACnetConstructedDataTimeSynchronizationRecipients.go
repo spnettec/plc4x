@@ -79,6 +79,8 @@ type BACnetConstructedDataTimeSynchronizationRecipientsBuilder interface {
 	WithMandatoryFields(timeSynchronizationRecipients []BACnetRecipient) BACnetConstructedDataTimeSynchronizationRecipientsBuilder
 	// WithTimeSynchronizationRecipients adds TimeSynchronizationRecipients (property field)
 	WithTimeSynchronizationRecipients(...BACnetRecipient) BACnetConstructedDataTimeSynchronizationRecipientsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTimeSynchronizationRecipients or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimeSynchronizationRecipients, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataTimeSynchronizationRecipientsBuilder) = (*_BACnetCon
 
 func (b *_BACnetConstructedDataTimeSynchronizationRecipientsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTimeSynchronizationRecipients
 }
 
 func (b *_BACnetConstructedDataTimeSynchronizationRecipientsBuilder) WithMandatoryFields(timeSynchronizationRecipients []BACnetRecipient) BACnetConstructedDataTimeSynchronizationRecipientsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataTimeSynchronizationRecipientsBuilder) MustBuild()
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTimeSynchronizationRecipientsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) deepCopy() *_BACne
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetRecipient, BACnetRecipient](m.TimeSynchronizationRecipients),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTimeSynchronizationRecipientsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimeSynchronizationRecipientsCopy
 }
 

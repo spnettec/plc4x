@@ -103,55 +103,25 @@ type MeteringDataBuilder interface {
 	// WithArgument adds Argument (property field)
 	WithArgument(byte) MeteringDataBuilder
 	// AsMeteringDataMeasureElectricity converts this build to a subType of MeteringData. It is always possible to return to current builder using Done()
-	AsMeteringDataMeasureElectricity() interface {
-		MeteringDataMeasureElectricityBuilder
-		Done() MeteringDataBuilder
-	}
+	AsMeteringDataMeasureElectricity() MeteringDataMeasureElectricityBuilder
 	// AsMeteringDataMeasureGas converts this build to a subType of MeteringData. It is always possible to return to current builder using Done()
-	AsMeteringDataMeasureGas() interface {
-		MeteringDataMeasureGasBuilder
-		Done() MeteringDataBuilder
-	}
+	AsMeteringDataMeasureGas() MeteringDataMeasureGasBuilder
 	// AsMeteringDataMeasureDrinkingWater converts this build to a subType of MeteringData. It is always possible to return to current builder using Done()
-	AsMeteringDataMeasureDrinkingWater() interface {
-		MeteringDataMeasureDrinkingWaterBuilder
-		Done() MeteringDataBuilder
-	}
+	AsMeteringDataMeasureDrinkingWater() MeteringDataMeasureDrinkingWaterBuilder
 	// AsMeteringDataMeasureOtherWater converts this build to a subType of MeteringData. It is always possible to return to current builder using Done()
-	AsMeteringDataMeasureOtherWater() interface {
-		MeteringDataMeasureOtherWaterBuilder
-		Done() MeteringDataBuilder
-	}
+	AsMeteringDataMeasureOtherWater() MeteringDataMeasureOtherWaterBuilder
 	// AsMeteringDataMeasureOil converts this build to a subType of MeteringData. It is always possible to return to current builder using Done()
-	AsMeteringDataMeasureOil() interface {
-		MeteringDataMeasureOilBuilder
-		Done() MeteringDataBuilder
-	}
+	AsMeteringDataMeasureOil() MeteringDataMeasureOilBuilder
 	// AsMeteringDataElectricityConsumption converts this build to a subType of MeteringData. It is always possible to return to current builder using Done()
-	AsMeteringDataElectricityConsumption() interface {
-		MeteringDataElectricityConsumptionBuilder
-		Done() MeteringDataBuilder
-	}
+	AsMeteringDataElectricityConsumption() MeteringDataElectricityConsumptionBuilder
 	// AsMeteringDataGasConsumption converts this build to a subType of MeteringData. It is always possible to return to current builder using Done()
-	AsMeteringDataGasConsumption() interface {
-		MeteringDataGasConsumptionBuilder
-		Done() MeteringDataBuilder
-	}
+	AsMeteringDataGasConsumption() MeteringDataGasConsumptionBuilder
 	// AsMeteringDataDrinkingWaterConsumption converts this build to a subType of MeteringData. It is always possible to return to current builder using Done()
-	AsMeteringDataDrinkingWaterConsumption() interface {
-		MeteringDataDrinkingWaterConsumptionBuilder
-		Done() MeteringDataBuilder
-	}
+	AsMeteringDataDrinkingWaterConsumption() MeteringDataDrinkingWaterConsumptionBuilder
 	// AsMeteringDataOtherWaterConsumption converts this build to a subType of MeteringData. It is always possible to return to current builder using Done()
-	AsMeteringDataOtherWaterConsumption() interface {
-		MeteringDataOtherWaterConsumptionBuilder
-		Done() MeteringDataBuilder
-	}
+	AsMeteringDataOtherWaterConsumption() MeteringDataOtherWaterConsumptionBuilder
 	// AsMeteringDataOilConsumption converts this build to a subType of MeteringData. It is always possible to return to current builder using Done()
-	AsMeteringDataOilConsumption() interface {
-		MeteringDataOilConsumptionBuilder
-		Done() MeteringDataBuilder
-	}
+	AsMeteringDataOilConsumption() MeteringDataOilConsumptionBuilder
 	// Build builds the MeteringData or returns an error if something is wrong
 	PartialBuild() (MeteringDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -212,14 +182,8 @@ func (b *_MeteringDataBuilder) PartialMustBuild() MeteringDataContract {
 	return build
 }
 
-func (b *_MeteringDataBuilder) AsMeteringDataMeasureElectricity() interface {
-	MeteringDataMeasureElectricityBuilder
-	Done() MeteringDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeteringDataMeasureElectricityBuilder
-		Done() MeteringDataBuilder
-	}); ok {
+func (b *_MeteringDataBuilder) AsMeteringDataMeasureElectricity() MeteringDataMeasureElectricityBuilder {
+	if cb, ok := b.childBuilder.(MeteringDataMeasureElectricityBuilder); ok {
 		return cb
 	}
 	cb := NewMeteringDataMeasureElectricityBuilder().(*_MeteringDataMeasureElectricityBuilder)
@@ -228,14 +192,8 @@ func (b *_MeteringDataBuilder) AsMeteringDataMeasureElectricity() interface {
 	return cb
 }
 
-func (b *_MeteringDataBuilder) AsMeteringDataMeasureGas() interface {
-	MeteringDataMeasureGasBuilder
-	Done() MeteringDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeteringDataMeasureGasBuilder
-		Done() MeteringDataBuilder
-	}); ok {
+func (b *_MeteringDataBuilder) AsMeteringDataMeasureGas() MeteringDataMeasureGasBuilder {
+	if cb, ok := b.childBuilder.(MeteringDataMeasureGasBuilder); ok {
 		return cb
 	}
 	cb := NewMeteringDataMeasureGasBuilder().(*_MeteringDataMeasureGasBuilder)
@@ -244,14 +202,8 @@ func (b *_MeteringDataBuilder) AsMeteringDataMeasureGas() interface {
 	return cb
 }
 
-func (b *_MeteringDataBuilder) AsMeteringDataMeasureDrinkingWater() interface {
-	MeteringDataMeasureDrinkingWaterBuilder
-	Done() MeteringDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeteringDataMeasureDrinkingWaterBuilder
-		Done() MeteringDataBuilder
-	}); ok {
+func (b *_MeteringDataBuilder) AsMeteringDataMeasureDrinkingWater() MeteringDataMeasureDrinkingWaterBuilder {
+	if cb, ok := b.childBuilder.(MeteringDataMeasureDrinkingWaterBuilder); ok {
 		return cb
 	}
 	cb := NewMeteringDataMeasureDrinkingWaterBuilder().(*_MeteringDataMeasureDrinkingWaterBuilder)
@@ -260,14 +212,8 @@ func (b *_MeteringDataBuilder) AsMeteringDataMeasureDrinkingWater() interface {
 	return cb
 }
 
-func (b *_MeteringDataBuilder) AsMeteringDataMeasureOtherWater() interface {
-	MeteringDataMeasureOtherWaterBuilder
-	Done() MeteringDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeteringDataMeasureOtherWaterBuilder
-		Done() MeteringDataBuilder
-	}); ok {
+func (b *_MeteringDataBuilder) AsMeteringDataMeasureOtherWater() MeteringDataMeasureOtherWaterBuilder {
+	if cb, ok := b.childBuilder.(MeteringDataMeasureOtherWaterBuilder); ok {
 		return cb
 	}
 	cb := NewMeteringDataMeasureOtherWaterBuilder().(*_MeteringDataMeasureOtherWaterBuilder)
@@ -276,14 +222,8 @@ func (b *_MeteringDataBuilder) AsMeteringDataMeasureOtherWater() interface {
 	return cb
 }
 
-func (b *_MeteringDataBuilder) AsMeteringDataMeasureOil() interface {
-	MeteringDataMeasureOilBuilder
-	Done() MeteringDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeteringDataMeasureOilBuilder
-		Done() MeteringDataBuilder
-	}); ok {
+func (b *_MeteringDataBuilder) AsMeteringDataMeasureOil() MeteringDataMeasureOilBuilder {
+	if cb, ok := b.childBuilder.(MeteringDataMeasureOilBuilder); ok {
 		return cb
 	}
 	cb := NewMeteringDataMeasureOilBuilder().(*_MeteringDataMeasureOilBuilder)
@@ -292,14 +232,8 @@ func (b *_MeteringDataBuilder) AsMeteringDataMeasureOil() interface {
 	return cb
 }
 
-func (b *_MeteringDataBuilder) AsMeteringDataElectricityConsumption() interface {
-	MeteringDataElectricityConsumptionBuilder
-	Done() MeteringDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeteringDataElectricityConsumptionBuilder
-		Done() MeteringDataBuilder
-	}); ok {
+func (b *_MeteringDataBuilder) AsMeteringDataElectricityConsumption() MeteringDataElectricityConsumptionBuilder {
+	if cb, ok := b.childBuilder.(MeteringDataElectricityConsumptionBuilder); ok {
 		return cb
 	}
 	cb := NewMeteringDataElectricityConsumptionBuilder().(*_MeteringDataElectricityConsumptionBuilder)
@@ -308,14 +242,8 @@ func (b *_MeteringDataBuilder) AsMeteringDataElectricityConsumption() interface 
 	return cb
 }
 
-func (b *_MeteringDataBuilder) AsMeteringDataGasConsumption() interface {
-	MeteringDataGasConsumptionBuilder
-	Done() MeteringDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeteringDataGasConsumptionBuilder
-		Done() MeteringDataBuilder
-	}); ok {
+func (b *_MeteringDataBuilder) AsMeteringDataGasConsumption() MeteringDataGasConsumptionBuilder {
+	if cb, ok := b.childBuilder.(MeteringDataGasConsumptionBuilder); ok {
 		return cb
 	}
 	cb := NewMeteringDataGasConsumptionBuilder().(*_MeteringDataGasConsumptionBuilder)
@@ -324,14 +252,8 @@ func (b *_MeteringDataBuilder) AsMeteringDataGasConsumption() interface {
 	return cb
 }
 
-func (b *_MeteringDataBuilder) AsMeteringDataDrinkingWaterConsumption() interface {
-	MeteringDataDrinkingWaterConsumptionBuilder
-	Done() MeteringDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeteringDataDrinkingWaterConsumptionBuilder
-		Done() MeteringDataBuilder
-	}); ok {
+func (b *_MeteringDataBuilder) AsMeteringDataDrinkingWaterConsumption() MeteringDataDrinkingWaterConsumptionBuilder {
+	if cb, ok := b.childBuilder.(MeteringDataDrinkingWaterConsumptionBuilder); ok {
 		return cb
 	}
 	cb := NewMeteringDataDrinkingWaterConsumptionBuilder().(*_MeteringDataDrinkingWaterConsumptionBuilder)
@@ -340,14 +262,8 @@ func (b *_MeteringDataBuilder) AsMeteringDataDrinkingWaterConsumption() interfac
 	return cb
 }
 
-func (b *_MeteringDataBuilder) AsMeteringDataOtherWaterConsumption() interface {
-	MeteringDataOtherWaterConsumptionBuilder
-	Done() MeteringDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeteringDataOtherWaterConsumptionBuilder
-		Done() MeteringDataBuilder
-	}); ok {
+func (b *_MeteringDataBuilder) AsMeteringDataOtherWaterConsumption() MeteringDataOtherWaterConsumptionBuilder {
+	if cb, ok := b.childBuilder.(MeteringDataOtherWaterConsumptionBuilder); ok {
 		return cb
 	}
 	cb := NewMeteringDataOtherWaterConsumptionBuilder().(*_MeteringDataOtherWaterConsumptionBuilder)
@@ -356,14 +272,8 @@ func (b *_MeteringDataBuilder) AsMeteringDataOtherWaterConsumption() interface {
 	return cb
 }
 
-func (b *_MeteringDataBuilder) AsMeteringDataOilConsumption() interface {
-	MeteringDataOilConsumptionBuilder
-	Done() MeteringDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MeteringDataOilConsumptionBuilder
-		Done() MeteringDataBuilder
-	}); ok {
+func (b *_MeteringDataBuilder) AsMeteringDataOilConsumption() MeteringDataOilConsumptionBuilder {
+	if cb, ok := b.childBuilder.(MeteringDataOilConsumptionBuilder); ok {
 		return cb
 	}
 	cb := NewMeteringDataOilConsumptionBuilder().(*_MeteringDataOilConsumptionBuilder)

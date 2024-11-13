@@ -71,6 +71,8 @@ type DataSetWriterMessageDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DataSetWriterMessageDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataSetWriterMessageDataType or returns an error if something is wrong
 	Build() (DataSetWriterMessageDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (DataSetWriterMessageDataTypeBuilder) = (*_DataSetWriterMessageDataTypeBui
 
 func (b *_DataSetWriterMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataSetWriterMessageDataType
 }
 
 func (b *_DataSetWriterMessageDataTypeBuilder) WithMandatoryFields() DataSetWriterMessageDataTypeBuilder {
@@ -115,8 +118,10 @@ func (b *_DataSetWriterMessageDataTypeBuilder) MustBuild() DataSetWriterMessageD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataSetWriterMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_DataSetWriterMessageDataType) deepCopy() *_DataSetWriterMessageDataTyp
 	_DataSetWriterMessageDataTypeCopy := &_DataSetWriterMessageDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataSetWriterMessageDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataSetWriterMessageDataTypeCopy
 }
 

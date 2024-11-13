@@ -112,6 +112,8 @@ type AdsAddDeviceNotificationRequestBuilder interface {
 	WithMaxDelayInMs(uint32) AdsAddDeviceNotificationRequestBuilder
 	// WithCycleTimeInMs adds CycleTimeInMs (property field)
 	WithCycleTimeInMs(uint32) AdsAddDeviceNotificationRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AmsPacketBuilder
 	// Build builds the AdsAddDeviceNotificationRequest or returns an error if something is wrong
 	Build() (AdsAddDeviceNotificationRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (AdsAddDeviceNotificationRequestBuilder) = (*_AdsAddDeviceNotificationRequ
 
 func (b *_AdsAddDeviceNotificationRequestBuilder) setParent(contract AmsPacketContract) {
 	b.AmsPacketContract = contract
+	contract.(*_AmsPacket)._SubType = b._AdsAddDeviceNotificationRequest
 }
 
 func (b *_AdsAddDeviceNotificationRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode AdsTransMode, maxDelayInMs uint32, cycleTimeInMs uint32) AdsAddDeviceNotificationRequestBuilder {
@@ -186,8 +189,10 @@ func (b *_AdsAddDeviceNotificationRequestBuilder) MustBuild() AdsAddDeviceNotifi
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsAddDeviceNotificationRequestBuilder) Done() AmsPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAmsPacketBuilder().(*_AmsPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -466,7 +471,7 @@ func (m *_AdsAddDeviceNotificationRequest) deepCopy() *_AdsAddDeviceNotification
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	_AdsAddDeviceNotificationRequestCopy.AmsPacketContract.(*_AmsPacket)._SubType = m
 	return _AdsAddDeviceNotificationRequestCopy
 }
 

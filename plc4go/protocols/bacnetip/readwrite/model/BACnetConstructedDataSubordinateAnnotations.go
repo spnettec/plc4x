@@ -89,6 +89,8 @@ type BACnetConstructedDataSubordinateAnnotationsBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateAnnotationsBuilder
 	// WithSubordinateAnnotations adds SubordinateAnnotations (property field)
 	WithSubordinateAnnotations(...BACnetApplicationTagCharacterString) BACnetConstructedDataSubordinateAnnotationsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataSubordinateAnnotations or returns an error if something is wrong
 	Build() (BACnetConstructedDataSubordinateAnnotations, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataSubordinateAnnotationsBuilder) = (*_BACnetConstructe
 
 func (b *_BACnetConstructedDataSubordinateAnnotationsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataSubordinateAnnotations
 }
 
 func (b *_BACnetConstructedDataSubordinateAnnotationsBuilder) WithMandatoryFields(subordinateAnnotations []BACnetApplicationTagCharacterString) BACnetConstructedDataSubordinateAnnotationsBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataSubordinateAnnotationsBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataSubordinateAnnotationsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,10 +380,10 @@ func (m *_BACnetConstructedDataSubordinateAnnotations) deepCopy() *_BACnetConstr
 	}
 	_BACnetConstructedDataSubordinateAnnotationsCopy := &_BACnetConstructedDataSubordinateAnnotations{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.SubordinateAnnotations),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataSubordinateAnnotationsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataSubordinateAnnotationsCopy
 }
 

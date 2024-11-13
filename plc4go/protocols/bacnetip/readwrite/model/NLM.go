@@ -98,115 +98,49 @@ type NLMBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() NLMBuilder
 	// AsNLMWhoIsRouterToNetwork converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMWhoIsRouterToNetwork() interface {
-		NLMWhoIsRouterToNetworkBuilder
-		Done() NLMBuilder
-	}
+	AsNLMWhoIsRouterToNetwork() NLMWhoIsRouterToNetworkBuilder
 	// AsNLMIAmRouterToNetwork converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMIAmRouterToNetwork() interface {
-		NLMIAmRouterToNetworkBuilder
-		Done() NLMBuilder
-	}
+	AsNLMIAmRouterToNetwork() NLMIAmRouterToNetworkBuilder
 	// AsNLMICouldBeRouterToNetwork converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMICouldBeRouterToNetwork() interface {
-		NLMICouldBeRouterToNetworkBuilder
-		Done() NLMBuilder
-	}
+	AsNLMICouldBeRouterToNetwork() NLMICouldBeRouterToNetworkBuilder
 	// AsNLMRejectMessageToNetwork converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMRejectMessageToNetwork() interface {
-		NLMRejectMessageToNetworkBuilder
-		Done() NLMBuilder
-	}
+	AsNLMRejectMessageToNetwork() NLMRejectMessageToNetworkBuilder
 	// AsNLMRouterBusyToNetwork converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMRouterBusyToNetwork() interface {
-		NLMRouterBusyToNetworkBuilder
-		Done() NLMBuilder
-	}
+	AsNLMRouterBusyToNetwork() NLMRouterBusyToNetworkBuilder
 	// AsNLMRouterAvailableToNetwork converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMRouterAvailableToNetwork() interface {
-		NLMRouterAvailableToNetworkBuilder
-		Done() NLMBuilder
-	}
+	AsNLMRouterAvailableToNetwork() NLMRouterAvailableToNetworkBuilder
 	// AsNLMInitializeRoutingTable converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMInitializeRoutingTable() interface {
-		NLMInitializeRoutingTableBuilder
-		Done() NLMBuilder
-	}
+	AsNLMInitializeRoutingTable() NLMInitializeRoutingTableBuilder
 	// AsNLMInitializeRoutingTableAck converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMInitializeRoutingTableAck() interface {
-		NLMInitializeRoutingTableAckBuilder
-		Done() NLMBuilder
-	}
+	AsNLMInitializeRoutingTableAck() NLMInitializeRoutingTableAckBuilder
 	// AsNLMEstablishConnectionToNetwork converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMEstablishConnectionToNetwork() interface {
-		NLMEstablishConnectionToNetworkBuilder
-		Done() NLMBuilder
-	}
+	AsNLMEstablishConnectionToNetwork() NLMEstablishConnectionToNetworkBuilder
 	// AsNLMDisconnectConnectionToNetwork converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMDisconnectConnectionToNetwork() interface {
-		NLMDisconnectConnectionToNetworkBuilder
-		Done() NLMBuilder
-	}
+	AsNLMDisconnectConnectionToNetwork() NLMDisconnectConnectionToNetworkBuilder
 	// AsNLMChallengeRequest converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMChallengeRequest() interface {
-		NLMChallengeRequestBuilder
-		Done() NLMBuilder
-	}
+	AsNLMChallengeRequest() NLMChallengeRequestBuilder
 	// AsNLMSecurityPayload converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMSecurityPayload() interface {
-		NLMSecurityPayloadBuilder
-		Done() NLMBuilder
-	}
+	AsNLMSecurityPayload() NLMSecurityPayloadBuilder
 	// AsNLMSecurityResponse converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMSecurityResponse() interface {
-		NLMSecurityResponseBuilder
-		Done() NLMBuilder
-	}
+	AsNLMSecurityResponse() NLMSecurityResponseBuilder
 	// AsNLMRequestKeyUpdate converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMRequestKeyUpdate() interface {
-		NLMRequestKeyUpdateBuilder
-		Done() NLMBuilder
-	}
+	AsNLMRequestKeyUpdate() NLMRequestKeyUpdateBuilder
 	// AsNLMUpdateKeyUpdate converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMUpdateKeyUpdate() interface {
-		NLMUpdateKeyUpdateBuilder
-		Done() NLMBuilder
-	}
+	AsNLMUpdateKeyUpdate() NLMUpdateKeyUpdateBuilder
 	// AsNLMUpdateKeyDistributionKey converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMUpdateKeyDistributionKey() interface {
-		NLMUpdateKeyDistributionKeyBuilder
-		Done() NLMBuilder
-	}
+	AsNLMUpdateKeyDistributionKey() NLMUpdateKeyDistributionKeyBuilder
 	// AsNLMRequestMasterKey converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMRequestMasterKey() interface {
-		NLMRequestMasterKeyBuilder
-		Done() NLMBuilder
-	}
+	AsNLMRequestMasterKey() NLMRequestMasterKeyBuilder
 	// AsNLMSetMasterKey converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMSetMasterKey() interface {
-		NLMSetMasterKeyBuilder
-		Done() NLMBuilder
-	}
+	AsNLMSetMasterKey() NLMSetMasterKeyBuilder
 	// AsNLMWhatIsNetworkNumber converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMWhatIsNetworkNumber() interface {
-		NLMWhatIsNetworkNumberBuilder
-		Done() NLMBuilder
-	}
+	AsNLMWhatIsNetworkNumber() NLMWhatIsNetworkNumberBuilder
 	// AsNLMNetworkNumberIs converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMNetworkNumberIs() interface {
-		NLMNetworkNumberIsBuilder
-		Done() NLMBuilder
-	}
+	AsNLMNetworkNumberIs() NLMNetworkNumberIsBuilder
 	// AsNLMReserved converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMReserved() interface {
-		NLMReservedBuilder
-		Done() NLMBuilder
-	}
+	AsNLMReserved() NLMReservedBuilder
 	// AsNLMVendorProprietaryMessage converts this build to a subType of NLM. It is always possible to return to current builder using Done()
-	AsNLMVendorProprietaryMessage() interface {
-		NLMVendorProprietaryMessageBuilder
-		Done() NLMBuilder
-	}
+	AsNLMVendorProprietaryMessage() NLMVendorProprietaryMessageBuilder
 	// Build builds the NLM or returns an error if something is wrong
 	PartialBuild() (NLMContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -257,14 +191,8 @@ func (b *_NLMBuilder) PartialMustBuild() NLMContract {
 	return build
 }
 
-func (b *_NLMBuilder) AsNLMWhoIsRouterToNetwork() interface {
-	NLMWhoIsRouterToNetworkBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMWhoIsRouterToNetworkBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMWhoIsRouterToNetwork() NLMWhoIsRouterToNetworkBuilder {
+	if cb, ok := b.childBuilder.(NLMWhoIsRouterToNetworkBuilder); ok {
 		return cb
 	}
 	cb := NewNLMWhoIsRouterToNetworkBuilder().(*_NLMWhoIsRouterToNetworkBuilder)
@@ -273,14 +201,8 @@ func (b *_NLMBuilder) AsNLMWhoIsRouterToNetwork() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMIAmRouterToNetwork() interface {
-	NLMIAmRouterToNetworkBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMIAmRouterToNetworkBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMIAmRouterToNetwork() NLMIAmRouterToNetworkBuilder {
+	if cb, ok := b.childBuilder.(NLMIAmRouterToNetworkBuilder); ok {
 		return cb
 	}
 	cb := NewNLMIAmRouterToNetworkBuilder().(*_NLMIAmRouterToNetworkBuilder)
@@ -289,14 +211,8 @@ func (b *_NLMBuilder) AsNLMIAmRouterToNetwork() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMICouldBeRouterToNetwork() interface {
-	NLMICouldBeRouterToNetworkBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMICouldBeRouterToNetworkBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMICouldBeRouterToNetwork() NLMICouldBeRouterToNetworkBuilder {
+	if cb, ok := b.childBuilder.(NLMICouldBeRouterToNetworkBuilder); ok {
 		return cb
 	}
 	cb := NewNLMICouldBeRouterToNetworkBuilder().(*_NLMICouldBeRouterToNetworkBuilder)
@@ -305,14 +221,8 @@ func (b *_NLMBuilder) AsNLMICouldBeRouterToNetwork() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMRejectMessageToNetwork() interface {
-	NLMRejectMessageToNetworkBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMRejectMessageToNetworkBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMRejectMessageToNetwork() NLMRejectMessageToNetworkBuilder {
+	if cb, ok := b.childBuilder.(NLMRejectMessageToNetworkBuilder); ok {
 		return cb
 	}
 	cb := NewNLMRejectMessageToNetworkBuilder().(*_NLMRejectMessageToNetworkBuilder)
@@ -321,14 +231,8 @@ func (b *_NLMBuilder) AsNLMRejectMessageToNetwork() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMRouterBusyToNetwork() interface {
-	NLMRouterBusyToNetworkBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMRouterBusyToNetworkBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMRouterBusyToNetwork() NLMRouterBusyToNetworkBuilder {
+	if cb, ok := b.childBuilder.(NLMRouterBusyToNetworkBuilder); ok {
 		return cb
 	}
 	cb := NewNLMRouterBusyToNetworkBuilder().(*_NLMRouterBusyToNetworkBuilder)
@@ -337,14 +241,8 @@ func (b *_NLMBuilder) AsNLMRouterBusyToNetwork() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMRouterAvailableToNetwork() interface {
-	NLMRouterAvailableToNetworkBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMRouterAvailableToNetworkBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMRouterAvailableToNetwork() NLMRouterAvailableToNetworkBuilder {
+	if cb, ok := b.childBuilder.(NLMRouterAvailableToNetworkBuilder); ok {
 		return cb
 	}
 	cb := NewNLMRouterAvailableToNetworkBuilder().(*_NLMRouterAvailableToNetworkBuilder)
@@ -353,14 +251,8 @@ func (b *_NLMBuilder) AsNLMRouterAvailableToNetwork() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMInitializeRoutingTable() interface {
-	NLMInitializeRoutingTableBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMInitializeRoutingTableBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMInitializeRoutingTable() NLMInitializeRoutingTableBuilder {
+	if cb, ok := b.childBuilder.(NLMInitializeRoutingTableBuilder); ok {
 		return cb
 	}
 	cb := NewNLMInitializeRoutingTableBuilder().(*_NLMInitializeRoutingTableBuilder)
@@ -369,14 +261,8 @@ func (b *_NLMBuilder) AsNLMInitializeRoutingTable() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMInitializeRoutingTableAck() interface {
-	NLMInitializeRoutingTableAckBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMInitializeRoutingTableAckBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMInitializeRoutingTableAck() NLMInitializeRoutingTableAckBuilder {
+	if cb, ok := b.childBuilder.(NLMInitializeRoutingTableAckBuilder); ok {
 		return cb
 	}
 	cb := NewNLMInitializeRoutingTableAckBuilder().(*_NLMInitializeRoutingTableAckBuilder)
@@ -385,14 +271,8 @@ func (b *_NLMBuilder) AsNLMInitializeRoutingTableAck() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMEstablishConnectionToNetwork() interface {
-	NLMEstablishConnectionToNetworkBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMEstablishConnectionToNetworkBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMEstablishConnectionToNetwork() NLMEstablishConnectionToNetworkBuilder {
+	if cb, ok := b.childBuilder.(NLMEstablishConnectionToNetworkBuilder); ok {
 		return cb
 	}
 	cb := NewNLMEstablishConnectionToNetworkBuilder().(*_NLMEstablishConnectionToNetworkBuilder)
@@ -401,14 +281,8 @@ func (b *_NLMBuilder) AsNLMEstablishConnectionToNetwork() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMDisconnectConnectionToNetwork() interface {
-	NLMDisconnectConnectionToNetworkBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMDisconnectConnectionToNetworkBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMDisconnectConnectionToNetwork() NLMDisconnectConnectionToNetworkBuilder {
+	if cb, ok := b.childBuilder.(NLMDisconnectConnectionToNetworkBuilder); ok {
 		return cb
 	}
 	cb := NewNLMDisconnectConnectionToNetworkBuilder().(*_NLMDisconnectConnectionToNetworkBuilder)
@@ -417,14 +291,8 @@ func (b *_NLMBuilder) AsNLMDisconnectConnectionToNetwork() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMChallengeRequest() interface {
-	NLMChallengeRequestBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMChallengeRequestBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMChallengeRequest() NLMChallengeRequestBuilder {
+	if cb, ok := b.childBuilder.(NLMChallengeRequestBuilder); ok {
 		return cb
 	}
 	cb := NewNLMChallengeRequestBuilder().(*_NLMChallengeRequestBuilder)
@@ -433,14 +301,8 @@ func (b *_NLMBuilder) AsNLMChallengeRequest() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMSecurityPayload() interface {
-	NLMSecurityPayloadBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMSecurityPayloadBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMSecurityPayload() NLMSecurityPayloadBuilder {
+	if cb, ok := b.childBuilder.(NLMSecurityPayloadBuilder); ok {
 		return cb
 	}
 	cb := NewNLMSecurityPayloadBuilder().(*_NLMSecurityPayloadBuilder)
@@ -449,14 +311,8 @@ func (b *_NLMBuilder) AsNLMSecurityPayload() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMSecurityResponse() interface {
-	NLMSecurityResponseBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMSecurityResponseBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMSecurityResponse() NLMSecurityResponseBuilder {
+	if cb, ok := b.childBuilder.(NLMSecurityResponseBuilder); ok {
 		return cb
 	}
 	cb := NewNLMSecurityResponseBuilder().(*_NLMSecurityResponseBuilder)
@@ -465,14 +321,8 @@ func (b *_NLMBuilder) AsNLMSecurityResponse() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMRequestKeyUpdate() interface {
-	NLMRequestKeyUpdateBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMRequestKeyUpdateBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMRequestKeyUpdate() NLMRequestKeyUpdateBuilder {
+	if cb, ok := b.childBuilder.(NLMRequestKeyUpdateBuilder); ok {
 		return cb
 	}
 	cb := NewNLMRequestKeyUpdateBuilder().(*_NLMRequestKeyUpdateBuilder)
@@ -481,14 +331,8 @@ func (b *_NLMBuilder) AsNLMRequestKeyUpdate() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMUpdateKeyUpdate() interface {
-	NLMUpdateKeyUpdateBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMUpdateKeyUpdateBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMUpdateKeyUpdate() NLMUpdateKeyUpdateBuilder {
+	if cb, ok := b.childBuilder.(NLMUpdateKeyUpdateBuilder); ok {
 		return cb
 	}
 	cb := NewNLMUpdateKeyUpdateBuilder().(*_NLMUpdateKeyUpdateBuilder)
@@ -497,14 +341,8 @@ func (b *_NLMBuilder) AsNLMUpdateKeyUpdate() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMUpdateKeyDistributionKey() interface {
-	NLMUpdateKeyDistributionKeyBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMUpdateKeyDistributionKeyBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMUpdateKeyDistributionKey() NLMUpdateKeyDistributionKeyBuilder {
+	if cb, ok := b.childBuilder.(NLMUpdateKeyDistributionKeyBuilder); ok {
 		return cb
 	}
 	cb := NewNLMUpdateKeyDistributionKeyBuilder().(*_NLMUpdateKeyDistributionKeyBuilder)
@@ -513,14 +351,8 @@ func (b *_NLMBuilder) AsNLMUpdateKeyDistributionKey() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMRequestMasterKey() interface {
-	NLMRequestMasterKeyBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMRequestMasterKeyBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMRequestMasterKey() NLMRequestMasterKeyBuilder {
+	if cb, ok := b.childBuilder.(NLMRequestMasterKeyBuilder); ok {
 		return cb
 	}
 	cb := NewNLMRequestMasterKeyBuilder().(*_NLMRequestMasterKeyBuilder)
@@ -529,14 +361,8 @@ func (b *_NLMBuilder) AsNLMRequestMasterKey() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMSetMasterKey() interface {
-	NLMSetMasterKeyBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMSetMasterKeyBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMSetMasterKey() NLMSetMasterKeyBuilder {
+	if cb, ok := b.childBuilder.(NLMSetMasterKeyBuilder); ok {
 		return cb
 	}
 	cb := NewNLMSetMasterKeyBuilder().(*_NLMSetMasterKeyBuilder)
@@ -545,14 +371,8 @@ func (b *_NLMBuilder) AsNLMSetMasterKey() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMWhatIsNetworkNumber() interface {
-	NLMWhatIsNetworkNumberBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMWhatIsNetworkNumberBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMWhatIsNetworkNumber() NLMWhatIsNetworkNumberBuilder {
+	if cb, ok := b.childBuilder.(NLMWhatIsNetworkNumberBuilder); ok {
 		return cb
 	}
 	cb := NewNLMWhatIsNetworkNumberBuilder().(*_NLMWhatIsNetworkNumberBuilder)
@@ -561,14 +381,8 @@ func (b *_NLMBuilder) AsNLMWhatIsNetworkNumber() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMNetworkNumberIs() interface {
-	NLMNetworkNumberIsBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMNetworkNumberIsBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMNetworkNumberIs() NLMNetworkNumberIsBuilder {
+	if cb, ok := b.childBuilder.(NLMNetworkNumberIsBuilder); ok {
 		return cb
 	}
 	cb := NewNLMNetworkNumberIsBuilder().(*_NLMNetworkNumberIsBuilder)
@@ -577,14 +391,8 @@ func (b *_NLMBuilder) AsNLMNetworkNumberIs() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMReserved() interface {
-	NLMReservedBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMReservedBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMReserved() NLMReservedBuilder {
+	if cb, ok := b.childBuilder.(NLMReservedBuilder); ok {
 		return cb
 	}
 	cb := NewNLMReservedBuilder().(*_NLMReservedBuilder)
@@ -593,14 +401,8 @@ func (b *_NLMBuilder) AsNLMReserved() interface {
 	return cb
 }
 
-func (b *_NLMBuilder) AsNLMVendorProprietaryMessage() interface {
-	NLMVendorProprietaryMessageBuilder
-	Done() NLMBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NLMVendorProprietaryMessageBuilder
-		Done() NLMBuilder
-	}); ok {
+func (b *_NLMBuilder) AsNLMVendorProprietaryMessage() NLMVendorProprietaryMessageBuilder {
+	if cb, ok := b.childBuilder.(NLMVendorProprietaryMessageBuilder); ok {
 		return cb
 	}
 	cb := NewNLMVendorProprietaryMessageBuilder().(*_NLMVendorProprietaryMessageBuilder)

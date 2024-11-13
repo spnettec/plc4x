@@ -98,6 +98,8 @@ type TransferSubscriptionsRequestBuilder interface {
 	WithSubscriptionIds(...uint32) TransferSubscriptionsRequestBuilder
 	// WithSendInitialValues adds SendInitialValues (property field)
 	WithSendInitialValues(bool) TransferSubscriptionsRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the TransferSubscriptionsRequest or returns an error if something is wrong
 	Build() (TransferSubscriptionsRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,6 +123,7 @@ var _ (TransferSubscriptionsRequestBuilder) = (*_TransferSubscriptionsRequestBui
 
 func (b *_TransferSubscriptionsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._TransferSubscriptionsRequest
 }
 
 func (b *_TransferSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionIds []uint32, sendInitialValues bool) TransferSubscriptionsRequestBuilder {
@@ -176,8 +179,10 @@ func (b *_TransferSubscriptionsRequestBuilder) MustBuild() TransferSubscriptions
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TransferSubscriptionsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -394,12 +399,12 @@ func (m *_TransferSubscriptionsRequest) deepCopy() *_TransferSubscriptionsReques
 	}
 	_TransferSubscriptionsRequestCopy := &_TransferSubscriptionsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),
 		m.SendInitialValues,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_TransferSubscriptionsRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TransferSubscriptionsRequestCopy
 }
 

@@ -432,8 +432,8 @@ func (m *_BACnetLogStatusTagged) deepCopy() *_BACnetLogStatusTagged {
 		return nil
 	}
 	_BACnetLogStatusTaggedCopy := &_BACnetLogStatusTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
-		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
+		utils.DeepCopy[BACnetTagPayloadBitString](m.Payload),
 		m.TagNumber,
 		m.TagClass,
 	}

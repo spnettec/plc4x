@@ -96,6 +96,8 @@ type TransferSubscriptionsResponseBuilder interface {
 	WithResults(...TransferResult) TransferSubscriptionsResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) TransferSubscriptionsResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the TransferSubscriptionsResponse or returns an error if something is wrong
 	Build() (TransferSubscriptionsResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (TransferSubscriptionsResponseBuilder) = (*_TransferSubscriptionsResponseB
 
 func (b *_TransferSubscriptionsResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._TransferSubscriptionsResponse
 }
 
 func (b *_TransferSubscriptionsResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []TransferResult, diagnosticInfos []DiagnosticInfo) TransferSubscriptionsResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_TransferSubscriptionsResponseBuilder) MustBuild() TransferSubscription
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TransferSubscriptionsResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_TransferSubscriptionsResponse) deepCopy() *_TransferSubscriptionsRespo
 	}
 	_TransferSubscriptionsResponseCopy := &_TransferSubscriptionsResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[TransferResult, TransferResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_TransferSubscriptionsResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TransferSubscriptionsResponseCopy
 }
 

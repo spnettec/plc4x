@@ -87,45 +87,21 @@ type BACnetErrorBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetErrorBuilder
 	// AsSubscribeCOVPropertyMultipleError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
-	AsSubscribeCOVPropertyMultipleError() interface {
-		SubscribeCOVPropertyMultipleErrorBuilder
-		Done() BACnetErrorBuilder
-	}
+	AsSubscribeCOVPropertyMultipleError() SubscribeCOVPropertyMultipleErrorBuilder
 	// AsChangeListAddError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
-	AsChangeListAddError() interface {
-		ChangeListAddErrorBuilder
-		Done() BACnetErrorBuilder
-	}
+	AsChangeListAddError() ChangeListAddErrorBuilder
 	// AsChangeListRemoveError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
-	AsChangeListRemoveError() interface {
-		ChangeListRemoveErrorBuilder
-		Done() BACnetErrorBuilder
-	}
+	AsChangeListRemoveError() ChangeListRemoveErrorBuilder
 	// AsCreateObjectError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
-	AsCreateObjectError() interface {
-		CreateObjectErrorBuilder
-		Done() BACnetErrorBuilder
-	}
+	AsCreateObjectError() CreateObjectErrorBuilder
 	// AsWritePropertyMultipleError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
-	AsWritePropertyMultipleError() interface {
-		WritePropertyMultipleErrorBuilder
-		Done() BACnetErrorBuilder
-	}
+	AsWritePropertyMultipleError() WritePropertyMultipleErrorBuilder
 	// AsConfirmedPrivateTransferError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
-	AsConfirmedPrivateTransferError() interface {
-		ConfirmedPrivateTransferErrorBuilder
-		Done() BACnetErrorBuilder
-	}
+	AsConfirmedPrivateTransferError() ConfirmedPrivateTransferErrorBuilder
 	// AsVTCloseError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
-	AsVTCloseError() interface {
-		VTCloseErrorBuilder
-		Done() BACnetErrorBuilder
-	}
+	AsVTCloseError() VTCloseErrorBuilder
 	// AsBACnetErrorGeneral converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
-	AsBACnetErrorGeneral() interface {
-		BACnetErrorGeneralBuilder
-		Done() BACnetErrorBuilder
-	}
+	AsBACnetErrorGeneral() BACnetErrorGeneralBuilder
 	// Build builds the BACnetError or returns an error if something is wrong
 	PartialBuild() (BACnetErrorContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -176,14 +152,8 @@ func (b *_BACnetErrorBuilder) PartialMustBuild() BACnetErrorContract {
 	return build
 }
 
-func (b *_BACnetErrorBuilder) AsSubscribeCOVPropertyMultipleError() interface {
-	SubscribeCOVPropertyMultipleErrorBuilder
-	Done() BACnetErrorBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SubscribeCOVPropertyMultipleErrorBuilder
-		Done() BACnetErrorBuilder
-	}); ok {
+func (b *_BACnetErrorBuilder) AsSubscribeCOVPropertyMultipleError() SubscribeCOVPropertyMultipleErrorBuilder {
+	if cb, ok := b.childBuilder.(SubscribeCOVPropertyMultipleErrorBuilder); ok {
 		return cb
 	}
 	cb := NewSubscribeCOVPropertyMultipleErrorBuilder().(*_SubscribeCOVPropertyMultipleErrorBuilder)
@@ -192,14 +162,8 @@ func (b *_BACnetErrorBuilder) AsSubscribeCOVPropertyMultipleError() interface {
 	return cb
 }
 
-func (b *_BACnetErrorBuilder) AsChangeListAddError() interface {
-	ChangeListAddErrorBuilder
-	Done() BACnetErrorBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ChangeListAddErrorBuilder
-		Done() BACnetErrorBuilder
-	}); ok {
+func (b *_BACnetErrorBuilder) AsChangeListAddError() ChangeListAddErrorBuilder {
+	if cb, ok := b.childBuilder.(ChangeListAddErrorBuilder); ok {
 		return cb
 	}
 	cb := NewChangeListAddErrorBuilder().(*_ChangeListAddErrorBuilder)
@@ -208,14 +172,8 @@ func (b *_BACnetErrorBuilder) AsChangeListAddError() interface {
 	return cb
 }
 
-func (b *_BACnetErrorBuilder) AsChangeListRemoveError() interface {
-	ChangeListRemoveErrorBuilder
-	Done() BACnetErrorBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ChangeListRemoveErrorBuilder
-		Done() BACnetErrorBuilder
-	}); ok {
+func (b *_BACnetErrorBuilder) AsChangeListRemoveError() ChangeListRemoveErrorBuilder {
+	if cb, ok := b.childBuilder.(ChangeListRemoveErrorBuilder); ok {
 		return cb
 	}
 	cb := NewChangeListRemoveErrorBuilder().(*_ChangeListRemoveErrorBuilder)
@@ -224,14 +182,8 @@ func (b *_BACnetErrorBuilder) AsChangeListRemoveError() interface {
 	return cb
 }
 
-func (b *_BACnetErrorBuilder) AsCreateObjectError() interface {
-	CreateObjectErrorBuilder
-	Done() BACnetErrorBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CreateObjectErrorBuilder
-		Done() BACnetErrorBuilder
-	}); ok {
+func (b *_BACnetErrorBuilder) AsCreateObjectError() CreateObjectErrorBuilder {
+	if cb, ok := b.childBuilder.(CreateObjectErrorBuilder); ok {
 		return cb
 	}
 	cb := NewCreateObjectErrorBuilder().(*_CreateObjectErrorBuilder)
@@ -240,14 +192,8 @@ func (b *_BACnetErrorBuilder) AsCreateObjectError() interface {
 	return cb
 }
 
-func (b *_BACnetErrorBuilder) AsWritePropertyMultipleError() interface {
-	WritePropertyMultipleErrorBuilder
-	Done() BACnetErrorBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		WritePropertyMultipleErrorBuilder
-		Done() BACnetErrorBuilder
-	}); ok {
+func (b *_BACnetErrorBuilder) AsWritePropertyMultipleError() WritePropertyMultipleErrorBuilder {
+	if cb, ok := b.childBuilder.(WritePropertyMultipleErrorBuilder); ok {
 		return cb
 	}
 	cb := NewWritePropertyMultipleErrorBuilder().(*_WritePropertyMultipleErrorBuilder)
@@ -256,14 +202,8 @@ func (b *_BACnetErrorBuilder) AsWritePropertyMultipleError() interface {
 	return cb
 }
 
-func (b *_BACnetErrorBuilder) AsConfirmedPrivateTransferError() interface {
-	ConfirmedPrivateTransferErrorBuilder
-	Done() BACnetErrorBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConfirmedPrivateTransferErrorBuilder
-		Done() BACnetErrorBuilder
-	}); ok {
+func (b *_BACnetErrorBuilder) AsConfirmedPrivateTransferError() ConfirmedPrivateTransferErrorBuilder {
+	if cb, ok := b.childBuilder.(ConfirmedPrivateTransferErrorBuilder); ok {
 		return cb
 	}
 	cb := NewConfirmedPrivateTransferErrorBuilder().(*_ConfirmedPrivateTransferErrorBuilder)
@@ -272,14 +212,8 @@ func (b *_BACnetErrorBuilder) AsConfirmedPrivateTransferError() interface {
 	return cb
 }
 
-func (b *_BACnetErrorBuilder) AsVTCloseError() interface {
-	VTCloseErrorBuilder
-	Done() BACnetErrorBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VTCloseErrorBuilder
-		Done() BACnetErrorBuilder
-	}); ok {
+func (b *_BACnetErrorBuilder) AsVTCloseError() VTCloseErrorBuilder {
+	if cb, ok := b.childBuilder.(VTCloseErrorBuilder); ok {
 		return cb
 	}
 	cb := NewVTCloseErrorBuilder().(*_VTCloseErrorBuilder)
@@ -288,14 +222,8 @@ func (b *_BACnetErrorBuilder) AsVTCloseError() interface {
 	return cb
 }
 
-func (b *_BACnetErrorBuilder) AsBACnetErrorGeneral() interface {
-	BACnetErrorGeneralBuilder
-	Done() BACnetErrorBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetErrorGeneralBuilder
-		Done() BACnetErrorBuilder
-	}); ok {
+func (b *_BACnetErrorBuilder) AsBACnetErrorGeneral() BACnetErrorGeneralBuilder {
+	if cb, ok := b.childBuilder.(BACnetErrorGeneralBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetErrorGeneralBuilder().(*_BACnetErrorGeneralBuilder)

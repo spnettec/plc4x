@@ -140,6 +140,8 @@ type FieldTargetDataTypeBuilder interface {
 	WithOverrideValue(Variant) FieldTargetDataTypeBuilder
 	// WithOverrideValueBuilder adds OverrideValue (property field) which is build by the builder
 	WithOverrideValueBuilder(func(VariantBuilder) VariantBuilder) FieldTargetDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the FieldTargetDataType or returns an error if something is wrong
 	Build() (FieldTargetDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -163,6 +165,7 @@ var _ (FieldTargetDataTypeBuilder) = (*_FieldTargetDataTypeBuilder)(nil)
 
 func (b *_FieldTargetDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._FieldTargetDataType
 }
 
 func (b *_FieldTargetDataTypeBuilder) WithMandatoryFields(dataSetFieldId GuidValue, receiverIndexRange PascalString, targetNodeId NodeId, attributeId uint32, writeIndexRange PascalString, overrideValueHandling OverrideValueHandling, overrideValue Variant) FieldTargetDataTypeBuilder {
@@ -314,8 +317,10 @@ func (b *_FieldTargetDataTypeBuilder) MustBuild() FieldTargetDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FieldTargetDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -572,15 +577,15 @@ func (m *_FieldTargetDataType) deepCopy() *_FieldTargetDataType {
 	}
 	_FieldTargetDataTypeCopy := &_FieldTargetDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.DataSetFieldId.DeepCopy().(GuidValue),
-		m.ReceiverIndexRange.DeepCopy().(PascalString),
-		m.TargetNodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[GuidValue](m.DataSetFieldId),
+		utils.DeepCopy[PascalString](m.ReceiverIndexRange),
+		utils.DeepCopy[NodeId](m.TargetNodeId),
 		m.AttributeId,
-		m.WriteIndexRange.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.WriteIndexRange),
 		m.OverrideValueHandling,
-		m.OverrideValue.DeepCopy().(Variant),
+		utils.DeepCopy[Variant](m.OverrideValue),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_FieldTargetDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _FieldTargetDataTypeCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetConfirmedServiceRequestDeleteObjectBuilder interface {
 	WithObjectIdentifier(BACnetApplicationTagObjectIdentifier) BACnetConfirmedServiceRequestDeleteObjectBuilder
 	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
 	WithObjectIdentifierBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestDeleteObjectBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestDeleteObject or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestDeleteObject, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetConfirmedServiceRequestDeleteObjectBuilder) = (*_BACnetConfirmedSer
 
 func (b *_BACnetConfirmedServiceRequestDeleteObjectBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestDeleteObject
 }
 
 func (b *_BACnetConfirmedServiceRequestDeleteObjectBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetConfirmedServiceRequestDeleteObjectBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetConfirmedServiceRequestDeleteObjectBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestDeleteObjectBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) deepCopy() *_BACnetConfirme
 	}
 	_BACnetConfirmedServiceRequestDeleteObjectCopy := &_BACnetConfirmedServiceRequestDeleteObject{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectIdentifier),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestDeleteObjectCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestDeleteObjectCopy
 }
 

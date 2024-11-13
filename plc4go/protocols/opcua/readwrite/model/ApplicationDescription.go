@@ -140,6 +140,8 @@ type ApplicationDescriptionBuilder interface {
 	WithDiscoveryProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) ApplicationDescriptionBuilder
 	// WithDiscoveryUrls adds DiscoveryUrls (property field)
 	WithDiscoveryUrls(...PascalString) ApplicationDescriptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ApplicationDescription or returns an error if something is wrong
 	Build() (ApplicationDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -163,6 +165,7 @@ var _ (ApplicationDescriptionBuilder) = (*_ApplicationDescriptionBuilder)(nil)
 
 func (b *_ApplicationDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ApplicationDescription
 }
 
 func (b *_ApplicationDescriptionBuilder) WithMandatoryFields(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, discoveryUrls []PascalString) ApplicationDescriptionBuilder {
@@ -314,8 +317,10 @@ func (b *_ApplicationDescriptionBuilder) MustBuild() ApplicationDescription {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApplicationDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -592,15 +597,15 @@ func (m *_ApplicationDescription) deepCopy() *_ApplicationDescription {
 	}
 	_ApplicationDescriptionCopy := &_ApplicationDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ApplicationUri.DeepCopy().(PascalString),
-		m.ProductUri.DeepCopy().(PascalString),
-		m.ApplicationName.DeepCopy().(LocalizedText),
+		utils.DeepCopy[PascalString](m.ApplicationUri),
+		utils.DeepCopy[PascalString](m.ProductUri),
+		utils.DeepCopy[LocalizedText](m.ApplicationName),
 		m.ApplicationType,
-		m.GatewayServerUri.DeepCopy().(PascalString),
-		m.DiscoveryProfileUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.GatewayServerUri),
+		utils.DeepCopy[PascalString](m.DiscoveryProfileUri),
 		utils.DeepCopySlice[PascalString, PascalString](m.DiscoveryUrls),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ApplicationDescriptionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ApplicationDescriptionCopy
 }
 

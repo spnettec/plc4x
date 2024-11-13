@@ -84,6 +84,8 @@ type AnonymousIdentityTokenBuilder interface {
 	WithPolicyId(PascalString) AnonymousIdentityTokenBuilder
 	// WithPolicyIdBuilder adds PolicyId (property field) which is build by the builder
 	WithPolicyIdBuilder(func(PascalStringBuilder) PascalStringBuilder) AnonymousIdentityTokenBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AnonymousIdentityToken or returns an error if something is wrong
 	Build() (AnonymousIdentityToken, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (AnonymousIdentityTokenBuilder) = (*_AnonymousIdentityTokenBuilder)(nil)
 
 func (b *_AnonymousIdentityTokenBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AnonymousIdentityToken
 }
 
 func (b *_AnonymousIdentityTokenBuilder) WithMandatoryFields(policyId PascalString) AnonymousIdentityTokenBuilder {
@@ -152,8 +155,10 @@ func (b *_AnonymousIdentityTokenBuilder) MustBuild() AnonymousIdentityToken {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AnonymousIdentityTokenBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_AnonymousIdentityToken) deepCopy() *_AnonymousIdentityToken {
 	}
 	_AnonymousIdentityTokenCopy := &_AnonymousIdentityToken{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.PolicyId.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.PolicyId),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AnonymousIdentityTokenCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AnonymousIdentityTokenCopy
 }
 

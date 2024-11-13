@@ -86,6 +86,8 @@ type BACnetConstructedDataPriorityForWritingBuilder interface {
 	WithPriorityForWriting(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityForWritingBuilder
 	// WithPriorityForWritingBuilder adds PriorityForWriting (property field) which is build by the builder
 	WithPriorityForWritingBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPriorityForWritingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPriorityForWriting or returns an error if something is wrong
 	Build() (BACnetConstructedDataPriorityForWriting, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPriorityForWritingBuilder) = (*_BACnetConstructedDat
 
 func (b *_BACnetConstructedDataPriorityForWritingBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPriorityForWriting
 }
 
 func (b *_BACnetConstructedDataPriorityForWritingBuilder) WithMandatoryFields(priorityForWriting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityForWritingBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPriorityForWritingBuilder) MustBuild() BACnetCons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPriorityForWritingBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataPriorityForWriting) deepCopy() *_BACnetConstructe
 	}
 	_BACnetConstructedDataPriorityForWritingCopy := &_BACnetConstructedDataPriorityForWriting{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PriorityForWriting.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.PriorityForWriting),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPriorityForWritingCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPriorityForWritingCopy
 }
 

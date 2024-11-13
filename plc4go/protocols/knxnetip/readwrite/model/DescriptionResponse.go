@@ -97,6 +97,8 @@ type DescriptionResponseBuilder interface {
 	WithDibSuppSvcFamilies(DIBSuppSvcFamilies) DescriptionResponseBuilder
 	// WithDibSuppSvcFamiliesBuilder adds DibSuppSvcFamilies (property field) which is build by the builder
 	WithDibSuppSvcFamiliesBuilder(func(DIBSuppSvcFamiliesBuilder) DIBSuppSvcFamiliesBuilder) DescriptionResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the DescriptionResponse or returns an error if something is wrong
 	Build() (DescriptionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (DescriptionResponseBuilder) = (*_DescriptionResponseBuilder)(nil)
 
 func (b *_DescriptionResponseBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._DescriptionResponse
 }
 
 func (b *_DescriptionResponseBuilder) WithMandatoryFields(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) DescriptionResponseBuilder {
@@ -189,8 +192,10 @@ func (b *_DescriptionResponseBuilder) MustBuild() DescriptionResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DescriptionResponseBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -362,10 +367,10 @@ func (m *_DescriptionResponse) deepCopy() *_DescriptionResponse {
 	}
 	_DescriptionResponseCopy := &_DescriptionResponse{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
-		m.DibDeviceInfo.DeepCopy().(DIBDeviceInfo),
-		m.DibSuppSvcFamilies.DeepCopy().(DIBSuppSvcFamilies),
+		utils.DeepCopy[DIBDeviceInfo](m.DibDeviceInfo),
+		utils.DeepCopy[DIBSuppSvcFamilies](m.DibSuppSvcFamilies),
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_DescriptionResponseCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _DescriptionResponseCopy
 }
 

@@ -97,6 +97,8 @@ type RequestResetBuilder interface {
 	WithTildePeek2(RequestType) RequestResetBuilder
 	// WithThirdTilde adds ThirdTilde (property field)
 	WithOptionalThirdTilde(RequestType) RequestResetBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() RequestBuilder
 	// Build builds the RequestReset or returns an error if something is wrong
 	Build() (RequestReset, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (RequestResetBuilder) = (*_RequestResetBuilder)(nil)
 
 func (b *_RequestResetBuilder) setParent(contract RequestContract) {
 	b.RequestContract = contract
+	contract.(*_Request)._SubType = b._RequestReset
 }
 
 func (b *_RequestResetBuilder) WithMandatoryFields(tildePeek RequestType, tildePeek2 RequestType) RequestResetBuilder {
@@ -161,8 +164,10 @@ func (b *_RequestResetBuilder) MustBuild() RequestReset {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RequestResetBuilder) Done() RequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewRequestBuilder().(*_RequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -361,7 +366,7 @@ func (m *_RequestReset) deepCopy() *_RequestReset {
 		m.TildePeek2,
 		utils.CopyPtr[RequestType](m.ThirdTilde),
 	}
-	m.RequestContract.(*_Request)._SubType = m
+	_RequestResetCopy.RequestContract.(*_Request)._SubType = m
 	return _RequestResetCopy
 }
 

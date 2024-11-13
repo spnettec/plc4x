@@ -96,30 +96,15 @@ type LightingDataBuilder interface {
 	// WithCommandTypeContainer adds CommandTypeContainer (property field)
 	WithCommandTypeContainer(LightingCommandTypeContainer) LightingDataBuilder
 	// AsLightingDataOff converts this build to a subType of LightingData. It is always possible to return to current builder using Done()
-	AsLightingDataOff() interface {
-		LightingDataOffBuilder
-		Done() LightingDataBuilder
-	}
+	AsLightingDataOff() LightingDataOffBuilder
 	// AsLightingDataOn converts this build to a subType of LightingData. It is always possible to return to current builder using Done()
-	AsLightingDataOn() interface {
-		LightingDataOnBuilder
-		Done() LightingDataBuilder
-	}
+	AsLightingDataOn() LightingDataOnBuilder
 	// AsLightingDataRampToLevel converts this build to a subType of LightingData. It is always possible to return to current builder using Done()
-	AsLightingDataRampToLevel() interface {
-		LightingDataRampToLevelBuilder
-		Done() LightingDataBuilder
-	}
+	AsLightingDataRampToLevel() LightingDataRampToLevelBuilder
 	// AsLightingDataTerminateRamp converts this build to a subType of LightingData. It is always possible to return to current builder using Done()
-	AsLightingDataTerminateRamp() interface {
-		LightingDataTerminateRampBuilder
-		Done() LightingDataBuilder
-	}
+	AsLightingDataTerminateRamp() LightingDataTerminateRampBuilder
 	// AsLightingDataLabel converts this build to a subType of LightingData. It is always possible to return to current builder using Done()
-	AsLightingDataLabel() interface {
-		LightingDataLabelBuilder
-		Done() LightingDataBuilder
-	}
+	AsLightingDataLabel() LightingDataLabelBuilder
 	// Build builds the LightingData or returns an error if something is wrong
 	PartialBuild() (LightingDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -175,14 +160,8 @@ func (b *_LightingDataBuilder) PartialMustBuild() LightingDataContract {
 	return build
 }
 
-func (b *_LightingDataBuilder) AsLightingDataOff() interface {
-	LightingDataOffBuilder
-	Done() LightingDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LightingDataOffBuilder
-		Done() LightingDataBuilder
-	}); ok {
+func (b *_LightingDataBuilder) AsLightingDataOff() LightingDataOffBuilder {
+	if cb, ok := b.childBuilder.(LightingDataOffBuilder); ok {
 		return cb
 	}
 	cb := NewLightingDataOffBuilder().(*_LightingDataOffBuilder)
@@ -191,14 +170,8 @@ func (b *_LightingDataBuilder) AsLightingDataOff() interface {
 	return cb
 }
 
-func (b *_LightingDataBuilder) AsLightingDataOn() interface {
-	LightingDataOnBuilder
-	Done() LightingDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LightingDataOnBuilder
-		Done() LightingDataBuilder
-	}); ok {
+func (b *_LightingDataBuilder) AsLightingDataOn() LightingDataOnBuilder {
+	if cb, ok := b.childBuilder.(LightingDataOnBuilder); ok {
 		return cb
 	}
 	cb := NewLightingDataOnBuilder().(*_LightingDataOnBuilder)
@@ -207,14 +180,8 @@ func (b *_LightingDataBuilder) AsLightingDataOn() interface {
 	return cb
 }
 
-func (b *_LightingDataBuilder) AsLightingDataRampToLevel() interface {
-	LightingDataRampToLevelBuilder
-	Done() LightingDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LightingDataRampToLevelBuilder
-		Done() LightingDataBuilder
-	}); ok {
+func (b *_LightingDataBuilder) AsLightingDataRampToLevel() LightingDataRampToLevelBuilder {
+	if cb, ok := b.childBuilder.(LightingDataRampToLevelBuilder); ok {
 		return cb
 	}
 	cb := NewLightingDataRampToLevelBuilder().(*_LightingDataRampToLevelBuilder)
@@ -223,14 +190,8 @@ func (b *_LightingDataBuilder) AsLightingDataRampToLevel() interface {
 	return cb
 }
 
-func (b *_LightingDataBuilder) AsLightingDataTerminateRamp() interface {
-	LightingDataTerminateRampBuilder
-	Done() LightingDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LightingDataTerminateRampBuilder
-		Done() LightingDataBuilder
-	}); ok {
+func (b *_LightingDataBuilder) AsLightingDataTerminateRamp() LightingDataTerminateRampBuilder {
+	if cb, ok := b.childBuilder.(LightingDataTerminateRampBuilder); ok {
 		return cb
 	}
 	cb := NewLightingDataTerminateRampBuilder().(*_LightingDataTerminateRampBuilder)
@@ -239,14 +200,8 @@ func (b *_LightingDataBuilder) AsLightingDataTerminateRamp() interface {
 	return cb
 }
 
-func (b *_LightingDataBuilder) AsLightingDataLabel() interface {
-	LightingDataLabelBuilder
-	Done() LightingDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LightingDataLabelBuilder
-		Done() LightingDataBuilder
-	}); ok {
+func (b *_LightingDataBuilder) AsLightingDataLabel() LightingDataLabelBuilder {
+	if cb, ok := b.childBuilder.(LightingDataLabelBuilder); ok {
 		return cb
 	}
 	cb := NewLightingDataLabelBuilder().(*_LightingDataLabelBuilder)

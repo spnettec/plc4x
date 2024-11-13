@@ -83,6 +83,8 @@ type MediaTransportControlDataShuffleOnOffBuilder interface {
 	WithMandatoryFields(state byte) MediaTransportControlDataShuffleOnOffBuilder
 	// WithState adds State (property field)
 	WithState(byte) MediaTransportControlDataShuffleOnOffBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataShuffleOnOff or returns an error if something is wrong
 	Build() (MediaTransportControlDataShuffleOnOff, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,6 +108,7 @@ var _ (MediaTransportControlDataShuffleOnOffBuilder) = (*_MediaTransportControlD
 
 func (b *_MediaTransportControlDataShuffleOnOffBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataShuffleOnOff
 }
 
 func (b *_MediaTransportControlDataShuffleOnOffBuilder) WithMandatoryFields(state byte) MediaTransportControlDataShuffleOnOffBuilder {
@@ -132,8 +135,10 @@ func (b *_MediaTransportControlDataShuffleOnOffBuilder) MustBuild() MediaTranspo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataShuffleOnOffBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -335,7 +340,7 @@ func (m *_MediaTransportControlDataShuffleOnOff) deepCopy() *_MediaTransportCont
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.State,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataShuffleOnOffCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataShuffleOnOffCopy
 }
 

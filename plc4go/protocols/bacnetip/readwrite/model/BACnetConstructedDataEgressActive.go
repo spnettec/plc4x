@@ -86,6 +86,8 @@ type BACnetConstructedDataEgressActiveBuilder interface {
 	WithEgressActive(BACnetApplicationTagBoolean) BACnetConstructedDataEgressActiveBuilder
 	// WithEgressActiveBuilder adds EgressActive (property field) which is build by the builder
 	WithEgressActiveBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEgressActiveBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEgressActive or returns an error if something is wrong
 	Build() (BACnetConstructedDataEgressActive, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataEgressActiveBuilder) = (*_BACnetConstructedDataEgres
 
 func (b *_BACnetConstructedDataEgressActiveBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEgressActive
 }
 
 func (b *_BACnetConstructedDataEgressActiveBuilder) WithMandatoryFields(egressActive BACnetApplicationTagBoolean) BACnetConstructedDataEgressActiveBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataEgressActiveBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEgressActiveBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataEgressActive) deepCopy() *_BACnetConstructedDataE
 	}
 	_BACnetConstructedDataEgressActiveCopy := &_BACnetConstructedDataEgressActive{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.EgressActive.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.EgressActive),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEgressActiveCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEgressActiveCopy
 }
 

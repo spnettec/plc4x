@@ -84,6 +84,8 @@ type BACnetPropertyStatesAuthenticationStatusBuilder interface {
 	WithAuthenticationStatus(BACnetAuthenticationStatusTagged) BACnetPropertyStatesAuthenticationStatusBuilder
 	// WithAuthenticationStatusBuilder adds AuthenticationStatus (property field) which is build by the builder
 	WithAuthenticationStatusBuilder(func(BACnetAuthenticationStatusTaggedBuilder) BACnetAuthenticationStatusTaggedBuilder) BACnetPropertyStatesAuthenticationStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesAuthenticationStatus or returns an error if something is wrong
 	Build() (BACnetPropertyStatesAuthenticationStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesAuthenticationStatusBuilder) = (*_BACnetPropertyState
 
 func (b *_BACnetPropertyStatesAuthenticationStatusBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesAuthenticationStatus
 }
 
 func (b *_BACnetPropertyStatesAuthenticationStatusBuilder) WithMandatoryFields(authenticationStatus BACnetAuthenticationStatusTagged) BACnetPropertyStatesAuthenticationStatusBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesAuthenticationStatusBuilder) MustBuild() BACnetPro
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesAuthenticationStatusBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) deepCopy() *_BACnetPropertyS
 	}
 	_BACnetPropertyStatesAuthenticationStatusCopy := &_BACnetPropertyStatesAuthenticationStatus{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.AuthenticationStatus.DeepCopy().(BACnetAuthenticationStatusTagged),
+		utils.DeepCopy[BACnetAuthenticationStatusTagged](m.AuthenticationStatus),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesAuthenticationStatusCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesAuthenticationStatusCopy
 }
 

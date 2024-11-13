@@ -79,6 +79,8 @@ type BACnetConstructedDataMemberOfBuilder interface {
 	WithMandatoryFields(zones []BACnetDeviceObjectReference) BACnetConstructedDataMemberOfBuilder
 	// WithZones adds Zones (property field)
 	WithZones(...BACnetDeviceObjectReference) BACnetConstructedDataMemberOfBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMemberOf or returns an error if something is wrong
 	Build() (BACnetConstructedDataMemberOf, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataMemberOfBuilder) = (*_BACnetConstructedDataMemberOfB
 
 func (b *_BACnetConstructedDataMemberOfBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMemberOf
 }
 
 func (b *_BACnetConstructedDataMemberOfBuilder) WithMandatoryFields(zones []BACnetDeviceObjectReference) BACnetConstructedDataMemberOfBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataMemberOfBuilder) MustBuild() BACnetConstructedDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMemberOfBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataMemberOf) deepCopy() *_BACnetConstructedDataMembe
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.Zones),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMemberOfCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMemberOfCopy
 }
 

@@ -327,8 +327,8 @@ func (m *_BACnetBDTEntry) deepCopy() *_BACnetBDTEntry {
 		return nil
 	}
 	_BACnetBDTEntryCopy := &_BACnetBDTEntry{
-		m.BbmdAddress.DeepCopy().(BACnetHostNPortEnclosed),
-		m.BroadcastMask.DeepCopy().(BACnetContextTagOctetString),
+		utils.DeepCopy[BACnetHostNPortEnclosed](m.BbmdAddress),
+		utils.DeepCopy[BACnetContextTagOctetString](m.BroadcastMask),
 	}
 	return _BACnetBDTEntryCopy
 }

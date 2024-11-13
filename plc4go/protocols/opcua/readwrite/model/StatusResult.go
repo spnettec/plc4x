@@ -95,6 +95,8 @@ type StatusResultBuilder interface {
 	WithDiagnosticInfo(DiagnosticInfo) StatusResultBuilder
 	// WithDiagnosticInfoBuilder adds DiagnosticInfo (property field) which is build by the builder
 	WithDiagnosticInfoBuilder(func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) StatusResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the StatusResult or returns an error if something is wrong
 	Build() (StatusResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (StatusResultBuilder) = (*_StatusResultBuilder)(nil)
 
 func (b *_StatusResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._StatusResult
 }
 
 func (b *_StatusResultBuilder) WithMandatoryFields(statusCode StatusCode, diagnosticInfo DiagnosticInfo) StatusResultBuilder {
@@ -187,8 +190,10 @@ func (b *_StatusResultBuilder) MustBuild() StatusResult {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_StatusResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_StatusResult) deepCopy() *_StatusResult {
 	}
 	_StatusResultCopy := &_StatusResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.StatusCode.DeepCopy().(StatusCode),
-		m.DiagnosticInfo.DeepCopy().(DiagnosticInfo),
+		utils.DeepCopy[StatusCode](m.StatusCode),
+		utils.DeepCopy[DiagnosticInfo](m.DiagnosticInfo),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_StatusResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _StatusResultCopy
 }
 

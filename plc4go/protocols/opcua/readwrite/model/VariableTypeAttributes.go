@@ -155,6 +155,8 @@ type VariableTypeAttributesBuilder interface {
 	WithArrayDimensions(...uint32) VariableTypeAttributesBuilder
 	// WithIsAbstract adds IsAbstract (property field)
 	WithIsAbstract(bool) VariableTypeAttributesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the VariableTypeAttributes or returns an error if something is wrong
 	Build() (VariableTypeAttributes, error)
 	// MustBuild does the same as Build but panics on error
@@ -178,6 +180,7 @@ var _ (VariableTypeAttributesBuilder) = (*_VariableTypeAttributesBuilder)(nil)
 
 func (b *_VariableTypeAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._VariableTypeAttributes
 }
 
 func (b *_VariableTypeAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, value Variant, dataType NodeId, valueRank int32, arrayDimensions []uint32, isAbstract bool) VariableTypeAttributesBuilder {
@@ -325,8 +328,10 @@ func (b *_VariableTypeAttributesBuilder) MustBuild() VariableTypeAttributes {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariableTypeAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -663,18 +668,18 @@ func (m *_VariableTypeAttributes) deepCopy() *_VariableTypeAttributes {
 	_VariableTypeAttributesCopy := &_VariableTypeAttributes{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedAttributes,
-		m.DisplayName.DeepCopy().(LocalizedText),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.DisplayName),
+		utils.DeepCopy[LocalizedText](m.Description),
 		m.WriteMask,
 		m.UserWriteMask,
-		m.Value.DeepCopy().(Variant),
-		m.DataType.DeepCopy().(NodeId),
+		utils.DeepCopy[Variant](m.Value),
+		utils.DeepCopy[NodeId](m.DataType),
 		m.ValueRank,
 		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
 		m.IsAbstract,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_VariableTypeAttributesCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _VariableTypeAttributesCopy
 }
 

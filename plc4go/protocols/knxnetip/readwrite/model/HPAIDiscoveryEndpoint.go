@@ -347,7 +347,7 @@ func (m *_HPAIDiscoveryEndpoint) deepCopy() *_HPAIDiscoveryEndpoint {
 	}
 	_HPAIDiscoveryEndpointCopy := &_HPAIDiscoveryEndpoint{
 		m.HostProtocolCode,
-		m.IpAddress.DeepCopy().(IPAddress),
+		utils.DeepCopy[IPAddress](m.IpAddress),
 		m.IpPort,
 	}
 	return _HPAIDiscoveryEndpointCopy

@@ -153,6 +153,8 @@ type FieldMetaDataBuilder interface {
 	WithDataSetFieldIdBuilder(func(GuidValueBuilder) GuidValueBuilder) FieldMetaDataBuilder
 	// WithProperties adds Properties (property field)
 	WithProperties(...KeyValuePair) FieldMetaDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the FieldMetaData or returns an error if something is wrong
 	Build() (FieldMetaData, error)
 	// MustBuild does the same as Build but panics on error
@@ -176,6 +178,7 @@ var _ (FieldMetaDataBuilder) = (*_FieldMetaDataBuilder)(nil)
 
 func (b *_FieldMetaDataBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._FieldMetaData
 }
 
 func (b *_FieldMetaDataBuilder) WithMandatoryFields(name PascalString, description LocalizedText, fieldFlags DataSetFieldFlags, builtInType uint8, dataType NodeId, valueRank int32, arrayDimensions []uint32, maxStringLength uint32, dataSetFieldId GuidValue, properties []KeyValuePair) FieldMetaDataBuilder {
@@ -323,8 +326,10 @@ func (b *_FieldMetaDataBuilder) MustBuild() FieldMetaData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FieldMetaDataBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -667,18 +672,18 @@ func (m *_FieldMetaData) deepCopy() *_FieldMetaData {
 	}
 	_FieldMetaDataCopy := &_FieldMetaData{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[PascalString](m.Name),
+		utils.DeepCopy[LocalizedText](m.Description),
 		m.FieldFlags,
 		m.BuiltInType,
-		m.DataType.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.DataType),
 		m.ValueRank,
 		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
 		m.MaxStringLength,
-		m.DataSetFieldId.DeepCopy().(GuidValue),
+		utils.DeepCopy[GuidValue](m.DataSetFieldId),
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.Properties),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_FieldMetaDataCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _FieldMetaDataCopy
 }
 

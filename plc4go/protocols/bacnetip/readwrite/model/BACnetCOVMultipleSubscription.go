@@ -483,11 +483,11 @@ func (m *_BACnetCOVMultipleSubscription) deepCopy() *_BACnetCOVMultipleSubscript
 		return nil
 	}
 	_BACnetCOVMultipleSubscriptionCopy := &_BACnetCOVMultipleSubscription{
-		m.Recipient.DeepCopy().(BACnetRecipientProcessEnclosed),
-		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),
-		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.MaxNotificationDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ListOfCovSubscriptionSpecification.DeepCopy().(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification),
+		utils.DeepCopy[BACnetRecipientProcessEnclosed](m.Recipient),
+		utils.DeepCopy[BACnetContextTagBoolean](m.IssueConfirmedNotifications),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeRemaining),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.MaxNotificationDelay),
+		utils.DeepCopy[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification](m.ListOfCovSubscriptionSpecification),
 	}
 	return _BACnetCOVMultipleSubscriptionCopy
 }

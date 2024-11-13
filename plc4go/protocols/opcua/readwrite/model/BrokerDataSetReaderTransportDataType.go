@@ -123,6 +123,8 @@ type BrokerDataSetReaderTransportDataTypeBuilder interface {
 	WithMetaDataQueueName(PascalString) BrokerDataSetReaderTransportDataTypeBuilder
 	// WithMetaDataQueueNameBuilder adds MetaDataQueueName (property field) which is build by the builder
 	WithMetaDataQueueNameBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerDataSetReaderTransportDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BrokerDataSetReaderTransportDataType or returns an error if something is wrong
 	Build() (BrokerDataSetReaderTransportDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -146,6 +148,7 @@ var _ (BrokerDataSetReaderTransportDataTypeBuilder) = (*_BrokerDataSetReaderTran
 
 func (b *_BrokerDataSetReaderTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BrokerDataSetReaderTransportDataType
 }
 
 func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithMandatoryFields(queueName PascalString, resourceUri PascalString, authenticationProfileUri PascalString, requestedDeliveryGuarantee BrokerTransportQualityOfService, metaDataQueueName PascalString) BrokerDataSetReaderTransportDataTypeBuilder {
@@ -268,8 +271,10 @@ func (b *_BrokerDataSetReaderTransportDataTypeBuilder) MustBuild() BrokerDataSet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BrokerDataSetReaderTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -492,13 +497,13 @@ func (m *_BrokerDataSetReaderTransportDataType) deepCopy() *_BrokerDataSetReader
 	}
 	_BrokerDataSetReaderTransportDataTypeCopy := &_BrokerDataSetReaderTransportDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.QueueName.DeepCopy().(PascalString),
-		m.ResourceUri.DeepCopy().(PascalString),
-		m.AuthenticationProfileUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.QueueName),
+		utils.DeepCopy[PascalString](m.ResourceUri),
+		utils.DeepCopy[PascalString](m.AuthenticationProfileUri),
 		m.RequestedDeliveryGuarantee,
-		m.MetaDataQueueName.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.MetaDataQueueName),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BrokerDataSetReaderTransportDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrokerDataSetReaderTransportDataTypeCopy
 }
 

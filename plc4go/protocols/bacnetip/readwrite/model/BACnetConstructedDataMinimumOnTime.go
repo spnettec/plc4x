@@ -86,6 +86,8 @@ type BACnetConstructedDataMinimumOnTimeBuilder interface {
 	WithMinimumOnTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMinimumOnTimeBuilder
 	// WithMinimumOnTimeBuilder adds MinimumOnTime (property field) which is build by the builder
 	WithMinimumOnTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMinimumOnTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMinimumOnTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataMinimumOnTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMinimumOnTimeBuilder) = (*_BACnetConstructedDataMini
 
 func (b *_BACnetConstructedDataMinimumOnTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMinimumOnTime
 }
 
 func (b *_BACnetConstructedDataMinimumOnTimeBuilder) WithMandatoryFields(minimumOnTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMinimumOnTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMinimumOnTimeBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMinimumOnTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataMinimumOnTime) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataMinimumOnTimeCopy := &_BACnetConstructedDataMinimumOnTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MinimumOnTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.MinimumOnTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMinimumOnTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMinimumOnTimeCopy
 }
 

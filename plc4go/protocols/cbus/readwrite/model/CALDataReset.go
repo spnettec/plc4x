@@ -71,6 +71,8 @@ type CALDataResetBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CALDataResetBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CALDataBuilder
 	// Build builds the CALDataReset or returns an error if something is wrong
 	Build() (CALDataReset, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (CALDataResetBuilder) = (*_CALDataResetBuilder)(nil)
 
 func (b *_CALDataResetBuilder) setParent(contract CALDataContract) {
 	b.CALDataContract = contract
+	contract.(*_CALData)._SubType = b._CALDataReset
 }
 
 func (b *_CALDataResetBuilder) WithMandatoryFields() CALDataResetBuilder {
@@ -115,8 +118,10 @@ func (b *_CALDataResetBuilder) MustBuild() CALDataReset {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CALDataResetBuilder) Done() CALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCALDataBuilder().(*_CALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_CALDataReset) deepCopy() *_CALDataReset {
 	_CALDataResetCopy := &_CALDataReset{
 		m.CALDataContract.(*_CALData).deepCopy(),
 	}
-	m.CALDataContract.(*_CALData)._SubType = m
+	_CALDataResetCopy.CALDataContract.(*_CALData)._SubType = m
 	return _CALDataResetCopy
 }
 

@@ -79,6 +79,8 @@ type JsonDataSetWriterMessageDataTypeBuilder interface {
 	WithMandatoryFields(dataSetMessageContentMask JsonDataSetMessageContentMask) JsonDataSetWriterMessageDataTypeBuilder
 	// WithDataSetMessageContentMask adds DataSetMessageContentMask (property field)
 	WithDataSetMessageContentMask(JsonDataSetMessageContentMask) JsonDataSetWriterMessageDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the JsonDataSetWriterMessageDataType or returns an error if something is wrong
 	Build() (JsonDataSetWriterMessageDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (JsonDataSetWriterMessageDataTypeBuilder) = (*_JsonDataSetWriterMessageDat
 
 func (b *_JsonDataSetWriterMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._JsonDataSetWriterMessageDataType
 }
 
 func (b *_JsonDataSetWriterMessageDataTypeBuilder) WithMandatoryFields(dataSetMessageContentMask JsonDataSetMessageContentMask) JsonDataSetWriterMessageDataTypeBuilder {
@@ -128,8 +131,10 @@ func (b *_JsonDataSetWriterMessageDataTypeBuilder) MustBuild() JsonDataSetWriter
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_JsonDataSetWriterMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_JsonDataSetWriterMessageDataType) deepCopy() *_JsonDataSetWriterMessag
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.DataSetMessageContentMask,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_JsonDataSetWriterMessageDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _JsonDataSetWriterMessageDataTypeCopy
 }
 

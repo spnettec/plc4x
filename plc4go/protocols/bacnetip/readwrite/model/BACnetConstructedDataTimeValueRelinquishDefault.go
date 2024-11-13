@@ -86,6 +86,8 @@ type BACnetConstructedDataTimeValueRelinquishDefaultBuilder interface {
 	WithRelinquishDefault(BACnetApplicationTagTime) BACnetConstructedDataTimeValueRelinquishDefaultBuilder
 	// WithRelinquishDefaultBuilder adds RelinquishDefault (property field) which is build by the builder
 	WithRelinquishDefaultBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetConstructedDataTimeValueRelinquishDefaultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTimeValueRelinquishDefault or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimeValueRelinquishDefault, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTimeValueRelinquishDefaultBuilder) = (*_BACnetConstr
 
 func (b *_BACnetConstructedDataTimeValueRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTimeValueRelinquishDefault
 }
 
 func (b *_BACnetConstructedDataTimeValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagTime) BACnetConstructedDataTimeValueRelinquishDefaultBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTimeValueRelinquishDefaultBuilder) MustBuild() BA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTimeValueRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataTimeValueRelinquishDefault) deepCopy() *_BACnetCo
 	}
 	_BACnetConstructedDataTimeValueRelinquishDefaultCopy := &_BACnetConstructedDataTimeValueRelinquishDefault{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.RelinquishDefault.DeepCopy().(BACnetApplicationTagTime),
+		utils.DeepCopy[BACnetApplicationTagTime](m.RelinquishDefault),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTimeValueRelinquishDefaultCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimeValueRelinquishDefaultCopy
 }
 

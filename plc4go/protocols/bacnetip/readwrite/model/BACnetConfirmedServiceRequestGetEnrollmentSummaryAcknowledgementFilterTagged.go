@@ -334,7 +334,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 		return nil
 	}
 	_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedCopy := &_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

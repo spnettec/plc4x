@@ -709,7 +709,7 @@ func (m *_BACnetWeekNDayTagged) deepCopy() *_BACnetWeekNDayTagged {
 		return nil
 	}
 	_BACnetWeekNDayTaggedCopy := &_BACnetWeekNDayTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Month,
 		m.WeekOfMonth,
 		m.DayOfWeek,

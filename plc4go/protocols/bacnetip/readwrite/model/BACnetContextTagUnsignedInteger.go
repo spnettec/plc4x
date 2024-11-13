@@ -86,6 +86,8 @@ type BACnetContextTagUnsignedIntegerBuilder interface {
 	WithPayload(BACnetTagPayloadUnsignedInteger) BACnetContextTagUnsignedIntegerBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadUnsignedIntegerBuilder) BACnetTagPayloadUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetContextTagBuilder
 	// Build builds the BACnetContextTagUnsignedInteger or returns an error if something is wrong
 	Build() (BACnetContextTagUnsignedInteger, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetContextTagUnsignedIntegerBuilder) = (*_BACnetContextTagUnsignedInte
 
 func (b *_BACnetContextTagUnsignedIntegerBuilder) setParent(contract BACnetContextTagContract) {
 	b.BACnetContextTagContract = contract
+	contract.(*_BACnetContextTag)._SubType = b._BACnetContextTagUnsignedInteger
 }
 
 func (b *_BACnetContextTagUnsignedIntegerBuilder) WithMandatoryFields(payload BACnetTagPayloadUnsignedInteger) BACnetContextTagUnsignedIntegerBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetContextTagUnsignedIntegerBuilder) MustBuild() BACnetContextTagUn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetContextTagUnsignedIntegerBuilder) Done() BACnetContextTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetContextTagBuilder().(*_BACnetContextTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -339,9 +344,9 @@ func (m *_BACnetContextTagUnsignedInteger) deepCopy() *_BACnetContextTagUnsigned
 	}
 	_BACnetContextTagUnsignedIntegerCopy := &_BACnetContextTagUnsignedInteger{
 		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadUnsignedInteger),
+		utils.DeepCopy[BACnetTagPayloadUnsignedInteger](m.Payload),
 	}
-	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	_BACnetContextTagUnsignedIntegerCopy.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
 	return _BACnetContextTagUnsignedIntegerCopy
 }
 

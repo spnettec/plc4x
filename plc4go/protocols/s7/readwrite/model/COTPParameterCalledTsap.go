@@ -79,6 +79,8 @@ type COTPParameterCalledTsapBuilder interface {
 	WithMandatoryFields(tsapId uint16) COTPParameterCalledTsapBuilder
 	// WithTsapId adds TsapId (property field)
 	WithTsapId(uint16) COTPParameterCalledTsapBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() COTPParameterBuilder
 	// Build builds the COTPParameterCalledTsap or returns an error if something is wrong
 	Build() (COTPParameterCalledTsap, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (COTPParameterCalledTsapBuilder) = (*_COTPParameterCalledTsapBuilder)(nil)
 
 func (b *_COTPParameterCalledTsapBuilder) setParent(contract COTPParameterContract) {
 	b.COTPParameterContract = contract
+	contract.(*_COTPParameter)._SubType = b._COTPParameterCalledTsap
 }
 
 func (b *_COTPParameterCalledTsapBuilder) WithMandatoryFields(tsapId uint16) COTPParameterCalledTsapBuilder {
@@ -128,8 +131,10 @@ func (b *_COTPParameterCalledTsapBuilder) MustBuild() COTPParameterCalledTsap {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_COTPParameterCalledTsapBuilder) Done() COTPParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCOTPParameterBuilder().(*_COTPParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_COTPParameterCalledTsap) deepCopy() *_COTPParameterCalledTsap {
 		m.COTPParameterContract.(*_COTPParameter).deepCopy(),
 		m.TsapId,
 	}
-	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	_COTPParameterCalledTsapCopy.COTPParameterContract.(*_COTPParameter)._SubType = m
 	return _COTPParameterCalledTsapCopy
 }
 

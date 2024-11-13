@@ -84,6 +84,8 @@ type BACnetTimeStampSequenceBuilder interface {
 	WithSequenceNumber(BACnetContextTagUnsignedInteger) BACnetTimeStampSequenceBuilder
 	// WithSequenceNumberBuilder adds SequenceNumber (property field) which is build by the builder
 	WithSequenceNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetTimeStampSequenceBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimeStampBuilder
 	// Build builds the BACnetTimeStampSequence or returns an error if something is wrong
 	Build() (BACnetTimeStampSequence, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimeStampSequenceBuilder) = (*_BACnetTimeStampSequenceBuilder)(nil)
 
 func (b *_BACnetTimeStampSequenceBuilder) setParent(contract BACnetTimeStampContract) {
 	b.BACnetTimeStampContract = contract
+	contract.(*_BACnetTimeStamp)._SubType = b._BACnetTimeStampSequence
 }
 
 func (b *_BACnetTimeStampSequenceBuilder) WithMandatoryFields(sequenceNumber BACnetContextTagUnsignedInteger) BACnetTimeStampSequenceBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimeStampSequenceBuilder) MustBuild() BACnetTimeStampSequence {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimeStampSequenceBuilder) Done() BACnetTimeStampBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimeStampBuilder().(*_BACnetTimeStampBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimeStampSequence) deepCopy() *_BACnetTimeStampSequence {
 	}
 	_BACnetTimeStampSequenceCopy := &_BACnetTimeStampSequence{
 		m.BACnetTimeStampContract.(*_BACnetTimeStamp).deepCopy(),
-		m.SequenceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.SequenceNumber),
 	}
-	m.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
+	_BACnetTimeStampSequenceCopy.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
 	return _BACnetTimeStampSequenceCopy
 }
 

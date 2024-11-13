@@ -79,6 +79,8 @@ type ErrorReportingSystemCategoryTypeSupportUnitsBuilder interface {
 	WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForSupportUnits) ErrorReportingSystemCategoryTypeSupportUnitsBuilder
 	// WithCategoryForType adds CategoryForType (property field)
 	WithCategoryForType(ErrorReportingSystemCategoryTypeForSupportUnits) ErrorReportingSystemCategoryTypeSupportUnitsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ErrorReportingSystemCategoryTypeBuilder
 	// Build builds the ErrorReportingSystemCategoryTypeSupportUnits or returns an error if something is wrong
 	Build() (ErrorReportingSystemCategoryTypeSupportUnits, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ErrorReportingSystemCategoryTypeSupportUnitsBuilder) = (*_ErrorReportingS
 
 func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) setParent(contract ErrorReportingSystemCategoryTypeContract) {
 	b.ErrorReportingSystemCategoryTypeContract = contract
+	contract.(*_ErrorReportingSystemCategoryType)._SubType = b._ErrorReportingSystemCategoryTypeSupportUnits
 }
 
 func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForSupportUnits) ErrorReportingSystemCategoryTypeSupportUnitsBuilder {
@@ -128,8 +131,10 @@ func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) MustBuild() Error
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ErrorReportingSystemCategoryTypeSupportUnitsBuilder) Done() ErrorReportingSystemCategoryTypeBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewErrorReportingSystemCategoryTypeBuilder().(*_ErrorReportingSystemCategoryTypeBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -287,7 +292,7 @@ func (m *_ErrorReportingSystemCategoryTypeSupportUnits) deepCopy() *_ErrorReport
 		m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).deepCopy(),
 		m.CategoryForType,
 	}
-	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	_ErrorReportingSystemCategoryTypeSupportUnitsCopy.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
 	return _ErrorReportingSystemCategoryTypeSupportUnitsCopy
 }
 

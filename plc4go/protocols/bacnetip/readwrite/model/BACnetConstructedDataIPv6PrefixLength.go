@@ -86,6 +86,8 @@ type BACnetConstructedDataIPv6PrefixLengthBuilder interface {
 	WithIpv6PrefixLength(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6PrefixLengthBuilder
 	// WithIpv6PrefixLengthBuilder adds Ipv6PrefixLength (property field) which is build by the builder
 	WithIpv6PrefixLengthBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPv6PrefixLengthBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIPv6PrefixLength or returns an error if something is wrong
 	Build() (BACnetConstructedDataIPv6PrefixLength, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIPv6PrefixLengthBuilder) = (*_BACnetConstructedDataI
 
 func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIPv6PrefixLength
 }
 
 func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) WithMandatoryFields(ipv6PrefixLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6PrefixLengthBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIPv6PrefixLengthBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) deepCopy() *_BACnetConstructedD
 	}
 	_BACnetConstructedDataIPv6PrefixLengthCopy := &_BACnetConstructedDataIPv6PrefixLength{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Ipv6PrefixLength.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.Ipv6PrefixLength),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIPv6PrefixLengthCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIPv6PrefixLengthCopy
 }
 

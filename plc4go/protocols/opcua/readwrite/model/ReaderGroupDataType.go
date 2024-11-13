@@ -155,6 +155,8 @@ type ReaderGroupDataTypeBuilder interface {
 	WithMessageSettingsBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) ReaderGroupDataTypeBuilder
 	// WithDataSetReaders adds DataSetReaders (property field)
 	WithDataSetReaders(...DataSetReaderDataType) ReaderGroupDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReaderGroupDataType or returns an error if something is wrong
 	Build() (ReaderGroupDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -178,6 +180,7 @@ var _ (ReaderGroupDataTypeBuilder) = (*_ReaderGroupDataTypeBuilder)(nil)
 
 func (b *_ReaderGroupDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReaderGroupDataType
 }
 
 func (b *_ReaderGroupDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, securityKeyServices []EndpointDescription, maxNetworkMessageSize uint32, groupProperties []KeyValuePair, transportSettings ExtensionObject, messageSettings ExtensionObject, dataSetReaders []DataSetReaderDataType) ReaderGroupDataTypeBuilder {
@@ -325,8 +328,10 @@ func (b *_ReaderGroupDataTypeBuilder) MustBuild() ReaderGroupDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReaderGroupDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -707,19 +712,19 @@ func (m *_ReaderGroupDataType) deepCopy() *_ReaderGroupDataType {
 	}
 	_ReaderGroupDataTypeCopy := &_ReaderGroupDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Name),
 		m.Enabled,
 		m.SecurityMode,
-		m.SecurityGroupId.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.SecurityGroupId),
 		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.SecurityKeyServices),
 		m.MaxNetworkMessageSize,
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.GroupProperties),
-		m.TransportSettings.DeepCopy().(ExtensionObject),
-		m.MessageSettings.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[ExtensionObject](m.TransportSettings),
+		utils.DeepCopy[ExtensionObject](m.MessageSettings),
 		utils.DeepCopySlice[DataSetReaderDataType, DataSetReaderDataType](m.DataSetReaders),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReaderGroupDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReaderGroupDataTypeCopy
 }
 

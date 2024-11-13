@@ -87,6 +87,8 @@ type CipWriteResponseBuilder interface {
 	WithStatus(uint8) CipWriteResponseBuilder
 	// WithExtStatus adds ExtStatus (property field)
 	WithExtStatus(uint8) CipWriteResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the CipWriteResponse or returns an error if something is wrong
 	Build() (CipWriteResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (CipWriteResponseBuilder) = (*_CipWriteResponseBuilder)(nil)
 
 func (b *_CipWriteResponseBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._CipWriteResponse
 }
 
 func (b *_CipWriteResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) CipWriteResponseBuilder {
@@ -141,8 +144,10 @@ func (b *_CipWriteResponseBuilder) MustBuild() CipWriteResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipWriteResponseBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -339,7 +344,7 @@ func (m *_CipWriteResponse) deepCopy() *_CipWriteResponse {
 		m.ExtStatus,
 		m.reservedField0,
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_CipWriteResponseCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _CipWriteResponseCopy
 }
 

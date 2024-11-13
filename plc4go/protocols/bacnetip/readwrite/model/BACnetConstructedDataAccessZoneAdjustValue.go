@@ -86,6 +86,8 @@ type BACnetConstructedDataAccessZoneAdjustValueBuilder interface {
 	WithAdjustValue(BACnetApplicationTagSignedInteger) BACnetConstructedDataAccessZoneAdjustValueBuilder
 	// WithAdjustValueBuilder adds AdjustValue (property field) which is build by the builder
 	WithAdjustValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataAccessZoneAdjustValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAccessZoneAdjustValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataAccessZoneAdjustValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAccessZoneAdjustValueBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAccessZoneAdjustValue
 }
 
 func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) WithMandatoryFields(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAccessZoneAdjustValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAccessZoneAdjustValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataAccessZoneAdjustValueCopy := &_BACnetConstructedDataAccessZoneAdjustValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AdjustValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.AdjustValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAccessZoneAdjustValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAccessZoneAdjustValueCopy
 }
 

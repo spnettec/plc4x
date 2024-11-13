@@ -334,7 +334,7 @@ func (m *_ErrorReportingSystemCategory) deepCopy() *_ErrorReportingSystemCategor
 	}
 	_ErrorReportingSystemCategoryCopy := &_ErrorReportingSystemCategory{
 		m.SystemCategoryClass,
-		m.SystemCategoryType.DeepCopy().(ErrorReportingSystemCategoryType),
+		utils.DeepCopy[ErrorReportingSystemCategoryType](m.SystemCategoryType),
 		m.SystemCategoryVariant,
 	}
 	return _ErrorReportingSystemCategoryCopy

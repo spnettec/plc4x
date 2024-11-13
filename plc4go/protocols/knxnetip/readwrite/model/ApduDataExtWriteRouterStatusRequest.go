@@ -71,6 +71,8 @@ type ApduDataExtWriteRouterStatusRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtWriteRouterStatusRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtWriteRouterStatusRequest or returns an error if something is wrong
 	Build() (ApduDataExtWriteRouterStatusRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataExtWriteRouterStatusRequestBuilder) = (*_ApduDataExtWriteRouterSt
 
 func (b *_ApduDataExtWriteRouterStatusRequestBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtWriteRouterStatusRequest
 }
 
 func (b *_ApduDataExtWriteRouterStatusRequestBuilder) WithMandatoryFields() ApduDataExtWriteRouterStatusRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataExtWriteRouterStatusRequestBuilder) MustBuild() ApduDataExtWri
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtWriteRouterStatusRequestBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataExtWriteRouterStatusRequest) deepCopy() *_ApduDataExtWriteRout
 	_ApduDataExtWriteRouterStatusRequestCopy := &_ApduDataExtWriteRouterStatusRequest{
 		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtWriteRouterStatusRequestCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtWriteRouterStatusRequestCopy
 }
 

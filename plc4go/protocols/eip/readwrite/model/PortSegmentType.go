@@ -89,15 +89,9 @@ type PortSegmentTypeBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() PortSegmentTypeBuilder
 	// AsPortSegmentNormal converts this build to a subType of PortSegmentType. It is always possible to return to current builder using Done()
-	AsPortSegmentNormal() interface {
-		PortSegmentNormalBuilder
-		Done() PortSegmentTypeBuilder
-	}
+	AsPortSegmentNormal() PortSegmentNormalBuilder
 	// AsPortSegmentExtended converts this build to a subType of PortSegmentType. It is always possible to return to current builder using Done()
-	AsPortSegmentExtended() interface {
-		PortSegmentExtendedBuilder
-		Done() PortSegmentTypeBuilder
-	}
+	AsPortSegmentExtended() PortSegmentExtendedBuilder
 	// Build builds the PortSegmentType or returns an error if something is wrong
 	PartialBuild() (PortSegmentTypeContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -148,14 +142,8 @@ func (b *_PortSegmentTypeBuilder) PartialMustBuild() PortSegmentTypeContract {
 	return build
 }
 
-func (b *_PortSegmentTypeBuilder) AsPortSegmentNormal() interface {
-	PortSegmentNormalBuilder
-	Done() PortSegmentTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		PortSegmentNormalBuilder
-		Done() PortSegmentTypeBuilder
-	}); ok {
+func (b *_PortSegmentTypeBuilder) AsPortSegmentNormal() PortSegmentNormalBuilder {
+	if cb, ok := b.childBuilder.(PortSegmentNormalBuilder); ok {
 		return cb
 	}
 	cb := NewPortSegmentNormalBuilder().(*_PortSegmentNormalBuilder)
@@ -164,14 +152,8 @@ func (b *_PortSegmentTypeBuilder) AsPortSegmentNormal() interface {
 	return cb
 }
 
-func (b *_PortSegmentTypeBuilder) AsPortSegmentExtended() interface {
-	PortSegmentExtendedBuilder
-	Done() PortSegmentTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		PortSegmentExtendedBuilder
-		Done() PortSegmentTypeBuilder
-	}); ok {
+func (b *_PortSegmentTypeBuilder) AsPortSegmentExtended() PortSegmentExtendedBuilder {
+	if cb, ok := b.childBuilder.(PortSegmentExtendedBuilder); ok {
 		return cb
 	}
 	cb := NewPortSegmentExtendedBuilder().(*_PortSegmentExtendedBuilder)

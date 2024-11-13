@@ -125,6 +125,8 @@ type BACnetServiceAckGetEnrollmentSummaryBuilder interface {
 	WithOptionalNotificationClass(BACnetApplicationTagUnsignedInteger) BACnetServiceAckGetEnrollmentSummaryBuilder
 	// WithOptionalNotificationClassBuilder adds NotificationClass (property field) which is build by the builder
 	WithOptionalNotificationClassBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckGetEnrollmentSummaryBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckGetEnrollmentSummary or returns an error if something is wrong
 	Build() (BACnetServiceAckGetEnrollmentSummary, error)
 	// MustBuild does the same as Build but panics on error
@@ -148,6 +150,7 @@ var _ (BACnetServiceAckGetEnrollmentSummaryBuilder) = (*_BACnetServiceAckGetEnro
 
 func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckGetEnrollmentSummary
 }
 
 func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger) BACnetServiceAckGetEnrollmentSummaryBuilder {
@@ -283,8 +286,10 @@ func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) MustBuild() BACnetService
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckGetEnrollmentSummaryBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -513,13 +518,13 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) deepCopy() *_BACnetServiceAckGet
 	}
 	_BACnetServiceAckGetEnrollmentSummaryCopy := &_BACnetServiceAckGetEnrollmentSummary{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
-		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
-		m.EventType.DeepCopy().(BACnetEventTypeTagged),
-		m.EventState.DeepCopy().(BACnetEventStateTagged),
-		m.Priority.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.NotificationClass.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetEventTypeTagged](m.EventType),
+		utils.DeepCopy[BACnetEventStateTagged](m.EventState),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.Priority),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NotificationClass),
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckGetEnrollmentSummaryCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckGetEnrollmentSummaryCopy
 }
 

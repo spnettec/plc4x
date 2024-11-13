@@ -84,6 +84,8 @@ type BACnetPriorityValueBitStringBuilder interface {
 	WithBitStringValue(BACnetApplicationTagBitString) BACnetPriorityValueBitStringBuilder
 	// WithBitStringValueBuilder adds BitStringValue (property field) which is build by the builder
 	WithBitStringValueBuilder(func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetPriorityValueBitStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPriorityValueBuilder
 	// Build builds the BACnetPriorityValueBitString or returns an error if something is wrong
 	Build() (BACnetPriorityValueBitString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPriorityValueBitStringBuilder) = (*_BACnetPriorityValueBitStringBui
 
 func (b *_BACnetPriorityValueBitStringBuilder) setParent(contract BACnetPriorityValueContract) {
 	b.BACnetPriorityValueContract = contract
+	contract.(*_BACnetPriorityValue)._SubType = b._BACnetPriorityValueBitString
 }
 
 func (b *_BACnetPriorityValueBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetPriorityValueBitStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPriorityValueBitStringBuilder) MustBuild() BACnetPriorityValueBi
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPriorityValueBitStringBuilder) Done() BACnetPriorityValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPriorityValueBitString) deepCopy() *_BACnetPriorityValueBitStrin
 	}
 	_BACnetPriorityValueBitStringCopy := &_BACnetPriorityValueBitString{
 		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
-		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+		utils.DeepCopy[BACnetApplicationTagBitString](m.BitStringValue),
 	}
-	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	_BACnetPriorityValueBitStringCopy.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
 	return _BACnetPriorityValueBitStringCopy
 }
 

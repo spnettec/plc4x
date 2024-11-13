@@ -333,7 +333,7 @@ func (m *_BACnetNetworkNumberQualityTagged) deepCopy() *_BACnetNetworkNumberQual
 		return nil
 	}
 	_BACnetNetworkNumberQualityTaggedCopy := &_BACnetNetworkNumberQualityTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

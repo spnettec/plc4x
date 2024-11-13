@@ -85,6 +85,8 @@ type MediaTransportControlDataSetSelectionBuilder interface {
 	WithSelectionHi(byte) MediaTransportControlDataSetSelectionBuilder
 	// WithSelectionLo adds SelectionLo (property field)
 	WithSelectionLo(byte) MediaTransportControlDataSetSelectionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataSetSelection or returns an error if something is wrong
 	Build() (MediaTransportControlDataSetSelection, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (MediaTransportControlDataSetSelectionBuilder) = (*_MediaTransportControlD
 
 func (b *_MediaTransportControlDataSetSelectionBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataSetSelection
 }
 
 func (b *_MediaTransportControlDataSetSelectionBuilder) WithMandatoryFields(selectionHi byte, selectionLo byte) MediaTransportControlDataSetSelectionBuilder {
@@ -139,8 +142,10 @@ func (b *_MediaTransportControlDataSetSelectionBuilder) MustBuild() MediaTranspo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataSetSelectionBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -311,7 +316,7 @@ func (m *_MediaTransportControlDataSetSelection) deepCopy() *_MediaTransportCont
 		m.SelectionHi,
 		m.SelectionLo,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataSetSelectionCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataSetSelectionCopy
 }
 

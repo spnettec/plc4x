@@ -79,6 +79,8 @@ type BACnetConstructedDataAcceptedModesBuilder interface {
 	WithMandatoryFields(acceptedModes []BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder
 	// WithAcceptedModes adds AcceptedModes (property field)
 	WithAcceptedModes(...BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAcceptedModes or returns an error if something is wrong
 	Build() (BACnetConstructedDataAcceptedModes, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataAcceptedModesBuilder) = (*_BACnetConstructedDataAcce
 
 func (b *_BACnetConstructedDataAcceptedModesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAcceptedModes
 }
 
 func (b *_BACnetConstructedDataAcceptedModesBuilder) WithMandatoryFields(acceptedModes []BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataAcceptedModesBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAcceptedModesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataAcceptedModes) deepCopy() *_BACnetConstructedData
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetLifeSafetyModeTagged, BACnetLifeSafetyModeTagged](m.AcceptedModes),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAcceptedModesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAcceptedModesCopy
 }
 

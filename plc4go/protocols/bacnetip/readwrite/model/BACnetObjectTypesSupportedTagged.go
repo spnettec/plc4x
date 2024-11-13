@@ -586,8 +586,8 @@ func (m *_BACnetObjectTypesSupportedTagged) deepCopy() *_BACnetObjectTypesSuppor
 		return nil
 	}
 	_BACnetObjectTypesSupportedTaggedCopy := &_BACnetObjectTypesSupportedTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
-		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
+		utils.DeepCopy[BACnetTagPayloadBitString](m.Payload),
 		m.TagNumber,
 		m.TagClass,
 	}

@@ -412,10 +412,10 @@ func (m *_BACnetReadAccessSpecification) deepCopy() *_BACnetReadAccessSpecificat
 		return nil
 	}
 	_BACnetReadAccessSpecificationCopy := &_BACnetReadAccessSpecification{
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetPropertyReference, BACnetPropertyReference](m.ListOfPropertyReferences),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
 	return _BACnetReadAccessSpecificationCopy
 }

@@ -79,6 +79,8 @@ type BACnetConstructedDataRecipientListBuilder interface {
 	WithMandatoryFields(recipientList []BACnetDestination) BACnetConstructedDataRecipientListBuilder
 	// WithRecipientList adds RecipientList (property field)
 	WithRecipientList(...BACnetDestination) BACnetConstructedDataRecipientListBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataRecipientList or returns an error if something is wrong
 	Build() (BACnetConstructedDataRecipientList, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataRecipientListBuilder) = (*_BACnetConstructedDataReci
 
 func (b *_BACnetConstructedDataRecipientListBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataRecipientList
 }
 
 func (b *_BACnetConstructedDataRecipientListBuilder) WithMandatoryFields(recipientList []BACnetDestination) BACnetConstructedDataRecipientListBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataRecipientListBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataRecipientListBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataRecipientList) deepCopy() *_BACnetConstructedData
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetDestination, BACnetDestination](m.RecipientList),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataRecipientListCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataRecipientListCopy
 }
 

@@ -121,6 +121,8 @@ type BrowseDescriptionBuilder interface {
 	WithNodeClassMask(uint32) BrowseDescriptionBuilder
 	// WithResultMask adds ResultMask (property field)
 	WithResultMask(uint32) BrowseDescriptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BrowseDescription or returns an error if something is wrong
 	Build() (BrowseDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -144,6 +146,7 @@ var _ (BrowseDescriptionBuilder) = (*_BrowseDescriptionBuilder)(nil)
 
 func (b *_BrowseDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BrowseDescription
 }
 
 func (b *_BrowseDescriptionBuilder) WithMandatoryFields(nodeId NodeId, browseDirection BrowseDirection, referenceTypeId NodeId, includeSubtypes bool, nodeClassMask uint32, resultMask uint32) BrowseDescriptionBuilder {
@@ -233,8 +236,10 @@ func (b *_BrowseDescriptionBuilder) MustBuild() BrowseDescription {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BrowseDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -487,15 +492,15 @@ func (m *_BrowseDescription) deepCopy() *_BrowseDescription {
 	}
 	_BrowseDescriptionCopy := &_BrowseDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.NodeId),
 		m.BrowseDirection,
-		m.ReferenceTypeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.ReferenceTypeId),
 		m.IncludeSubtypes,
 		m.NodeClassMask,
 		m.ResultMask,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BrowseDescriptionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowseDescriptionCopy
 }
 

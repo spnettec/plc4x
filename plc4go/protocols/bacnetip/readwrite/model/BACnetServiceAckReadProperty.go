@@ -111,6 +111,8 @@ type BACnetServiceAckReadPropertyBuilder interface {
 	WithOptionalValues(BACnetConstructedData) BACnetServiceAckReadPropertyBuilder
 	// WithOptionalValuesBuilder adds Values (property field) which is build by the builder
 	WithOptionalValuesBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetServiceAckReadPropertyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckReadProperty or returns an error if something is wrong
 	Build() (BACnetServiceAckReadProperty, error)
 	// MustBuild does the same as Build but panics on error
@@ -134,6 +136,7 @@ var _ (BACnetServiceAckReadPropertyBuilder) = (*_BACnetServiceAckReadPropertyBui
 
 func (b *_BACnetServiceAckReadPropertyBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckReadProperty
 }
 
 func (b *_BACnetServiceAckReadPropertyBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetServiceAckReadPropertyBuilder {
@@ -239,8 +242,10 @@ func (b *_BACnetServiceAckReadPropertyBuilder) MustBuild() BACnetServiceAckReadP
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckReadPropertyBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -458,12 +463,12 @@ func (m *_BACnetServiceAckReadProperty) deepCopy() *_BACnetServiceAckReadPropert
 	}
 	_BACnetServiceAckReadPropertyCopy := &_BACnetServiceAckReadProperty{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Values.DeepCopy().(BACnetConstructedData),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
+		utils.DeepCopy[BACnetConstructedData](m.Values),
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckReadPropertyCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckReadPropertyCopy
 }
 

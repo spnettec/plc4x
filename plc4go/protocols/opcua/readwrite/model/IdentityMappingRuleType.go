@@ -90,6 +90,8 @@ type IdentityMappingRuleTypeBuilder interface {
 	WithCriteria(PascalString) IdentityMappingRuleTypeBuilder
 	// WithCriteriaBuilder adds Criteria (property field) which is build by the builder
 	WithCriteriaBuilder(func(PascalStringBuilder) PascalStringBuilder) IdentityMappingRuleTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the IdentityMappingRuleType or returns an error if something is wrong
 	Build() (IdentityMappingRuleType, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (IdentityMappingRuleTypeBuilder) = (*_IdentityMappingRuleTypeBuilder)(nil)
 
 func (b *_IdentityMappingRuleTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._IdentityMappingRuleType
 }
 
 func (b *_IdentityMappingRuleTypeBuilder) WithMandatoryFields(criteriaType IdentityCriteriaType, criteria PascalString) IdentityMappingRuleTypeBuilder {
@@ -163,8 +166,10 @@ func (b *_IdentityMappingRuleTypeBuilder) MustBuild() IdentityMappingRuleType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentityMappingRuleTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -337,9 +342,9 @@ func (m *_IdentityMappingRuleType) deepCopy() *_IdentityMappingRuleType {
 	_IdentityMappingRuleTypeCopy := &_IdentityMappingRuleType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.CriteriaType,
-		m.Criteria.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Criteria),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_IdentityMappingRuleTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _IdentityMappingRuleTypeCopy
 }
 

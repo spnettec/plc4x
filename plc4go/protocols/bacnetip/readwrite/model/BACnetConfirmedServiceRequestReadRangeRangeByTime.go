@@ -95,6 +95,8 @@ type BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder interface {
 	WithCount(BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
 	// WithCountBuilder adds Count (property field) which is build by the builder
 	WithCountBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
 	// Build builds the BACnetConfirmedServiceRequestReadRangeRangeByTime or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestReadRangeRangeByTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder) = (*_BACnetConf
 
 func (b *_BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder) setParent(contract BACnetConfirmedServiceRequestReadRangeRangeContract) {
 	b.BACnetConfirmedServiceRequestReadRangeRangeContract = contract
+	contract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = b._BACnetConfirmedServiceRequestReadRangeRangeByTime
 }
 
 func (b *_BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder) WithMandatoryFields(referenceTime BACnetDateTime, count BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder {
@@ -187,8 +190,10 @@ func (b *_BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder) Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestReadRangeRangeBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -357,10 +362,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) deepCopy() *_BACnet
 	}
 	_BACnetConfirmedServiceRequestReadRangeRangeByTimeCopy := &_BACnetConfirmedServiceRequestReadRangeRangeByTime{
 		m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).deepCopy(),
-		m.ReferenceTime.DeepCopy().(BACnetDateTime),
-		m.Count.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetDateTime](m.ReferenceTime),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.Count),
 	}
-	m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = m
+	_BACnetConfirmedServiceRequestReadRangeRangeByTimeCopy.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = m
 	return _BACnetConfirmedServiceRequestReadRangeRangeByTimeCopy
 }
 

@@ -103,70 +103,31 @@ type BACnetApplicationTagBuilder interface {
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetApplicationTagBuilder
 	// AsBACnetApplicationTagNull converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagNull() interface {
-		BACnetApplicationTagNullBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagNull() BACnetApplicationTagNullBuilder
 	// AsBACnetApplicationTagBoolean converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagBoolean() interface {
-		BACnetApplicationTagBooleanBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagBoolean() BACnetApplicationTagBooleanBuilder
 	// AsBACnetApplicationTagUnsignedInteger converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagUnsignedInteger() interface {
-		BACnetApplicationTagUnsignedIntegerBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagUnsignedInteger() BACnetApplicationTagUnsignedIntegerBuilder
 	// AsBACnetApplicationTagSignedInteger converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagSignedInteger() interface {
-		BACnetApplicationTagSignedIntegerBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagSignedInteger() BACnetApplicationTagSignedIntegerBuilder
 	// AsBACnetApplicationTagReal converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagReal() interface {
-		BACnetApplicationTagRealBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagReal() BACnetApplicationTagRealBuilder
 	// AsBACnetApplicationTagDouble converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagDouble() interface {
-		BACnetApplicationTagDoubleBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagDouble() BACnetApplicationTagDoubleBuilder
 	// AsBACnetApplicationTagOctetString converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagOctetString() interface {
-		BACnetApplicationTagOctetStringBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagOctetString() BACnetApplicationTagOctetStringBuilder
 	// AsBACnetApplicationTagCharacterString converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagCharacterString() interface {
-		BACnetApplicationTagCharacterStringBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagCharacterString() BACnetApplicationTagCharacterStringBuilder
 	// AsBACnetApplicationTagBitString converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagBitString() interface {
-		BACnetApplicationTagBitStringBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagBitString() BACnetApplicationTagBitStringBuilder
 	// AsBACnetApplicationTagEnumerated converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagEnumerated() interface {
-		BACnetApplicationTagEnumeratedBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagEnumerated() BACnetApplicationTagEnumeratedBuilder
 	// AsBACnetApplicationTagDate converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagDate() interface {
-		BACnetApplicationTagDateBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagDate() BACnetApplicationTagDateBuilder
 	// AsBACnetApplicationTagTime converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagTime() interface {
-		BACnetApplicationTagTimeBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagTime() BACnetApplicationTagTimeBuilder
 	// AsBACnetApplicationTagObjectIdentifier converts this build to a subType of BACnetApplicationTag. It is always possible to return to current builder using Done()
-	AsBACnetApplicationTagObjectIdentifier() interface {
-		BACnetApplicationTagObjectIdentifierBuilder
-		Done() BACnetApplicationTagBuilder
-	}
+	AsBACnetApplicationTagObjectIdentifier() BACnetApplicationTagObjectIdentifierBuilder
 	// Build builds the BACnetApplicationTag or returns an error if something is wrong
 	PartialBuild() (BACnetApplicationTagContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -241,14 +202,8 @@ func (b *_BACnetApplicationTagBuilder) PartialMustBuild() BACnetApplicationTagCo
 	return build
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagNull() interface {
-	BACnetApplicationTagNullBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagNullBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagNull() BACnetApplicationTagNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagNullBuilder().(*_BACnetApplicationTagNullBuilder)
@@ -257,14 +212,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagNull() interface {
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagBoolean() interface {
-	BACnetApplicationTagBooleanBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagBooleanBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagBoolean() BACnetApplicationTagBooleanBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagBooleanBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagBooleanBuilder().(*_BACnetApplicationTagBooleanBuilder)
@@ -273,14 +222,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagBoolean() interface
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagUnsignedInteger() interface {
-	BACnetApplicationTagUnsignedIntegerBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagUnsignedIntegerBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagUnsignedInteger() BACnetApplicationTagUnsignedIntegerBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagUnsignedIntegerBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagUnsignedIntegerBuilder().(*_BACnetApplicationTagUnsignedIntegerBuilder)
@@ -289,14 +232,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagUnsignedInteger() i
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagSignedInteger() interface {
-	BACnetApplicationTagSignedIntegerBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagSignedIntegerBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagSignedInteger() BACnetApplicationTagSignedIntegerBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagSignedIntegerBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagSignedIntegerBuilder().(*_BACnetApplicationTagSignedIntegerBuilder)
@@ -305,14 +242,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagSignedInteger() int
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagReal() interface {
-	BACnetApplicationTagRealBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagRealBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagReal() BACnetApplicationTagRealBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagRealBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagRealBuilder().(*_BACnetApplicationTagRealBuilder)
@@ -321,14 +252,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagReal() interface {
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagDouble() interface {
-	BACnetApplicationTagDoubleBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagDoubleBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagDouble() BACnetApplicationTagDoubleBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagDoubleBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagDoubleBuilder().(*_BACnetApplicationTagDoubleBuilder)
@@ -337,14 +262,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagDouble() interface 
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagOctetString() interface {
-	BACnetApplicationTagOctetStringBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagOctetStringBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagOctetString() BACnetApplicationTagOctetStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagOctetStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagOctetStringBuilder().(*_BACnetApplicationTagOctetStringBuilder)
@@ -353,14 +272,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagOctetString() inter
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagCharacterString() interface {
-	BACnetApplicationTagCharacterStringBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagCharacterStringBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagCharacterString() BACnetApplicationTagCharacterStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagCharacterStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagCharacterStringBuilder().(*_BACnetApplicationTagCharacterStringBuilder)
@@ -369,14 +282,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagCharacterString() i
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagBitString() interface {
-	BACnetApplicationTagBitStringBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagBitStringBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagBitString() BACnetApplicationTagBitStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagBitStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagBitStringBuilder().(*_BACnetApplicationTagBitStringBuilder)
@@ -385,14 +292,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagBitString() interfa
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagEnumerated() interface {
-	BACnetApplicationTagEnumeratedBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagEnumeratedBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagEnumerated() BACnetApplicationTagEnumeratedBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagEnumeratedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagEnumeratedBuilder().(*_BACnetApplicationTagEnumeratedBuilder)
@@ -401,14 +302,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagEnumerated() interf
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagDate() interface {
-	BACnetApplicationTagDateBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagDateBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagDate() BACnetApplicationTagDateBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagDateBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagDateBuilder().(*_BACnetApplicationTagDateBuilder)
@@ -417,14 +312,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagDate() interface {
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagTime() interface {
-	BACnetApplicationTagTimeBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagTimeBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagTime() BACnetApplicationTagTimeBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagTimeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagTimeBuilder().(*_BACnetApplicationTagTimeBuilder)
@@ -433,14 +322,8 @@ func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagTime() interface {
 	return cb
 }
 
-func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagObjectIdentifier() interface {
-	BACnetApplicationTagObjectIdentifierBuilder
-	Done() BACnetApplicationTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetApplicationTagObjectIdentifierBuilder
-		Done() BACnetApplicationTagBuilder
-	}); ok {
+func (b *_BACnetApplicationTagBuilder) AsBACnetApplicationTagObjectIdentifier() BACnetApplicationTagObjectIdentifierBuilder {
+	if cb, ok := b.childBuilder.(BACnetApplicationTagObjectIdentifierBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetApplicationTagObjectIdentifierBuilder().(*_BACnetApplicationTagObjectIdentifierBuilder)
@@ -743,7 +626,7 @@ func (m *_BACnetApplicationTag) deepCopy() *_BACnetApplicationTag {
 	}
 	_BACnetApplicationTagCopy := &_BACnetApplicationTag{
 		nil, // will be set by child
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 	}
 	return _BACnetApplicationTagCopy
 }

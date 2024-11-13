@@ -86,6 +86,8 @@ type BACnetConstructedDataBitStringValuePresentValueBuilder interface {
 	WithPresentValue(BACnetApplicationTagBitString) BACnetConstructedDataBitStringValuePresentValueBuilder
 	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
 	WithPresentValueBuilder(func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetConstructedDataBitStringValuePresentValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBitStringValuePresentValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataBitStringValuePresentValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBitStringValuePresentValueBuilder) = (*_BACnetConstr
 
 func (b *_BACnetConstructedDataBitStringValuePresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBitStringValuePresentValue
 }
 
 func (b *_BACnetConstructedDataBitStringValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagBitString) BACnetConstructedDataBitStringValuePresentValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBitStringValuePresentValueBuilder) MustBuild() BA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBitStringValuePresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBitStringValuePresentValue) deepCopy() *_BACnetCo
 	}
 	_BACnetConstructedDataBitStringValuePresentValueCopy := &_BACnetConstructedDataBitStringValuePresentValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PresentValue.DeepCopy().(BACnetApplicationTagBitString),
+		utils.DeepCopy[BACnetApplicationTagBitString](m.PresentValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBitStringValuePresentValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBitStringValuePresentValueCopy
 }
 

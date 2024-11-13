@@ -84,6 +84,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder interface {
 	WithUnsignedValue(BACnetApplicationTagUnsignedInteger) BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
 	// WithUnsignedValueBuilder adds UnsignedValue (property field) which is build by the builder
 	WithUnsignedValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
 	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryUnsigned or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultExtendedParametersEntryUnsigned, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) = (*_BAC
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) setParent(contract BACnetFaultParameterFaultExtendedParametersEntryContract) {
 	b.BACnetFaultParameterFaultExtendedParametersEntryContract = contract
+	contract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = b._BACnetFaultParameterFaultExtendedParametersEntryUnsigned
 }
 
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) MustB
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder) Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterFaultExtendedParametersEntryBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) deepCopy() *
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryUnsignedCopy := &_BACnetFaultParameterFaultExtendedParametersEntryUnsigned{
 		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
-		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.UnsignedValue),
 	}
-	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	_BACnetFaultParameterFaultExtendedParametersEntryUnsignedCopy.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
 	return _BACnetFaultParameterFaultExtendedParametersEntryUnsignedCopy
 }
 

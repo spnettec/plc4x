@@ -71,6 +71,8 @@ type TelephonyDataLineOnHookBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() TelephonyDataLineOnHookBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TelephonyDataBuilder
 	// Build builds the TelephonyDataLineOnHook or returns an error if something is wrong
 	Build() (TelephonyDataLineOnHook, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (TelephonyDataLineOnHookBuilder) = (*_TelephonyDataLineOnHookBuilder)(nil)
 
 func (b *_TelephonyDataLineOnHookBuilder) setParent(contract TelephonyDataContract) {
 	b.TelephonyDataContract = contract
+	contract.(*_TelephonyData)._SubType = b._TelephonyDataLineOnHook
 }
 
 func (b *_TelephonyDataLineOnHookBuilder) WithMandatoryFields() TelephonyDataLineOnHookBuilder {
@@ -115,8 +118,10 @@ func (b *_TelephonyDataLineOnHookBuilder) MustBuild() TelephonyDataLineOnHook {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TelephonyDataLineOnHookBuilder) Done() TelephonyDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTelephonyDataBuilder().(*_TelephonyDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_TelephonyDataLineOnHook) deepCopy() *_TelephonyDataLineOnHook {
 	_TelephonyDataLineOnHookCopy := &_TelephonyDataLineOnHook{
 		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
 	}
-	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	_TelephonyDataLineOnHookCopy.TelephonyDataContract.(*_TelephonyData)._SubType = m
 	return _TelephonyDataLineOnHookCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataLargeAnalogValueMinPresValueBuilder interface {
 	WithMinPresValue(BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMinPresValueBuilder
 	// WithMinPresValueBuilder adds MinPresValue (property field) which is build by the builder
 	WithMinPresValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueMinPresValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLargeAnalogValueMinPresValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataLargeAnalogValueMinPresValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) = (*_BACnetCons
 
 func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLargeAnalogValueMinPresValue
 }
 
 func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueMinPresValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLargeAnalogValueMinPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) deepCopy() *_BACnet
 	}
 	_BACnetConstructedDataLargeAnalogValueMinPresValueCopy := &_BACnetConstructedDataLargeAnalogValueMinPresValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MinPresValue.DeepCopy().(BACnetApplicationTagDouble),
+		utils.DeepCopy[BACnetApplicationTagDouble](m.MinPresValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLargeAnalogValueMinPresValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLargeAnalogValueMinPresValueCopy
 }
 

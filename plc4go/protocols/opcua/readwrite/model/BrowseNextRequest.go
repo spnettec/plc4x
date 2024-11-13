@@ -98,6 +98,8 @@ type BrowseNextRequestBuilder interface {
 	WithReleaseContinuationPoints(bool) BrowseNextRequestBuilder
 	// WithContinuationPoints adds ContinuationPoints (property field)
 	WithContinuationPoints(...PascalByteString) BrowseNextRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BrowseNextRequest or returns an error if something is wrong
 	Build() (BrowseNextRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,6 +123,7 @@ var _ (BrowseNextRequestBuilder) = (*_BrowseNextRequestBuilder)(nil)
 
 func (b *_BrowseNextRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BrowseNextRequest
 }
 
 func (b *_BrowseNextRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, releaseContinuationPoints bool, continuationPoints []PascalByteString) BrowseNextRequestBuilder {
@@ -176,8 +179,10 @@ func (b *_BrowseNextRequestBuilder) MustBuild() BrowseNextRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BrowseNextRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -399,12 +404,12 @@ func (m *_BrowseNextRequest) deepCopy() *_BrowseNextRequest {
 	}
 	_BrowseNextRequestCopy := &_BrowseNextRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		m.ReleaseContinuationPoints,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.ContinuationPoints),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BrowseNextRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowseNextRequestCopy
 }
 

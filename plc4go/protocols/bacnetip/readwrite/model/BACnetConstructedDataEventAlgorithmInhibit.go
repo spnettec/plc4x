@@ -86,6 +86,8 @@ type BACnetConstructedDataEventAlgorithmInhibitBuilder interface {
 	WithEventAlgorithmInhibit(BACnetApplicationTagBoolean) BACnetConstructedDataEventAlgorithmInhibitBuilder
 	// WithEventAlgorithmInhibitBuilder adds EventAlgorithmInhibit (property field) which is build by the builder
 	WithEventAlgorithmInhibitBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEventAlgorithmInhibitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEventAlgorithmInhibit or returns an error if something is wrong
 	Build() (BACnetConstructedDataEventAlgorithmInhibit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataEventAlgorithmInhibitBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEventAlgorithmInhibit
 }
 
 func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) WithMandatoryFields(eventAlgorithmInhibit BACnetApplicationTagBoolean) BACnetConstructedDataEventAlgorithmInhibitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataEventAlgorithmInhibitCopy := &_BACnetConstructedDataEventAlgorithmInhibit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.EventAlgorithmInhibit.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.EventAlgorithmInhibit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEventAlgorithmInhibitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEventAlgorithmInhibitCopy
 }
 

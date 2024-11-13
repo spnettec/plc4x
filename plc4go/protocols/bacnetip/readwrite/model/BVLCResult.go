@@ -81,6 +81,8 @@ type BVLCResultBuilder interface {
 	WithMandatoryFields(code BVLCResultCode) BVLCResultBuilder
 	// WithCode adds Code (property field)
 	WithCode(BVLCResultCode) BVLCResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BVLCBuilder
 	// Build builds the BVLCResult or returns an error if something is wrong
 	Build() (BVLCResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -104,6 +106,7 @@ var _ (BVLCResultBuilder) = (*_BVLCResultBuilder)(nil)
 
 func (b *_BVLCResultBuilder) setParent(contract BVLCContract) {
 	b.BVLCContract = contract
+	contract.(*_BVLC)._SubType = b._BVLCResult
 }
 
 func (b *_BVLCResultBuilder) WithMandatoryFields(code BVLCResultCode) BVLCResultBuilder {
@@ -130,8 +133,10 @@ func (b *_BVLCResultBuilder) MustBuild() BVLCResult {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BVLCResultBuilder) Done() BVLCBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBVLCBuilder().(*_BVLCBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -288,7 +293,7 @@ func (m *_BVLCResult) deepCopy() *_BVLCResult {
 		m.BVLCContract.(*_BVLC).deepCopy(),
 		m.Code,
 	}
-	m.BVLCContract.(*_BVLC)._SubType = m
+	_BVLCResultCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCResultCopy
 }
 

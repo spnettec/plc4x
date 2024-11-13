@@ -98,6 +98,8 @@ type NodeTypeDescriptionBuilder interface {
 	WithIncludeSubTypes(bool) NodeTypeDescriptionBuilder
 	// WithDataToReturn adds DataToReturn (property field)
 	WithDataToReturn(...QueryDataDescription) NodeTypeDescriptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the NodeTypeDescription or returns an error if something is wrong
 	Build() (NodeTypeDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,6 +123,7 @@ var _ (NodeTypeDescriptionBuilder) = (*_NodeTypeDescriptionBuilder)(nil)
 
 func (b *_NodeTypeDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._NodeTypeDescription
 }
 
 func (b *_NodeTypeDescriptionBuilder) WithMandatoryFields(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, dataToReturn []QueryDataDescription) NodeTypeDescriptionBuilder {
@@ -176,8 +179,10 @@ func (b *_NodeTypeDescriptionBuilder) MustBuild() NodeTypeDescription {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NodeTypeDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -399,12 +404,12 @@ func (m *_NodeTypeDescription) deepCopy() *_NodeTypeDescription {
 	}
 	_NodeTypeDescriptionCopy := &_NodeTypeDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
+		utils.DeepCopy[ExpandedNodeId](m.TypeDefinitionNode),
 		m.IncludeSubTypes,
 		utils.DeepCopySlice[QueryDataDescription, QueryDataDescription](m.DataToReturn),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_NodeTypeDescriptionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _NodeTypeDescriptionCopy
 }
 

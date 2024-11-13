@@ -86,6 +86,8 @@ type BACnetConstructedDataBinaryValueRelinquishDefaultBuilder interface {
 	WithRelinquishDefault(BACnetBinaryPVTagged) BACnetConstructedDataBinaryValueRelinquishDefaultBuilder
 	// WithRelinquishDefaultBuilder adds RelinquishDefault (property field) which is build by the builder
 	WithRelinquishDefaultBuilder(func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryValueRelinquishDefaultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBinaryValueRelinquishDefault or returns an error if something is wrong
 	Build() (BACnetConstructedDataBinaryValueRelinquishDefault, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBinaryValueRelinquishDefaultBuilder) = (*_BACnetCons
 
 func (b *_BACnetConstructedDataBinaryValueRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBinaryValueRelinquishDefault
 }
 
 func (b *_BACnetConstructedDataBinaryValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetBinaryPVTagged) BACnetConstructedDataBinaryValueRelinquishDefaultBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBinaryValueRelinquishDefaultBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBinaryValueRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBinaryValueRelinquishDefault) deepCopy() *_BACnet
 	}
 	_BACnetConstructedDataBinaryValueRelinquishDefaultCopy := &_BACnetConstructedDataBinaryValueRelinquishDefault{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.RelinquishDefault.DeepCopy().(BACnetBinaryPVTagged),
+		utils.DeepCopy[BACnetBinaryPVTagged](m.RelinquishDefault),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBinaryValueRelinquishDefaultCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBinaryValueRelinquishDefaultCopy
 }
 

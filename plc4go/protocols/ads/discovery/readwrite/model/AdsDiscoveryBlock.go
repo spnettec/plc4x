@@ -89,50 +89,23 @@ type AdsDiscoveryBlockBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() AdsDiscoveryBlockBuilder
 	// AsAdsDiscoveryBlockStatus converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
-	AsAdsDiscoveryBlockStatus() interface {
-		AdsDiscoveryBlockStatusBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}
+	AsAdsDiscoveryBlockStatus() AdsDiscoveryBlockStatusBuilder
 	// AsAdsDiscoveryBlockPassword converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
-	AsAdsDiscoveryBlockPassword() interface {
-		AdsDiscoveryBlockPasswordBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}
+	AsAdsDiscoveryBlockPassword() AdsDiscoveryBlockPasswordBuilder
 	// AsAdsDiscoveryBlockVersion converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
-	AsAdsDiscoveryBlockVersion() interface {
-		AdsDiscoveryBlockVersionBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}
+	AsAdsDiscoveryBlockVersion() AdsDiscoveryBlockVersionBuilder
 	// AsAdsDiscoveryBlockOsData converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
-	AsAdsDiscoveryBlockOsData() interface {
-		AdsDiscoveryBlockOsDataBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}
+	AsAdsDiscoveryBlockOsData() AdsDiscoveryBlockOsDataBuilder
 	// AsAdsDiscoveryBlockHostName converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
-	AsAdsDiscoveryBlockHostName() interface {
-		AdsDiscoveryBlockHostNameBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}
+	AsAdsDiscoveryBlockHostName() AdsDiscoveryBlockHostNameBuilder
 	// AsAdsDiscoveryBlockAmsNetId converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
-	AsAdsDiscoveryBlockAmsNetId() interface {
-		AdsDiscoveryBlockAmsNetIdBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}
+	AsAdsDiscoveryBlockAmsNetId() AdsDiscoveryBlockAmsNetIdBuilder
 	// AsAdsDiscoveryBlockRouteName converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
-	AsAdsDiscoveryBlockRouteName() interface {
-		AdsDiscoveryBlockRouteNameBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}
+	AsAdsDiscoveryBlockRouteName() AdsDiscoveryBlockRouteNameBuilder
 	// AsAdsDiscoveryBlockUserName converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
-	AsAdsDiscoveryBlockUserName() interface {
-		AdsDiscoveryBlockUserNameBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}
+	AsAdsDiscoveryBlockUserName() AdsDiscoveryBlockUserNameBuilder
 	// AsAdsDiscoveryBlockFingerprint converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
-	AsAdsDiscoveryBlockFingerprint() interface {
-		AdsDiscoveryBlockFingerprintBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}
+	AsAdsDiscoveryBlockFingerprint() AdsDiscoveryBlockFingerprintBuilder
 	// Build builds the AdsDiscoveryBlock or returns an error if something is wrong
 	PartialBuild() (AdsDiscoveryBlockContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -183,14 +156,8 @@ func (b *_AdsDiscoveryBlockBuilder) PartialMustBuild() AdsDiscoveryBlockContract
 	return build
 }
 
-func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockStatus() interface {
-	AdsDiscoveryBlockStatusBuilder
-	Done() AdsDiscoveryBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDiscoveryBlockStatusBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}); ok {
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockStatus() AdsDiscoveryBlockStatusBuilder {
+	if cb, ok := b.childBuilder.(AdsDiscoveryBlockStatusBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDiscoveryBlockStatusBuilder().(*_AdsDiscoveryBlockStatusBuilder)
@@ -199,14 +166,8 @@ func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockStatus() interface {
 	return cb
 }
 
-func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockPassword() interface {
-	AdsDiscoveryBlockPasswordBuilder
-	Done() AdsDiscoveryBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDiscoveryBlockPasswordBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}); ok {
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockPassword() AdsDiscoveryBlockPasswordBuilder {
+	if cb, ok := b.childBuilder.(AdsDiscoveryBlockPasswordBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDiscoveryBlockPasswordBuilder().(*_AdsDiscoveryBlockPasswordBuilder)
@@ -215,14 +176,8 @@ func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockPassword() interface {
 	return cb
 }
 
-func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockVersion() interface {
-	AdsDiscoveryBlockVersionBuilder
-	Done() AdsDiscoveryBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDiscoveryBlockVersionBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}); ok {
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockVersion() AdsDiscoveryBlockVersionBuilder {
+	if cb, ok := b.childBuilder.(AdsDiscoveryBlockVersionBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDiscoveryBlockVersionBuilder().(*_AdsDiscoveryBlockVersionBuilder)
@@ -231,14 +186,8 @@ func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockVersion() interface {
 	return cb
 }
 
-func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockOsData() interface {
-	AdsDiscoveryBlockOsDataBuilder
-	Done() AdsDiscoveryBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDiscoveryBlockOsDataBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}); ok {
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockOsData() AdsDiscoveryBlockOsDataBuilder {
+	if cb, ok := b.childBuilder.(AdsDiscoveryBlockOsDataBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDiscoveryBlockOsDataBuilder().(*_AdsDiscoveryBlockOsDataBuilder)
@@ -247,14 +196,8 @@ func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockOsData() interface {
 	return cb
 }
 
-func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockHostName() interface {
-	AdsDiscoveryBlockHostNameBuilder
-	Done() AdsDiscoveryBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDiscoveryBlockHostNameBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}); ok {
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockHostName() AdsDiscoveryBlockHostNameBuilder {
+	if cb, ok := b.childBuilder.(AdsDiscoveryBlockHostNameBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDiscoveryBlockHostNameBuilder().(*_AdsDiscoveryBlockHostNameBuilder)
@@ -263,14 +206,8 @@ func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockHostName() interface {
 	return cb
 }
 
-func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockAmsNetId() interface {
-	AdsDiscoveryBlockAmsNetIdBuilder
-	Done() AdsDiscoveryBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDiscoveryBlockAmsNetIdBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}); ok {
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockAmsNetId() AdsDiscoveryBlockAmsNetIdBuilder {
+	if cb, ok := b.childBuilder.(AdsDiscoveryBlockAmsNetIdBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDiscoveryBlockAmsNetIdBuilder().(*_AdsDiscoveryBlockAmsNetIdBuilder)
@@ -279,14 +216,8 @@ func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockAmsNetId() interface {
 	return cb
 }
 
-func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockRouteName() interface {
-	AdsDiscoveryBlockRouteNameBuilder
-	Done() AdsDiscoveryBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDiscoveryBlockRouteNameBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}); ok {
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockRouteName() AdsDiscoveryBlockRouteNameBuilder {
+	if cb, ok := b.childBuilder.(AdsDiscoveryBlockRouteNameBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDiscoveryBlockRouteNameBuilder().(*_AdsDiscoveryBlockRouteNameBuilder)
@@ -295,14 +226,8 @@ func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockRouteName() interface {
 	return cb
 }
 
-func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockUserName() interface {
-	AdsDiscoveryBlockUserNameBuilder
-	Done() AdsDiscoveryBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDiscoveryBlockUserNameBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}); ok {
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockUserName() AdsDiscoveryBlockUserNameBuilder {
+	if cb, ok := b.childBuilder.(AdsDiscoveryBlockUserNameBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDiscoveryBlockUserNameBuilder().(*_AdsDiscoveryBlockUserNameBuilder)
@@ -311,14 +236,8 @@ func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockUserName() interface {
 	return cb
 }
 
-func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockFingerprint() interface {
-	AdsDiscoveryBlockFingerprintBuilder
-	Done() AdsDiscoveryBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDiscoveryBlockFingerprintBuilder
-		Done() AdsDiscoveryBlockBuilder
-	}); ok {
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockFingerprint() AdsDiscoveryBlockFingerprintBuilder {
+	if cb, ok := b.childBuilder.(AdsDiscoveryBlockFingerprintBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDiscoveryBlockFingerprintBuilder().(*_AdsDiscoveryBlockFingerprintBuilder)

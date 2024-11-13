@@ -86,6 +86,8 @@ type BACnetConstructedDataSecurityPDUTimeoutBuilder interface {
 	WithSecurityPduTimeout(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityPDUTimeoutBuilder
 	// WithSecurityPduTimeoutBuilder adds SecurityPduTimeout (property field) which is build by the builder
 	WithSecurityPduTimeoutBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSecurityPDUTimeoutBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataSecurityPDUTimeout or returns an error if something is wrong
 	Build() (BACnetConstructedDataSecurityPDUTimeout, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataSecurityPDUTimeoutBuilder) = (*_BACnetConstructedDat
 
 func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataSecurityPDUTimeout
 }
 
 func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) WithMandatoryFields(securityPduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityPDUTimeoutBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) MustBuild() BACnetCons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataSecurityPDUTimeoutBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataSecurityPDUTimeout) deepCopy() *_BACnetConstructe
 	}
 	_BACnetConstructedDataSecurityPDUTimeoutCopy := &_BACnetConstructedDataSecurityPDUTimeout{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.SecurityPduTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.SecurityPduTimeout),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataSecurityPDUTimeoutCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataSecurityPDUTimeoutCopy
 }
 

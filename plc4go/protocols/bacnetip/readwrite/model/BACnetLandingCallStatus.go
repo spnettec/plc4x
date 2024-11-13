@@ -378,9 +378,9 @@ func (m *_BACnetLandingCallStatus) deepCopy() *_BACnetLandingCallStatus {
 		return nil
 	}
 	_BACnetLandingCallStatusCopy := &_BACnetLandingCallStatus{
-		m.FloorNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Command.DeepCopy().(BACnetLandingCallStatusCommand),
-		m.FloorText.DeepCopy().(BACnetContextTagCharacterString),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.FloorNumber),
+		utils.DeepCopy[BACnetLandingCallStatusCommand](m.Command),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.FloorText),
 	}
 	return _BACnetLandingCallStatusCopy
 }

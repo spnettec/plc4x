@@ -112,6 +112,8 @@ type ReadValueIdBuilder interface {
 	WithDataEncoding(QualifiedName) ReadValueIdBuilder
 	// WithDataEncodingBuilder adds DataEncoding (property field) which is build by the builder
 	WithDataEncodingBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) ReadValueIdBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReadValueId or returns an error if something is wrong
 	Build() (ReadValueId, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (ReadValueIdBuilder) = (*_ReadValueIdBuilder)(nil)
 
 func (b *_ReadValueIdBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReadValueId
 }
 
 func (b *_ReadValueIdBuilder) WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) ReadValueIdBuilder {
@@ -233,8 +236,10 @@ func (b *_ReadValueIdBuilder) MustBuild() ReadValueId {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReadValueIdBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -440,12 +445,12 @@ func (m *_ReadValueId) deepCopy() *_ReadValueId {
 	}
 	_ReadValueIdCopy := &_ReadValueId{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.NodeId),
 		m.AttributeId,
-		m.IndexRange.DeepCopy().(PascalString),
-		m.DataEncoding.DeepCopy().(QualifiedName),
+		utils.DeepCopy[PascalString](m.IndexRange),
+		utils.DeepCopy[QualifiedName](m.DataEncoding),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReadValueIdCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReadValueIdCopy
 }
 

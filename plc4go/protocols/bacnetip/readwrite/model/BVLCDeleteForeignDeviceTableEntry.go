@@ -87,6 +87,8 @@ type BVLCDeleteForeignDeviceTableEntryBuilder interface {
 	WithIp(...uint8) BVLCDeleteForeignDeviceTableEntryBuilder
 	// WithPort adds Port (property field)
 	WithPort(uint16) BVLCDeleteForeignDeviceTableEntryBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BVLCBuilder
 	// Build builds the BVLCDeleteForeignDeviceTableEntry or returns an error if something is wrong
 	Build() (BVLCDeleteForeignDeviceTableEntry, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (BVLCDeleteForeignDeviceTableEntryBuilder) = (*_BVLCDeleteForeignDeviceTab
 
 func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) setParent(contract BVLCContract) {
 	b.BVLCContract = contract
+	contract.(*_BVLC)._SubType = b._BVLCDeleteForeignDeviceTableEntry
 }
 
 func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) WithMandatoryFields(ip []uint8, port uint16) BVLCDeleteForeignDeviceTableEntryBuilder {
@@ -141,8 +144,10 @@ func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) MustBuild() BVLCDeleteForeig
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BVLCDeleteForeignDeviceTableEntryBuilder) Done() BVLCBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBVLCBuilder().(*_BVLCBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -319,7 +324,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) deepCopy() *_BVLCDeleteForeignDevic
 		utils.DeepCopySlice[uint8, uint8](m.Ip),
 		m.Port,
 	}
-	m.BVLCContract.(*_BVLC)._SubType = m
+	_BVLCDeleteForeignDeviceTableEntryCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCDeleteForeignDeviceTableEntryCopy
 }
 

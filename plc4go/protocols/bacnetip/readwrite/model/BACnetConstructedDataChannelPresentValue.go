@@ -86,6 +86,8 @@ type BACnetConstructedDataChannelPresentValueBuilder interface {
 	WithPresentValue(BACnetChannelValue) BACnetConstructedDataChannelPresentValueBuilder
 	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
 	WithPresentValueBuilder(func(BACnetChannelValueBuilder) BACnetChannelValueBuilder) BACnetConstructedDataChannelPresentValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataChannelPresentValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataChannelPresentValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataChannelPresentValueBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataChannelPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataChannelPresentValue
 }
 
 func (b *_BACnetConstructedDataChannelPresentValueBuilder) WithMandatoryFields(presentValue BACnetChannelValue) BACnetConstructedDataChannelPresentValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataChannelPresentValueBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataChannelPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataChannelPresentValue) deepCopy() *_BACnetConstruct
 	}
 	_BACnetConstructedDataChannelPresentValueCopy := &_BACnetConstructedDataChannelPresentValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PresentValue.DeepCopy().(BACnetChannelValue),
+		utils.DeepCopy[BACnetChannelValue](m.PresentValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataChannelPresentValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataChannelPresentValueCopy
 }
 

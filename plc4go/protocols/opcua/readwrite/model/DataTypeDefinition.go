@@ -71,6 +71,8 @@ type DataTypeDefinitionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DataTypeDefinitionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataTypeDefinition or returns an error if something is wrong
 	Build() (DataTypeDefinition, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (DataTypeDefinitionBuilder) = (*_DataTypeDefinitionBuilder)(nil)
 
 func (b *_DataTypeDefinitionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataTypeDefinition
 }
 
 func (b *_DataTypeDefinitionBuilder) WithMandatoryFields() DataTypeDefinitionBuilder {
@@ -115,8 +118,10 @@ func (b *_DataTypeDefinitionBuilder) MustBuild() DataTypeDefinition {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataTypeDefinitionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_DataTypeDefinition) deepCopy() *_DataTypeDefinition {
 	_DataTypeDefinitionCopy := &_DataTypeDefinition{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataTypeDefinitionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataTypeDefinitionCopy
 }
 

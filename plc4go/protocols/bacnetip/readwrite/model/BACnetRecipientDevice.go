@@ -84,6 +84,8 @@ type BACnetRecipientDeviceBuilder interface {
 	WithDeviceValue(BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder
 	// WithDeviceValueBuilder adds DeviceValue (property field) which is build by the builder
 	WithDeviceValueBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetRecipientDeviceBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetRecipientBuilder
 	// Build builds the BACnetRecipientDevice or returns an error if something is wrong
 	Build() (BACnetRecipientDevice, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetRecipientDeviceBuilder) = (*_BACnetRecipientDeviceBuilder)(nil)
 
 func (b *_BACnetRecipientDeviceBuilder) setParent(contract BACnetRecipientContract) {
 	b.BACnetRecipientContract = contract
+	contract.(*_BACnetRecipient)._SubType = b._BACnetRecipientDevice
 }
 
 func (b *_BACnetRecipientDeviceBuilder) WithMandatoryFields(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetRecipientDeviceBuilder) MustBuild() BACnetRecipientDevice {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetRecipientDeviceBuilder) Done() BACnetRecipientBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetRecipientBuilder().(*_BACnetRecipientBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetRecipientDevice) deepCopy() *_BACnetRecipientDevice {
 	}
 	_BACnetRecipientDeviceCopy := &_BACnetRecipientDevice{
 		m.BACnetRecipientContract.(*_BACnetRecipient).deepCopy(),
-		m.DeviceValue.DeepCopy().(BACnetContextTagObjectIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.DeviceValue),
 	}
-	m.BACnetRecipientContract.(*_BACnetRecipient)._SubType = m
+	_BACnetRecipientDeviceCopy.BACnetRecipientContract.(*_BACnetRecipient)._SubType = m
 	return _BACnetRecipientDeviceCopy
 }
 

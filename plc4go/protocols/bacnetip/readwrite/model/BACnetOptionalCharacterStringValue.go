@@ -84,6 +84,8 @@ type BACnetOptionalCharacterStringValueBuilder interface {
 	WithCharacterstring(BACnetApplicationTagCharacterString) BACnetOptionalCharacterStringValueBuilder
 	// WithCharacterstringBuilder adds Characterstring (property field) which is build by the builder
 	WithCharacterstringBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetOptionalCharacterStringValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetOptionalCharacterStringBuilder
 	// Build builds the BACnetOptionalCharacterStringValue or returns an error if something is wrong
 	Build() (BACnetOptionalCharacterStringValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetOptionalCharacterStringValueBuilder) = (*_BACnetOptionalCharacterSt
 
 func (b *_BACnetOptionalCharacterStringValueBuilder) setParent(contract BACnetOptionalCharacterStringContract) {
 	b.BACnetOptionalCharacterStringContract = contract
+	contract.(*_BACnetOptionalCharacterString)._SubType = b._BACnetOptionalCharacterStringValue
 }
 
 func (b *_BACnetOptionalCharacterStringValueBuilder) WithMandatoryFields(characterstring BACnetApplicationTagCharacterString) BACnetOptionalCharacterStringValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetOptionalCharacterStringValueBuilder) MustBuild() BACnetOptionalC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetOptionalCharacterStringValueBuilder) Done() BACnetOptionalCharacterStringBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetOptionalCharacterStringBuilder().(*_BACnetOptionalCharacterStringBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetOptionalCharacterStringValue) deepCopy() *_BACnetOptionalCharact
 	}
 	_BACnetOptionalCharacterStringValueCopy := &_BACnetOptionalCharacterStringValue{
 		m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString).deepCopy(),
-		m.Characterstring.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.Characterstring),
 	}
-	m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = m
+	_BACnetOptionalCharacterStringValueCopy.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = m
 	return _BACnetOptionalCharacterStringValueCopy
 }
 

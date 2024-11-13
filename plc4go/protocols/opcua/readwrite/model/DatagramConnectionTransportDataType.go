@@ -84,6 +84,8 @@ type DatagramConnectionTransportDataTypeBuilder interface {
 	WithDiscoveryAddress(ExtensionObject) DatagramConnectionTransportDataTypeBuilder
 	// WithDiscoveryAddressBuilder adds DiscoveryAddress (property field) which is build by the builder
 	WithDiscoveryAddressBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) DatagramConnectionTransportDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DatagramConnectionTransportDataType or returns an error if something is wrong
 	Build() (DatagramConnectionTransportDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (DatagramConnectionTransportDataTypeBuilder) = (*_DatagramConnectionTransp
 
 func (b *_DatagramConnectionTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DatagramConnectionTransportDataType
 }
 
 func (b *_DatagramConnectionTransportDataTypeBuilder) WithMandatoryFields(discoveryAddress ExtensionObject) DatagramConnectionTransportDataTypeBuilder {
@@ -152,8 +155,10 @@ func (b *_DatagramConnectionTransportDataTypeBuilder) MustBuild() DatagramConnec
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DatagramConnectionTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_DatagramConnectionTransportDataType) deepCopy() *_DatagramConnectionTr
 	}
 	_DatagramConnectionTransportDataTypeCopy := &_DatagramConnectionTransportDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.DiscoveryAddress.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[ExtensionObject](m.DiscoveryAddress),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DatagramConnectionTransportDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DatagramConnectionTransportDataTypeCopy
 }
 

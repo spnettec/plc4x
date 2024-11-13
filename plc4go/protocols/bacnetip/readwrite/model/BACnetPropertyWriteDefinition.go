@@ -436,10 +436,10 @@ func (m *_BACnetPropertyWriteDefinition) deepCopy() *_BACnetPropertyWriteDefinit
 		return nil
 	}
 	_BACnetPropertyWriteDefinitionCopy := &_BACnetPropertyWriteDefinition{
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.PropertyValue.DeepCopy().(BACnetConstructedData),
-		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
+		utils.DeepCopy[BACnetConstructedData](m.PropertyValue),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Priority),
 		m.ObjectTypeArgument,
 	}
 	return _BACnetPropertyWriteDefinitionCopy

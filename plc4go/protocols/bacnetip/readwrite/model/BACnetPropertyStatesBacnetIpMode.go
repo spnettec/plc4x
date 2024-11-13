@@ -84,6 +84,8 @@ type BACnetPropertyStatesBacnetIpModeBuilder interface {
 	WithBacnetIpMode(BACnetIPModeTagged) BACnetPropertyStatesBacnetIpModeBuilder
 	// WithBacnetIpModeBuilder adds BacnetIpMode (property field) which is build by the builder
 	WithBacnetIpModeBuilder(func(BACnetIPModeTaggedBuilder) BACnetIPModeTaggedBuilder) BACnetPropertyStatesBacnetIpModeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesBacnetIpMode or returns an error if something is wrong
 	Build() (BACnetPropertyStatesBacnetIpMode, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesBacnetIpModeBuilder) = (*_BACnetPropertyStatesBacnetI
 
 func (b *_BACnetPropertyStatesBacnetIpModeBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesBacnetIpMode
 }
 
 func (b *_BACnetPropertyStatesBacnetIpModeBuilder) WithMandatoryFields(bacnetIpMode BACnetIPModeTagged) BACnetPropertyStatesBacnetIpModeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesBacnetIpModeBuilder) MustBuild() BACnetPropertySta
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesBacnetIpModeBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesBacnetIpMode) deepCopy() *_BACnetPropertyStatesBac
 	}
 	_BACnetPropertyStatesBacnetIpModeCopy := &_BACnetPropertyStatesBacnetIpMode{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.BacnetIpMode.DeepCopy().(BACnetIPModeTagged),
+		utils.DeepCopy[BACnetIPModeTagged](m.BacnetIpMode),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesBacnetIpModeCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesBacnetIpModeCopy
 }
 

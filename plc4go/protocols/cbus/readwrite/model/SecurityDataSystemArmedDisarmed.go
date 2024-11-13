@@ -84,6 +84,8 @@ type SecurityDataSystemArmedDisarmedBuilder interface {
 	WithArmCodeType(SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder
 	// WithArmCodeTypeBuilder adds ArmCodeType (property field) which is build by the builder
 	WithArmCodeTypeBuilder(func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataSystemArmedDisarmedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataSystemArmedDisarmed or returns an error if something is wrong
 	Build() (SecurityDataSystemArmedDisarmed, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (SecurityDataSystemArmedDisarmedBuilder) = (*_SecurityDataSystemArmedDisar
 
 func (b *_SecurityDataSystemArmedDisarmedBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataSystemArmedDisarmed
 }
 
 func (b *_SecurityDataSystemArmedDisarmedBuilder) WithMandatoryFields(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder {
@@ -152,8 +155,10 @@ func (b *_SecurityDataSystemArmedDisarmedBuilder) MustBuild() SecurityDataSystem
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataSystemArmedDisarmedBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_SecurityDataSystemArmedDisarmed) deepCopy() *_SecurityDataSystemArmedD
 	}
 	_SecurityDataSystemArmedDisarmedCopy := &_SecurityDataSystemArmedDisarmed{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
-		m.ArmCodeType.DeepCopy().(SecurityArmCode),
+		utils.DeepCopy[SecurityArmCode](m.ArmCodeType),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataSystemArmedDisarmedCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataSystemArmedDisarmedCopy
 }
 

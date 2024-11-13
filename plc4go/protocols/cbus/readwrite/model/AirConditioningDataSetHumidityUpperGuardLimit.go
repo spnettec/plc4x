@@ -112,6 +112,8 @@ type AirConditioningDataSetHumidityUpperGuardLimitBuilder interface {
 	WithHvacModeAndFlags(HVACHumidityModeAndFlags) AirConditioningDataSetHumidityUpperGuardLimitBuilder
 	// WithHvacModeAndFlagsBuilder adds HvacModeAndFlags (property field) which is build by the builder
 	WithHvacModeAndFlagsBuilder(func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AirConditioningDataBuilder
 	// Build builds the AirConditioningDataSetHumidityUpperGuardLimit or returns an error if something is wrong
 	Build() (AirConditioningDataSetHumidityUpperGuardLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (AirConditioningDataSetHumidityUpperGuardLimitBuilder) = (*_AirConditionin
 
 func (b *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) setParent(contract AirConditioningDataContract) {
 	b.AirConditioningDataContract = contract
+	contract.(*_AirConditioningData)._SubType = b._AirConditioningDataSetHumidityUpperGuardLimit
 }
 
 func (b *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumidityUpperGuardLimitBuilder {
@@ -233,8 +236,10 @@ func (b *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) MustBuild() AirC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) Done() AirConditioningDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAirConditioningDataBuilder().(*_AirConditioningDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -438,11 +443,11 @@ func (m *_AirConditioningDataSetHumidityUpperGuardLimit) deepCopy() *_AirConditi
 	_AirConditioningDataSetHumidityUpperGuardLimitCopy := &_AirConditioningDataSetHumidityUpperGuardLimit{
 		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
 		m.ZoneGroup,
-		m.ZoneList.DeepCopy().(HVACZoneList),
-		m.Limit.DeepCopy().(HVACHumidity),
-		m.HvacModeAndFlags.DeepCopy().(HVACHumidityModeAndFlags),
+		utils.DeepCopy[HVACZoneList](m.ZoneList),
+		utils.DeepCopy[HVACHumidity](m.Limit),
+		utils.DeepCopy[HVACHumidityModeAndFlags](m.HvacModeAndFlags),
 	}
-	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	_AirConditioningDataSetHumidityUpperGuardLimitCopy.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
 	return _AirConditioningDataSetHumidityUpperGuardLimitCopy
 }
 

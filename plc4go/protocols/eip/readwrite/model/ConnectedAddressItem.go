@@ -81,6 +81,8 @@ type ConnectedAddressItemBuilder interface {
 	WithMandatoryFields(connectionId uint32) ConnectedAddressItemBuilder
 	// WithConnectionId adds ConnectionId (property field)
 	WithConnectionId(uint32) ConnectedAddressItemBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TypeIdBuilder
 	// Build builds the ConnectedAddressItem or returns an error if something is wrong
 	Build() (ConnectedAddressItem, error)
 	// MustBuild does the same as Build but panics on error
@@ -104,6 +106,7 @@ var _ (ConnectedAddressItemBuilder) = (*_ConnectedAddressItemBuilder)(nil)
 
 func (b *_ConnectedAddressItemBuilder) setParent(contract TypeIdContract) {
 	b.TypeIdContract = contract
+	contract.(*_TypeId)._SubType = b._ConnectedAddressItem
 }
 
 func (b *_ConnectedAddressItemBuilder) WithMandatoryFields(connectionId uint32) ConnectedAddressItemBuilder {
@@ -130,8 +133,10 @@ func (b *_ConnectedAddressItemBuilder) MustBuild() ConnectedAddressItem {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ConnectedAddressItemBuilder) Done() TypeIdBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTypeIdBuilder().(*_TypeIdBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -302,7 +307,7 @@ func (m *_ConnectedAddressItem) deepCopy() *_ConnectedAddressItem {
 		m.ConnectionId,
 		m.reservedField0,
 	}
-	m.TypeIdContract.(*_TypeId)._SubType = m
+	_ConnectedAddressItemCopy.TypeIdContract.(*_TypeId)._SubType = m
 	return _ConnectedAddressItemCopy
 }
 

@@ -101,15 +101,9 @@ type BACnetClientCOVBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetClientCOVBuilder
 	// AsBACnetClientCOVObject converts this build to a subType of BACnetClientCOV. It is always possible to return to current builder using Done()
-	AsBACnetClientCOVObject() interface {
-		BACnetClientCOVObjectBuilder
-		Done() BACnetClientCOVBuilder
-	}
+	AsBACnetClientCOVObject() BACnetClientCOVObjectBuilder
 	// AsBACnetClientCOVNone converts this build to a subType of BACnetClientCOV. It is always possible to return to current builder using Done()
-	AsBACnetClientCOVNone() interface {
-		BACnetClientCOVNoneBuilder
-		Done() BACnetClientCOVBuilder
-	}
+	AsBACnetClientCOVNone() BACnetClientCOVNoneBuilder
 	// Build builds the BACnetClientCOV or returns an error if something is wrong
 	PartialBuild() (BACnetClientCOVContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetClientCOVBuilder) PartialMustBuild() BACnetClientCOVContract {
 	return build
 }
 
-func (b *_BACnetClientCOVBuilder) AsBACnetClientCOVObject() interface {
-	BACnetClientCOVObjectBuilder
-	Done() BACnetClientCOVBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetClientCOVObjectBuilder
-		Done() BACnetClientCOVBuilder
-	}); ok {
+func (b *_BACnetClientCOVBuilder) AsBACnetClientCOVObject() BACnetClientCOVObjectBuilder {
+	if cb, ok := b.childBuilder.(BACnetClientCOVObjectBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetClientCOVObjectBuilder().(*_BACnetClientCOVObjectBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetClientCOVBuilder) AsBACnetClientCOVObject() interface {
 	return cb
 }
 
-func (b *_BACnetClientCOVBuilder) AsBACnetClientCOVNone() interface {
-	BACnetClientCOVNoneBuilder
-	Done() BACnetClientCOVBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetClientCOVNoneBuilder
-		Done() BACnetClientCOVBuilder
-	}); ok {
+func (b *_BACnetClientCOVBuilder) AsBACnetClientCOVNone() BACnetClientCOVNoneBuilder {
+	if cb, ok := b.childBuilder.(BACnetClientCOVNoneBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetClientCOVNoneBuilder().(*_BACnetClientCOVNoneBuilder)
@@ -433,7 +415,7 @@ func (m *_BACnetClientCOV) deepCopy() *_BACnetClientCOV {
 	}
 	_BACnetClientCOVCopy := &_BACnetClientCOV{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetClientCOVCopy
 }

@@ -97,6 +97,8 @@ type DataTypeSchemaHeaderBuilder interface {
 	WithEnumDataTypes(...EnumDescription) DataTypeSchemaHeaderBuilder
 	// WithSimpleDataTypes adds SimpleDataTypes (property field)
 	WithSimpleDataTypes(...SimpleTypeDescription) DataTypeSchemaHeaderBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataTypeSchemaHeader or returns an error if something is wrong
 	Build() (DataTypeSchemaHeader, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (DataTypeSchemaHeaderBuilder) = (*_DataTypeSchemaHeaderBuilder)(nil)
 
 func (b *_DataTypeSchemaHeaderBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataTypeSchemaHeader
 }
 
 func (b *_DataTypeSchemaHeaderBuilder) WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription) DataTypeSchemaHeaderBuilder {
@@ -161,8 +164,10 @@ func (b *_DataTypeSchemaHeaderBuilder) MustBuild() DataTypeSchemaHeader {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataTypeSchemaHeaderBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -453,7 +458,7 @@ func (m *_DataTypeSchemaHeader) deepCopy() *_DataTypeSchemaHeader {
 		utils.DeepCopySlice[EnumDescription, EnumDescription](m.EnumDataTypes),
 		utils.DeepCopySlice[SimpleTypeDescription, SimpleTypeDescription](m.SimpleDataTypes),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataTypeSchemaHeaderCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataTypeSchemaHeaderCopy
 }
 

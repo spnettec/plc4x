@@ -87,6 +87,8 @@ type FirmataCommandSetDigitalPinValueBuilder interface {
 	WithPin(uint8) FirmataCommandSetDigitalPinValueBuilder
 	// WithOn adds On (property field)
 	WithOn(bool) FirmataCommandSetDigitalPinValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() FirmataCommandBuilder
 	// Build builds the FirmataCommandSetDigitalPinValue or returns an error if something is wrong
 	Build() (FirmataCommandSetDigitalPinValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (FirmataCommandSetDigitalPinValueBuilder) = (*_FirmataCommandSetDigitalPin
 
 func (b *_FirmataCommandSetDigitalPinValueBuilder) setParent(contract FirmataCommandContract) {
 	b.FirmataCommandContract = contract
+	contract.(*_FirmataCommand)._SubType = b._FirmataCommandSetDigitalPinValue
 }
 
 func (b *_FirmataCommandSetDigitalPinValueBuilder) WithMandatoryFields(pin uint8, on bool) FirmataCommandSetDigitalPinValueBuilder {
@@ -141,8 +144,10 @@ func (b *_FirmataCommandSetDigitalPinValueBuilder) MustBuild() FirmataCommandSet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FirmataCommandSetDigitalPinValueBuilder) Done() FirmataCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewFirmataCommandBuilder().(*_FirmataCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -331,7 +336,7 @@ func (m *_FirmataCommandSetDigitalPinValue) deepCopy() *_FirmataCommandSetDigita
 		m.On,
 		m.reservedField0,
 	}
-	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	_FirmataCommandSetDigitalPinValueCopy.FirmataCommandContract.(*_FirmataCommand)._SubType = m
 	return _FirmataCommandSetDigitalPinValueCopy
 }
 

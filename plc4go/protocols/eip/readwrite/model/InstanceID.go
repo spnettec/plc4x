@@ -85,6 +85,8 @@ type InstanceIDBuilder interface {
 	WithFormat(uint8) InstanceIDBuilder
 	// WithInstance adds Instance (property field)
 	WithInstance(uint8) InstanceIDBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LogicalSegmentTypeBuilder
 	// Build builds the InstanceID or returns an error if something is wrong
 	Build() (InstanceID, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (InstanceIDBuilder) = (*_InstanceIDBuilder)(nil)
 
 func (b *_InstanceIDBuilder) setParent(contract LogicalSegmentTypeContract) {
 	b.LogicalSegmentTypeContract = contract
+	contract.(*_LogicalSegmentType)._SubType = b._InstanceID
 }
 
 func (b *_InstanceIDBuilder) WithMandatoryFields(format uint8, instance uint8) InstanceIDBuilder {
@@ -139,8 +142,10 @@ func (b *_InstanceIDBuilder) MustBuild() InstanceID {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_InstanceIDBuilder) Done() LogicalSegmentTypeBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLogicalSegmentTypeBuilder().(*_LogicalSegmentTypeBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_InstanceID) deepCopy() *_InstanceID {
 		m.Format,
 		m.Instance,
 	}
-	m.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
+	_InstanceIDCopy.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
 	return _InstanceIDCopy
 }
 

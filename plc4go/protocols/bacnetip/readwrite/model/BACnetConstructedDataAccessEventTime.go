@@ -86,6 +86,8 @@ type BACnetConstructedDataAccessEventTimeBuilder interface {
 	WithAccessEventTime(BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder
 	// WithAccessEventTimeBuilder adds AccessEventTime (property field) which is build by the builder
 	WithAccessEventTimeBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataAccessEventTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAccessEventTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataAccessEventTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAccessEventTimeBuilder) = (*_BACnetConstructedDataAc
 
 func (b *_BACnetConstructedDataAccessEventTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAccessEventTime
 }
 
 func (b *_BACnetConstructedDataAccessEventTimeBuilder) WithMandatoryFields(accessEventTime BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAccessEventTimeBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAccessEventTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataAccessEventTime) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataAccessEventTimeCopy := &_BACnetConstructedDataAccessEventTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AccessEventTime.DeepCopy().(BACnetTimeStamp),
+		utils.DeepCopy[BACnetTimeStamp](m.AccessEventTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAccessEventTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAccessEventTimeCopy
 }
 

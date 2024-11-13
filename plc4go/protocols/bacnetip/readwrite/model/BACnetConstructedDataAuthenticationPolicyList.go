@@ -89,6 +89,8 @@ type BACnetConstructedDataAuthenticationPolicyListBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAuthenticationPolicyListBuilder
 	// WithAuthenticationPolicyList adds AuthenticationPolicyList (property field)
 	WithAuthenticationPolicyList(...BACnetAuthenticationPolicy) BACnetConstructedDataAuthenticationPolicyListBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAuthenticationPolicyList or returns an error if something is wrong
 	Build() (BACnetConstructedDataAuthenticationPolicyList, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataAuthenticationPolicyListBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataAuthenticationPolicyListBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAuthenticationPolicyList
 }
 
 func (b *_BACnetConstructedDataAuthenticationPolicyListBuilder) WithMandatoryFields(authenticationPolicyList []BACnetAuthenticationPolicy) BACnetConstructedDataAuthenticationPolicyListBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataAuthenticationPolicyListBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAuthenticationPolicyListBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,10 +380,10 @@ func (m *_BACnetConstructedDataAuthenticationPolicyList) deepCopy() *_BACnetCons
 	}
 	_BACnetConstructedDataAuthenticationPolicyListCopy := &_BACnetConstructedDataAuthenticationPolicyList{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetAuthenticationPolicy, BACnetAuthenticationPolicy](m.AuthenticationPolicyList),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAuthenticationPolicyListCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAuthenticationPolicyListCopy
 }
 

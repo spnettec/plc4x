@@ -114,6 +114,8 @@ type BACnetUnconfirmedServiceRequestWriteGroupBuilder interface {
 	WithOptionalInhibitDelay(BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestWriteGroupBuilder
 	// WithOptionalInhibitDelayBuilder adds InhibitDelay (property field) which is build by the builder
 	WithOptionalInhibitDelayBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestWriteGroupBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetUnconfirmedServiceRequestBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestWriteGroup or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestWriteGroup, error)
 	// MustBuild does the same as Build but panics on error
@@ -137,6 +139,7 @@ var _ (BACnetUnconfirmedServiceRequestWriteGroupBuilder) = (*_BACnetUnconfirmedS
 
 func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
 	b.BACnetUnconfirmedServiceRequestContract = contract
+	contract.(*_BACnetUnconfirmedServiceRequest)._SubType = b._BACnetUnconfirmedServiceRequestWriteGroup
 }
 
 func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) WithMandatoryFields(groupNumber BACnetContextTagUnsignedInteger, writePriority BACnetContextTagUnsignedInteger, changeList BACnetGroupChannelValueList) BACnetUnconfirmedServiceRequestWriteGroupBuilder {
@@ -248,8 +251,10 @@ func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) MustBuild() BACnetUn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetUnconfirmedServiceRequestWriteGroupBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetUnconfirmedServiceRequestBuilder().(*_BACnetUnconfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -461,12 +466,12 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) deepCopy() *_BACnetUnconfir
 	}
 	_BACnetUnconfirmedServiceRequestWriteGroupCopy := &_BACnetUnconfirmedServiceRequestWriteGroup{
 		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
-		m.GroupNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.WritePriority.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ChangeList.DeepCopy().(BACnetGroupChannelValueList),
-		m.InhibitDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.GroupNumber),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.WritePriority),
+		utils.DeepCopy[BACnetGroupChannelValueList](m.ChangeList),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.InhibitDelay),
 	}
-	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	_BACnetUnconfirmedServiceRequestWriteGroupCopy.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
 	return _BACnetUnconfirmedServiceRequestWriteGroupCopy
 }
 

@@ -106,20 +106,11 @@ type ReplyOrConfirmationBuilder interface {
 	// WithPeekedByte adds PeekedByte (property field)
 	WithPeekedByte(byte) ReplyOrConfirmationBuilder
 	// AsServerErrorReply converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
-	AsServerErrorReply() interface {
-		ServerErrorReplyBuilder
-		Done() ReplyOrConfirmationBuilder
-	}
+	AsServerErrorReply() ServerErrorReplyBuilder
 	// AsReplyOrConfirmationConfirmation converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
-	AsReplyOrConfirmationConfirmation() interface {
-		ReplyOrConfirmationConfirmationBuilder
-		Done() ReplyOrConfirmationBuilder
-	}
+	AsReplyOrConfirmationConfirmation() ReplyOrConfirmationConfirmationBuilder
 	// AsReplyOrConfirmationReply converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
-	AsReplyOrConfirmationReply() interface {
-		ReplyOrConfirmationReplyBuilder
-		Done() ReplyOrConfirmationBuilder
-	}
+	AsReplyOrConfirmationReply() ReplyOrConfirmationReplyBuilder
 	// Build builds the ReplyOrConfirmation or returns an error if something is wrong
 	PartialBuild() (ReplyOrConfirmationContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -175,14 +166,8 @@ func (b *_ReplyOrConfirmationBuilder) PartialMustBuild() ReplyOrConfirmationCont
 	return build
 }
 
-func (b *_ReplyOrConfirmationBuilder) AsServerErrorReply() interface {
-	ServerErrorReplyBuilder
-	Done() ReplyOrConfirmationBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ServerErrorReplyBuilder
-		Done() ReplyOrConfirmationBuilder
-	}); ok {
+func (b *_ReplyOrConfirmationBuilder) AsServerErrorReply() ServerErrorReplyBuilder {
+	if cb, ok := b.childBuilder.(ServerErrorReplyBuilder); ok {
 		return cb
 	}
 	cb := NewServerErrorReplyBuilder().(*_ServerErrorReplyBuilder)
@@ -191,14 +176,8 @@ func (b *_ReplyOrConfirmationBuilder) AsServerErrorReply() interface {
 	return cb
 }
 
-func (b *_ReplyOrConfirmationBuilder) AsReplyOrConfirmationConfirmation() interface {
-	ReplyOrConfirmationConfirmationBuilder
-	Done() ReplyOrConfirmationBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ReplyOrConfirmationConfirmationBuilder
-		Done() ReplyOrConfirmationBuilder
-	}); ok {
+func (b *_ReplyOrConfirmationBuilder) AsReplyOrConfirmationConfirmation() ReplyOrConfirmationConfirmationBuilder {
+	if cb, ok := b.childBuilder.(ReplyOrConfirmationConfirmationBuilder); ok {
 		return cb
 	}
 	cb := NewReplyOrConfirmationConfirmationBuilder().(*_ReplyOrConfirmationConfirmationBuilder)
@@ -207,14 +186,8 @@ func (b *_ReplyOrConfirmationBuilder) AsReplyOrConfirmationConfirmation() interf
 	return cb
 }
 
-func (b *_ReplyOrConfirmationBuilder) AsReplyOrConfirmationReply() interface {
-	ReplyOrConfirmationReplyBuilder
-	Done() ReplyOrConfirmationBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ReplyOrConfirmationReplyBuilder
-		Done() ReplyOrConfirmationBuilder
-	}); ok {
+func (b *_ReplyOrConfirmationBuilder) AsReplyOrConfirmationReply() ReplyOrConfirmationReplyBuilder {
+	if cb, ok := b.childBuilder.(ReplyOrConfirmationReplyBuilder); ok {
 		return cb
 	}
 	cb := NewReplyOrConfirmationReplyBuilder().(*_ReplyOrConfirmationReplyBuilder)

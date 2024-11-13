@@ -394,9 +394,9 @@ func (m *_BACnetEventTimestampsEnclosed) deepCopy() *_BACnetEventTimestampsEnclo
 		return nil
 	}
 	_BACnetEventTimestampsEnclosedCopy := &_BACnetEventTimestampsEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.EventTimestamps.DeepCopy().(BACnetEventTimestamps),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetEventTimestamps](m.EventTimestamps),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetEventTimestampsEnclosedCopy

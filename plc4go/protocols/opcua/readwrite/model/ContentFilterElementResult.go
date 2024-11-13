@@ -96,6 +96,8 @@ type ContentFilterElementResultBuilder interface {
 	WithOperandStatusCodes(...StatusCode) ContentFilterElementResultBuilder
 	// WithOperandDiagnosticInfos adds OperandDiagnosticInfos (property field)
 	WithOperandDiagnosticInfos(...DiagnosticInfo) ContentFilterElementResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ContentFilterElementResult or returns an error if something is wrong
 	Build() (ContentFilterElementResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (ContentFilterElementResultBuilder) = (*_ContentFilterElementResultBuilder
 
 func (b *_ContentFilterElementResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ContentFilterElementResult
 }
 
 func (b *_ContentFilterElementResultBuilder) WithMandatoryFields(statusCode StatusCode, operandStatusCodes []StatusCode, operandDiagnosticInfos []DiagnosticInfo) ContentFilterElementResultBuilder {
@@ -174,8 +177,10 @@ func (b *_ContentFilterElementResultBuilder) MustBuild() ContentFilterElementRes
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ContentFilterElementResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_ContentFilterElementResult) deepCopy() *_ContentFilterElementResult {
 	}
 	_ContentFilterElementResultCopy := &_ContentFilterElementResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.StatusCode.DeepCopy().(StatusCode),
+		utils.DeepCopy[StatusCode](m.StatusCode),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.OperandStatusCodes),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.OperandDiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ContentFilterElementResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ContentFilterElementResultCopy
 }
 

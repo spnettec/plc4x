@@ -79,6 +79,8 @@ type KnxNetIpCoreBuilder interface {
 	WithMandatoryFields(version uint8) KnxNetIpCoreBuilder
 	// WithVersion adds Version (property field)
 	WithVersion(uint8) KnxNetIpCoreBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ServiceIdBuilder
 	// Build builds the KnxNetIpCore or returns an error if something is wrong
 	Build() (KnxNetIpCore, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (KnxNetIpCoreBuilder) = (*_KnxNetIpCoreBuilder)(nil)
 
 func (b *_KnxNetIpCoreBuilder) setParent(contract ServiceIdContract) {
 	b.ServiceIdContract = contract
+	contract.(*_ServiceId)._SubType = b._KnxNetIpCore
 }
 
 func (b *_KnxNetIpCoreBuilder) WithMandatoryFields(version uint8) KnxNetIpCoreBuilder {
@@ -128,8 +131,10 @@ func (b *_KnxNetIpCoreBuilder) MustBuild() KnxNetIpCore {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_KnxNetIpCoreBuilder) Done() ServiceIdBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewServiceIdBuilder().(*_ServiceIdBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_KnxNetIpCore) deepCopy() *_KnxNetIpCore {
 		m.ServiceIdContract.(*_ServiceId).deepCopy(),
 		m.Version,
 	}
-	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	_KnxNetIpCoreCopy.ServiceIdContract.(*_ServiceId)._SubType = m
 	return _KnxNetIpCoreCopy
 }
 

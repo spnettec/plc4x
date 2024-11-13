@@ -71,6 +71,8 @@ type BACnetConstructedDataNetworkSecurityAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataNetworkSecurityAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNetworkSecurityAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataNetworkSecurityAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataNetworkSecurityAllBuilder) = (*_BACnetConstructedDat
 
 func (b *_BACnetConstructedDataNetworkSecurityAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNetworkSecurityAll
 }
 
 func (b *_BACnetConstructedDataNetworkSecurityAllBuilder) WithMandatoryFields() BACnetConstructedDataNetworkSecurityAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataNetworkSecurityAllBuilder) MustBuild() BACnetCons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNetworkSecurityAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataNetworkSecurityAll) deepCopy() *_BACnetConstructe
 	_BACnetConstructedDataNetworkSecurityAllCopy := &_BACnetConstructedDataNetworkSecurityAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNetworkSecurityAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNetworkSecurityAllCopy
 }
 

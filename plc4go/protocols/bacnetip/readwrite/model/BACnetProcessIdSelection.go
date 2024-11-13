@@ -101,15 +101,9 @@ type BACnetProcessIdSelectionBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProcessIdSelectionBuilder
 	// AsBACnetProcessIdSelectionNull converts this build to a subType of BACnetProcessIdSelection. It is always possible to return to current builder using Done()
-	AsBACnetProcessIdSelectionNull() interface {
-		BACnetProcessIdSelectionNullBuilder
-		Done() BACnetProcessIdSelectionBuilder
-	}
+	AsBACnetProcessIdSelectionNull() BACnetProcessIdSelectionNullBuilder
 	// AsBACnetProcessIdSelectionValue converts this build to a subType of BACnetProcessIdSelection. It is always possible to return to current builder using Done()
-	AsBACnetProcessIdSelectionValue() interface {
-		BACnetProcessIdSelectionValueBuilder
-		Done() BACnetProcessIdSelectionBuilder
-	}
+	AsBACnetProcessIdSelectionValue() BACnetProcessIdSelectionValueBuilder
 	// Build builds the BACnetProcessIdSelection or returns an error if something is wrong
 	PartialBuild() (BACnetProcessIdSelectionContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetProcessIdSelectionBuilder) PartialMustBuild() BACnetProcessIdSel
 	return build
 }
 
-func (b *_BACnetProcessIdSelectionBuilder) AsBACnetProcessIdSelectionNull() interface {
-	BACnetProcessIdSelectionNullBuilder
-	Done() BACnetProcessIdSelectionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetProcessIdSelectionNullBuilder
-		Done() BACnetProcessIdSelectionBuilder
-	}); ok {
+func (b *_BACnetProcessIdSelectionBuilder) AsBACnetProcessIdSelectionNull() BACnetProcessIdSelectionNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetProcessIdSelectionNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetProcessIdSelectionNullBuilder().(*_BACnetProcessIdSelectionNullBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetProcessIdSelectionBuilder) AsBACnetProcessIdSelectionNull() inte
 	return cb
 }
 
-func (b *_BACnetProcessIdSelectionBuilder) AsBACnetProcessIdSelectionValue() interface {
-	BACnetProcessIdSelectionValueBuilder
-	Done() BACnetProcessIdSelectionBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetProcessIdSelectionValueBuilder
-		Done() BACnetProcessIdSelectionBuilder
-	}); ok {
+func (b *_BACnetProcessIdSelectionBuilder) AsBACnetProcessIdSelectionValue() BACnetProcessIdSelectionValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetProcessIdSelectionValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetProcessIdSelectionValueBuilder().(*_BACnetProcessIdSelectionValueBuilder)
@@ -433,7 +415,7 @@ func (m *_BACnetProcessIdSelection) deepCopy() *_BACnetProcessIdSelection {
 	}
 	_BACnetProcessIdSelectionCopy := &_BACnetProcessIdSelection{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetProcessIdSelectionCopy
 }

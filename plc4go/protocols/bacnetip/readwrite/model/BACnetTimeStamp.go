@@ -101,20 +101,11 @@ type BACnetTimeStampBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimeStampBuilder
 	// AsBACnetTimeStampTime converts this build to a subType of BACnetTimeStamp. It is always possible to return to current builder using Done()
-	AsBACnetTimeStampTime() interface {
-		BACnetTimeStampTimeBuilder
-		Done() BACnetTimeStampBuilder
-	}
+	AsBACnetTimeStampTime() BACnetTimeStampTimeBuilder
 	// AsBACnetTimeStampSequence converts this build to a subType of BACnetTimeStamp. It is always possible to return to current builder using Done()
-	AsBACnetTimeStampSequence() interface {
-		BACnetTimeStampSequenceBuilder
-		Done() BACnetTimeStampBuilder
-	}
+	AsBACnetTimeStampSequence() BACnetTimeStampSequenceBuilder
 	// AsBACnetTimeStampDateTime converts this build to a subType of BACnetTimeStamp. It is always possible to return to current builder using Done()
-	AsBACnetTimeStampDateTime() interface {
-		BACnetTimeStampDateTimeBuilder
-		Done() BACnetTimeStampBuilder
-	}
+	AsBACnetTimeStampDateTime() BACnetTimeStampDateTimeBuilder
 	// Build builds the BACnetTimeStamp or returns an error if something is wrong
 	PartialBuild() (BACnetTimeStampContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -189,14 +180,8 @@ func (b *_BACnetTimeStampBuilder) PartialMustBuild() BACnetTimeStampContract {
 	return build
 }
 
-func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampTime() interface {
-	BACnetTimeStampTimeBuilder
-	Done() BACnetTimeStampBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimeStampTimeBuilder
-		Done() BACnetTimeStampBuilder
-	}); ok {
+func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampTime() BACnetTimeStampTimeBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimeStampTimeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimeStampTimeBuilder().(*_BACnetTimeStampTimeBuilder)
@@ -205,14 +190,8 @@ func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampTime() interface {
 	return cb
 }
 
-func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampSequence() interface {
-	BACnetTimeStampSequenceBuilder
-	Done() BACnetTimeStampBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimeStampSequenceBuilder
-		Done() BACnetTimeStampBuilder
-	}); ok {
+func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampSequence() BACnetTimeStampSequenceBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimeStampSequenceBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimeStampSequenceBuilder().(*_BACnetTimeStampSequenceBuilder)
@@ -221,14 +200,8 @@ func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampSequence() interface {
 	return cb
 }
 
-func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampDateTime() interface {
-	BACnetTimeStampDateTimeBuilder
-	Done() BACnetTimeStampBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimeStampDateTimeBuilder
-		Done() BACnetTimeStampBuilder
-	}); ok {
+func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampDateTime() BACnetTimeStampDateTimeBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimeStampDateTimeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimeStampDateTimeBuilder().(*_BACnetTimeStampDateTimeBuilder)
@@ -458,7 +431,7 @@ func (m *_BACnetTimeStamp) deepCopy() *_BACnetTimeStamp {
 	}
 	_BACnetTimeStampCopy := &_BACnetTimeStamp{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetTimeStampCopy
 }

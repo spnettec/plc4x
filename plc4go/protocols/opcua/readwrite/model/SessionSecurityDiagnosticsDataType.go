@@ -162,6 +162,8 @@ type SessionSecurityDiagnosticsDataTypeBuilder interface {
 	WithClientCertificate(PascalByteString) SessionSecurityDiagnosticsDataTypeBuilder
 	// WithClientCertificateBuilder adds ClientCertificate (property field) which is build by the builder
 	WithClientCertificateBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) SessionSecurityDiagnosticsDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SessionSecurityDiagnosticsDataType or returns an error if something is wrong
 	Build() (SessionSecurityDiagnosticsDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -185,6 +187,7 @@ var _ (SessionSecurityDiagnosticsDataTypeBuilder) = (*_SessionSecurityDiagnostic
 
 func (b *_SessionSecurityDiagnosticsDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SessionSecurityDiagnosticsDataType
 }
 
 func (b *_SessionSecurityDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, clientUserIdOfSession PascalString, clientUserIdHistory []PascalString, authenticationMechanism PascalString, encoding PascalString, transportProtocol PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, clientCertificate PascalByteString) SessionSecurityDiagnosticsDataTypeBuilder {
@@ -384,8 +387,10 @@ func (b *_SessionSecurityDiagnosticsDataTypeBuilder) MustBuild() SessionSecurity
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SessionSecurityDiagnosticsDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -696,17 +701,17 @@ func (m *_SessionSecurityDiagnosticsDataType) deepCopy() *_SessionSecurityDiagno
 	}
 	_SessionSecurityDiagnosticsDataTypeCopy := &_SessionSecurityDiagnosticsDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.SessionId.DeepCopy().(NodeId),
-		m.ClientUserIdOfSession.DeepCopy().(PascalString),
+		utils.DeepCopy[NodeId](m.SessionId),
+		utils.DeepCopy[PascalString](m.ClientUserIdOfSession),
 		utils.DeepCopySlice[PascalString, PascalString](m.ClientUserIdHistory),
-		m.AuthenticationMechanism.DeepCopy().(PascalString),
-		m.Encoding.DeepCopy().(PascalString),
-		m.TransportProtocol.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.AuthenticationMechanism),
+		utils.DeepCopy[PascalString](m.Encoding),
+		utils.DeepCopy[PascalString](m.TransportProtocol),
 		m.SecurityMode,
-		m.SecurityPolicyUri.DeepCopy().(PascalString),
-		m.ClientCertificate.DeepCopy().(PascalByteString),
+		utils.DeepCopy[PascalString](m.SecurityPolicyUri),
+		utils.DeepCopy[PascalByteString](m.ClientCertificate),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SessionSecurityDiagnosticsDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SessionSecurityDiagnosticsDataTypeCopy
 }
 

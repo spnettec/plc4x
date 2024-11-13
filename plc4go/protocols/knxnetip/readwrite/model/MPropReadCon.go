@@ -109,6 +109,8 @@ type MPropReadConBuilder interface {
 	WithStartIndex(uint16) MPropReadConBuilder
 	// WithData adds Data (property field)
 	WithData(uint16) MPropReadConBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the MPropReadCon or returns an error if something is wrong
 	Build() (MPropReadCon, error)
 	// MustBuild does the same as Build but panics on error
@@ -132,6 +134,7 @@ var _ (MPropReadConBuilder) = (*_MPropReadConBuilder)(nil)
 
 func (b *_MPropReadConBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._MPropReadCon
 }
 
 func (b *_MPropReadConBuilder) WithMandatoryFields(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) MPropReadConBuilder {
@@ -183,8 +186,10 @@ func (b *_MPropReadConBuilder) MustBuild() MPropReadCon {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MPropReadConBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -431,7 +436,7 @@ func (m *_MPropReadCon) deepCopy() *_MPropReadCon {
 		m.StartIndex,
 		m.Data,
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_MPropReadConCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _MPropReadConCopy
 }
 

@@ -426,10 +426,10 @@ func (m *_BACnetDeviceObjectPropertyReference) deepCopy() *_BACnetDeviceObjectPr
 		return nil
 	}
 	_BACnetDeviceObjectPropertyReferenceCopy := &_BACnetDeviceObjectPropertyReference{
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.DeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.DeviceIdentifier),
 	}
 	return _BACnetDeviceObjectPropertyReferenceCopy
 }

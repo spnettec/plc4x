@@ -86,6 +86,8 @@ type BACnetConstructedDataObjectIdentifierBuilder interface {
 	WithObjectIdentifier(BACnetApplicationTagObjectIdentifier) BACnetConstructedDataObjectIdentifierBuilder
 	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
 	WithObjectIdentifierBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataObjectIdentifierBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataObjectIdentifier or returns an error if something is wrong
 	Build() (BACnetConstructedDataObjectIdentifier, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataObjectIdentifierBuilder) = (*_BACnetConstructedDataO
 
 func (b *_BACnetConstructedDataObjectIdentifierBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataObjectIdentifier
 }
 
 func (b *_BACnetConstructedDataObjectIdentifierBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetConstructedDataObjectIdentifierBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataObjectIdentifierBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataObjectIdentifierBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataObjectIdentifier) deepCopy() *_BACnetConstructedD
 	}
 	_BACnetConstructedDataObjectIdentifierCopy := &_BACnetConstructedDataObjectIdentifier{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectIdentifier),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataObjectIdentifierCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataObjectIdentifierCopy
 }
 

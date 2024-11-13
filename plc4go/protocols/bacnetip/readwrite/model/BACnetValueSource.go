@@ -101,20 +101,11 @@ type BACnetValueSourceBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetValueSourceBuilder
 	// AsBACnetValueSourceNone converts this build to a subType of BACnetValueSource. It is always possible to return to current builder using Done()
-	AsBACnetValueSourceNone() interface {
-		BACnetValueSourceNoneBuilder
-		Done() BACnetValueSourceBuilder
-	}
+	AsBACnetValueSourceNone() BACnetValueSourceNoneBuilder
 	// AsBACnetValueSourceObject converts this build to a subType of BACnetValueSource. It is always possible to return to current builder using Done()
-	AsBACnetValueSourceObject() interface {
-		BACnetValueSourceObjectBuilder
-		Done() BACnetValueSourceBuilder
-	}
+	AsBACnetValueSourceObject() BACnetValueSourceObjectBuilder
 	// AsBACnetValueSourceAddress converts this build to a subType of BACnetValueSource. It is always possible to return to current builder using Done()
-	AsBACnetValueSourceAddress() interface {
-		BACnetValueSourceAddressBuilder
-		Done() BACnetValueSourceBuilder
-	}
+	AsBACnetValueSourceAddress() BACnetValueSourceAddressBuilder
 	// Build builds the BACnetValueSource or returns an error if something is wrong
 	PartialBuild() (BACnetValueSourceContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -189,14 +180,8 @@ func (b *_BACnetValueSourceBuilder) PartialMustBuild() BACnetValueSourceContract
 	return build
 }
 
-func (b *_BACnetValueSourceBuilder) AsBACnetValueSourceNone() interface {
-	BACnetValueSourceNoneBuilder
-	Done() BACnetValueSourceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetValueSourceNoneBuilder
-		Done() BACnetValueSourceBuilder
-	}); ok {
+func (b *_BACnetValueSourceBuilder) AsBACnetValueSourceNone() BACnetValueSourceNoneBuilder {
+	if cb, ok := b.childBuilder.(BACnetValueSourceNoneBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetValueSourceNoneBuilder().(*_BACnetValueSourceNoneBuilder)
@@ -205,14 +190,8 @@ func (b *_BACnetValueSourceBuilder) AsBACnetValueSourceNone() interface {
 	return cb
 }
 
-func (b *_BACnetValueSourceBuilder) AsBACnetValueSourceObject() interface {
-	BACnetValueSourceObjectBuilder
-	Done() BACnetValueSourceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetValueSourceObjectBuilder
-		Done() BACnetValueSourceBuilder
-	}); ok {
+func (b *_BACnetValueSourceBuilder) AsBACnetValueSourceObject() BACnetValueSourceObjectBuilder {
+	if cb, ok := b.childBuilder.(BACnetValueSourceObjectBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetValueSourceObjectBuilder().(*_BACnetValueSourceObjectBuilder)
@@ -221,14 +200,8 @@ func (b *_BACnetValueSourceBuilder) AsBACnetValueSourceObject() interface {
 	return cb
 }
 
-func (b *_BACnetValueSourceBuilder) AsBACnetValueSourceAddress() interface {
-	BACnetValueSourceAddressBuilder
-	Done() BACnetValueSourceBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetValueSourceAddressBuilder
-		Done() BACnetValueSourceBuilder
-	}); ok {
+func (b *_BACnetValueSourceBuilder) AsBACnetValueSourceAddress() BACnetValueSourceAddressBuilder {
+	if cb, ok := b.childBuilder.(BACnetValueSourceAddressBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetValueSourceAddressBuilder().(*_BACnetValueSourceAddressBuilder)
@@ -458,7 +431,7 @@ func (m *_BACnetValueSource) deepCopy() *_BACnetValueSource {
 	}
 	_BACnetValueSourceCopy := &_BACnetValueSource{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetValueSourceCopy
 }

@@ -79,6 +79,8 @@ type BACnetConstructedDataAuthorizationExemptionsBuilder interface {
 	WithMandatoryFields(authorizationExemption []BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder
 	// WithAuthorizationExemption adds AuthorizationExemption (property field)
 	WithAuthorizationExemption(...BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAuthorizationExemptions or returns an error if something is wrong
 	Build() (BACnetConstructedDataAuthorizationExemptions, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataAuthorizationExemptionsBuilder) = (*_BACnetConstruct
 
 func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAuthorizationExemptions
 }
 
 func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) WithMandatoryFields(authorizationExemption []BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAuthorizationExemptionsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) deepCopy() *_BACnetConst
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAuthorizationExemptionTagged, BACnetAuthorizationExemptionTagged](m.AuthorizationExemption),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAuthorizationExemptionsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAuthorizationExemptionsCopy
 }
 

@@ -97,6 +97,8 @@ type ModbusPDUGetComEventLogResponseBuilder interface {
 	WithMessageCount(uint16) ModbusPDUGetComEventLogResponseBuilder
 	// WithEvents adds Events (property field)
 	WithEvents(...byte) ModbusPDUGetComEventLogResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUGetComEventLogResponse or returns an error if something is wrong
 	Build() (ModbusPDUGetComEventLogResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (ModbusPDUGetComEventLogResponseBuilder) = (*_ModbusPDUGetComEventLogRespo
 
 func (b *_ModbusPDUGetComEventLogResponseBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUGetComEventLogResponse
 }
 
 func (b *_ModbusPDUGetComEventLogResponseBuilder) WithMandatoryFields(status uint16, eventCount uint16, messageCount uint16, events []byte) ModbusPDUGetComEventLogResponseBuilder {
@@ -161,8 +164,10 @@ func (b *_ModbusPDUGetComEventLogResponseBuilder) MustBuild() ModbusPDUGetComEve
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUGetComEventLogResponseBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -396,7 +401,7 @@ func (m *_ModbusPDUGetComEventLogResponse) deepCopy() *_ModbusPDUGetComEventLogR
 		m.MessageCount,
 		utils.DeepCopySlice[byte, byte](m.Events),
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUGetComEventLogResponseCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUGetComEventLogResponseCopy
 }
 

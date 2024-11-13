@@ -86,6 +86,8 @@ type BACnetConstructedDataProcessIdentifierFilterBuilder interface {
 	WithProcessIdentifierFilter(BACnetProcessIdSelection) BACnetConstructedDataProcessIdentifierFilterBuilder
 	// WithProcessIdentifierFilterBuilder adds ProcessIdentifierFilter (property field) which is build by the builder
 	WithProcessIdentifierFilterBuilder(func(BACnetProcessIdSelectionBuilder) BACnetProcessIdSelectionBuilder) BACnetConstructedDataProcessIdentifierFilterBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataProcessIdentifierFilter or returns an error if something is wrong
 	Build() (BACnetConstructedDataProcessIdentifierFilter, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataProcessIdentifierFilterBuilder) = (*_BACnetConstruct
 
 func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataProcessIdentifierFilter
 }
 
 func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) WithMandatoryFields(processIdentifierFilter BACnetProcessIdSelection) BACnetConstructedDataProcessIdentifierFilterBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) deepCopy() *_BACnetConst
 	}
 	_BACnetConstructedDataProcessIdentifierFilterCopy := &_BACnetConstructedDataProcessIdentifierFilter{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ProcessIdentifierFilter.DeepCopy().(BACnetProcessIdSelection),
+		utils.DeepCopy[BACnetProcessIdSelection](m.ProcessIdentifierFilter),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataProcessIdentifierFilterCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataProcessIdentifierFilterCopy
 }
 

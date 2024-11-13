@@ -84,6 +84,8 @@ type BACnetShedLevelAmountBuilder interface {
 	WithAmount(BACnetContextTagReal) BACnetShedLevelAmountBuilder
 	// WithAmountBuilder adds Amount (property field) which is build by the builder
 	WithAmountBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetShedLevelAmountBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetShedLevelBuilder
 	// Build builds the BACnetShedLevelAmount or returns an error if something is wrong
 	Build() (BACnetShedLevelAmount, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetShedLevelAmountBuilder) = (*_BACnetShedLevelAmountBuilder)(nil)
 
 func (b *_BACnetShedLevelAmountBuilder) setParent(contract BACnetShedLevelContract) {
 	b.BACnetShedLevelContract = contract
+	contract.(*_BACnetShedLevel)._SubType = b._BACnetShedLevelAmount
 }
 
 func (b *_BACnetShedLevelAmountBuilder) WithMandatoryFields(amount BACnetContextTagReal) BACnetShedLevelAmountBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetShedLevelAmountBuilder) MustBuild() BACnetShedLevelAmount {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetShedLevelAmountBuilder) Done() BACnetShedLevelBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetShedLevelBuilder().(*_BACnetShedLevelBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetShedLevelAmount) deepCopy() *_BACnetShedLevelAmount {
 	}
 	_BACnetShedLevelAmountCopy := &_BACnetShedLevelAmount{
 		m.BACnetShedLevelContract.(*_BACnetShedLevel).deepCopy(),
-		m.Amount.DeepCopy().(BACnetContextTagReal),
+		utils.DeepCopy[BACnetContextTagReal](m.Amount),
 	}
-	m.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = m
+	_BACnetShedLevelAmountCopy.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = m
 	return _BACnetShedLevelAmountCopy
 }
 

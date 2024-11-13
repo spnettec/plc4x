@@ -111,135 +111,57 @@ type VariantBuilder interface {
 	// WithArrayDimensions adds ArrayDimensions (property field)
 	WithArrayDimensions(...bool) VariantBuilder
 	// AsVariantNull converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantNull() interface {
-		VariantNullBuilder
-		Done() VariantBuilder
-	}
+	AsVariantNull() VariantNullBuilder
 	// AsVariantBoolean converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantBoolean() interface {
-		VariantBooleanBuilder
-		Done() VariantBuilder
-	}
+	AsVariantBoolean() VariantBooleanBuilder
 	// AsVariantSByte converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantSByte() interface {
-		VariantSByteBuilder
-		Done() VariantBuilder
-	}
+	AsVariantSByte() VariantSByteBuilder
 	// AsVariantByte converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantByte() interface {
-		VariantByteBuilder
-		Done() VariantBuilder
-	}
+	AsVariantByte() VariantByteBuilder
 	// AsVariantInt16 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantInt16() interface {
-		VariantInt16Builder
-		Done() VariantBuilder
-	}
+	AsVariantInt16() VariantInt16Builder
 	// AsVariantUInt16 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantUInt16() interface {
-		VariantUInt16Builder
-		Done() VariantBuilder
-	}
+	AsVariantUInt16() VariantUInt16Builder
 	// AsVariantInt32 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantInt32() interface {
-		VariantInt32Builder
-		Done() VariantBuilder
-	}
+	AsVariantInt32() VariantInt32Builder
 	// AsVariantUInt32 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantUInt32() interface {
-		VariantUInt32Builder
-		Done() VariantBuilder
-	}
+	AsVariantUInt32() VariantUInt32Builder
 	// AsVariantInt64 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantInt64() interface {
-		VariantInt64Builder
-		Done() VariantBuilder
-	}
+	AsVariantInt64() VariantInt64Builder
 	// AsVariantUInt64 converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantUInt64() interface {
-		VariantUInt64Builder
-		Done() VariantBuilder
-	}
+	AsVariantUInt64() VariantUInt64Builder
 	// AsVariantFloat converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantFloat() interface {
-		VariantFloatBuilder
-		Done() VariantBuilder
-	}
+	AsVariantFloat() VariantFloatBuilder
 	// AsVariantDouble converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantDouble() interface {
-		VariantDoubleBuilder
-		Done() VariantBuilder
-	}
+	AsVariantDouble() VariantDoubleBuilder
 	// AsVariantString converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantString() interface {
-		VariantStringBuilder
-		Done() VariantBuilder
-	}
+	AsVariantString() VariantStringBuilder
 	// AsVariantDateTime converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantDateTime() interface {
-		VariantDateTimeBuilder
-		Done() VariantBuilder
-	}
+	AsVariantDateTime() VariantDateTimeBuilder
 	// AsVariantGuid converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantGuid() interface {
-		VariantGuidBuilder
-		Done() VariantBuilder
-	}
+	AsVariantGuid() VariantGuidBuilder
 	// AsVariantByteString converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantByteString() interface {
-		VariantByteStringBuilder
-		Done() VariantBuilder
-	}
+	AsVariantByteString() VariantByteStringBuilder
 	// AsVariantXmlElement converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantXmlElement() interface {
-		VariantXmlElementBuilder
-		Done() VariantBuilder
-	}
+	AsVariantXmlElement() VariantXmlElementBuilder
 	// AsVariantNodeId converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantNodeId() interface {
-		VariantNodeIdBuilder
-		Done() VariantBuilder
-	}
+	AsVariantNodeId() VariantNodeIdBuilder
 	// AsVariantExpandedNodeId converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantExpandedNodeId() interface {
-		VariantExpandedNodeIdBuilder
-		Done() VariantBuilder
-	}
+	AsVariantExpandedNodeId() VariantExpandedNodeIdBuilder
 	// AsVariantStatusCode converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantStatusCode() interface {
-		VariantStatusCodeBuilder
-		Done() VariantBuilder
-	}
+	AsVariantStatusCode() VariantStatusCodeBuilder
 	// AsVariantQualifiedName converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantQualifiedName() interface {
-		VariantQualifiedNameBuilder
-		Done() VariantBuilder
-	}
+	AsVariantQualifiedName() VariantQualifiedNameBuilder
 	// AsVariantLocalizedText converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantLocalizedText() interface {
-		VariantLocalizedTextBuilder
-		Done() VariantBuilder
-	}
+	AsVariantLocalizedText() VariantLocalizedTextBuilder
 	// AsVariantExtensionObject converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantExtensionObject() interface {
-		VariantExtensionObjectBuilder
-		Done() VariantBuilder
-	}
+	AsVariantExtensionObject() VariantExtensionObjectBuilder
 	// AsVariantDataValue converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantDataValue() interface {
-		VariantDataValueBuilder
-		Done() VariantBuilder
-	}
+	AsVariantDataValue() VariantDataValueBuilder
 	// AsVariantVariant converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantVariant() interface {
-		VariantVariantBuilder
-		Done() VariantBuilder
-	}
+	AsVariantVariant() VariantVariantBuilder
 	// AsVariantDiagnosticInfo converts this build to a subType of Variant. It is always possible to return to current builder using Done()
-	AsVariantDiagnosticInfo() interface {
-		VariantDiagnosticInfoBuilder
-		Done() VariantBuilder
-	}
+	AsVariantDiagnosticInfo() VariantDiagnosticInfoBuilder
 	// Build builds the Variant or returns an error if something is wrong
 	PartialBuild() (VariantContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -310,14 +232,8 @@ func (b *_VariantBuilder) PartialMustBuild() VariantContract {
 	return build
 }
 
-func (b *_VariantBuilder) AsVariantNull() interface {
-	VariantNullBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantNullBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantNull() VariantNullBuilder {
+	if cb, ok := b.childBuilder.(VariantNullBuilder); ok {
 		return cb
 	}
 	cb := NewVariantNullBuilder().(*_VariantNullBuilder)
@@ -326,14 +242,8 @@ func (b *_VariantBuilder) AsVariantNull() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantBoolean() interface {
-	VariantBooleanBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantBooleanBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantBoolean() VariantBooleanBuilder {
+	if cb, ok := b.childBuilder.(VariantBooleanBuilder); ok {
 		return cb
 	}
 	cb := NewVariantBooleanBuilder().(*_VariantBooleanBuilder)
@@ -342,14 +252,8 @@ func (b *_VariantBuilder) AsVariantBoolean() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantSByte() interface {
-	VariantSByteBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantSByteBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantSByte() VariantSByteBuilder {
+	if cb, ok := b.childBuilder.(VariantSByteBuilder); ok {
 		return cb
 	}
 	cb := NewVariantSByteBuilder().(*_VariantSByteBuilder)
@@ -358,14 +262,8 @@ func (b *_VariantBuilder) AsVariantSByte() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantByte() interface {
-	VariantByteBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantByteBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantByte() VariantByteBuilder {
+	if cb, ok := b.childBuilder.(VariantByteBuilder); ok {
 		return cb
 	}
 	cb := NewVariantByteBuilder().(*_VariantByteBuilder)
@@ -374,14 +272,8 @@ func (b *_VariantBuilder) AsVariantByte() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantInt16() interface {
-	VariantInt16Builder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantInt16Builder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantInt16() VariantInt16Builder {
+	if cb, ok := b.childBuilder.(VariantInt16Builder); ok {
 		return cb
 	}
 	cb := NewVariantInt16Builder().(*_VariantInt16Builder)
@@ -390,14 +282,8 @@ func (b *_VariantBuilder) AsVariantInt16() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantUInt16() interface {
-	VariantUInt16Builder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantUInt16Builder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantUInt16() VariantUInt16Builder {
+	if cb, ok := b.childBuilder.(VariantUInt16Builder); ok {
 		return cb
 	}
 	cb := NewVariantUInt16Builder().(*_VariantUInt16Builder)
@@ -406,14 +292,8 @@ func (b *_VariantBuilder) AsVariantUInt16() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantInt32() interface {
-	VariantInt32Builder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantInt32Builder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantInt32() VariantInt32Builder {
+	if cb, ok := b.childBuilder.(VariantInt32Builder); ok {
 		return cb
 	}
 	cb := NewVariantInt32Builder().(*_VariantInt32Builder)
@@ -422,14 +302,8 @@ func (b *_VariantBuilder) AsVariantInt32() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantUInt32() interface {
-	VariantUInt32Builder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantUInt32Builder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantUInt32() VariantUInt32Builder {
+	if cb, ok := b.childBuilder.(VariantUInt32Builder); ok {
 		return cb
 	}
 	cb := NewVariantUInt32Builder().(*_VariantUInt32Builder)
@@ -438,14 +312,8 @@ func (b *_VariantBuilder) AsVariantUInt32() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantInt64() interface {
-	VariantInt64Builder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantInt64Builder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantInt64() VariantInt64Builder {
+	if cb, ok := b.childBuilder.(VariantInt64Builder); ok {
 		return cb
 	}
 	cb := NewVariantInt64Builder().(*_VariantInt64Builder)
@@ -454,14 +322,8 @@ func (b *_VariantBuilder) AsVariantInt64() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantUInt64() interface {
-	VariantUInt64Builder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantUInt64Builder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantUInt64() VariantUInt64Builder {
+	if cb, ok := b.childBuilder.(VariantUInt64Builder); ok {
 		return cb
 	}
 	cb := NewVariantUInt64Builder().(*_VariantUInt64Builder)
@@ -470,14 +332,8 @@ func (b *_VariantBuilder) AsVariantUInt64() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantFloat() interface {
-	VariantFloatBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantFloatBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantFloat() VariantFloatBuilder {
+	if cb, ok := b.childBuilder.(VariantFloatBuilder); ok {
 		return cb
 	}
 	cb := NewVariantFloatBuilder().(*_VariantFloatBuilder)
@@ -486,14 +342,8 @@ func (b *_VariantBuilder) AsVariantFloat() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantDouble() interface {
-	VariantDoubleBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantDoubleBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantDouble() VariantDoubleBuilder {
+	if cb, ok := b.childBuilder.(VariantDoubleBuilder); ok {
 		return cb
 	}
 	cb := NewVariantDoubleBuilder().(*_VariantDoubleBuilder)
@@ -502,14 +352,8 @@ func (b *_VariantBuilder) AsVariantDouble() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantString() interface {
-	VariantStringBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantStringBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantString() VariantStringBuilder {
+	if cb, ok := b.childBuilder.(VariantStringBuilder); ok {
 		return cb
 	}
 	cb := NewVariantStringBuilder().(*_VariantStringBuilder)
@@ -518,14 +362,8 @@ func (b *_VariantBuilder) AsVariantString() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantDateTime() interface {
-	VariantDateTimeBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantDateTimeBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantDateTime() VariantDateTimeBuilder {
+	if cb, ok := b.childBuilder.(VariantDateTimeBuilder); ok {
 		return cb
 	}
 	cb := NewVariantDateTimeBuilder().(*_VariantDateTimeBuilder)
@@ -534,14 +372,8 @@ func (b *_VariantBuilder) AsVariantDateTime() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantGuid() interface {
-	VariantGuidBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantGuidBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantGuid() VariantGuidBuilder {
+	if cb, ok := b.childBuilder.(VariantGuidBuilder); ok {
 		return cb
 	}
 	cb := NewVariantGuidBuilder().(*_VariantGuidBuilder)
@@ -550,14 +382,8 @@ func (b *_VariantBuilder) AsVariantGuid() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantByteString() interface {
-	VariantByteStringBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantByteStringBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantByteString() VariantByteStringBuilder {
+	if cb, ok := b.childBuilder.(VariantByteStringBuilder); ok {
 		return cb
 	}
 	cb := NewVariantByteStringBuilder().(*_VariantByteStringBuilder)
@@ -566,14 +392,8 @@ func (b *_VariantBuilder) AsVariantByteString() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantXmlElement() interface {
-	VariantXmlElementBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantXmlElementBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantXmlElement() VariantXmlElementBuilder {
+	if cb, ok := b.childBuilder.(VariantXmlElementBuilder); ok {
 		return cb
 	}
 	cb := NewVariantXmlElementBuilder().(*_VariantXmlElementBuilder)
@@ -582,14 +402,8 @@ func (b *_VariantBuilder) AsVariantXmlElement() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantNodeId() interface {
-	VariantNodeIdBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantNodeIdBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantNodeId() VariantNodeIdBuilder {
+	if cb, ok := b.childBuilder.(VariantNodeIdBuilder); ok {
 		return cb
 	}
 	cb := NewVariantNodeIdBuilder().(*_VariantNodeIdBuilder)
@@ -598,14 +412,8 @@ func (b *_VariantBuilder) AsVariantNodeId() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantExpandedNodeId() interface {
-	VariantExpandedNodeIdBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantExpandedNodeIdBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantExpandedNodeId() VariantExpandedNodeIdBuilder {
+	if cb, ok := b.childBuilder.(VariantExpandedNodeIdBuilder); ok {
 		return cb
 	}
 	cb := NewVariantExpandedNodeIdBuilder().(*_VariantExpandedNodeIdBuilder)
@@ -614,14 +422,8 @@ func (b *_VariantBuilder) AsVariantExpandedNodeId() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantStatusCode() interface {
-	VariantStatusCodeBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantStatusCodeBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantStatusCode() VariantStatusCodeBuilder {
+	if cb, ok := b.childBuilder.(VariantStatusCodeBuilder); ok {
 		return cb
 	}
 	cb := NewVariantStatusCodeBuilder().(*_VariantStatusCodeBuilder)
@@ -630,14 +432,8 @@ func (b *_VariantBuilder) AsVariantStatusCode() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantQualifiedName() interface {
-	VariantQualifiedNameBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantQualifiedNameBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantQualifiedName() VariantQualifiedNameBuilder {
+	if cb, ok := b.childBuilder.(VariantQualifiedNameBuilder); ok {
 		return cb
 	}
 	cb := NewVariantQualifiedNameBuilder().(*_VariantQualifiedNameBuilder)
@@ -646,14 +442,8 @@ func (b *_VariantBuilder) AsVariantQualifiedName() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantLocalizedText() interface {
-	VariantLocalizedTextBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantLocalizedTextBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantLocalizedText() VariantLocalizedTextBuilder {
+	if cb, ok := b.childBuilder.(VariantLocalizedTextBuilder); ok {
 		return cb
 	}
 	cb := NewVariantLocalizedTextBuilder().(*_VariantLocalizedTextBuilder)
@@ -662,14 +452,8 @@ func (b *_VariantBuilder) AsVariantLocalizedText() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantExtensionObject() interface {
-	VariantExtensionObjectBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantExtensionObjectBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantExtensionObject() VariantExtensionObjectBuilder {
+	if cb, ok := b.childBuilder.(VariantExtensionObjectBuilder); ok {
 		return cb
 	}
 	cb := NewVariantExtensionObjectBuilder().(*_VariantExtensionObjectBuilder)
@@ -678,14 +462,8 @@ func (b *_VariantBuilder) AsVariantExtensionObject() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantDataValue() interface {
-	VariantDataValueBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantDataValueBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantDataValue() VariantDataValueBuilder {
+	if cb, ok := b.childBuilder.(VariantDataValueBuilder); ok {
 		return cb
 	}
 	cb := NewVariantDataValueBuilder().(*_VariantDataValueBuilder)
@@ -694,14 +472,8 @@ func (b *_VariantBuilder) AsVariantDataValue() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantVariant() interface {
-	VariantVariantBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantVariantBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantVariant() VariantVariantBuilder {
+	if cb, ok := b.childBuilder.(VariantVariantBuilder); ok {
 		return cb
 	}
 	cb := NewVariantVariantBuilder().(*_VariantVariantBuilder)
@@ -710,14 +482,8 @@ func (b *_VariantBuilder) AsVariantVariant() interface {
 	return cb
 }
 
-func (b *_VariantBuilder) AsVariantDiagnosticInfo() interface {
-	VariantDiagnosticInfoBuilder
-	Done() VariantBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		VariantDiagnosticInfoBuilder
-		Done() VariantBuilder
-	}); ok {
+func (b *_VariantBuilder) AsVariantDiagnosticInfo() VariantDiagnosticInfoBuilder {
+	if cb, ok := b.childBuilder.(VariantDiagnosticInfoBuilder); ok {
 		return cb
 	}
 	cb := NewVariantDiagnosticInfoBuilder().(*_VariantDiagnosticInfoBuilder)

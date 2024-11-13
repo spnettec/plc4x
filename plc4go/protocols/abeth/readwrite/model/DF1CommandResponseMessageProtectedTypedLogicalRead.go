@@ -79,6 +79,8 @@ type DF1CommandResponseMessageProtectedTypedLogicalReadBuilder interface {
 	WithMandatoryFields(data []uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
 	// WithData adds Data (property field)
 	WithData(...uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() DF1ResponseMessageBuilder
 	// Build builds the DF1CommandResponseMessageProtectedTypedLogicalRead or returns an error if something is wrong
 	Build() (DF1CommandResponseMessageProtectedTypedLogicalRead, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) = (*_DF1Comman
 
 func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) setParent(contract DF1ResponseMessageContract) {
 	b.DF1ResponseMessageContract = contract
+	contract.(*_DF1ResponseMessage)._SubType = b._DF1CommandResponseMessageProtectedTypedLogicalRead
 }
 
 func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) WithMandatoryFields(data []uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
@@ -128,8 +131,10 @@ func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) MustBuild()
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) Done() DF1ResponseMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewDF1ResponseMessageBuilder().(*_DF1ResponseMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -289,7 +294,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) deepCopy() *_DF1Co
 		m.DF1ResponseMessageContract.(*_DF1ResponseMessage).deepCopy(),
 		utils.DeepCopySlice[uint8, uint8](m.Data),
 	}
-	m.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = m
+	_DF1CommandResponseMessageProtectedTypedLogicalReadCopy.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = m
 	return _DF1CommandResponseMessageProtectedTypedLogicalReadCopy
 }
 

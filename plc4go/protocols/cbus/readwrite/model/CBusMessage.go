@@ -95,15 +95,9 @@ type CBusMessageBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CBusMessageBuilder
 	// AsCBusMessageToServer converts this build to a subType of CBusMessage. It is always possible to return to current builder using Done()
-	AsCBusMessageToServer() interface {
-		CBusMessageToServerBuilder
-		Done() CBusMessageBuilder
-	}
+	AsCBusMessageToServer() CBusMessageToServerBuilder
 	// AsCBusMessageToClient converts this build to a subType of CBusMessage. It is always possible to return to current builder using Done()
-	AsCBusMessageToClient() interface {
-		CBusMessageToClientBuilder
-		Done() CBusMessageBuilder
-	}
+	AsCBusMessageToClient() CBusMessageToClientBuilder
 	// Build builds the CBusMessage or returns an error if something is wrong
 	PartialBuild() (CBusMessageContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -154,14 +148,8 @@ func (b *_CBusMessageBuilder) PartialMustBuild() CBusMessageContract {
 	return build
 }
 
-func (b *_CBusMessageBuilder) AsCBusMessageToServer() interface {
-	CBusMessageToServerBuilder
-	Done() CBusMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CBusMessageToServerBuilder
-		Done() CBusMessageBuilder
-	}); ok {
+func (b *_CBusMessageBuilder) AsCBusMessageToServer() CBusMessageToServerBuilder {
+	if cb, ok := b.childBuilder.(CBusMessageToServerBuilder); ok {
 		return cb
 	}
 	cb := NewCBusMessageToServerBuilder().(*_CBusMessageToServerBuilder)
@@ -170,14 +158,8 @@ func (b *_CBusMessageBuilder) AsCBusMessageToServer() interface {
 	return cb
 }
 
-func (b *_CBusMessageBuilder) AsCBusMessageToClient() interface {
-	CBusMessageToClientBuilder
-	Done() CBusMessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CBusMessageToClientBuilder
-		Done() CBusMessageBuilder
-	}); ok {
+func (b *_CBusMessageBuilder) AsCBusMessageToClient() CBusMessageToClientBuilder {
+	if cb, ok := b.childBuilder.(CBusMessageToClientBuilder); ok {
 		return cb
 	}
 	cb := NewCBusMessageToClientBuilder().(*_CBusMessageToClientBuilder)

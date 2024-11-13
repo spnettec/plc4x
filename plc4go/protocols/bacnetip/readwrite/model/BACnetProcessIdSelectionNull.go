@@ -84,6 +84,8 @@ type BACnetProcessIdSelectionNullBuilder interface {
 	WithNullValue(BACnetApplicationTagNull) BACnetProcessIdSelectionNullBuilder
 	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
 	WithNullValueBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetProcessIdSelectionNullBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetProcessIdSelectionBuilder
 	// Build builds the BACnetProcessIdSelectionNull or returns an error if something is wrong
 	Build() (BACnetProcessIdSelectionNull, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetProcessIdSelectionNullBuilder) = (*_BACnetProcessIdSelectionNullBui
 
 func (b *_BACnetProcessIdSelectionNullBuilder) setParent(contract BACnetProcessIdSelectionContract) {
 	b.BACnetProcessIdSelectionContract = contract
+	contract.(*_BACnetProcessIdSelection)._SubType = b._BACnetProcessIdSelectionNull
 }
 
 func (b *_BACnetProcessIdSelectionNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetProcessIdSelectionNullBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetProcessIdSelectionNullBuilder) MustBuild() BACnetProcessIdSelect
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetProcessIdSelectionNullBuilder) Done() BACnetProcessIdSelectionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetProcessIdSelectionBuilder().(*_BACnetProcessIdSelectionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetProcessIdSelectionNull) deepCopy() *_BACnetProcessIdSelectionNul
 	}
 	_BACnetProcessIdSelectionNullCopy := &_BACnetProcessIdSelectionNull{
 		m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection).deepCopy(),
-		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+		utils.DeepCopy[BACnetApplicationTagNull](m.NullValue),
 	}
-	m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = m
+	_BACnetProcessIdSelectionNullCopy.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = m
 	return _BACnetProcessIdSelectionNullCopy
 }
 

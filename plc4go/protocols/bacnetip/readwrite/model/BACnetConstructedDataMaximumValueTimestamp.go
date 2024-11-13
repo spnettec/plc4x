@@ -86,6 +86,8 @@ type BACnetConstructedDataMaximumValueTimestampBuilder interface {
 	WithMaximumValueTimestamp(BACnetDateTime) BACnetConstructedDataMaximumValueTimestampBuilder
 	// WithMaximumValueTimestampBuilder adds MaximumValueTimestamp (property field) which is build by the builder
 	WithMaximumValueTimestampBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataMaximumValueTimestampBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMaximumValueTimestamp or returns an error if something is wrong
 	Build() (BACnetConstructedDataMaximumValueTimestamp, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMaximumValueTimestampBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMaximumValueTimestamp
 }
 
 func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) WithMandatoryFields(maximumValueTimestamp BACnetDateTime) BACnetConstructedDataMaximumValueTimestampBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataMaximumValueTimestampCopy := &_BACnetConstructedDataMaximumValueTimestamp{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MaximumValueTimestamp.DeepCopy().(BACnetDateTime),
+		utils.DeepCopy[BACnetDateTime](m.MaximumValueTimestamp),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMaximumValueTimestampCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMaximumValueTimestampCopy
 }
 

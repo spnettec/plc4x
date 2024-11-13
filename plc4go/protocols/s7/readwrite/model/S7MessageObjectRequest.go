@@ -98,6 +98,8 @@ type S7MessageObjectRequestBuilder interface {
 	WithQueryType(QueryType) S7MessageObjectRequestBuilder
 	// WithAlarmType adds AlarmType (property field)
 	WithAlarmType(AlarmType) S7MessageObjectRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7DataAlarmMessageBuilder
 	// Build builds the S7MessageObjectRequest or returns an error if something is wrong
 	Build() (S7MessageObjectRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,6 +123,7 @@ var _ (S7MessageObjectRequestBuilder) = (*_S7MessageObjectRequestBuilder)(nil)
 
 func (b *_S7MessageObjectRequestBuilder) setParent(contract S7DataAlarmMessageContract) {
 	b.S7DataAlarmMessageContract = contract
+	contract.(*_S7DataAlarmMessage)._SubType = b._S7MessageObjectRequest
 }
 
 func (b *_S7MessageObjectRequestBuilder) WithMandatoryFields(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) S7MessageObjectRequestBuilder {
@@ -157,8 +160,10 @@ func (b *_S7MessageObjectRequestBuilder) MustBuild() S7MessageObjectRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7MessageObjectRequestBuilder) Done() S7DataAlarmMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7DataAlarmMessageBuilder().(*_S7DataAlarmMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -422,7 +427,7 @@ func (m *_S7MessageObjectRequest) deepCopy() *_S7MessageObjectRequest {
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = m
+	_S7MessageObjectRequestCopy.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = m
 	return _S7MessageObjectRequestCopy
 }
 

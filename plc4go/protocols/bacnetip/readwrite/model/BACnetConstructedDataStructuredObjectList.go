@@ -89,6 +89,8 @@ type BACnetConstructedDataStructuredObjectListBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataStructuredObjectListBuilder
 	// WithStructuredObjectList adds StructuredObjectList (property field)
 	WithStructuredObjectList(...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataStructuredObjectListBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataStructuredObjectList or returns an error if something is wrong
 	Build() (BACnetConstructedDataStructuredObjectList, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataStructuredObjectListBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataStructuredObjectListBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataStructuredObjectList
 }
 
 func (b *_BACnetConstructedDataStructuredObjectListBuilder) WithMandatoryFields(structuredObjectList []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataStructuredObjectListBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataStructuredObjectListBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataStructuredObjectListBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataStructuredObjectList) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataStructuredObjectListCopy := &_BACnetConstructedDataStructuredObjectList{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagObjectIdentifier, BACnetApplicationTagObjectIdentifier](m.StructuredObjectList),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataStructuredObjectListCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataStructuredObjectListCopy
 }
 

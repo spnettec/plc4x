@@ -333,7 +333,7 @@ func (m *_BACnetRouterEntryStatusTagged) deepCopy() *_BACnetRouterEntryStatusTag
 		return nil
 	}
 	_BACnetRouterEntryStatusTaggedCopy := &_BACnetRouterEntryStatusTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

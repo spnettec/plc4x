@@ -98,6 +98,8 @@ type APDUErrorBuilder interface {
 	WithError(BACnetError) APDUErrorBuilder
 	// WithErrorBuilder adds Error (property field) which is build by the builder
 	WithErrorBuilder(func(BACnetErrorBuilder) BACnetErrorBuilder) APDUErrorBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() APDUBuilder
 	// Build builds the APDUError or returns an error if something is wrong
 	Build() (APDUError, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,6 +123,7 @@ var _ (APDUErrorBuilder) = (*_APDUErrorBuilder)(nil)
 
 func (b *_APDUErrorBuilder) setParent(contract APDUContract) {
 	b.APDUContract = contract
+	contract.(*_APDU)._SubType = b._APDUError
 }
 
 func (b *_APDUErrorBuilder) WithMandatoryFields(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError) APDUErrorBuilder {
@@ -176,8 +179,10 @@ func (b *_APDUErrorBuilder) MustBuild() APDUError {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_APDUErrorBuilder) Done() APDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAPDUBuilder().(*_APDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -381,10 +386,10 @@ func (m *_APDUError) deepCopy() *_APDUError {
 		m.APDUContract.(*_APDU).deepCopy(),
 		m.OriginalInvokeId,
 		m.ErrorChoice,
-		m.Error.DeepCopy().(BACnetError),
+		utils.DeepCopy[BACnetError](m.Error),
 		m.reservedField0,
 	}
-	m.APDUContract.(*_APDU)._SubType = m
+	_APDUErrorCopy.APDUContract.(*_APDU)._SubType = m
 	return _APDUErrorCopy
 }
 

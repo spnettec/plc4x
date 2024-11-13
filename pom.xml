@@ -174,6 +174,7 @@
   <modules>
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>
+    <module>website</module>
   </modules>
 
   <dependencyManagement>
@@ -651,7 +652,7 @@
             </goals>
             <inherited>false</inherited>
             <configuration>
-              <source>${project.basedir}/src/main/script/prerequisiteCheck.groovy</source>
+              <source>${project.basedir}/website/main/script/prerequisiteCheck.groovy</source>
             </configuration>
           </execution>
           <!--
@@ -665,7 +666,7 @@
               <goal>execute</goal>
             </goals>
             <configuration>
-              <source>${project.basedir}/src/main/script/preSiteGeneration.groovy</source>
+              <source>${project.basedir}/website/main/script/preSiteGeneration.groovy</source>
             </configuration>
           </execution>
         </executions>
@@ -987,55 +988,6 @@
 
       -->
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-site-resources</id>
-            <!-- Only execute this for the parent module -->
-            <inherited>false</inherited>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/site</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.basedir}/src/site/resources-filtered</directory>
-                  <filtering>true</filtering>
-                  <targetPath>${project.build.directory}/site</targetPath>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <!--
-            Copy the schemas that might be distributed throughout the codebase to a central "schemas"
-            directory so IDEs can automatically pull them in.
-          -->
-          <execution>
-            <id>copy-schemas</id>
-            <!-- Only execute this for the parent module -->
-            <inherited>false</inherited>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/site</outputDirectory>
-              <resources>
-                <!-- Copy the resources for the test-suites -->
-                <resource>
-                  <directory>${project.basedir}/plc4j/utils/test-utils/src/main/resources/schemas</directory>
-                  <targetPath>${project.build.directory}/site/schemas</targetPath>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <!--
         Make the maven-site-plugin stage the output in the "asf-site" branch
       -->
@@ -1277,48 +1229,17 @@
             generating output.
           -->
           <version>3.12.1</version>
+
           <configuration>
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>false</generateReports>
-            <generateSitemap>true</generateSitemap>
+            <generateSitemap>false</generateSitemap>
             <relativizeDecorationLinks>false</relativizeDecorationLinks>
             <locales>en</locales>
             <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
             <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
-            <!--
-              IntelliJ can't find the asciidoc config option in the site plugin, which is correct.
-              However, this config section is used by the asciidoctor site plugin extension. So please
-              ignore this error, it's actually ok.
-            -->
-            <asciidoc>
-              <attributes>
-                <source-highlighter>prettify</source-highlighter>
-                <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
-                <pom-adoc>${project.build.directory}/pom.adoc</pom-adoc>
-              </attributes>
-              <requires>
-                <require>asciidoctor-diagram</require>
-              </requires>
-            </asciidoc>
+
           </configuration>
-          <dependencies>
-            <!-- Add support for asciidoctor -->
-            <dependency>
-              <groupId>org.asciidoctor</groupId>
-              <artifactId>asciidoctor-maven-plugin</artifactId>
-              <version>${asciidoctor.maven.plugin.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.asciidoctor</groupId>
-              <artifactId>asciidoctorj</artifactId>
-              <version>${asciidoctorj.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.asciidoctor</groupId>
-              <artifactId>asciidoctorj-diagram</artifactId>
-              <version>${asciidoctorj.diagram.version}</version>
-            </dependency>
-          </dependencies>
         </plugin>
 
         <plugin>
@@ -1734,7 +1655,7 @@
             Please don't change "target" to "${project.build.directory}" as profile-activation happens before
             property resolution ... it won't work with a property.
           -->
-          <exists>src/main/generated/</exists>
+          <exists>website/main/generated/</exists>
         </file>
       </activation>
       <build>
@@ -1751,7 +1672,7 @@
                 </goals>
                 <configuration>
                   <sources>
-                    <source>${project.basedir}/src/main/generated/</source>
+                    <source>${project.basedir}/website/main/generated/</source>
                   </sources>
                 </configuration>
               </execution>

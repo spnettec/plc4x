@@ -85,6 +85,8 @@ type SubscriptionAcknowledgementBuilder interface {
 	WithSubscriptionId(uint32) SubscriptionAcknowledgementBuilder
 	// WithSequenceNumber adds SequenceNumber (property field)
 	WithSequenceNumber(uint32) SubscriptionAcknowledgementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SubscriptionAcknowledgement or returns an error if something is wrong
 	Build() (SubscriptionAcknowledgement, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (SubscriptionAcknowledgementBuilder) = (*_SubscriptionAcknowledgementBuild
 
 func (b *_SubscriptionAcknowledgementBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SubscriptionAcknowledgement
 }
 
 func (b *_SubscriptionAcknowledgementBuilder) WithMandatoryFields(subscriptionId uint32, sequenceNumber uint32) SubscriptionAcknowledgementBuilder {
@@ -139,8 +142,10 @@ func (b *_SubscriptionAcknowledgementBuilder) MustBuild() SubscriptionAcknowledg
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SubscriptionAcknowledgementBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_SubscriptionAcknowledgement) deepCopy() *_SubscriptionAcknowledgement 
 		m.SubscriptionId,
 		m.SequenceNumber,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SubscriptionAcknowledgementCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SubscriptionAcknowledgementCopy
 }
 

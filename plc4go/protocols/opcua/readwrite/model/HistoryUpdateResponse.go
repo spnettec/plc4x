@@ -96,6 +96,8 @@ type HistoryUpdateResponseBuilder interface {
 	WithResults(...HistoryUpdateResult) HistoryUpdateResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) HistoryUpdateResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the HistoryUpdateResponse or returns an error if something is wrong
 	Build() (HistoryUpdateResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (HistoryUpdateResponseBuilder) = (*_HistoryUpdateResponseBuilder)(nil)
 
 func (b *_HistoryUpdateResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._HistoryUpdateResponse
 }
 
 func (b *_HistoryUpdateResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []HistoryUpdateResult, diagnosticInfos []DiagnosticInfo) HistoryUpdateResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_HistoryUpdateResponseBuilder) MustBuild() HistoryUpdateResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_HistoryUpdateResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_HistoryUpdateResponse) deepCopy() *_HistoryUpdateResponse {
 	}
 	_HistoryUpdateResponseCopy := &_HistoryUpdateResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[HistoryUpdateResult, HistoryUpdateResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_HistoryUpdateResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryUpdateResponseCopy
 }
 

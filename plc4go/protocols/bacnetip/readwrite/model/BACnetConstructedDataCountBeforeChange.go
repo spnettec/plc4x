@@ -86,6 +86,8 @@ type BACnetConstructedDataCountBeforeChangeBuilder interface {
 	WithCountBeforeChange(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBeforeChangeBuilder
 	// WithCountBeforeChangeBuilder adds CountBeforeChange (property field) which is build by the builder
 	WithCountBeforeChangeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCountBeforeChangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCountBeforeChange or returns an error if something is wrong
 	Build() (BACnetConstructedDataCountBeforeChange, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataCountBeforeChangeBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataCountBeforeChangeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCountBeforeChange
 }
 
 func (b *_BACnetConstructedDataCountBeforeChangeBuilder) WithMandatoryFields(countBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBeforeChangeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataCountBeforeChangeBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCountBeforeChangeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataCountBeforeChange) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataCountBeforeChangeCopy := &_BACnetConstructedDataCountBeforeChange{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CountBeforeChange.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.CountBeforeChange),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCountBeforeChangeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCountBeforeChangeCopy
 }
 

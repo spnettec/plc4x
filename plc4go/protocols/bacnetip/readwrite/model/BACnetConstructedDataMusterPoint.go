@@ -86,6 +86,8 @@ type BACnetConstructedDataMusterPointBuilder interface {
 	WithMusterPoint(BACnetApplicationTagBoolean) BACnetConstructedDataMusterPointBuilder
 	// WithMusterPointBuilder adds MusterPoint (property field) which is build by the builder
 	WithMusterPointBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataMusterPointBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMusterPoint or returns an error if something is wrong
 	Build() (BACnetConstructedDataMusterPoint, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMusterPointBuilder) = (*_BACnetConstructedDataMuster
 
 func (b *_BACnetConstructedDataMusterPointBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMusterPoint
 }
 
 func (b *_BACnetConstructedDataMusterPointBuilder) WithMandatoryFields(musterPoint BACnetApplicationTagBoolean) BACnetConstructedDataMusterPointBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMusterPointBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMusterPointBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataMusterPoint) deepCopy() *_BACnetConstructedDataMu
 	}
 	_BACnetConstructedDataMusterPointCopy := &_BACnetConstructedDataMusterPoint{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MusterPoint.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.MusterPoint),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMusterPointCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMusterPointCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetPropertyStatesNetworkNumberQualityBuilder interface {
 	WithNetworkNumberQuality(BACnetNetworkNumberQualityTagged) BACnetPropertyStatesNetworkNumberQualityBuilder
 	// WithNetworkNumberQualityBuilder adds NetworkNumberQuality (property field) which is build by the builder
 	WithNetworkNumberQualityBuilder(func(BACnetNetworkNumberQualityTaggedBuilder) BACnetNetworkNumberQualityTaggedBuilder) BACnetPropertyStatesNetworkNumberQualityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesNetworkNumberQuality or returns an error if something is wrong
 	Build() (BACnetPropertyStatesNetworkNumberQuality, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesNetworkNumberQualityBuilder) = (*_BACnetPropertyState
 
 func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesNetworkNumberQuality
 }
 
 func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) WithMandatoryFields(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetPropertyStatesNetworkNumberQualityBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) MustBuild() BACnetPro
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesNetworkNumberQualityBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) deepCopy() *_BACnetPropertyS
 	}
 	_BACnetPropertyStatesNetworkNumberQualityCopy := &_BACnetPropertyStatesNetworkNumberQuality{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.NetworkNumberQuality.DeepCopy().(BACnetNetworkNumberQualityTagged),
+		utils.DeepCopy[BACnetNetworkNumberQualityTagged](m.NetworkNumberQuality),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesNetworkNumberQualityCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesNetworkNumberQualityCopy
 }
 

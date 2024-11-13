@@ -84,6 +84,8 @@ type BACnetPropertyStatesLiftFaultBuilder interface {
 	WithLiftFault(BACnetLiftFaultTagged) BACnetPropertyStatesLiftFaultBuilder
 	// WithLiftFaultBuilder adds LiftFault (property field) which is build by the builder
 	WithLiftFaultBuilder(func(BACnetLiftFaultTaggedBuilder) BACnetLiftFaultTaggedBuilder) BACnetPropertyStatesLiftFaultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesLiftFault or returns an error if something is wrong
 	Build() (BACnetPropertyStatesLiftFault, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesLiftFaultBuilder) = (*_BACnetPropertyStatesLiftFaultB
 
 func (b *_BACnetPropertyStatesLiftFaultBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesLiftFault
 }
 
 func (b *_BACnetPropertyStatesLiftFaultBuilder) WithMandatoryFields(liftFault BACnetLiftFaultTagged) BACnetPropertyStatesLiftFaultBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesLiftFaultBuilder) MustBuild() BACnetPropertyStates
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesLiftFaultBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesLiftFault) deepCopy() *_BACnetPropertyStatesLiftFa
 	}
 	_BACnetPropertyStatesLiftFaultCopy := &_BACnetPropertyStatesLiftFault{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.LiftFault.DeepCopy().(BACnetLiftFaultTagged),
+		utils.DeepCopy[BACnetLiftFaultTagged](m.LiftFault),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesLiftFaultCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesLiftFaultCopy
 }
 

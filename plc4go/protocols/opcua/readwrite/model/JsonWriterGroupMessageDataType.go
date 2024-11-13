@@ -79,6 +79,8 @@ type JsonWriterGroupMessageDataTypeBuilder interface {
 	WithMandatoryFields(networkMessageContentMask JsonNetworkMessageContentMask) JsonWriterGroupMessageDataTypeBuilder
 	// WithNetworkMessageContentMask adds NetworkMessageContentMask (property field)
 	WithNetworkMessageContentMask(JsonNetworkMessageContentMask) JsonWriterGroupMessageDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the JsonWriterGroupMessageDataType or returns an error if something is wrong
 	Build() (JsonWriterGroupMessageDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (JsonWriterGroupMessageDataTypeBuilder) = (*_JsonWriterGroupMessageDataTyp
 
 func (b *_JsonWriterGroupMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._JsonWriterGroupMessageDataType
 }
 
 func (b *_JsonWriterGroupMessageDataTypeBuilder) WithMandatoryFields(networkMessageContentMask JsonNetworkMessageContentMask) JsonWriterGroupMessageDataTypeBuilder {
@@ -128,8 +131,10 @@ func (b *_JsonWriterGroupMessageDataTypeBuilder) MustBuild() JsonWriterGroupMess
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_JsonWriterGroupMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_JsonWriterGroupMessageDataType) deepCopy() *_JsonWriterGroupMessageDat
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NetworkMessageContentMask,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_JsonWriterGroupMessageDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _JsonWriterGroupMessageDataTypeCopy
 }
 

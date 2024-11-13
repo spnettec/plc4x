@@ -71,6 +71,8 @@ type TDataIndividualReqBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() TDataIndividualReqBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the TDataIndividualReq or returns an error if something is wrong
 	Build() (TDataIndividualReq, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (TDataIndividualReqBuilder) = (*_TDataIndividualReqBuilder)(nil)
 
 func (b *_TDataIndividualReqBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._TDataIndividualReq
 }
 
 func (b *_TDataIndividualReqBuilder) WithMandatoryFields() TDataIndividualReqBuilder {
@@ -115,8 +118,10 @@ func (b *_TDataIndividualReqBuilder) MustBuild() TDataIndividualReq {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TDataIndividualReqBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_TDataIndividualReq) deepCopy() *_TDataIndividualReq {
 	_TDataIndividualReqCopy := &_TDataIndividualReq{
 		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_TDataIndividualReqCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _TDataIndividualReqCopy
 }
 

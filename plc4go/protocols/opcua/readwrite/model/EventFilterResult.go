@@ -96,6 +96,8 @@ type EventFilterResultBuilder interface {
 	WithWhereClauseResult(ContentFilterResult) EventFilterResultBuilder
 	// WithWhereClauseResultBuilder adds WhereClauseResult (property field) which is build by the builder
 	WithWhereClauseResultBuilder(func(ContentFilterResultBuilder) ContentFilterResultBuilder) EventFilterResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the EventFilterResult or returns an error if something is wrong
 	Build() (EventFilterResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (EventFilterResultBuilder) = (*_EventFilterResultBuilder)(nil)
 
 func (b *_EventFilterResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._EventFilterResult
 }
 
 func (b *_EventFilterResultBuilder) WithMandatoryFields(selectClauseResults []StatusCode, selectClauseDiagnosticInfos []DiagnosticInfo, whereClauseResult ContentFilterResult) EventFilterResultBuilder {
@@ -174,8 +177,10 @@ func (b *_EventFilterResultBuilder) MustBuild() EventFilterResult {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EventFilterResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -406,9 +411,9 @@ func (m *_EventFilterResult) deepCopy() *_EventFilterResult {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.SelectClauseResults),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.SelectClauseDiagnosticInfos),
-		m.WhereClauseResult.DeepCopy().(ContentFilterResult),
+		utils.DeepCopy[ContentFilterResult](m.WhereClauseResult),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_EventFilterResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EventFilterResultCopy
 }
 

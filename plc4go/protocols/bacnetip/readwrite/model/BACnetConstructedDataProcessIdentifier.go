@@ -86,6 +86,8 @@ type BACnetConstructedDataProcessIdentifierBuilder interface {
 	WithProcessIdentifier(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProcessIdentifierBuilder
 	// WithProcessIdentifierBuilder adds ProcessIdentifier (property field) which is build by the builder
 	WithProcessIdentifierBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProcessIdentifierBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataProcessIdentifier or returns an error if something is wrong
 	Build() (BACnetConstructedDataProcessIdentifier, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataProcessIdentifierBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataProcessIdentifierBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataProcessIdentifier
 }
 
 func (b *_BACnetConstructedDataProcessIdentifierBuilder) WithMandatoryFields(processIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProcessIdentifierBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataProcessIdentifierBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataProcessIdentifierBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataProcessIdentifier) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataProcessIdentifierCopy := &_BACnetConstructedDataProcessIdentifier{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ProcessIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ProcessIdentifier),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataProcessIdentifierCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataProcessIdentifierCopy
 }
 

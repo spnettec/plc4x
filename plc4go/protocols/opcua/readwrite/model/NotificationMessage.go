@@ -91,6 +91,8 @@ type NotificationMessageBuilder interface {
 	WithPublishTime(int64) NotificationMessageBuilder
 	// WithNotificationData adds NotificationData (property field)
 	WithNotificationData(...ExtensionObject) NotificationMessageBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the NotificationMessage or returns an error if something is wrong
 	Build() (NotificationMessage, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (NotificationMessageBuilder) = (*_NotificationMessageBuilder)(nil)
 
 func (b *_NotificationMessageBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._NotificationMessage
 }
 
 func (b *_NotificationMessageBuilder) WithMandatoryFields(sequenceNumber uint32, publishTime int64, notificationData []ExtensionObject) NotificationMessageBuilder {
@@ -150,8 +153,10 @@ func (b *_NotificationMessageBuilder) MustBuild() NotificationMessage {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NotificationMessageBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -364,7 +369,7 @@ func (m *_NotificationMessage) deepCopy() *_NotificationMessage {
 		m.PublishTime,
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.NotificationData),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_NotificationMessageCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _NotificationMessageCopy
 }
 

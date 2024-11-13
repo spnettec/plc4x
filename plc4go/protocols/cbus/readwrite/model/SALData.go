@@ -96,120 +96,51 @@ type SALDataBuilder interface {
 	// WithOptionalSalDataBuilder adds SalData (property field) which is build by the builder
 	WithOptionalSalDataBuilder(func(SALDataBuilder) SALDataBuilder) SALDataBuilder
 	// AsSALDataReserved converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataReserved() interface {
-		SALDataReservedBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataReserved() SALDataReservedBuilder
 	// AsSALDataFreeUsage converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataFreeUsage() interface {
-		SALDataFreeUsageBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataFreeUsage() SALDataFreeUsageBuilder
 	// AsSALDataTemperatureBroadcast converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataTemperatureBroadcast() interface {
-		SALDataTemperatureBroadcastBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataTemperatureBroadcast() SALDataTemperatureBroadcastBuilder
 	// AsSALDataRoomControlSystem converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataRoomControlSystem() interface {
-		SALDataRoomControlSystemBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataRoomControlSystem() SALDataRoomControlSystemBuilder
 	// AsSALDataLighting converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataLighting() interface {
-		SALDataLightingBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataLighting() SALDataLightingBuilder
 	// AsSALDataVentilation converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataVentilation() interface {
-		SALDataVentilationBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataVentilation() SALDataVentilationBuilder
 	// AsSALDataIrrigationControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataIrrigationControl() interface {
-		SALDataIrrigationControlBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataIrrigationControl() SALDataIrrigationControlBuilder
 	// AsSALDataPoolsSpasPondsFountainsControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataPoolsSpasPondsFountainsControl() interface {
-		SALDataPoolsSpasPondsFountainsControlBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataPoolsSpasPondsFountainsControl() SALDataPoolsSpasPondsFountainsControlBuilder
 	// AsSALDataHeating converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataHeating() interface {
-		SALDataHeatingBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataHeating() SALDataHeatingBuilder
 	// AsSALDataAirConditioning converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataAirConditioning() interface {
-		SALDataAirConditioningBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataAirConditioning() SALDataAirConditioningBuilder
 	// AsSALDataTriggerControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataTriggerControl() interface {
-		SALDataTriggerControlBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataTriggerControl() SALDataTriggerControlBuilder
 	// AsSALDataEnableControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataEnableControl() interface {
-		SALDataEnableControlBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataEnableControl() SALDataEnableControlBuilder
 	// AsSALDataAudioAndVideo converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataAudioAndVideo() interface {
-		SALDataAudioAndVideoBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataAudioAndVideo() SALDataAudioAndVideoBuilder
 	// AsSALDataSecurity converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataSecurity() interface {
-		SALDataSecurityBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataSecurity() SALDataSecurityBuilder
 	// AsSALDataMetering converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataMetering() interface {
-		SALDataMeteringBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataMetering() SALDataMeteringBuilder
 	// AsSALDataAccessControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataAccessControl() interface {
-		SALDataAccessControlBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataAccessControl() SALDataAccessControlBuilder
 	// AsSALDataClockAndTimekeeping converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataClockAndTimekeeping() interface {
-		SALDataClockAndTimekeepingBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataClockAndTimekeeping() SALDataClockAndTimekeepingBuilder
 	// AsSALDataTelephonyStatusAndControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataTelephonyStatusAndControl() interface {
-		SALDataTelephonyStatusAndControlBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataTelephonyStatusAndControl() SALDataTelephonyStatusAndControlBuilder
 	// AsSALDataMeasurement converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataMeasurement() interface {
-		SALDataMeasurementBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataMeasurement() SALDataMeasurementBuilder
 	// AsSALDataTesting converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataTesting() interface {
-		SALDataTestingBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataTesting() SALDataTestingBuilder
 	// AsSALDataMediaTransport converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataMediaTransport() interface {
-		SALDataMediaTransportBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataMediaTransport() SALDataMediaTransportBuilder
 	// AsSALDataErrorReporting converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataErrorReporting() interface {
-		SALDataErrorReportingBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataErrorReporting() SALDataErrorReportingBuilder
 	// AsSALDataHvacActuator converts this build to a subType of SALData. It is always possible to return to current builder using Done()
-	AsSALDataHvacActuator() interface {
-		SALDataHvacActuatorBuilder
-		Done() SALDataBuilder
-	}
+	AsSALDataHvacActuator() SALDataHvacActuatorBuilder
 	// Build builds the SALData or returns an error if something is wrong
 	PartialBuild() (SALDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -278,14 +209,8 @@ func (b *_SALDataBuilder) PartialMustBuild() SALDataContract {
 	return build
 }
 
-func (b *_SALDataBuilder) AsSALDataReserved() interface {
-	SALDataReservedBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataReservedBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataReserved() SALDataReservedBuilder {
+	if cb, ok := b.childBuilder.(SALDataReservedBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataReservedBuilder().(*_SALDataReservedBuilder)
@@ -294,14 +219,8 @@ func (b *_SALDataBuilder) AsSALDataReserved() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataFreeUsage() interface {
-	SALDataFreeUsageBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataFreeUsageBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataFreeUsage() SALDataFreeUsageBuilder {
+	if cb, ok := b.childBuilder.(SALDataFreeUsageBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataFreeUsageBuilder().(*_SALDataFreeUsageBuilder)
@@ -310,14 +229,8 @@ func (b *_SALDataBuilder) AsSALDataFreeUsage() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataTemperatureBroadcast() interface {
-	SALDataTemperatureBroadcastBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataTemperatureBroadcastBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataTemperatureBroadcast() SALDataTemperatureBroadcastBuilder {
+	if cb, ok := b.childBuilder.(SALDataTemperatureBroadcastBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataTemperatureBroadcastBuilder().(*_SALDataTemperatureBroadcastBuilder)
@@ -326,14 +239,8 @@ func (b *_SALDataBuilder) AsSALDataTemperatureBroadcast() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataRoomControlSystem() interface {
-	SALDataRoomControlSystemBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataRoomControlSystemBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataRoomControlSystem() SALDataRoomControlSystemBuilder {
+	if cb, ok := b.childBuilder.(SALDataRoomControlSystemBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataRoomControlSystemBuilder().(*_SALDataRoomControlSystemBuilder)
@@ -342,14 +249,8 @@ func (b *_SALDataBuilder) AsSALDataRoomControlSystem() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataLighting() interface {
-	SALDataLightingBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataLightingBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataLighting() SALDataLightingBuilder {
+	if cb, ok := b.childBuilder.(SALDataLightingBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataLightingBuilder().(*_SALDataLightingBuilder)
@@ -358,14 +259,8 @@ func (b *_SALDataBuilder) AsSALDataLighting() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataVentilation() interface {
-	SALDataVentilationBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataVentilationBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataVentilation() SALDataVentilationBuilder {
+	if cb, ok := b.childBuilder.(SALDataVentilationBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataVentilationBuilder().(*_SALDataVentilationBuilder)
@@ -374,14 +269,8 @@ func (b *_SALDataBuilder) AsSALDataVentilation() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataIrrigationControl() interface {
-	SALDataIrrigationControlBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataIrrigationControlBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataIrrigationControl() SALDataIrrigationControlBuilder {
+	if cb, ok := b.childBuilder.(SALDataIrrigationControlBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataIrrigationControlBuilder().(*_SALDataIrrigationControlBuilder)
@@ -390,14 +279,8 @@ func (b *_SALDataBuilder) AsSALDataIrrigationControl() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataPoolsSpasPondsFountainsControl() interface {
-	SALDataPoolsSpasPondsFountainsControlBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataPoolsSpasPondsFountainsControlBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataPoolsSpasPondsFountainsControl() SALDataPoolsSpasPondsFountainsControlBuilder {
+	if cb, ok := b.childBuilder.(SALDataPoolsSpasPondsFountainsControlBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataPoolsSpasPondsFountainsControlBuilder().(*_SALDataPoolsSpasPondsFountainsControlBuilder)
@@ -406,14 +289,8 @@ func (b *_SALDataBuilder) AsSALDataPoolsSpasPondsFountainsControl() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataHeating() interface {
-	SALDataHeatingBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataHeatingBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataHeating() SALDataHeatingBuilder {
+	if cb, ok := b.childBuilder.(SALDataHeatingBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataHeatingBuilder().(*_SALDataHeatingBuilder)
@@ -422,14 +299,8 @@ func (b *_SALDataBuilder) AsSALDataHeating() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataAirConditioning() interface {
-	SALDataAirConditioningBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataAirConditioningBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataAirConditioning() SALDataAirConditioningBuilder {
+	if cb, ok := b.childBuilder.(SALDataAirConditioningBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataAirConditioningBuilder().(*_SALDataAirConditioningBuilder)
@@ -438,14 +309,8 @@ func (b *_SALDataBuilder) AsSALDataAirConditioning() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataTriggerControl() interface {
-	SALDataTriggerControlBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataTriggerControlBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataTriggerControl() SALDataTriggerControlBuilder {
+	if cb, ok := b.childBuilder.(SALDataTriggerControlBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataTriggerControlBuilder().(*_SALDataTriggerControlBuilder)
@@ -454,14 +319,8 @@ func (b *_SALDataBuilder) AsSALDataTriggerControl() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataEnableControl() interface {
-	SALDataEnableControlBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataEnableControlBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataEnableControl() SALDataEnableControlBuilder {
+	if cb, ok := b.childBuilder.(SALDataEnableControlBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataEnableControlBuilder().(*_SALDataEnableControlBuilder)
@@ -470,14 +329,8 @@ func (b *_SALDataBuilder) AsSALDataEnableControl() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataAudioAndVideo() interface {
-	SALDataAudioAndVideoBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataAudioAndVideoBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataAudioAndVideo() SALDataAudioAndVideoBuilder {
+	if cb, ok := b.childBuilder.(SALDataAudioAndVideoBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataAudioAndVideoBuilder().(*_SALDataAudioAndVideoBuilder)
@@ -486,14 +339,8 @@ func (b *_SALDataBuilder) AsSALDataAudioAndVideo() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataSecurity() interface {
-	SALDataSecurityBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataSecurityBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataSecurity() SALDataSecurityBuilder {
+	if cb, ok := b.childBuilder.(SALDataSecurityBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataSecurityBuilder().(*_SALDataSecurityBuilder)
@@ -502,14 +349,8 @@ func (b *_SALDataBuilder) AsSALDataSecurity() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataMetering() interface {
-	SALDataMeteringBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataMeteringBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataMetering() SALDataMeteringBuilder {
+	if cb, ok := b.childBuilder.(SALDataMeteringBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataMeteringBuilder().(*_SALDataMeteringBuilder)
@@ -518,14 +359,8 @@ func (b *_SALDataBuilder) AsSALDataMetering() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataAccessControl() interface {
-	SALDataAccessControlBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataAccessControlBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataAccessControl() SALDataAccessControlBuilder {
+	if cb, ok := b.childBuilder.(SALDataAccessControlBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataAccessControlBuilder().(*_SALDataAccessControlBuilder)
@@ -534,14 +369,8 @@ func (b *_SALDataBuilder) AsSALDataAccessControl() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataClockAndTimekeeping() interface {
-	SALDataClockAndTimekeepingBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataClockAndTimekeepingBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataClockAndTimekeeping() SALDataClockAndTimekeepingBuilder {
+	if cb, ok := b.childBuilder.(SALDataClockAndTimekeepingBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataClockAndTimekeepingBuilder().(*_SALDataClockAndTimekeepingBuilder)
@@ -550,14 +379,8 @@ func (b *_SALDataBuilder) AsSALDataClockAndTimekeeping() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataTelephonyStatusAndControl() interface {
-	SALDataTelephonyStatusAndControlBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataTelephonyStatusAndControlBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataTelephonyStatusAndControl() SALDataTelephonyStatusAndControlBuilder {
+	if cb, ok := b.childBuilder.(SALDataTelephonyStatusAndControlBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataTelephonyStatusAndControlBuilder().(*_SALDataTelephonyStatusAndControlBuilder)
@@ -566,14 +389,8 @@ func (b *_SALDataBuilder) AsSALDataTelephonyStatusAndControl() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataMeasurement() interface {
-	SALDataMeasurementBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataMeasurementBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataMeasurement() SALDataMeasurementBuilder {
+	if cb, ok := b.childBuilder.(SALDataMeasurementBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataMeasurementBuilder().(*_SALDataMeasurementBuilder)
@@ -582,14 +399,8 @@ func (b *_SALDataBuilder) AsSALDataMeasurement() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataTesting() interface {
-	SALDataTestingBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataTestingBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataTesting() SALDataTestingBuilder {
+	if cb, ok := b.childBuilder.(SALDataTestingBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataTestingBuilder().(*_SALDataTestingBuilder)
@@ -598,14 +409,8 @@ func (b *_SALDataBuilder) AsSALDataTesting() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataMediaTransport() interface {
-	SALDataMediaTransportBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataMediaTransportBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataMediaTransport() SALDataMediaTransportBuilder {
+	if cb, ok := b.childBuilder.(SALDataMediaTransportBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataMediaTransportBuilder().(*_SALDataMediaTransportBuilder)
@@ -614,14 +419,8 @@ func (b *_SALDataBuilder) AsSALDataMediaTransport() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataErrorReporting() interface {
-	SALDataErrorReportingBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataErrorReportingBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataErrorReporting() SALDataErrorReportingBuilder {
+	if cb, ok := b.childBuilder.(SALDataErrorReportingBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataErrorReportingBuilder().(*_SALDataErrorReportingBuilder)
@@ -630,14 +429,8 @@ func (b *_SALDataBuilder) AsSALDataErrorReporting() interface {
 	return cb
 }
 
-func (b *_SALDataBuilder) AsSALDataHvacActuator() interface {
-	SALDataHvacActuatorBuilder
-	Done() SALDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SALDataHvacActuatorBuilder
-		Done() SALDataBuilder
-	}); ok {
+func (b *_SALDataBuilder) AsSALDataHvacActuator() SALDataHvacActuatorBuilder {
+	if cb, ok := b.childBuilder.(SALDataHvacActuatorBuilder); ok {
 		return cb
 	}
 	cb := NewSALDataHvacActuatorBuilder().(*_SALDataHvacActuatorBuilder)
@@ -930,7 +723,7 @@ func (m *_SALData) deepCopy() *_SALData {
 	}
 	_SALDataCopy := &_SALData{
 		nil, // will be set by child
-		m.SalData.DeepCopy().(SALData),
+		utils.DeepCopy[SALData](m.SalData),
 	}
 	return _SALDataCopy
 }

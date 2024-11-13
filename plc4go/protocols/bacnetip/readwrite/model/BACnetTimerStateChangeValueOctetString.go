@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueOctetStringBuilder interface {
 	WithOctetStringValue(BACnetApplicationTagOctetString) BACnetTimerStateChangeValueOctetStringBuilder
 	// WithOctetStringValueBuilder adds OctetStringValue (property field) which is build by the builder
 	WithOctetStringValueBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetTimerStateChangeValueOctetStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueOctetString or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueOctetString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueOctetStringBuilder) = (*_BACnetTimerStateChang
 
 func (b *_BACnetTimerStateChangeValueOctetStringBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueOctetString
 }
 
 func (b *_BACnetTimerStateChangeValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetTimerStateChangeValueOctetStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueOctetStringBuilder) MustBuild() BACnetTimer
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueOctetStringBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimerStateChangeValueOctetString) deepCopy() *_BACnetTimerStateC
 	}
 	_BACnetTimerStateChangeValueOctetStringCopy := &_BACnetTimerStateChangeValueOctetString{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.OctetStringValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueOctetStringCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueOctetStringCopy
 }
 

@@ -112,6 +112,8 @@ type EUInformationBuilder interface {
 	WithDescription(LocalizedText) EUInformationBuilder
 	// WithDescriptionBuilder adds Description (property field) which is build by the builder
 	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) EUInformationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the EUInformation or returns an error if something is wrong
 	Build() (EUInformation, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (EUInformationBuilder) = (*_EUInformationBuilder)(nil)
 
 func (b *_EUInformationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._EUInformation
 }
 
 func (b *_EUInformationBuilder) WithMandatoryFields(namespaceUri PascalString, unitId int32, displayName LocalizedText, description LocalizedText) EUInformationBuilder {
@@ -233,8 +236,10 @@ func (b *_EUInformationBuilder) MustBuild() EUInformation {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EUInformationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -440,12 +445,12 @@ func (m *_EUInformation) deepCopy() *_EUInformation {
 	}
 	_EUInformationCopy := &_EUInformation{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NamespaceUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.NamespaceUri),
 		m.UnitId,
-		m.DisplayName.DeepCopy().(LocalizedText),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.DisplayName),
+		utils.DeepCopy[LocalizedText](m.Description),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_EUInformationCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EUInformationCopy
 }
 

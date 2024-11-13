@@ -85,6 +85,8 @@ type AnsiExtendedSymbolSegmentBuilder interface {
 	WithSymbol(string) AnsiExtendedSymbolSegmentBuilder
 	// WithPad adds Pad (property field)
 	WithOptionalPad(uint8) AnsiExtendedSymbolSegmentBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() DataSegmentTypeBuilder
 	// Build builds the AnsiExtendedSymbolSegment or returns an error if something is wrong
 	Build() (AnsiExtendedSymbolSegment, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (AnsiExtendedSymbolSegmentBuilder) = (*_AnsiExtendedSymbolSegmentBuilder)(
 
 func (b *_AnsiExtendedSymbolSegmentBuilder) setParent(contract DataSegmentTypeContract) {
 	b.DataSegmentTypeContract = contract
+	contract.(*_DataSegmentType)._SubType = b._AnsiExtendedSymbolSegment
 }
 
 func (b *_AnsiExtendedSymbolSegmentBuilder) WithMandatoryFields(symbol string) AnsiExtendedSymbolSegmentBuilder {
@@ -139,8 +142,10 @@ func (b *_AnsiExtendedSymbolSegmentBuilder) MustBuild() AnsiExtendedSymbolSegmen
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AnsiExtendedSymbolSegmentBuilder) Done() DataSegmentTypeBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewDataSegmentTypeBuilder().(*_DataSegmentTypeBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -331,7 +336,7 @@ func (m *_AnsiExtendedSymbolSegment) deepCopy() *_AnsiExtendedSymbolSegment {
 		m.Symbol,
 		utils.CopyPtr[uint8](m.Pad),
 	}
-	m.DataSegmentTypeContract.(*_DataSegmentType)._SubType = m
+	_AnsiExtendedSymbolSegmentCopy.DataSegmentTypeContract.(*_DataSegmentType)._SubType = m
 	return _AnsiExtendedSymbolSegmentCopy
 }
 

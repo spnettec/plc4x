@@ -89,20 +89,11 @@ type LogicalSegmentTypeBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() LogicalSegmentTypeBuilder
 	// AsClassID converts this build to a subType of LogicalSegmentType. It is always possible to return to current builder using Done()
-	AsClassID() interface {
-		ClassIDBuilder
-		Done() LogicalSegmentTypeBuilder
-	}
+	AsClassID() ClassIDBuilder
 	// AsInstanceID converts this build to a subType of LogicalSegmentType. It is always possible to return to current builder using Done()
-	AsInstanceID() interface {
-		InstanceIDBuilder
-		Done() LogicalSegmentTypeBuilder
-	}
+	AsInstanceID() InstanceIDBuilder
 	// AsMemberID converts this build to a subType of LogicalSegmentType. It is always possible to return to current builder using Done()
-	AsMemberID() interface {
-		MemberIDBuilder
-		Done() LogicalSegmentTypeBuilder
-	}
+	AsMemberID() MemberIDBuilder
 	// Build builds the LogicalSegmentType or returns an error if something is wrong
 	PartialBuild() (LogicalSegmentTypeContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -153,14 +144,8 @@ func (b *_LogicalSegmentTypeBuilder) PartialMustBuild() LogicalSegmentTypeContra
 	return build
 }
 
-func (b *_LogicalSegmentTypeBuilder) AsClassID() interface {
-	ClassIDBuilder
-	Done() LogicalSegmentTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ClassIDBuilder
-		Done() LogicalSegmentTypeBuilder
-	}); ok {
+func (b *_LogicalSegmentTypeBuilder) AsClassID() ClassIDBuilder {
+	if cb, ok := b.childBuilder.(ClassIDBuilder); ok {
 		return cb
 	}
 	cb := NewClassIDBuilder().(*_ClassIDBuilder)
@@ -169,14 +154,8 @@ func (b *_LogicalSegmentTypeBuilder) AsClassID() interface {
 	return cb
 }
 
-func (b *_LogicalSegmentTypeBuilder) AsInstanceID() interface {
-	InstanceIDBuilder
-	Done() LogicalSegmentTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		InstanceIDBuilder
-		Done() LogicalSegmentTypeBuilder
-	}); ok {
+func (b *_LogicalSegmentTypeBuilder) AsInstanceID() InstanceIDBuilder {
+	if cb, ok := b.childBuilder.(InstanceIDBuilder); ok {
 		return cb
 	}
 	cb := NewInstanceIDBuilder().(*_InstanceIDBuilder)
@@ -185,14 +164,8 @@ func (b *_LogicalSegmentTypeBuilder) AsInstanceID() interface {
 	return cb
 }
 
-func (b *_LogicalSegmentTypeBuilder) AsMemberID() interface {
-	MemberIDBuilder
-	Done() LogicalSegmentTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MemberIDBuilder
-		Done() LogicalSegmentTypeBuilder
-	}); ok {
+func (b *_LogicalSegmentTypeBuilder) AsMemberID() MemberIDBuilder {
+	if cb, ok := b.childBuilder.(MemberIDBuilder); ok {
 		return cb
 	}
 	cb := NewMemberIDBuilder().(*_MemberIDBuilder)

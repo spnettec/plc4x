@@ -85,6 +85,8 @@ type XVTypeBuilder interface {
 	WithX(float64) XVTypeBuilder
 	// WithValue adds Value (property field)
 	WithValue(float32) XVTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the XVType or returns an error if something is wrong
 	Build() (XVType, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (XVTypeBuilder) = (*_XVTypeBuilder)(nil)
 
 func (b *_XVTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._XVType
 }
 
 func (b *_XVTypeBuilder) WithMandatoryFields(x float64, value float32) XVTypeBuilder {
@@ -139,8 +142,10 @@ func (b *_XVTypeBuilder) MustBuild() XVType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_XVTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_XVType) deepCopy() *_XVType {
 		m.X,
 		m.Value,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_XVTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _XVTypeCopy
 }
 

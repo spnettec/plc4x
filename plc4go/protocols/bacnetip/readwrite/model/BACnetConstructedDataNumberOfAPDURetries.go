@@ -86,6 +86,8 @@ type BACnetConstructedDataNumberOfAPDURetriesBuilder interface {
 	WithNumberOfApduRetries(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAPDURetriesBuilder
 	// WithNumberOfApduRetriesBuilder adds NumberOfApduRetries (property field) which is build by the builder
 	WithNumberOfApduRetriesBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNumberOfAPDURetriesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNumberOfAPDURetries or returns an error if something is wrong
 	Build() (BACnetConstructedDataNumberOfAPDURetries, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataNumberOfAPDURetriesBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNumberOfAPDURetries
 }
 
 func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) WithMandatoryFields(numberOfApduRetries BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfAPDURetriesBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNumberOfAPDURetriesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) deepCopy() *_BACnetConstruct
 	}
 	_BACnetConstructedDataNumberOfAPDURetriesCopy := &_BACnetConstructedDataNumberOfAPDURetries{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfApduRetries.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfApduRetries),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNumberOfAPDURetriesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNumberOfAPDURetriesCopy
 }
 

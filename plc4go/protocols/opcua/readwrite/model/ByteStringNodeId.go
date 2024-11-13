@@ -307,7 +307,7 @@ func (m *_ByteStringNodeId) deepCopy() *_ByteStringNodeId {
 	}
 	_ByteStringNodeIdCopy := &_ByteStringNodeId{
 		m.NamespaceIndex,
-		m.Identifier.DeepCopy().(PascalByteString),
+		utils.DeepCopy[PascalByteString](m.Identifier),
 	}
 	return _ByteStringNodeIdCopy
 }

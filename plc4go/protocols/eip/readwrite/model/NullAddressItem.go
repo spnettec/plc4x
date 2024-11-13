@@ -75,6 +75,8 @@ type NullAddressItemBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() NullAddressItemBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TypeIdBuilder
 	// Build builds the NullAddressItem or returns an error if something is wrong
 	Build() (NullAddressItem, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,6 +100,7 @@ var _ (NullAddressItemBuilder) = (*_NullAddressItemBuilder)(nil)
 
 func (b *_NullAddressItemBuilder) setParent(contract TypeIdContract) {
 	b.TypeIdContract = contract
+	contract.(*_TypeId)._SubType = b._NullAddressItem
 }
 
 func (b *_NullAddressItemBuilder) WithMandatoryFields() NullAddressItemBuilder {
@@ -119,8 +122,10 @@ func (b *_NullAddressItemBuilder) MustBuild() NullAddressItem {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NullAddressItemBuilder) Done() TypeIdBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTypeIdBuilder().(*_TypeIdBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -263,7 +268,7 @@ func (m *_NullAddressItem) deepCopy() *_NullAddressItem {
 		m.TypeIdContract.(*_TypeId).deepCopy(),
 		m.reservedField0,
 	}
-	m.TypeIdContract.(*_TypeId)._SubType = m
+	_NullAddressItemCopy.TypeIdContract.(*_TypeId)._SubType = m
 	return _NullAddressItemCopy
 }
 

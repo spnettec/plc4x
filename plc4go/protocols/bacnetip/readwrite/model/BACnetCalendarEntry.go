@@ -101,20 +101,11 @@ type BACnetCalendarEntryBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetCalendarEntryBuilder
 	// AsBACnetCalendarEntryDate converts this build to a subType of BACnetCalendarEntry. It is always possible to return to current builder using Done()
-	AsBACnetCalendarEntryDate() interface {
-		BACnetCalendarEntryDateBuilder
-		Done() BACnetCalendarEntryBuilder
-	}
+	AsBACnetCalendarEntryDate() BACnetCalendarEntryDateBuilder
 	// AsBACnetCalendarEntryDateRange converts this build to a subType of BACnetCalendarEntry. It is always possible to return to current builder using Done()
-	AsBACnetCalendarEntryDateRange() interface {
-		BACnetCalendarEntryDateRangeBuilder
-		Done() BACnetCalendarEntryBuilder
-	}
+	AsBACnetCalendarEntryDateRange() BACnetCalendarEntryDateRangeBuilder
 	// AsBACnetCalendarEntryWeekNDay converts this build to a subType of BACnetCalendarEntry. It is always possible to return to current builder using Done()
-	AsBACnetCalendarEntryWeekNDay() interface {
-		BACnetCalendarEntryWeekNDayBuilder
-		Done() BACnetCalendarEntryBuilder
-	}
+	AsBACnetCalendarEntryWeekNDay() BACnetCalendarEntryWeekNDayBuilder
 	// Build builds the BACnetCalendarEntry or returns an error if something is wrong
 	PartialBuild() (BACnetCalendarEntryContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -189,14 +180,8 @@ func (b *_BACnetCalendarEntryBuilder) PartialMustBuild() BACnetCalendarEntryCont
 	return build
 }
 
-func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryDate() interface {
-	BACnetCalendarEntryDateBuilder
-	Done() BACnetCalendarEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetCalendarEntryDateBuilder
-		Done() BACnetCalendarEntryBuilder
-	}); ok {
+func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryDate() BACnetCalendarEntryDateBuilder {
+	if cb, ok := b.childBuilder.(BACnetCalendarEntryDateBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetCalendarEntryDateBuilder().(*_BACnetCalendarEntryDateBuilder)
@@ -205,14 +190,8 @@ func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryDate() interface {
 	return cb
 }
 
-func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryDateRange() interface {
-	BACnetCalendarEntryDateRangeBuilder
-	Done() BACnetCalendarEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetCalendarEntryDateRangeBuilder
-		Done() BACnetCalendarEntryBuilder
-	}); ok {
+func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryDateRange() BACnetCalendarEntryDateRangeBuilder {
+	if cb, ok := b.childBuilder.(BACnetCalendarEntryDateRangeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetCalendarEntryDateRangeBuilder().(*_BACnetCalendarEntryDateRangeBuilder)
@@ -221,14 +200,8 @@ func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryDateRange() interface
 	return cb
 }
 
-func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryWeekNDay() interface {
-	BACnetCalendarEntryWeekNDayBuilder
-	Done() BACnetCalendarEntryBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetCalendarEntryWeekNDayBuilder
-		Done() BACnetCalendarEntryBuilder
-	}); ok {
+func (b *_BACnetCalendarEntryBuilder) AsBACnetCalendarEntryWeekNDay() BACnetCalendarEntryWeekNDayBuilder {
+	if cb, ok := b.childBuilder.(BACnetCalendarEntryWeekNDayBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetCalendarEntryWeekNDayBuilder().(*_BACnetCalendarEntryWeekNDayBuilder)
@@ -463,7 +436,7 @@ func (m *_BACnetCalendarEntry) deepCopy() *_BACnetCalendarEntry {
 	}
 	_BACnetCalendarEntryCopy := &_BACnetCalendarEntry{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetCalendarEntryCopy
 }

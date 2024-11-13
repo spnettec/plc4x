@@ -95,6 +95,8 @@ type ReplyOrConfirmationReplyBuilder interface {
 	WithTermination(ResponseTermination) ReplyOrConfirmationReplyBuilder
 	// WithTerminationBuilder adds Termination (property field) which is build by the builder
 	WithTerminationBuilder(func(ResponseTerminationBuilder) ResponseTerminationBuilder) ReplyOrConfirmationReplyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ReplyOrConfirmationBuilder
 	// Build builds the ReplyOrConfirmationReply or returns an error if something is wrong
 	Build() (ReplyOrConfirmationReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (ReplyOrConfirmationReplyBuilder) = (*_ReplyOrConfirmationReplyBuilder)(ni
 
 func (b *_ReplyOrConfirmationReplyBuilder) setParent(contract ReplyOrConfirmationContract) {
 	b.ReplyOrConfirmationContract = contract
+	contract.(*_ReplyOrConfirmation)._SubType = b._ReplyOrConfirmationReply
 }
 
 func (b *_ReplyOrConfirmationReplyBuilder) WithMandatoryFields(reply Reply, termination ResponseTermination) ReplyOrConfirmationReplyBuilder {
@@ -187,8 +190,10 @@ func (b *_ReplyOrConfirmationReplyBuilder) MustBuild() ReplyOrConfirmationReply 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReplyOrConfirmationReplyBuilder) Done() ReplyOrConfirmationBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewReplyOrConfirmationBuilder().(*_ReplyOrConfirmationBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_ReplyOrConfirmationReply) deepCopy() *_ReplyOrConfirmationReply {
 	}
 	_ReplyOrConfirmationReplyCopy := &_ReplyOrConfirmationReply{
 		m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).deepCopy(),
-		m.Reply.DeepCopy().(Reply),
-		m.Termination.DeepCopy().(ResponseTermination),
+		utils.DeepCopy[Reply](m.Reply),
+		utils.DeepCopy[ResponseTermination](m.Termination),
 	}
-	m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = m
+	_ReplyOrConfirmationReplyCopy.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = m
 	return _ReplyOrConfirmationReplyCopy
 }
 

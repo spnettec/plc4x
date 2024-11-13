@@ -79,6 +79,8 @@ type AdsDiscoveryBlockFingerprintBuilder interface {
 	WithMandatoryFields(data []byte) AdsDiscoveryBlockFingerprintBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) AdsDiscoveryBlockFingerprintBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AdsDiscoveryBlockBuilder
 	// Build builds the AdsDiscoveryBlockFingerprint or returns an error if something is wrong
 	Build() (AdsDiscoveryBlockFingerprint, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (AdsDiscoveryBlockFingerprintBuilder) = (*_AdsDiscoveryBlockFingerprintBui
 
 func (b *_AdsDiscoveryBlockFingerprintBuilder) setParent(contract AdsDiscoveryBlockContract) {
 	b.AdsDiscoveryBlockContract = contract
+	contract.(*_AdsDiscoveryBlock)._SubType = b._AdsDiscoveryBlockFingerprint
 }
 
 func (b *_AdsDiscoveryBlockFingerprintBuilder) WithMandatoryFields(data []byte) AdsDiscoveryBlockFingerprintBuilder {
@@ -128,8 +131,10 @@ func (b *_AdsDiscoveryBlockFingerprintBuilder) MustBuild() AdsDiscoveryBlockFing
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsDiscoveryBlockFingerprintBuilder) Done() AdsDiscoveryBlockBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAdsDiscoveryBlockBuilder().(*_AdsDiscoveryBlockBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -301,7 +306,7 @@ func (m *_AdsDiscoveryBlockFingerprint) deepCopy() *_AdsDiscoveryBlockFingerprin
 		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	_AdsDiscoveryBlockFingerprintCopy.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
 	return _AdsDiscoveryBlockFingerprintCopy
 }
 

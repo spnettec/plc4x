@@ -79,6 +79,8 @@ type LightingDataTerminateRampBuilder interface {
 	WithMandatoryFields(group byte) LightingDataTerminateRampBuilder
 	// WithGroup adds Group (property field)
 	WithGroup(byte) LightingDataTerminateRampBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LightingDataBuilder
 	// Build builds the LightingDataTerminateRamp or returns an error if something is wrong
 	Build() (LightingDataTerminateRamp, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (LightingDataTerminateRampBuilder) = (*_LightingDataTerminateRampBuilder)(
 
 func (b *_LightingDataTerminateRampBuilder) setParent(contract LightingDataContract) {
 	b.LightingDataContract = contract
+	contract.(*_LightingData)._SubType = b._LightingDataTerminateRamp
 }
 
 func (b *_LightingDataTerminateRampBuilder) WithMandatoryFields(group byte) LightingDataTerminateRampBuilder {
@@ -128,8 +131,10 @@ func (b *_LightingDataTerminateRampBuilder) MustBuild() LightingDataTerminateRam
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LightingDataTerminateRampBuilder) Done() LightingDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLightingDataBuilder().(*_LightingDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -282,7 +287,7 @@ func (m *_LightingDataTerminateRamp) deepCopy() *_LightingDataTerminateRamp {
 		m.LightingDataContract.(*_LightingData).deepCopy(),
 		m.Group,
 	}
-	m.LightingDataContract.(*_LightingData)._SubType = m
+	_LightingDataTerminateRampCopy.LightingDataContract.(*_LightingData)._SubType = m
 	return _LightingDataTerminateRampCopy
 }
 

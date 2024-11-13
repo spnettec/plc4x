@@ -86,6 +86,8 @@ type BACnetConstructedDataTimerMaxPresValueBuilder interface {
 	WithMaxPresValue(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerMaxPresValueBuilder
 	// WithMaxPresValueBuilder adds MaxPresValue (property field) which is build by the builder
 	WithMaxPresValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimerMaxPresValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTimerMaxPresValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimerMaxPresValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTimerMaxPresValueBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTimerMaxPresValue
 }
 
 func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerMaxPresValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataTimerMaxPresValueCopy := &_BACnetConstructedDataTimerMaxPresValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MaxPresValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.MaxPresValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTimerMaxPresValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimerMaxPresValueCopy
 }
 

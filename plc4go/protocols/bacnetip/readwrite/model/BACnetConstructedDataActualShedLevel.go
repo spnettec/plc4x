@@ -86,6 +86,8 @@ type BACnetConstructedDataActualShedLevelBuilder interface {
 	WithActualShedLevel(BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder
 	// WithActualShedLevelBuilder adds ActualShedLevel (property field) which is build by the builder
 	WithActualShedLevelBuilder(func(BACnetShedLevelBuilder) BACnetShedLevelBuilder) BACnetConstructedDataActualShedLevelBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataActualShedLevel or returns an error if something is wrong
 	Build() (BACnetConstructedDataActualShedLevel, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataActualShedLevelBuilder) = (*_BACnetConstructedDataAc
 
 func (b *_BACnetConstructedDataActualShedLevelBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataActualShedLevel
 }
 
 func (b *_BACnetConstructedDataActualShedLevelBuilder) WithMandatoryFields(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataActualShedLevelBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataActualShedLevelBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataActualShedLevel) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataActualShedLevelCopy := &_BACnetConstructedDataActualShedLevel{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ActualShedLevel.DeepCopy().(BACnetShedLevel),
+		utils.DeepCopy[BACnetShedLevel](m.ActualShedLevel),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataActualShedLevelCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataActualShedLevelCopy
 }
 

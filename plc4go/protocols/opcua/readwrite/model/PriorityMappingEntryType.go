@@ -107,6 +107,8 @@ type PriorityMappingEntryTypeBuilder interface {
 	WithPriorityValue_PCP(uint8) PriorityMappingEntryTypeBuilder
 	// WithPriorityValue_DSCP adds PriorityValue_DSCP (property field)
 	WithPriorityValue_DSCP(uint32) PriorityMappingEntryTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PriorityMappingEntryType or returns an error if something is wrong
 	Build() (PriorityMappingEntryType, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,6 +132,7 @@ var _ (PriorityMappingEntryTypeBuilder) = (*_PriorityMappingEntryTypeBuilder)(ni
 
 func (b *_PriorityMappingEntryTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PriorityMappingEntryType
 }
 
 func (b *_PriorityMappingEntryTypeBuilder) WithMandatoryFields(mappingUri PascalString, priorityLabel PascalString, priorityValue_PCP uint8, priorityValue_DSCP uint32) PriorityMappingEntryTypeBuilder {
@@ -209,8 +212,10 @@ func (b *_PriorityMappingEntryTypeBuilder) MustBuild() PriorityMappingEntryType 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PriorityMappingEntryTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -416,12 +421,12 @@ func (m *_PriorityMappingEntryType) deepCopy() *_PriorityMappingEntryType {
 	}
 	_PriorityMappingEntryTypeCopy := &_PriorityMappingEntryType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.MappingUri.DeepCopy().(PascalString),
-		m.PriorityLabel.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.MappingUri),
+		utils.DeepCopy[PascalString](m.PriorityLabel),
 		m.PriorityValue_PCP,
 		m.PriorityValue_DSCP,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PriorityMappingEntryTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PriorityMappingEntryTypeCopy
 }
 

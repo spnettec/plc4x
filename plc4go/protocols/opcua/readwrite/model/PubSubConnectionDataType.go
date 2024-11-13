@@ -154,6 +154,8 @@ type PubSubConnectionDataTypeBuilder interface {
 	WithWriterGroups(...WriterGroupDataType) PubSubConnectionDataTypeBuilder
 	// WithReaderGroups adds ReaderGroups (property field)
 	WithReaderGroups(...ReaderGroupDataType) PubSubConnectionDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PubSubConnectionDataType or returns an error if something is wrong
 	Build() (PubSubConnectionDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -177,6 +179,7 @@ var _ (PubSubConnectionDataTypeBuilder) = (*_PubSubConnectionDataTypeBuilder)(ni
 
 func (b *_PubSubConnectionDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PubSubConnectionDataType
 }
 
 func (b *_PubSubConnectionDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, connectionProperties []KeyValuePair, transportSettings ExtensionObject, writerGroups []WriterGroupDataType, readerGroups []ReaderGroupDataType) PubSubConnectionDataTypeBuilder {
@@ -338,8 +341,10 @@ func (b *_PubSubConnectionDataTypeBuilder) MustBuild() PubSubConnectionDataType 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PubSubConnectionDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -703,18 +708,18 @@ func (m *_PubSubConnectionDataType) deepCopy() *_PubSubConnectionDataType {
 	}
 	_PubSubConnectionDataTypeCopy := &_PubSubConnectionDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Name),
 		m.Enabled,
-		m.PublisherId.DeepCopy().(Variant),
-		m.TransportProfileUri.DeepCopy().(PascalString),
-		m.Address.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[Variant](m.PublisherId),
+		utils.DeepCopy[PascalString](m.TransportProfileUri),
+		utils.DeepCopy[ExtensionObject](m.Address),
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.ConnectionProperties),
-		m.TransportSettings.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[ExtensionObject](m.TransportSettings),
 		utils.DeepCopySlice[WriterGroupDataType, WriterGroupDataType](m.WriterGroups),
 		utils.DeepCopySlice[ReaderGroupDataType, ReaderGroupDataType](m.ReaderGroups),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PubSubConnectionDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PubSubConnectionDataTypeCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder interf
 	WithChangedValue(BACnetContextTagReal) BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
 	// WithChangedValueBuilder adds ChangedValue (property field) which is build by the builder
 	WithChangedValueBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
 	// Build builds the BACnetNotificationParametersChangeOfValueNewValueChangedValue or returns an error if something is wrong
 	Build() (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) = (
 
 func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) setParent(contract BACnetNotificationParametersChangeOfValueNewValueContract) {
 	b.BACnetNotificationParametersChangeOfValueNewValueContract = contract
+	contract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = b._BACnetNotificationParametersChangeOfValueNewValueChangedValue
 }
 
 func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) WithMandatoryFields(changedValue BACnetContextTagReal) BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) Done() BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersChangeOfValueNewValueBuilder().(*_BACnetNotificationParametersChangeOfValueNewValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) deepCop
 	}
 	_BACnetNotificationParametersChangeOfValueNewValueChangedValueCopy := &_BACnetNotificationParametersChangeOfValueNewValueChangedValue{
 		m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue).deepCopy(),
-		m.ChangedValue.DeepCopy().(BACnetContextTagReal),
+		utils.DeepCopy[BACnetContextTagReal](m.ChangedValue),
 	}
-	m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = m
+	_BACnetNotificationParametersChangeOfValueNewValueChangedValueCopy.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = m
 	return _BACnetNotificationParametersChangeOfValueNewValueChangedValueCopy
 }
 

@@ -432,8 +432,8 @@ func (m *_BACnetEventTransitionBitsTagged) deepCopy() *_BACnetEventTransitionBit
 		return nil
 	}
 	_BACnetEventTransitionBitsTaggedCopy := &_BACnetEventTransitionBitsTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
-		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
+		utils.DeepCopy[BACnetTagPayloadBitString](m.Payload),
 		m.TagNumber,
 		m.TagClass,
 	}

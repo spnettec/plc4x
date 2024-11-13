@@ -86,6 +86,8 @@ type BACnetConstructedDataChannelNumberBuilder interface {
 	WithChannelNumber(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataChannelNumberBuilder
 	// WithChannelNumberBuilder adds ChannelNumber (property field) which is build by the builder
 	WithChannelNumberBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataChannelNumberBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataChannelNumber or returns an error if something is wrong
 	Build() (BACnetConstructedDataChannelNumber, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataChannelNumberBuilder) = (*_BACnetConstructedDataChan
 
 func (b *_BACnetConstructedDataChannelNumberBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataChannelNumber
 }
 
 func (b *_BACnetConstructedDataChannelNumberBuilder) WithMandatoryFields(channelNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataChannelNumberBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataChannelNumberBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataChannelNumberBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataChannelNumber) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataChannelNumberCopy := &_BACnetConstructedDataChannelNumber{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ChannelNumber.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ChannelNumber),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataChannelNumberCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataChannelNumberCopy
 }
 

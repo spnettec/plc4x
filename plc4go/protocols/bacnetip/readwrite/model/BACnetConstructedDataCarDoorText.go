@@ -89,6 +89,8 @@ type BACnetConstructedDataCarDoorTextBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarDoorTextBuilder
 	// WithCarDoorText adds CarDoorText (property field)
 	WithCarDoorText(...BACnetApplicationTagCharacterString) BACnetConstructedDataCarDoorTextBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCarDoorText or returns an error if something is wrong
 	Build() (BACnetConstructedDataCarDoorText, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataCarDoorTextBuilder) = (*_BACnetConstructedDataCarDoo
 
 func (b *_BACnetConstructedDataCarDoorTextBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCarDoorText
 }
 
 func (b *_BACnetConstructedDataCarDoorTextBuilder) WithMandatoryFields(carDoorText []BACnetApplicationTagCharacterString) BACnetConstructedDataCarDoorTextBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataCarDoorTextBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCarDoorTextBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataCarDoorText) deepCopy() *_BACnetConstructedDataCa
 	}
 	_BACnetConstructedDataCarDoorTextCopy := &_BACnetConstructedDataCarDoorText{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.CarDoorText),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCarDoorTextCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCarDoorTextCopy
 }
 

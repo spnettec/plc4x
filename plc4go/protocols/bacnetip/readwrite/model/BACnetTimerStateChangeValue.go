@@ -110,90 +110,39 @@ type BACnetTimerStateChangeValueBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateChangeValueBuilder
 	// AsBACnetTimerStateChangeValueNull converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueNull() interface {
-		BACnetTimerStateChangeValueNullBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueNull() BACnetTimerStateChangeValueNullBuilder
 	// AsBACnetTimerStateChangeValueBoolean converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueBoolean() interface {
-		BACnetTimerStateChangeValueBooleanBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueBoolean() BACnetTimerStateChangeValueBooleanBuilder
 	// AsBACnetTimerStateChangeValueUnsigned converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueUnsigned() interface {
-		BACnetTimerStateChangeValueUnsignedBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueUnsigned() BACnetTimerStateChangeValueUnsignedBuilder
 	// AsBACnetTimerStateChangeValueInteger converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueInteger() interface {
-		BACnetTimerStateChangeValueIntegerBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueInteger() BACnetTimerStateChangeValueIntegerBuilder
 	// AsBACnetTimerStateChangeValueReal converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueReal() interface {
-		BACnetTimerStateChangeValueRealBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueReal() BACnetTimerStateChangeValueRealBuilder
 	// AsBACnetTimerStateChangeValueDouble converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueDouble() interface {
-		BACnetTimerStateChangeValueDoubleBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueDouble() BACnetTimerStateChangeValueDoubleBuilder
 	// AsBACnetTimerStateChangeValueOctetString converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueOctetString() interface {
-		BACnetTimerStateChangeValueOctetStringBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueOctetString() BACnetTimerStateChangeValueOctetStringBuilder
 	// AsBACnetTimerStateChangeValueCharacterString converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueCharacterString() interface {
-		BACnetTimerStateChangeValueCharacterStringBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueCharacterString() BACnetTimerStateChangeValueCharacterStringBuilder
 	// AsBACnetTimerStateChangeValueBitString converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueBitString() interface {
-		BACnetTimerStateChangeValueBitStringBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueBitString() BACnetTimerStateChangeValueBitStringBuilder
 	// AsBACnetTimerStateChangeValueEnumerated converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueEnumerated() interface {
-		BACnetTimerStateChangeValueEnumeratedBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueEnumerated() BACnetTimerStateChangeValueEnumeratedBuilder
 	// AsBACnetTimerStateChangeValueDate converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueDate() interface {
-		BACnetTimerStateChangeValueDateBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueDate() BACnetTimerStateChangeValueDateBuilder
 	// AsBACnetTimerStateChangeValueTime converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueTime() interface {
-		BACnetTimerStateChangeValueTimeBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueTime() BACnetTimerStateChangeValueTimeBuilder
 	// AsBACnetTimerStateChangeValueObjectidentifier converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueObjectidentifier() interface {
-		BACnetTimerStateChangeValueObjectidentifierBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueObjectidentifier() BACnetTimerStateChangeValueObjectidentifierBuilder
 	// AsBACnetTimerStateChangeValueNoValue converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueNoValue() interface {
-		BACnetTimerStateChangeValueNoValueBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueNoValue() BACnetTimerStateChangeValueNoValueBuilder
 	// AsBACnetTimerStateChangeValueConstructedValue converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueConstructedValue() interface {
-		BACnetTimerStateChangeValueConstructedValueBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueConstructedValue() BACnetTimerStateChangeValueConstructedValueBuilder
 	// AsBACnetTimerStateChangeValueDateTime converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueDateTime() interface {
-		BACnetTimerStateChangeValueDateTimeBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueDateTime() BACnetTimerStateChangeValueDateTimeBuilder
 	// AsBACnetTimerStateChangeValueLightingCommand converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
-	AsBACnetTimerStateChangeValueLightingCommand() interface {
-		BACnetTimerStateChangeValueLightingCommandBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}
+	AsBACnetTimerStateChangeValueLightingCommand() BACnetTimerStateChangeValueLightingCommandBuilder
 	// Build builds the BACnetTimerStateChangeValue or returns an error if something is wrong
 	PartialBuild() (BACnetTimerStateChangeValueContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -268,14 +217,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) PartialMustBuild() BACnetTimerStat
 	return build
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueNull() interface {
-	BACnetTimerStateChangeValueNullBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueNullBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueNull() BACnetTimerStateChangeValueNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueNullBuilder().(*_BACnetTimerStateChangeValueNullBuilder)
@@ -284,14 +227,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueNull(
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueBoolean() interface {
-	BACnetTimerStateChangeValueBooleanBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueBooleanBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueBoolean() BACnetTimerStateChangeValueBooleanBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueBooleanBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueBooleanBuilder().(*_BACnetTimerStateChangeValueBooleanBuilder)
@@ -300,14 +237,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueBoole
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueUnsigned() interface {
-	BACnetTimerStateChangeValueUnsignedBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueUnsignedBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueUnsigned() BACnetTimerStateChangeValueUnsignedBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueUnsignedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueUnsignedBuilder().(*_BACnetTimerStateChangeValueUnsignedBuilder)
@@ -316,14 +247,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueUnsig
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueInteger() interface {
-	BACnetTimerStateChangeValueIntegerBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueIntegerBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueInteger() BACnetTimerStateChangeValueIntegerBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueIntegerBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueIntegerBuilder().(*_BACnetTimerStateChangeValueIntegerBuilder)
@@ -332,14 +257,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueInteg
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueReal() interface {
-	BACnetTimerStateChangeValueRealBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueRealBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueReal() BACnetTimerStateChangeValueRealBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueRealBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueRealBuilder().(*_BACnetTimerStateChangeValueRealBuilder)
@@ -348,14 +267,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueReal(
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDouble() interface {
-	BACnetTimerStateChangeValueDoubleBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueDoubleBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDouble() BACnetTimerStateChangeValueDoubleBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueDoubleBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueDoubleBuilder().(*_BACnetTimerStateChangeValueDoubleBuilder)
@@ -364,14 +277,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDoubl
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueOctetString() interface {
-	BACnetTimerStateChangeValueOctetStringBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueOctetStringBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueOctetString() BACnetTimerStateChangeValueOctetStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueOctetStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueOctetStringBuilder().(*_BACnetTimerStateChangeValueOctetStringBuilder)
@@ -380,14 +287,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueOctet
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueCharacterString() interface {
-	BACnetTimerStateChangeValueCharacterStringBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueCharacterStringBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueCharacterString() BACnetTimerStateChangeValueCharacterStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueCharacterStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueCharacterStringBuilder().(*_BACnetTimerStateChangeValueCharacterStringBuilder)
@@ -396,14 +297,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueChara
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueBitString() interface {
-	BACnetTimerStateChangeValueBitStringBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueBitStringBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueBitString() BACnetTimerStateChangeValueBitStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueBitStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueBitStringBuilder().(*_BACnetTimerStateChangeValueBitStringBuilder)
@@ -412,14 +307,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueBitSt
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueEnumerated() interface {
-	BACnetTimerStateChangeValueEnumeratedBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueEnumeratedBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueEnumerated() BACnetTimerStateChangeValueEnumeratedBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueEnumeratedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueEnumeratedBuilder().(*_BACnetTimerStateChangeValueEnumeratedBuilder)
@@ -428,14 +317,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueEnume
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDate() interface {
-	BACnetTimerStateChangeValueDateBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueDateBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDate() BACnetTimerStateChangeValueDateBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueDateBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueDateBuilder().(*_BACnetTimerStateChangeValueDateBuilder)
@@ -444,14 +327,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDate(
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueTime() interface {
-	BACnetTimerStateChangeValueTimeBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueTimeBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueTime() BACnetTimerStateChangeValueTimeBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueTimeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueTimeBuilder().(*_BACnetTimerStateChangeValueTimeBuilder)
@@ -460,14 +337,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueTime(
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueObjectidentifier() interface {
-	BACnetTimerStateChangeValueObjectidentifierBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueObjectidentifierBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueObjectidentifier() BACnetTimerStateChangeValueObjectidentifierBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueObjectidentifierBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueObjectidentifierBuilder().(*_BACnetTimerStateChangeValueObjectidentifierBuilder)
@@ -476,14 +347,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueObjec
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueNoValue() interface {
-	BACnetTimerStateChangeValueNoValueBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueNoValueBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueNoValue() BACnetTimerStateChangeValueNoValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueNoValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueNoValueBuilder().(*_BACnetTimerStateChangeValueNoValueBuilder)
@@ -492,14 +357,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueNoVal
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueConstructedValue() interface {
-	BACnetTimerStateChangeValueConstructedValueBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueConstructedValueBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueConstructedValue() BACnetTimerStateChangeValueConstructedValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueConstructedValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueConstructedValueBuilder().(*_BACnetTimerStateChangeValueConstructedValueBuilder)
@@ -508,14 +367,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueConst
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDateTime() interface {
-	BACnetTimerStateChangeValueDateTimeBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueDateTimeBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDateTime() BACnetTimerStateChangeValueDateTimeBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueDateTimeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueDateTimeBuilder().(*_BACnetTimerStateChangeValueDateTimeBuilder)
@@ -524,14 +377,8 @@ func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDateT
 	return cb
 }
 
-func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueLightingCommand() interface {
-	BACnetTimerStateChangeValueLightingCommandBuilder
-	Done() BACnetTimerStateChangeValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetTimerStateChangeValueLightingCommandBuilder
-		Done() BACnetTimerStateChangeValueBuilder
-	}); ok {
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueLightingCommand() BACnetTimerStateChangeValueLightingCommandBuilder {
+	if cb, ok := b.childBuilder.(BACnetTimerStateChangeValueLightingCommandBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetTimerStateChangeValueLightingCommandBuilder().(*_BACnetTimerStateChangeValueLightingCommandBuilder)
@@ -853,7 +700,7 @@ func (m *_BACnetTimerStateChangeValue) deepCopy() *_BACnetTimerStateChangeValue 
 	}
 	_BACnetTimerStateChangeValueCopy := &_BACnetTimerStateChangeValue{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 		m.ObjectTypeArgument,
 	}
 	return _BACnetTimerStateChangeValueCopy

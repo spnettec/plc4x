@@ -100,6 +100,8 @@ type TunnelingRequestBuilder interface {
 	WithCemi(CEMI) TunnelingRequestBuilder
 	// WithCemiBuilder adds Cemi (property field) which is build by the builder
 	WithCemiBuilder(func(CEMIBuilder) CEMIBuilder) TunnelingRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the TunnelingRequest or returns an error if something is wrong
 	Build() (TunnelingRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -123,6 +125,7 @@ var _ (TunnelingRequestBuilder) = (*_TunnelingRequestBuilder)(nil)
 
 func (b *_TunnelingRequestBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._TunnelingRequest
 }
 
 func (b *_TunnelingRequestBuilder) WithMandatoryFields(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI) TunnelingRequestBuilder {
@@ -192,8 +195,10 @@ func (b *_TunnelingRequestBuilder) MustBuild() TunnelingRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TunnelingRequestBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,11 +380,11 @@ func (m *_TunnelingRequest) deepCopy() *_TunnelingRequest {
 	}
 	_TunnelingRequestCopy := &_TunnelingRequest{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
-		m.TunnelingRequestDataBlock.DeepCopy().(TunnelingRequestDataBlock),
-		m.Cemi.DeepCopy().(CEMI),
+		utils.DeepCopy[TunnelingRequestDataBlock](m.TunnelingRequestDataBlock),
+		utils.DeepCopy[CEMI](m.Cemi),
 		m.TotalLength,
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_TunnelingRequestCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _TunnelingRequestCopy
 }
 

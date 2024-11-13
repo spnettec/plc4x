@@ -85,6 +85,8 @@ type ClassIDBuilder interface {
 	WithFormat(uint8) ClassIDBuilder
 	// WithSegmentClass adds SegmentClass (property field)
 	WithSegmentClass(uint8) ClassIDBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LogicalSegmentTypeBuilder
 	// Build builds the ClassID or returns an error if something is wrong
 	Build() (ClassID, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (ClassIDBuilder) = (*_ClassIDBuilder)(nil)
 
 func (b *_ClassIDBuilder) setParent(contract LogicalSegmentTypeContract) {
 	b.LogicalSegmentTypeContract = contract
+	contract.(*_LogicalSegmentType)._SubType = b._ClassID
 }
 
 func (b *_ClassIDBuilder) WithMandatoryFields(format uint8, segmentClass uint8) ClassIDBuilder {
@@ -139,8 +142,10 @@ func (b *_ClassIDBuilder) MustBuild() ClassID {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ClassIDBuilder) Done() LogicalSegmentTypeBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLogicalSegmentTypeBuilder().(*_LogicalSegmentTypeBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_ClassID) deepCopy() *_ClassID {
 		m.Format,
 		m.SegmentClass,
 	}
-	m.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
+	_ClassIDCopy.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
 	return _ClassIDCopy
 }
 

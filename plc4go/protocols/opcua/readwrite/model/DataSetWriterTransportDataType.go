@@ -71,6 +71,8 @@ type DataSetWriterTransportDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DataSetWriterTransportDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataSetWriterTransportDataType or returns an error if something is wrong
 	Build() (DataSetWriterTransportDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (DataSetWriterTransportDataTypeBuilder) = (*_DataSetWriterTransportDataTyp
 
 func (b *_DataSetWriterTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataSetWriterTransportDataType
 }
 
 func (b *_DataSetWriterTransportDataTypeBuilder) WithMandatoryFields() DataSetWriterTransportDataTypeBuilder {
@@ -115,8 +118,10 @@ func (b *_DataSetWriterTransportDataTypeBuilder) MustBuild() DataSetWriterTransp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataSetWriterTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_DataSetWriterTransportDataType) deepCopy() *_DataSetWriterTransportDat
 	_DataSetWriterTransportDataTypeCopy := &_DataSetWriterTransportDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataSetWriterTransportDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataSetWriterTransportDataTypeCopy
 }
 

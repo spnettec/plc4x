@@ -102,6 +102,8 @@ type ReadEventDetailsBuilder interface {
 	WithFilter(EventFilter) ReadEventDetailsBuilder
 	// WithFilterBuilder adds Filter (property field) which is build by the builder
 	WithFilterBuilder(func(EventFilterBuilder) EventFilterBuilder) ReadEventDetailsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReadEventDetails or returns an error if something is wrong
 	Build() (ReadEventDetails, error)
 	// MustBuild does the same as Build but panics on error
@@ -125,6 +127,7 @@ var _ (ReadEventDetailsBuilder) = (*_ReadEventDetailsBuilder)(nil)
 
 func (b *_ReadEventDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReadEventDetails
 }
 
 func (b *_ReadEventDetailsBuilder) WithMandatoryFields(numValuesPerNode uint32, startTime int64, endTime int64, filter EventFilter) ReadEventDetailsBuilder {
@@ -185,8 +188,10 @@ func (b *_ReadEventDetailsBuilder) MustBuild() ReadEventDetails {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReadEventDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -395,9 +400,9 @@ func (m *_ReadEventDetails) deepCopy() *_ReadEventDetails {
 		m.NumValuesPerNode,
 		m.StartTime,
 		m.EndTime,
-		m.Filter.DeepCopy().(EventFilter),
+		utils.DeepCopy[EventFilter](m.Filter),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReadEventDetailsCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReadEventDetailsCopy
 }
 

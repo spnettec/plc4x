@@ -71,6 +71,8 @@ type NLMWhatIsNetworkNumberBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() NLMWhatIsNetworkNumberBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMWhatIsNetworkNumber or returns an error if something is wrong
 	Build() (NLMWhatIsNetworkNumber, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (NLMWhatIsNetworkNumberBuilder) = (*_NLMWhatIsNetworkNumberBuilder)(nil)
 
 func (b *_NLMWhatIsNetworkNumberBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMWhatIsNetworkNumber
 }
 
 func (b *_NLMWhatIsNetworkNumberBuilder) WithMandatoryFields() NLMWhatIsNetworkNumberBuilder {
@@ -115,8 +118,10 @@ func (b *_NLMWhatIsNetworkNumberBuilder) MustBuild() NLMWhatIsNetworkNumber {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMWhatIsNetworkNumberBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_NLMWhatIsNetworkNumber) deepCopy() *_NLMWhatIsNetworkNumber {
 	_NLMWhatIsNetworkNumberCopy := &_NLMWhatIsNetworkNumber{
 		m.NLMContract.(*_NLM).deepCopy(),
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMWhatIsNetworkNumberCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMWhatIsNetworkNumberCopy
 }
 

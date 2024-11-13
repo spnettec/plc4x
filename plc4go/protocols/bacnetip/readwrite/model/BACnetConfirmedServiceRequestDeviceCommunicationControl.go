@@ -100,6 +100,8 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder interface {
 	WithOptionalPassword(BACnetContextTagCharacterString) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder
 	// WithOptionalPasswordBuilder adds Password (property field) which is build by the builder
 	WithOptionalPasswordBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestDeviceCommunicationControl or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestDeviceCommunicationControl, error)
 	// MustBuild does the same as Build but panics on error
@@ -123,6 +125,7 @@ var _ (BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) = (*_BACn
 
 func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestDeviceCommunicationControl
 }
 
 func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) WithMandatoryFields(enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged) BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder {
@@ -204,8 +207,10 @@ func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) MustBu
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -407,11 +412,11 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) deepCopy() *_
 	}
 	_BACnetConfirmedServiceRequestDeviceCommunicationControlCopy := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.TimeDuration.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.EnableDisable.DeepCopy().(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged),
-		m.Password.DeepCopy().(BACnetContextTagCharacterString),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeDuration),
+		utils.DeepCopy[BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged](m.EnableDisable),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.Password),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestDeviceCommunicationControlCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestDeviceCommunicationControlCopy
 }
 

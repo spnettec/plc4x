@@ -132,6 +132,8 @@ type UadpDataSetReaderMessageDataTypeBuilder interface {
 	WithReceiveOffset(float64) UadpDataSetReaderMessageDataTypeBuilder
 	// WithProcessingOffset adds ProcessingOffset (property field)
 	WithProcessingOffset(float64) UadpDataSetReaderMessageDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the UadpDataSetReaderMessageDataType or returns an error if something is wrong
 	Build() (UadpDataSetReaderMessageDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,7 @@ var _ (UadpDataSetReaderMessageDataTypeBuilder) = (*_UadpDataSetReaderMessageDat
 
 func (b *_UadpDataSetReaderMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._UadpDataSetReaderMessageDataType
 }
 
 func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithMandatoryFields(groupVersion uint32, networkMessageNumber uint16, dataSetOffset uint16, dataSetClassId GuidValue, networkMessageContentMask UadpNetworkMessageContentMask, dataSetMessageContentMask UadpDataSetMessageContentMask, publishingInterval float64, receiveOffset float64, processingOffset float64) UadpDataSetReaderMessageDataTypeBuilder {
@@ -240,8 +243,10 @@ func (b *_UadpDataSetReaderMessageDataTypeBuilder) MustBuild() UadpDataSetReader
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_UadpDataSetReaderMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -535,14 +540,14 @@ func (m *_UadpDataSetReaderMessageDataType) deepCopy() *_UadpDataSetReaderMessag
 		m.GroupVersion,
 		m.NetworkMessageNumber,
 		m.DataSetOffset,
-		m.DataSetClassId.DeepCopy().(GuidValue),
+		utils.DeepCopy[GuidValue](m.DataSetClassId),
 		m.NetworkMessageContentMask,
 		m.DataSetMessageContentMask,
 		m.PublishingInterval,
 		m.ReceiveOffset,
 		m.ProcessingOffset,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_UadpDataSetReaderMessageDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UadpDataSetReaderMessageDataTypeCopy
 }
 

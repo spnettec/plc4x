@@ -91,6 +91,8 @@ type AdsMultiRequestItemWriteBuilder interface {
 	WithItemIndexOffset(uint32) AdsMultiRequestItemWriteBuilder
 	// WithItemWriteLength adds ItemWriteLength (property field)
 	WithItemWriteLength(uint32) AdsMultiRequestItemWriteBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AdsMultiRequestItemBuilder
 	// Build builds the AdsMultiRequestItemWrite or returns an error if something is wrong
 	Build() (AdsMultiRequestItemWrite, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (AdsMultiRequestItemWriteBuilder) = (*_AdsMultiRequestItemWriteBuilder)(ni
 
 func (b *_AdsMultiRequestItemWriteBuilder) setParent(contract AdsMultiRequestItemContract) {
 	b.AdsMultiRequestItemContract = contract
+	contract.(*_AdsMultiRequestItem)._SubType = b._AdsMultiRequestItemWrite
 }
 
 func (b *_AdsMultiRequestItemWriteBuilder) WithMandatoryFields(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) AdsMultiRequestItemWriteBuilder {
@@ -150,8 +153,10 @@ func (b *_AdsMultiRequestItemWriteBuilder) MustBuild() AdsMultiRequestItemWrite 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsMultiRequestItemWriteBuilder) Done() AdsMultiRequestItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAdsMultiRequestItemBuilder().(*_AdsMultiRequestItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,7 +349,7 @@ func (m *_AdsMultiRequestItemWrite) deepCopy() *_AdsMultiRequestItemWrite {
 		m.ItemIndexOffset,
 		m.ItemWriteLength,
 	}
-	m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = m
+	_AdsMultiRequestItemWriteCopy.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = m
 	return _AdsMultiRequestItemWriteCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetLogDataLogDataEntryFailureBuilder interface {
 	WithFailure(ErrorEnclosed) BACnetLogDataLogDataEntryFailureBuilder
 	// WithFailureBuilder adds Failure (property field) which is build by the builder
 	WithFailureBuilder(func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetLogDataLogDataEntryFailureBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogDataLogDataEntryBuilder
 	// Build builds the BACnetLogDataLogDataEntryFailure or returns an error if something is wrong
 	Build() (BACnetLogDataLogDataEntryFailure, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogDataLogDataEntryFailureBuilder) = (*_BACnetLogDataLogDataEntryFa
 
 func (b *_BACnetLogDataLogDataEntryFailureBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
 	b.BACnetLogDataLogDataEntryContract = contract
+	contract.(*_BACnetLogDataLogDataEntry)._SubType = b._BACnetLogDataLogDataEntryFailure
 }
 
 func (b *_BACnetLogDataLogDataEntryFailureBuilder) WithMandatoryFields(failure ErrorEnclosed) BACnetLogDataLogDataEntryFailureBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogDataLogDataEntryFailureBuilder) MustBuild() BACnetLogDataLogD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogDataLogDataEntryFailureBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogDataLogDataEntryBuilder().(*_BACnetLogDataLogDataEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogDataLogDataEntryFailure) deepCopy() *_BACnetLogDataLogDataEnt
 	}
 	_BACnetLogDataLogDataEntryFailureCopy := &_BACnetLogDataLogDataEntryFailure{
 		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
-		m.Failure.DeepCopy().(ErrorEnclosed),
+		utils.DeepCopy[ErrorEnclosed](m.Failure),
 	}
-	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	_BACnetLogDataLogDataEntryFailureCopy.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
 	return _BACnetLogDataLogDataEntryFailureCopy
 }
 

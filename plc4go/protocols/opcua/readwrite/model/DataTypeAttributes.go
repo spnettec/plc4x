@@ -121,6 +121,8 @@ type DataTypeAttributesBuilder interface {
 	WithUserWriteMask(uint32) DataTypeAttributesBuilder
 	// WithIsAbstract adds IsAbstract (property field)
 	WithIsAbstract(bool) DataTypeAttributesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataTypeAttributes or returns an error if something is wrong
 	Build() (DataTypeAttributes, error)
 	// MustBuild does the same as Build but panics on error
@@ -144,6 +146,7 @@ var _ (DataTypeAttributesBuilder) = (*_DataTypeAttributesBuilder)(nil)
 
 func (b *_DataTypeAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataTypeAttributes
 }
 
 func (b *_DataTypeAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, isAbstract bool) DataTypeAttributesBuilder {
@@ -233,8 +236,10 @@ func (b *_DataTypeAttributesBuilder) MustBuild() DataTypeAttributes {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataTypeAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -488,14 +493,14 @@ func (m *_DataTypeAttributes) deepCopy() *_DataTypeAttributes {
 	_DataTypeAttributesCopy := &_DataTypeAttributes{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedAttributes,
-		m.DisplayName.DeepCopy().(LocalizedText),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.DisplayName),
+		utils.DeepCopy[LocalizedText](m.Description),
 		m.WriteMask,
 		m.UserWriteMask,
 		m.IsAbstract,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataTypeAttributesCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataTypeAttributesCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataLoggingTypeBuilder interface {
 	WithLoggingType(BACnetLoggingTypeTagged) BACnetConstructedDataLoggingTypeBuilder
 	// WithLoggingTypeBuilder adds LoggingType (property field) which is build by the builder
 	WithLoggingTypeBuilder(func(BACnetLoggingTypeTaggedBuilder) BACnetLoggingTypeTaggedBuilder) BACnetConstructedDataLoggingTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLoggingType or returns an error if something is wrong
 	Build() (BACnetConstructedDataLoggingType, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLoggingTypeBuilder) = (*_BACnetConstructedDataLoggin
 
 func (b *_BACnetConstructedDataLoggingTypeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLoggingType
 }
 
 func (b *_BACnetConstructedDataLoggingTypeBuilder) WithMandatoryFields(loggingType BACnetLoggingTypeTagged) BACnetConstructedDataLoggingTypeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLoggingTypeBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLoggingTypeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLoggingType) deepCopy() *_BACnetConstructedDataLo
 	}
 	_BACnetConstructedDataLoggingTypeCopy := &_BACnetConstructedDataLoggingType{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LoggingType.DeepCopy().(BACnetLoggingTypeTagged),
+		utils.DeepCopy[BACnetLoggingTypeTagged](m.LoggingType),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLoggingTypeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLoggingTypeCopy
 }
 

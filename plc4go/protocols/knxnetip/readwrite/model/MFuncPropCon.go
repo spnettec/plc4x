@@ -71,6 +71,8 @@ type MFuncPropConBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() MFuncPropConBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the MFuncPropCon or returns an error if something is wrong
 	Build() (MFuncPropCon, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (MFuncPropConBuilder) = (*_MFuncPropConBuilder)(nil)
 
 func (b *_MFuncPropConBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._MFuncPropCon
 }
 
 func (b *_MFuncPropConBuilder) WithMandatoryFields() MFuncPropConBuilder {
@@ -115,8 +118,10 @@ func (b *_MFuncPropConBuilder) MustBuild() MFuncPropCon {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MFuncPropConBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_MFuncPropCon) deepCopy() *_MFuncPropCon {
 	_MFuncPropConCopy := &_MFuncPropCon{
 		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_MFuncPropConCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _MFuncPropConCopy
 }
 

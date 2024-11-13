@@ -86,6 +86,8 @@ type BACnetConstructedDataRecordCountBuilder interface {
 	WithRecordCount(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRecordCountBuilder
 	// WithRecordCountBuilder adds RecordCount (property field) which is build by the builder
 	WithRecordCountBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRecordCountBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataRecordCount or returns an error if something is wrong
 	Build() (BACnetConstructedDataRecordCount, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataRecordCountBuilder) = (*_BACnetConstructedDataRecord
 
 func (b *_BACnetConstructedDataRecordCountBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataRecordCount
 }
 
 func (b *_BACnetConstructedDataRecordCountBuilder) WithMandatoryFields(recordCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRecordCountBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataRecordCountBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataRecordCountBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataRecordCount) deepCopy() *_BACnetConstructedDataRe
 	}
 	_BACnetConstructedDataRecordCountCopy := &_BACnetConstructedDataRecordCount{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.RecordCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.RecordCount),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataRecordCountCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataRecordCountCopy
 }
 

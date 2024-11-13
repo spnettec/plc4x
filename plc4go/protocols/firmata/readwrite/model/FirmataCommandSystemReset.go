@@ -71,6 +71,8 @@ type FirmataCommandSystemResetBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() FirmataCommandSystemResetBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() FirmataCommandBuilder
 	// Build builds the FirmataCommandSystemReset or returns an error if something is wrong
 	Build() (FirmataCommandSystemReset, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (FirmataCommandSystemResetBuilder) = (*_FirmataCommandSystemResetBuilder)(
 
 func (b *_FirmataCommandSystemResetBuilder) setParent(contract FirmataCommandContract) {
 	b.FirmataCommandContract = contract
+	contract.(*_FirmataCommand)._SubType = b._FirmataCommandSystemReset
 }
 
 func (b *_FirmataCommandSystemResetBuilder) WithMandatoryFields() FirmataCommandSystemResetBuilder {
@@ -115,8 +118,10 @@ func (b *_FirmataCommandSystemResetBuilder) MustBuild() FirmataCommandSystemRese
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FirmataCommandSystemResetBuilder) Done() FirmataCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewFirmataCommandBuilder().(*_FirmataCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_FirmataCommandSystemReset) deepCopy() *_FirmataCommandSystemReset {
 	_FirmataCommandSystemResetCopy := &_FirmataCommandSystemReset{
 		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
 	}
-	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	_FirmataCommandSystemResetCopy.FirmataCommandContract.(*_FirmataCommand)._SubType = m
 	return _FirmataCommandSystemResetCopy
 }
 

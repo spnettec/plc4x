@@ -89,6 +89,8 @@ type BACnetConstructedDataIPDNSServerBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPDNSServerBuilder
 	// WithIpDnsServer adds IpDnsServer (property field)
 	WithIpDnsServer(...BACnetApplicationTagOctetString) BACnetConstructedDataIPDNSServerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIPDNSServer or returns an error if something is wrong
 	Build() (BACnetConstructedDataIPDNSServer, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataIPDNSServerBuilder) = (*_BACnetConstructedDataIPDNSS
 
 func (b *_BACnetConstructedDataIPDNSServerBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIPDNSServer
 }
 
 func (b *_BACnetConstructedDataIPDNSServerBuilder) WithMandatoryFields(ipDnsServer []BACnetApplicationTagOctetString) BACnetConstructedDataIPDNSServerBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataIPDNSServerBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIPDNSServerBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataIPDNSServer) deepCopy() *_BACnetConstructedDataIP
 	}
 	_BACnetConstructedDataIPDNSServerCopy := &_BACnetConstructedDataIPDNSServer{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagOctetString, BACnetApplicationTagOctetString](m.IpDnsServer),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIPDNSServerCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIPDNSServerCopy
 }
 

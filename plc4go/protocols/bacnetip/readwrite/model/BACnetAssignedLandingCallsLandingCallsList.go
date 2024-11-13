@@ -375,9 +375,9 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) deepCopy() *_BACnetAssigne
 		return nil
 	}
 	_BACnetAssignedLandingCallsLandingCallsListCopy := &_BACnetAssignedLandingCallsLandingCallsList{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetAssignedLandingCallsLandingCallsListEntry, BACnetAssignedLandingCallsLandingCallsListEntry](m.LandingCalls),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetAssignedLandingCallsLandingCallsListCopy

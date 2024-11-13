@@ -501,6 +501,8 @@ type SessionDiagnosticsDataTypeBuilder interface {
 	WithUnregisterNodesCount(ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder
 	// WithUnregisterNodesCountBuilder adds UnregisterNodesCount (property field) which is build by the builder
 	WithUnregisterNodesCountBuilder(func(ServiceCounterDataTypeBuilder) ServiceCounterDataTypeBuilder) SessionDiagnosticsDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SessionDiagnosticsDataType or returns an error if something is wrong
 	Build() (SessionDiagnosticsDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -524,6 +526,7 @@ var _ (SessionDiagnosticsDataTypeBuilder) = (*_SessionDiagnosticsDataTypeBuilder
 
 func (b *_SessionDiagnosticsDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SessionDiagnosticsDataType
 }
 
 func (b *_SessionDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, sessionName PascalString, clientDescription ApplicationDescription, serverUri PascalString, endpointUrl PascalString, localeIds []PascalString, actualSessionTimeout float64, maxResponseMessageSize uint32, clientConnectionTime int64, clientLastContactTime int64, currentSubscriptionsCount uint32, currentMonitoredItemsCount uint32, currentPublishRequestsInQueue uint32, totalRequestCount ServiceCounterDataType, unauthorizedRequestCount uint32, readCount ServiceCounterDataType, historyReadCount ServiceCounterDataType, writeCount ServiceCounterDataType, historyUpdateCount ServiceCounterDataType, callCount ServiceCounterDataType, createMonitoredItemsCount ServiceCounterDataType, modifyMonitoredItemsCount ServiceCounterDataType, setMonitoringModeCount ServiceCounterDataType, setTriggeringCount ServiceCounterDataType, deleteMonitoredItemsCount ServiceCounterDataType, createSubscriptionCount ServiceCounterDataType, modifySubscriptionCount ServiceCounterDataType, setPublishingModeCount ServiceCounterDataType, publishCount ServiceCounterDataType, republishCount ServiceCounterDataType, transferSubscriptionsCount ServiceCounterDataType, deleteSubscriptionsCount ServiceCounterDataType, addNodesCount ServiceCounterDataType, addReferencesCount ServiceCounterDataType, deleteNodesCount ServiceCounterDataType, deleteReferencesCount ServiceCounterDataType, browseCount ServiceCounterDataType, browseNextCount ServiceCounterDataType, translateBrowsePathsToNodeIdsCount ServiceCounterDataType, queryFirstCount ServiceCounterDataType, queryNextCount ServiceCounterDataType, registerNodesCount ServiceCounterDataType, unregisterNodesCount ServiceCounterDataType) SessionDiagnosticsDataTypeBuilder {
@@ -1406,8 +1409,10 @@ func (b *_SessionDiagnosticsDataTypeBuilder) MustBuild() SessionDiagnosticsDataT
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SessionDiagnosticsDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -2296,11 +2301,11 @@ func (m *_SessionDiagnosticsDataType) deepCopy() *_SessionDiagnosticsDataType {
 	}
 	_SessionDiagnosticsDataTypeCopy := &_SessionDiagnosticsDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.SessionId.DeepCopy().(NodeId),
-		m.SessionName.DeepCopy().(PascalString),
-		m.ClientDescription.DeepCopy().(ApplicationDescription),
-		m.ServerUri.DeepCopy().(PascalString),
-		m.EndpointUrl.DeepCopy().(PascalString),
+		utils.DeepCopy[NodeId](m.SessionId),
+		utils.DeepCopy[PascalString](m.SessionName),
+		utils.DeepCopy[ApplicationDescription](m.ClientDescription),
+		utils.DeepCopy[PascalString](m.ServerUri),
+		utils.DeepCopy[PascalString](m.EndpointUrl),
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
 		m.ActualSessionTimeout,
 		m.MaxResponseMessageSize,
@@ -2309,38 +2314,38 @@ func (m *_SessionDiagnosticsDataType) deepCopy() *_SessionDiagnosticsDataType {
 		m.CurrentSubscriptionsCount,
 		m.CurrentMonitoredItemsCount,
 		m.CurrentPublishRequestsInQueue,
-		m.TotalRequestCount.DeepCopy().(ServiceCounterDataType),
+		utils.DeepCopy[ServiceCounterDataType](m.TotalRequestCount),
 		m.UnauthorizedRequestCount,
-		m.ReadCount.DeepCopy().(ServiceCounterDataType),
-		m.HistoryReadCount.DeepCopy().(ServiceCounterDataType),
-		m.WriteCount.DeepCopy().(ServiceCounterDataType),
-		m.HistoryUpdateCount.DeepCopy().(ServiceCounterDataType),
-		m.CallCount.DeepCopy().(ServiceCounterDataType),
-		m.CreateMonitoredItemsCount.DeepCopy().(ServiceCounterDataType),
-		m.ModifyMonitoredItemsCount.DeepCopy().(ServiceCounterDataType),
-		m.SetMonitoringModeCount.DeepCopy().(ServiceCounterDataType),
-		m.SetTriggeringCount.DeepCopy().(ServiceCounterDataType),
-		m.DeleteMonitoredItemsCount.DeepCopy().(ServiceCounterDataType),
-		m.CreateSubscriptionCount.DeepCopy().(ServiceCounterDataType),
-		m.ModifySubscriptionCount.DeepCopy().(ServiceCounterDataType),
-		m.SetPublishingModeCount.DeepCopy().(ServiceCounterDataType),
-		m.PublishCount.DeepCopy().(ServiceCounterDataType),
-		m.RepublishCount.DeepCopy().(ServiceCounterDataType),
-		m.TransferSubscriptionsCount.DeepCopy().(ServiceCounterDataType),
-		m.DeleteSubscriptionsCount.DeepCopy().(ServiceCounterDataType),
-		m.AddNodesCount.DeepCopy().(ServiceCounterDataType),
-		m.AddReferencesCount.DeepCopy().(ServiceCounterDataType),
-		m.DeleteNodesCount.DeepCopy().(ServiceCounterDataType),
-		m.DeleteReferencesCount.DeepCopy().(ServiceCounterDataType),
-		m.BrowseCount.DeepCopy().(ServiceCounterDataType),
-		m.BrowseNextCount.DeepCopy().(ServiceCounterDataType),
-		m.TranslateBrowsePathsToNodeIdsCount.DeepCopy().(ServiceCounterDataType),
-		m.QueryFirstCount.DeepCopy().(ServiceCounterDataType),
-		m.QueryNextCount.DeepCopy().(ServiceCounterDataType),
-		m.RegisterNodesCount.DeepCopy().(ServiceCounterDataType),
-		m.UnregisterNodesCount.DeepCopy().(ServiceCounterDataType),
+		utils.DeepCopy[ServiceCounterDataType](m.ReadCount),
+		utils.DeepCopy[ServiceCounterDataType](m.HistoryReadCount),
+		utils.DeepCopy[ServiceCounterDataType](m.WriteCount),
+		utils.DeepCopy[ServiceCounterDataType](m.HistoryUpdateCount),
+		utils.DeepCopy[ServiceCounterDataType](m.CallCount),
+		utils.DeepCopy[ServiceCounterDataType](m.CreateMonitoredItemsCount),
+		utils.DeepCopy[ServiceCounterDataType](m.ModifyMonitoredItemsCount),
+		utils.DeepCopy[ServiceCounterDataType](m.SetMonitoringModeCount),
+		utils.DeepCopy[ServiceCounterDataType](m.SetTriggeringCount),
+		utils.DeepCopy[ServiceCounterDataType](m.DeleteMonitoredItemsCount),
+		utils.DeepCopy[ServiceCounterDataType](m.CreateSubscriptionCount),
+		utils.DeepCopy[ServiceCounterDataType](m.ModifySubscriptionCount),
+		utils.DeepCopy[ServiceCounterDataType](m.SetPublishingModeCount),
+		utils.DeepCopy[ServiceCounterDataType](m.PublishCount),
+		utils.DeepCopy[ServiceCounterDataType](m.RepublishCount),
+		utils.DeepCopy[ServiceCounterDataType](m.TransferSubscriptionsCount),
+		utils.DeepCopy[ServiceCounterDataType](m.DeleteSubscriptionsCount),
+		utils.DeepCopy[ServiceCounterDataType](m.AddNodesCount),
+		utils.DeepCopy[ServiceCounterDataType](m.AddReferencesCount),
+		utils.DeepCopy[ServiceCounterDataType](m.DeleteNodesCount),
+		utils.DeepCopy[ServiceCounterDataType](m.DeleteReferencesCount),
+		utils.DeepCopy[ServiceCounterDataType](m.BrowseCount),
+		utils.DeepCopy[ServiceCounterDataType](m.BrowseNextCount),
+		utils.DeepCopy[ServiceCounterDataType](m.TranslateBrowsePathsToNodeIdsCount),
+		utils.DeepCopy[ServiceCounterDataType](m.QueryFirstCount),
+		utils.DeepCopy[ServiceCounterDataType](m.QueryNextCount),
+		utils.DeepCopy[ServiceCounterDataType](m.RegisterNodesCount),
+		utils.DeepCopy[ServiceCounterDataType](m.UnregisterNodesCount),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SessionDiagnosticsDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SessionDiagnosticsDataTypeCopy
 }
 

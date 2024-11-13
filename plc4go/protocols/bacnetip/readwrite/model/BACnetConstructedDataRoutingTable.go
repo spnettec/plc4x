@@ -79,6 +79,8 @@ type BACnetConstructedDataRoutingTableBuilder interface {
 	WithMandatoryFields(routingTable []BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder
 	// WithRoutingTable adds RoutingTable (property field)
 	WithRoutingTable(...BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataRoutingTable or returns an error if something is wrong
 	Build() (BACnetConstructedDataRoutingTable, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataRoutingTableBuilder) = (*_BACnetConstructedDataRouti
 
 func (b *_BACnetConstructedDataRoutingTableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataRoutingTable
 }
 
 func (b *_BACnetConstructedDataRoutingTableBuilder) WithMandatoryFields(routingTable []BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataRoutingTableBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataRoutingTableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataRoutingTable) deepCopy() *_BACnetConstructedDataR
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetRouterEntry, BACnetRouterEntry](m.RoutingTable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataRoutingTableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataRoutingTableCopy
 }
 

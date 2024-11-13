@@ -85,6 +85,8 @@ type COTPPacketDataBuilder interface {
 	WithEot(bool) COTPPacketDataBuilder
 	// WithTpduRef adds TpduRef (property field)
 	WithTpduRef(uint8) COTPPacketDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() COTPPacketBuilder
 	// Build builds the COTPPacketData or returns an error if something is wrong
 	Build() (COTPPacketData, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (COTPPacketDataBuilder) = (*_COTPPacketDataBuilder)(nil)
 
 func (b *_COTPPacketDataBuilder) setParent(contract COTPPacketContract) {
 	b.COTPPacketContract = contract
+	contract.(*_COTPPacket)._SubType = b._COTPPacketData
 }
 
 func (b *_COTPPacketDataBuilder) WithMandatoryFields(eot bool, tpduRef uint8) COTPPacketDataBuilder {
@@ -139,8 +142,10 @@ func (b *_COTPPacketDataBuilder) MustBuild() COTPPacketData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_COTPPacketDataBuilder) Done() COTPPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCOTPPacketBuilder().(*_COTPPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_COTPPacketData) deepCopy() *_COTPPacketData {
 		m.Eot,
 		m.TpduRef,
 	}
-	m.COTPPacketContract.(*_COTPPacket)._SubType = m
+	_COTPPacketDataCopy.COTPPacketContract.(*_COTPPacket)._SubType = m
 	return _COTPPacketDataCopy
 }
 

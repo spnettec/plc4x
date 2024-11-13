@@ -84,6 +84,8 @@ type BACnetLogDataLogDataEntryBitStringValueBuilder interface {
 	WithBitStringValue(BACnetContextTagBitString) BACnetLogDataLogDataEntryBitStringValueBuilder
 	// WithBitStringValueBuilder adds BitStringValue (property field) which is build by the builder
 	WithBitStringValueBuilder(func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetLogDataLogDataEntryBitStringValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogDataLogDataEntryBuilder
 	// Build builds the BACnetLogDataLogDataEntryBitStringValue or returns an error if something is wrong
 	Build() (BACnetLogDataLogDataEntryBitStringValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogDataLogDataEntryBitStringValueBuilder) = (*_BACnetLogDataLogData
 
 func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
 	b.BACnetLogDataLogDataEntryContract = contract
+	contract.(*_BACnetLogDataLogDataEntry)._SubType = b._BACnetLogDataLogDataEntryBitStringValue
 }
 
 func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) WithMandatoryFields(bitStringValue BACnetContextTagBitString) BACnetLogDataLogDataEntryBitStringValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) MustBuild() BACnetLogD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogDataLogDataEntryBuilder().(*_BACnetLogDataLogDataEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) deepCopy() *_BACnetLogDataLog
 	}
 	_BACnetLogDataLogDataEntryBitStringValueCopy := &_BACnetLogDataLogDataEntryBitStringValue{
 		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
-		m.BitStringValue.DeepCopy().(BACnetContextTagBitString),
+		utils.DeepCopy[BACnetContextTagBitString](m.BitStringValue),
 	}
-	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	_BACnetLogDataLogDataEntryBitStringValueCopy.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
 	return _BACnetLogDataLogDataEntryBitStringValueCopy
 }
 

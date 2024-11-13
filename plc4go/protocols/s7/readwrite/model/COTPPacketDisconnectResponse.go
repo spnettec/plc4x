@@ -85,6 +85,8 @@ type COTPPacketDisconnectResponseBuilder interface {
 	WithDestinationReference(uint16) COTPPacketDisconnectResponseBuilder
 	// WithSourceReference adds SourceReference (property field)
 	WithSourceReference(uint16) COTPPacketDisconnectResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() COTPPacketBuilder
 	// Build builds the COTPPacketDisconnectResponse or returns an error if something is wrong
 	Build() (COTPPacketDisconnectResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (COTPPacketDisconnectResponseBuilder) = (*_COTPPacketDisconnectResponseBui
 
 func (b *_COTPPacketDisconnectResponseBuilder) setParent(contract COTPPacketContract) {
 	b.COTPPacketContract = contract
+	contract.(*_COTPPacket)._SubType = b._COTPPacketDisconnectResponse
 }
 
 func (b *_COTPPacketDisconnectResponseBuilder) WithMandatoryFields(destinationReference uint16, sourceReference uint16) COTPPacketDisconnectResponseBuilder {
@@ -139,8 +142,10 @@ func (b *_COTPPacketDisconnectResponseBuilder) MustBuild() COTPPacketDisconnectR
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_COTPPacketDisconnectResponseBuilder) Done() COTPPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCOTPPacketBuilder().(*_COTPPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_COTPPacketDisconnectResponse) deepCopy() *_COTPPacketDisconnectRespons
 		m.DestinationReference,
 		m.SourceReference,
 	}
-	m.COTPPacketContract.(*_COTPPacket)._SubType = m
+	_COTPPacketDisconnectResponseCopy.COTPPacketContract.(*_COTPPacket)._SubType = m
 	return _COTPPacketDisconnectResponseCopy
 }
 

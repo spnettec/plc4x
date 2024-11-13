@@ -114,6 +114,8 @@ type ConfirmedPrivateTransferErrorBuilder interface {
 	WithOptionalErrorParameters(BACnetConstructedData) ConfirmedPrivateTransferErrorBuilder
 	// WithOptionalErrorParametersBuilder adds ErrorParameters (property field) which is build by the builder
 	WithOptionalErrorParametersBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) ConfirmedPrivateTransferErrorBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetErrorBuilder
 	// Build builds the ConfirmedPrivateTransferError or returns an error if something is wrong
 	Build() (ConfirmedPrivateTransferError, error)
 	// MustBuild does the same as Build but panics on error
@@ -137,6 +139,7 @@ var _ (ConfirmedPrivateTransferErrorBuilder) = (*_ConfirmedPrivateTransferErrorB
 
 func (b *_ConfirmedPrivateTransferErrorBuilder) setParent(contract BACnetErrorContract) {
 	b.BACnetErrorContract = contract
+	contract.(*_BACnetError)._SubType = b._ConfirmedPrivateTransferError
 }
 
 func (b *_ConfirmedPrivateTransferErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger) ConfirmedPrivateTransferErrorBuilder {
@@ -248,8 +251,10 @@ func (b *_ConfirmedPrivateTransferErrorBuilder) MustBuild() ConfirmedPrivateTran
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ConfirmedPrivateTransferErrorBuilder) Done() BACnetErrorBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetErrorBuilder().(*_BACnetErrorBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -461,12 +466,12 @@ func (m *_ConfirmedPrivateTransferError) deepCopy() *_ConfirmedPrivateTransferEr
 	}
 	_ConfirmedPrivateTransferErrorCopy := &_ConfirmedPrivateTransferError{
 		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
-		m.ErrorType.DeepCopy().(ErrorEnclosed),
-		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
-		m.ServiceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ErrorParameters.DeepCopy().(BACnetConstructedData),
+		utils.DeepCopy[ErrorEnclosed](m.ErrorType),
+		utils.DeepCopy[BACnetVendorIdTagged](m.VendorId),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ServiceNumber),
+		utils.DeepCopy[BACnetConstructedData](m.ErrorParameters),
 	}
-	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	_ConfirmedPrivateTransferErrorCopy.BACnetErrorContract.(*_BACnetError)._SubType = m
 	return _ConfirmedPrivateTransferErrorCopy
 }
 

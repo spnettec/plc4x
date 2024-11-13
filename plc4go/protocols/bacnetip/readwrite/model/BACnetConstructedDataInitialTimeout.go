@@ -86,6 +86,8 @@ type BACnetConstructedDataInitialTimeoutBuilder interface {
 	WithInitialTimeout(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataInitialTimeoutBuilder
 	// WithInitialTimeoutBuilder adds InitialTimeout (property field) which is build by the builder
 	WithInitialTimeoutBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataInitialTimeoutBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataInitialTimeout or returns an error if something is wrong
 	Build() (BACnetConstructedDataInitialTimeout, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataInitialTimeoutBuilder) = (*_BACnetConstructedDataIni
 
 func (b *_BACnetConstructedDataInitialTimeoutBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataInitialTimeout
 }
 
 func (b *_BACnetConstructedDataInitialTimeoutBuilder) WithMandatoryFields(initialTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataInitialTimeoutBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataInitialTimeoutBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataInitialTimeoutBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataInitialTimeout) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataInitialTimeoutCopy := &_BACnetConstructedDataInitialTimeout{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.InitialTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.InitialTimeout),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataInitialTimeoutCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataInitialTimeoutCopy
 }
 

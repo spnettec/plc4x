@@ -89,6 +89,8 @@ type BACnetConstructedDataConfigurationFilesBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataConfigurationFilesBuilder
 	// WithConfigurationFiles adds ConfigurationFiles (property field)
 	WithConfigurationFiles(...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataConfigurationFilesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataConfigurationFiles or returns an error if something is wrong
 	Build() (BACnetConstructedDataConfigurationFiles, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataConfigurationFilesBuilder) = (*_BACnetConstructedDat
 
 func (b *_BACnetConstructedDataConfigurationFilesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataConfigurationFiles
 }
 
 func (b *_BACnetConstructedDataConfigurationFilesBuilder) WithMandatoryFields(configurationFiles []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataConfigurationFilesBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataConfigurationFilesBuilder) MustBuild() BACnetCons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataConfigurationFilesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataConfigurationFiles) deepCopy() *_BACnetConstructe
 	}
 	_BACnetConstructedDataConfigurationFilesCopy := &_BACnetConstructedDataConfigurationFiles{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagObjectIdentifier, BACnetApplicationTagObjectIdentifier](m.ConfigurationFiles),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataConfigurationFilesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataConfigurationFilesCopy
 }
 

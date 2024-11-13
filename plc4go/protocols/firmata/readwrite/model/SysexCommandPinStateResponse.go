@@ -91,6 +91,8 @@ type SysexCommandPinStateResponseBuilder interface {
 	WithPinMode(uint8) SysexCommandPinStateResponseBuilder
 	// WithPinState adds PinState (property field)
 	WithPinState(uint8) SysexCommandPinStateResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandPinStateResponse or returns an error if something is wrong
 	Build() (SysexCommandPinStateResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (SysexCommandPinStateResponseBuilder) = (*_SysexCommandPinStateResponseBui
 
 func (b *_SysexCommandPinStateResponseBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandPinStateResponse
 }
 
 func (b *_SysexCommandPinStateResponseBuilder) WithMandatoryFields(pin uint8, pinMode uint8, pinState uint8) SysexCommandPinStateResponseBuilder {
@@ -150,8 +153,10 @@ func (b *_SysexCommandPinStateResponseBuilder) MustBuild() SysexCommandPinStateR
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandPinStateResponseBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -348,7 +353,7 @@ func (m *_SysexCommandPinStateResponse) deepCopy() *_SysexCommandPinStateRespons
 		m.PinMode,
 		m.PinState,
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandPinStateResponseCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandPinStateResponseCopy
 }
 

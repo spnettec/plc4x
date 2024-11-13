@@ -106,6 +106,8 @@ type BACnetConfirmedServiceRequestVTDataBuilder interface {
 	WithVtDataFlag(BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTDataBuilder
 	// WithVtDataFlagBuilder adds VtDataFlag (property field) which is build by the builder
 	WithVtDataFlagBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestVTDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestVTData or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestVTData, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (BACnetConfirmedServiceRequestVTDataBuilder) = (*_BACnetConfirmedServiceRe
 
 func (b *_BACnetConfirmedServiceRequestVTDataBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestVTData
 }
 
 func (b *_BACnetConfirmedServiceRequestVTDataBuilder) WithMandatoryFields(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTDataBuilder {
@@ -222,8 +225,10 @@ func (b *_BACnetConfirmedServiceRequestVTDataBuilder) MustBuild() BACnetConfirme
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestVTDataBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,11 +417,11 @@ func (m *_BACnetConfirmedServiceRequestVTData) deepCopy() *_BACnetConfirmedServi
 	}
 	_BACnetConfirmedServiceRequestVTDataCopy := &_BACnetConfirmedServiceRequestVTData{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.VtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.VtNewData.DeepCopy().(BACnetApplicationTagOctetString),
-		m.VtDataFlag.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.VtSessionIdentifier),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.VtNewData),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.VtDataFlag),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestVTDataCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestVTDataCopy
 }
 

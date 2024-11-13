@@ -86,6 +86,8 @@ type BACnetConstructedDataDefaultStepIncrementBuilder interface {
 	WithDefaultStepIncrement(BACnetApplicationTagReal) BACnetConstructedDataDefaultStepIncrementBuilder
 	// WithDefaultStepIncrementBuilder adds DefaultStepIncrement (property field) which is build by the builder
 	WithDefaultStepIncrementBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDefaultStepIncrementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDefaultStepIncrement or returns an error if something is wrong
 	Build() (BACnetConstructedDataDefaultStepIncrement, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDefaultStepIncrementBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDefaultStepIncrement
 }
 
 func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) WithMandatoryFields(defaultStepIncrement BACnetApplicationTagReal) BACnetConstructedDataDefaultStepIncrementBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDefaultStepIncrementBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataDefaultStepIncrementCopy := &_BACnetConstructedDataDefaultStepIncrement{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DefaultStepIncrement.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.DefaultStepIncrement),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDefaultStepIncrementCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDefaultStepIncrementCopy
 }
 

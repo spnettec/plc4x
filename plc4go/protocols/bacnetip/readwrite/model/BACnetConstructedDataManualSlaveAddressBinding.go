@@ -79,6 +79,8 @@ type BACnetConstructedDataManualSlaveAddressBindingBuilder interface {
 	WithMandatoryFields(manualSlaveAddressBinding []BACnetAddressBinding) BACnetConstructedDataManualSlaveAddressBindingBuilder
 	// WithManualSlaveAddressBinding adds ManualSlaveAddressBinding (property field)
 	WithManualSlaveAddressBinding(...BACnetAddressBinding) BACnetConstructedDataManualSlaveAddressBindingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataManualSlaveAddressBinding or returns an error if something is wrong
 	Build() (BACnetConstructedDataManualSlaveAddressBinding, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataManualSlaveAddressBindingBuilder) = (*_BACnetConstru
 
 func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataManualSlaveAddressBinding
 }
 
 func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) WithMandatoryFields(manualSlaveAddressBinding []BACnetAddressBinding) BACnetConstructedDataManualSlaveAddressBindingBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) deepCopy() *_BACnetCon
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAddressBinding, BACnetAddressBinding](m.ManualSlaveAddressBinding),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataManualSlaveAddressBindingCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataManualSlaveAddressBindingCopy
 }
 

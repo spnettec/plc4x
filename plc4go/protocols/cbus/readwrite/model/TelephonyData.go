@@ -103,65 +103,29 @@ type TelephonyDataBuilder interface {
 	// WithArgument adds Argument (property field)
 	WithArgument(byte) TelephonyDataBuilder
 	// AsTelephonyDataLineOnHook converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataLineOnHook() interface {
-		TelephonyDataLineOnHookBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataLineOnHook() TelephonyDataLineOnHookBuilder
 	// AsTelephonyDataLineOffHook converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataLineOffHook() interface {
-		TelephonyDataLineOffHookBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataLineOffHook() TelephonyDataLineOffHookBuilder
 	// AsTelephonyDataDialOutFailure converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataDialOutFailure() interface {
-		TelephonyDataDialOutFailureBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataDialOutFailure() TelephonyDataDialOutFailureBuilder
 	// AsTelephonyDataDialInFailure converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataDialInFailure() interface {
-		TelephonyDataDialInFailureBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataDialInFailure() TelephonyDataDialInFailureBuilder
 	// AsTelephonyDataRinging converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataRinging() interface {
-		TelephonyDataRingingBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataRinging() TelephonyDataRingingBuilder
 	// AsTelephonyDataRecallLastNumber converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataRecallLastNumber() interface {
-		TelephonyDataRecallLastNumberBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataRecallLastNumber() TelephonyDataRecallLastNumberBuilder
 	// AsTelephonyDataInternetConnectionRequestMade converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataInternetConnectionRequestMade() interface {
-		TelephonyDataInternetConnectionRequestMadeBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataInternetConnectionRequestMade() TelephonyDataInternetConnectionRequestMadeBuilder
 	// AsTelephonyDataIsolateSecondaryOutlet converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataIsolateSecondaryOutlet() interface {
-		TelephonyDataIsolateSecondaryOutletBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataIsolateSecondaryOutlet() TelephonyDataIsolateSecondaryOutletBuilder
 	// AsTelephonyDataRecallLastNumberRequest converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataRecallLastNumberRequest() interface {
-		TelephonyDataRecallLastNumberRequestBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataRecallLastNumberRequest() TelephonyDataRecallLastNumberRequestBuilder
 	// AsTelephonyDataRejectIncomingCall converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataRejectIncomingCall() interface {
-		TelephonyDataRejectIncomingCallBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataRejectIncomingCall() TelephonyDataRejectIncomingCallBuilder
 	// AsTelephonyDataDivert converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataDivert() interface {
-		TelephonyDataDivertBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataDivert() TelephonyDataDivertBuilder
 	// AsTelephonyDataClearDiversion converts this build to a subType of TelephonyData. It is always possible to return to current builder using Done()
-	AsTelephonyDataClearDiversion() interface {
-		TelephonyDataClearDiversionBuilder
-		Done() TelephonyDataBuilder
-	}
+	AsTelephonyDataClearDiversion() TelephonyDataClearDiversionBuilder
 	// Build builds the TelephonyData or returns an error if something is wrong
 	PartialBuild() (TelephonyDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -222,14 +186,8 @@ func (b *_TelephonyDataBuilder) PartialMustBuild() TelephonyDataContract {
 	return build
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataLineOnHook() interface {
-	TelephonyDataLineOnHookBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataLineOnHookBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataLineOnHook() TelephonyDataLineOnHookBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataLineOnHookBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataLineOnHookBuilder().(*_TelephonyDataLineOnHookBuilder)
@@ -238,14 +196,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataLineOnHook() interface {
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataLineOffHook() interface {
-	TelephonyDataLineOffHookBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataLineOffHookBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataLineOffHook() TelephonyDataLineOffHookBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataLineOffHookBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataLineOffHookBuilder().(*_TelephonyDataLineOffHookBuilder)
@@ -254,14 +206,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataLineOffHook() interface {
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataDialOutFailure() interface {
-	TelephonyDataDialOutFailureBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataDialOutFailureBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataDialOutFailure() TelephonyDataDialOutFailureBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataDialOutFailureBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataDialOutFailureBuilder().(*_TelephonyDataDialOutFailureBuilder)
@@ -270,14 +216,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataDialOutFailure() interface {
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataDialInFailure() interface {
-	TelephonyDataDialInFailureBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataDialInFailureBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataDialInFailure() TelephonyDataDialInFailureBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataDialInFailureBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataDialInFailureBuilder().(*_TelephonyDataDialInFailureBuilder)
@@ -286,14 +226,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataDialInFailure() interface {
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataRinging() interface {
-	TelephonyDataRingingBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataRingingBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataRinging() TelephonyDataRingingBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataRingingBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataRingingBuilder().(*_TelephonyDataRingingBuilder)
@@ -302,14 +236,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataRinging() interface {
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataRecallLastNumber() interface {
-	TelephonyDataRecallLastNumberBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataRecallLastNumberBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataRecallLastNumber() TelephonyDataRecallLastNumberBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataRecallLastNumberBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataRecallLastNumberBuilder().(*_TelephonyDataRecallLastNumberBuilder)
@@ -318,14 +246,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataRecallLastNumber() interface {
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataInternetConnectionRequestMade() interface {
-	TelephonyDataInternetConnectionRequestMadeBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataInternetConnectionRequestMadeBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataInternetConnectionRequestMade() TelephonyDataInternetConnectionRequestMadeBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataInternetConnectionRequestMadeBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataInternetConnectionRequestMadeBuilder().(*_TelephonyDataInternetConnectionRequestMadeBuilder)
@@ -334,14 +256,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataInternetConnectionRequestMade() i
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataIsolateSecondaryOutlet() interface {
-	TelephonyDataIsolateSecondaryOutletBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataIsolateSecondaryOutletBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataIsolateSecondaryOutlet() TelephonyDataIsolateSecondaryOutletBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataIsolateSecondaryOutletBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataIsolateSecondaryOutletBuilder().(*_TelephonyDataIsolateSecondaryOutletBuilder)
@@ -350,14 +266,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataIsolateSecondaryOutlet() interfac
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataRecallLastNumberRequest() interface {
-	TelephonyDataRecallLastNumberRequestBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataRecallLastNumberRequestBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataRecallLastNumberRequest() TelephonyDataRecallLastNumberRequestBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataRecallLastNumberRequestBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataRecallLastNumberRequestBuilder().(*_TelephonyDataRecallLastNumberRequestBuilder)
@@ -366,14 +276,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataRecallLastNumberRequest() interfa
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataRejectIncomingCall() interface {
-	TelephonyDataRejectIncomingCallBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataRejectIncomingCallBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataRejectIncomingCall() TelephonyDataRejectIncomingCallBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataRejectIncomingCallBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataRejectIncomingCallBuilder().(*_TelephonyDataRejectIncomingCallBuilder)
@@ -382,14 +286,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataRejectIncomingCall() interface {
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataDivert() interface {
-	TelephonyDataDivertBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataDivertBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataDivert() TelephonyDataDivertBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataDivertBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataDivertBuilder().(*_TelephonyDataDivertBuilder)
@@ -398,14 +296,8 @@ func (b *_TelephonyDataBuilder) AsTelephonyDataDivert() interface {
 	return cb
 }
 
-func (b *_TelephonyDataBuilder) AsTelephonyDataClearDiversion() interface {
-	TelephonyDataClearDiversionBuilder
-	Done() TelephonyDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TelephonyDataClearDiversionBuilder
-		Done() TelephonyDataBuilder
-	}); ok {
+func (b *_TelephonyDataBuilder) AsTelephonyDataClearDiversion() TelephonyDataClearDiversionBuilder {
+	if cb, ok := b.childBuilder.(TelephonyDataClearDiversionBuilder); ok {
 		return cb
 	}
 	cb := NewTelephonyDataClearDiversionBuilder().(*_TelephonyDataClearDiversionBuilder)

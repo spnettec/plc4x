@@ -86,6 +86,8 @@ type BACnetConstructedDataFaultLowLimitBuilder interface {
 	WithFaultLowLimit(BACnetApplicationTagReal) BACnetConstructedDataFaultLowLimitBuilder
 	// WithFaultLowLimitBuilder adds FaultLowLimit (property field) which is build by the builder
 	WithFaultLowLimitBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataFaultLowLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataFaultLowLimit or returns an error if something is wrong
 	Build() (BACnetConstructedDataFaultLowLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataFaultLowLimitBuilder) = (*_BACnetConstructedDataFaul
 
 func (b *_BACnetConstructedDataFaultLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataFaultLowLimit
 }
 
 func (b *_BACnetConstructedDataFaultLowLimitBuilder) WithMandatoryFields(faultLowLimit BACnetApplicationTagReal) BACnetConstructedDataFaultLowLimitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataFaultLowLimitBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataFaultLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataFaultLowLimit) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataFaultLowLimitCopy := &_BACnetConstructedDataFaultLowLimit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.FaultLowLimit.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.FaultLowLimit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataFaultLowLimitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataFaultLowLimitCopy
 }
 

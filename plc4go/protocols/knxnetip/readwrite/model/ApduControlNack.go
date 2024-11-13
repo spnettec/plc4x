@@ -71,6 +71,8 @@ type ApduControlNackBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduControlNackBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduControlBuilder
 	// Build builds the ApduControlNack or returns an error if something is wrong
 	Build() (ApduControlNack, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduControlNackBuilder) = (*_ApduControlNackBuilder)(nil)
 
 func (b *_ApduControlNackBuilder) setParent(contract ApduControlContract) {
 	b.ApduControlContract = contract
+	contract.(*_ApduControl)._SubType = b._ApduControlNack
 }
 
 func (b *_ApduControlNackBuilder) WithMandatoryFields() ApduControlNackBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduControlNackBuilder) MustBuild() ApduControlNack {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduControlNackBuilder) Done() ApduControlBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduControlBuilder().(*_ApduControlBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduControlNack) deepCopy() *_ApduControlNack {
 	_ApduControlNackCopy := &_ApduControlNack{
 		m.ApduControlContract.(*_ApduControl).deepCopy(),
 	}
-	m.ApduControlContract.(*_ApduControl)._SubType = m
+	_ApduControlNackCopy.ApduControlContract.(*_ApduControl)._SubType = m
 	return _ApduControlNackCopy
 }
 

@@ -103,30 +103,15 @@ type TriggerControlDataBuilder interface {
 	// WithTriggerGroup adds TriggerGroup (property field)
 	WithTriggerGroup(byte) TriggerControlDataBuilder
 	// AsTriggerControlDataTriggerEvent converts this build to a subType of TriggerControlData. It is always possible to return to current builder using Done()
-	AsTriggerControlDataTriggerEvent() interface {
-		TriggerControlDataTriggerEventBuilder
-		Done() TriggerControlDataBuilder
-	}
+	AsTriggerControlDataTriggerEvent() TriggerControlDataTriggerEventBuilder
 	// AsTriggerControlDataTriggerMin converts this build to a subType of TriggerControlData. It is always possible to return to current builder using Done()
-	AsTriggerControlDataTriggerMin() interface {
-		TriggerControlDataTriggerMinBuilder
-		Done() TriggerControlDataBuilder
-	}
+	AsTriggerControlDataTriggerMin() TriggerControlDataTriggerMinBuilder
 	// AsTriggerControlDataTriggerMax converts this build to a subType of TriggerControlData. It is always possible to return to current builder using Done()
-	AsTriggerControlDataTriggerMax() interface {
-		TriggerControlDataTriggerMaxBuilder
-		Done() TriggerControlDataBuilder
-	}
+	AsTriggerControlDataTriggerMax() TriggerControlDataTriggerMaxBuilder
 	// AsTriggerControlDataIndicatorKill converts this build to a subType of TriggerControlData. It is always possible to return to current builder using Done()
-	AsTriggerControlDataIndicatorKill() interface {
-		TriggerControlDataIndicatorKillBuilder
-		Done() TriggerControlDataBuilder
-	}
+	AsTriggerControlDataIndicatorKill() TriggerControlDataIndicatorKillBuilder
 	// AsTriggerControlDataLabel converts this build to a subType of TriggerControlData. It is always possible to return to current builder using Done()
-	AsTriggerControlDataLabel() interface {
-		TriggerControlDataLabelBuilder
-		Done() TriggerControlDataBuilder
-	}
+	AsTriggerControlDataLabel() TriggerControlDataLabelBuilder
 	// Build builds the TriggerControlData or returns an error if something is wrong
 	PartialBuild() (TriggerControlDataContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -187,14 +172,8 @@ func (b *_TriggerControlDataBuilder) PartialMustBuild() TriggerControlDataContra
 	return build
 }
 
-func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerEvent() interface {
-	TriggerControlDataTriggerEventBuilder
-	Done() TriggerControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TriggerControlDataTriggerEventBuilder
-		Done() TriggerControlDataBuilder
-	}); ok {
+func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerEvent() TriggerControlDataTriggerEventBuilder {
+	if cb, ok := b.childBuilder.(TriggerControlDataTriggerEventBuilder); ok {
 		return cb
 	}
 	cb := NewTriggerControlDataTriggerEventBuilder().(*_TriggerControlDataTriggerEventBuilder)
@@ -203,14 +182,8 @@ func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerEvent() interfac
 	return cb
 }
 
-func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerMin() interface {
-	TriggerControlDataTriggerMinBuilder
-	Done() TriggerControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TriggerControlDataTriggerMinBuilder
-		Done() TriggerControlDataBuilder
-	}); ok {
+func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerMin() TriggerControlDataTriggerMinBuilder {
+	if cb, ok := b.childBuilder.(TriggerControlDataTriggerMinBuilder); ok {
 		return cb
 	}
 	cb := NewTriggerControlDataTriggerMinBuilder().(*_TriggerControlDataTriggerMinBuilder)
@@ -219,14 +192,8 @@ func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerMin() interface 
 	return cb
 }
 
-func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerMax() interface {
-	TriggerControlDataTriggerMaxBuilder
-	Done() TriggerControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TriggerControlDataTriggerMaxBuilder
-		Done() TriggerControlDataBuilder
-	}); ok {
+func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerMax() TriggerControlDataTriggerMaxBuilder {
+	if cb, ok := b.childBuilder.(TriggerControlDataTriggerMaxBuilder); ok {
 		return cb
 	}
 	cb := NewTriggerControlDataTriggerMaxBuilder().(*_TriggerControlDataTriggerMaxBuilder)
@@ -235,14 +202,8 @@ func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerMax() interface 
 	return cb
 }
 
-func (b *_TriggerControlDataBuilder) AsTriggerControlDataIndicatorKill() interface {
-	TriggerControlDataIndicatorKillBuilder
-	Done() TriggerControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TriggerControlDataIndicatorKillBuilder
-		Done() TriggerControlDataBuilder
-	}); ok {
+func (b *_TriggerControlDataBuilder) AsTriggerControlDataIndicatorKill() TriggerControlDataIndicatorKillBuilder {
+	if cb, ok := b.childBuilder.(TriggerControlDataIndicatorKillBuilder); ok {
 		return cb
 	}
 	cb := NewTriggerControlDataIndicatorKillBuilder().(*_TriggerControlDataIndicatorKillBuilder)
@@ -251,14 +212,8 @@ func (b *_TriggerControlDataBuilder) AsTriggerControlDataIndicatorKill() interfa
 	return cb
 }
 
-func (b *_TriggerControlDataBuilder) AsTriggerControlDataLabel() interface {
-	TriggerControlDataLabelBuilder
-	Done() TriggerControlDataBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		TriggerControlDataLabelBuilder
-		Done() TriggerControlDataBuilder
-	}); ok {
+func (b *_TriggerControlDataBuilder) AsTriggerControlDataLabel() TriggerControlDataLabelBuilder {
+	if cb, ok := b.childBuilder.(TriggerControlDataLabelBuilder); ok {
 		return cb
 	}
 	cb := NewTriggerControlDataLabelBuilder().(*_TriggerControlDataLabelBuilder)

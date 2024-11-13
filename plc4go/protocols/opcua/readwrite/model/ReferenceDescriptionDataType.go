@@ -114,6 +114,8 @@ type ReferenceDescriptionDataTypeBuilder interface {
 	WithTargetNode(ExpandedNodeId) ReferenceDescriptionDataTypeBuilder
 	// WithTargetNodeBuilder adds TargetNode (property field) which is build by the builder
 	WithTargetNodeBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReferenceDescriptionDataType or returns an error if something is wrong
 	Build() (ReferenceDescriptionDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -137,6 +139,7 @@ var _ (ReferenceDescriptionDataTypeBuilder) = (*_ReferenceDescriptionDataTypeBui
 
 func (b *_ReferenceDescriptionDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReferenceDescriptionDataType
 }
 
 func (b *_ReferenceDescriptionDataTypeBuilder) WithMandatoryFields(sourceNode NodeId, referenceType NodeId, isForward bool, targetNode ExpandedNodeId) ReferenceDescriptionDataTypeBuilder {
@@ -235,8 +238,10 @@ func (b *_ReferenceDescriptionDataTypeBuilder) MustBuild() ReferenceDescriptionD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReferenceDescriptionDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -455,13 +460,13 @@ func (m *_ReferenceDescriptionDataType) deepCopy() *_ReferenceDescriptionDataTyp
 	}
 	_ReferenceDescriptionDataTypeCopy := &_ReferenceDescriptionDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.SourceNode.DeepCopy().(NodeId),
-		m.ReferenceType.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.SourceNode),
+		utils.DeepCopy[NodeId](m.ReferenceType),
 		m.IsForward,
-		m.TargetNode.DeepCopy().(ExpandedNodeId),
+		utils.DeepCopy[ExpandedNodeId](m.TargetNode),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReferenceDescriptionDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReferenceDescriptionDataTypeCopy
 }
 

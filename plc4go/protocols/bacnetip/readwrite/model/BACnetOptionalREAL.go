@@ -101,15 +101,9 @@ type BACnetOptionalREALBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalREALBuilder
 	// AsBACnetOptionalREALNull converts this build to a subType of BACnetOptionalREAL. It is always possible to return to current builder using Done()
-	AsBACnetOptionalREALNull() interface {
-		BACnetOptionalREALNullBuilder
-		Done() BACnetOptionalREALBuilder
-	}
+	AsBACnetOptionalREALNull() BACnetOptionalREALNullBuilder
 	// AsBACnetOptionalREALValue converts this build to a subType of BACnetOptionalREAL. It is always possible to return to current builder using Done()
-	AsBACnetOptionalREALValue() interface {
-		BACnetOptionalREALValueBuilder
-		Done() BACnetOptionalREALBuilder
-	}
+	AsBACnetOptionalREALValue() BACnetOptionalREALValueBuilder
 	// Build builds the BACnetOptionalREAL or returns an error if something is wrong
 	PartialBuild() (BACnetOptionalREALContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetOptionalREALBuilder) PartialMustBuild() BACnetOptionalREALContra
 	return build
 }
 
-func (b *_BACnetOptionalREALBuilder) AsBACnetOptionalREALNull() interface {
-	BACnetOptionalREALNullBuilder
-	Done() BACnetOptionalREALBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetOptionalREALNullBuilder
-		Done() BACnetOptionalREALBuilder
-	}); ok {
+func (b *_BACnetOptionalREALBuilder) AsBACnetOptionalREALNull() BACnetOptionalREALNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetOptionalREALNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetOptionalREALNullBuilder().(*_BACnetOptionalREALNullBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetOptionalREALBuilder) AsBACnetOptionalREALNull() interface {
 	return cb
 }
 
-func (b *_BACnetOptionalREALBuilder) AsBACnetOptionalREALValue() interface {
-	BACnetOptionalREALValueBuilder
-	Done() BACnetOptionalREALBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetOptionalREALValueBuilder
-		Done() BACnetOptionalREALBuilder
-	}); ok {
+func (b *_BACnetOptionalREALBuilder) AsBACnetOptionalREALValue() BACnetOptionalREALValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetOptionalREALValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetOptionalREALValueBuilder().(*_BACnetOptionalREALValueBuilder)
@@ -433,7 +415,7 @@ func (m *_BACnetOptionalREAL) deepCopy() *_BACnetOptionalREAL {
 	}
 	_BACnetOptionalREALCopy := &_BACnetOptionalREAL{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetOptionalREALCopy
 }

@@ -393,7 +393,7 @@ func (m *_BACnetEventTypeTagged) deepCopy() *_BACnetEventTypeTagged {
 		return nil
 	}
 	_BACnetEventTypeTaggedCopy := &_BACnetEventTypeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

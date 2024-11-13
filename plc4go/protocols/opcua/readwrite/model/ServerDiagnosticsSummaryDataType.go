@@ -145,6 +145,8 @@ type ServerDiagnosticsSummaryDataTypeBuilder interface {
 	WithSecurityRejectedRequestsCount(uint32) ServerDiagnosticsSummaryDataTypeBuilder
 	// WithRejectedRequestsCount adds RejectedRequestsCount (property field)
 	WithRejectedRequestsCount(uint32) ServerDiagnosticsSummaryDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ServerDiagnosticsSummaryDataType or returns an error if something is wrong
 	Build() (ServerDiagnosticsSummaryDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -168,6 +170,7 @@ var _ (ServerDiagnosticsSummaryDataTypeBuilder) = (*_ServerDiagnosticsSummaryDat
 
 func (b *_ServerDiagnosticsSummaryDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ServerDiagnosticsSummaryDataType
 }
 
 func (b *_ServerDiagnosticsSummaryDataTypeBuilder) WithMandatoryFields(serverViewCount uint32, currentSessionCount uint32, cumulatedSessionCount uint32, securityRejectedSessionCount uint32, rejectedSessionCount uint32, sessionTimeoutCount uint32, sessionAbortCount uint32, currentSubscriptionCount uint32, cumulatedSubscriptionCount uint32, publishingIntervalCount uint32, securityRejectedRequestsCount uint32, rejectedRequestsCount uint32) ServerDiagnosticsSummaryDataTypeBuilder {
@@ -249,8 +252,10 @@ func (b *_ServerDiagnosticsSummaryDataTypeBuilder) MustBuild() ServerDiagnostics
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ServerDiagnosticsSummaryDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -605,7 +610,7 @@ func (m *_ServerDiagnosticsSummaryDataType) deepCopy() *_ServerDiagnosticsSummar
 		m.SecurityRejectedRequestsCount,
 		m.RejectedRequestsCount,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ServerDiagnosticsSummaryDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ServerDiagnosticsSummaryDataTypeCopy
 }
 

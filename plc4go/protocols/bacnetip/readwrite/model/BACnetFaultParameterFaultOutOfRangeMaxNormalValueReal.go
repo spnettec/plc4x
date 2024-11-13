@@ -84,6 +84,8 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder interface {
 	WithRealValue(BACnetApplicationTagReal) BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder
 	// WithRealValueBuilder adds RealValue (property field) which is build by the builder
 	WithRealValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder
 	// Build builds the BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder) = (*_BACnet
 
 func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder) setParent(contract BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract) {
 	b.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract = contract
+	contract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = b._BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
 }
 
 func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder) MustBuil
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder) Done() BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder().(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) deepCopy() *_BA
 	}
 	_BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealCopy := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal{
 		m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue).deepCopy(),
-		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.RealValue),
 	}
-	m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = m
+	_BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealCopy.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = m
 	return _BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealCopy
 }
 

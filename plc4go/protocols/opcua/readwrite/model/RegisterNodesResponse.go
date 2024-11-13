@@ -90,6 +90,8 @@ type RegisterNodesResponseBuilder interface {
 	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) RegisterNodesResponseBuilder
 	// WithRegisteredNodeIds adds RegisteredNodeIds (property field)
 	WithRegisteredNodeIds(...NodeId) RegisterNodesResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RegisterNodesResponse or returns an error if something is wrong
 	Build() (RegisterNodesResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (RegisterNodesResponseBuilder) = (*_RegisterNodesResponseBuilder)(nil)
 
 func (b *_RegisterNodesResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RegisterNodesResponse
 }
 
 func (b *_RegisterNodesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, registeredNodeIds []NodeId) RegisterNodesResponseBuilder {
@@ -163,8 +166,10 @@ func (b *_RegisterNodesResponseBuilder) MustBuild() RegisterNodesResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RegisterNodesResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_RegisterNodesResponse) deepCopy() *_RegisterNodesResponse {
 	}
 	_RegisterNodesResponseCopy := &_RegisterNodesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[NodeId, NodeId](m.RegisteredNodeIds),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RegisterNodesResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RegisterNodesResponseCopy
 }
 

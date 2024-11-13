@@ -95,6 +95,8 @@ type AddNodesResultBuilder interface {
 	WithAddedNodeId(NodeId) AddNodesResultBuilder
 	// WithAddedNodeIdBuilder adds AddedNodeId (property field) which is build by the builder
 	WithAddedNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) AddNodesResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AddNodesResult or returns an error if something is wrong
 	Build() (AddNodesResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (AddNodesResultBuilder) = (*_AddNodesResultBuilder)(nil)
 
 func (b *_AddNodesResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AddNodesResult
 }
 
 func (b *_AddNodesResultBuilder) WithMandatoryFields(statusCode StatusCode, addedNodeId NodeId) AddNodesResultBuilder {
@@ -187,8 +190,10 @@ func (b *_AddNodesResultBuilder) MustBuild() AddNodesResult {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AddNodesResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_AddNodesResult) deepCopy() *_AddNodesResult {
 	}
 	_AddNodesResultCopy := &_AddNodesResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.StatusCode.DeepCopy().(StatusCode),
-		m.AddedNodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[StatusCode](m.StatusCode),
+		utils.DeepCopy[NodeId](m.AddedNodeId),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AddNodesResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AddNodesResultCopy
 }
 

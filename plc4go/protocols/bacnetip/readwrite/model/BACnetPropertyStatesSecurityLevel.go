@@ -84,6 +84,8 @@ type BACnetPropertyStatesSecurityLevelBuilder interface {
 	WithSecurityLevel(BACnetSecurityLevelTagged) BACnetPropertyStatesSecurityLevelBuilder
 	// WithSecurityLevelBuilder adds SecurityLevel (property field) which is build by the builder
 	WithSecurityLevelBuilder(func(BACnetSecurityLevelTaggedBuilder) BACnetSecurityLevelTaggedBuilder) BACnetPropertyStatesSecurityLevelBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesSecurityLevel or returns an error if something is wrong
 	Build() (BACnetPropertyStatesSecurityLevel, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesSecurityLevelBuilder) = (*_BACnetPropertyStatesSecuri
 
 func (b *_BACnetPropertyStatesSecurityLevelBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesSecurityLevel
 }
 
 func (b *_BACnetPropertyStatesSecurityLevelBuilder) WithMandatoryFields(securityLevel BACnetSecurityLevelTagged) BACnetPropertyStatesSecurityLevelBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesSecurityLevelBuilder) MustBuild() BACnetPropertySt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesSecurityLevelBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesSecurityLevel) deepCopy() *_BACnetPropertyStatesSe
 	}
 	_BACnetPropertyStatesSecurityLevelCopy := &_BACnetPropertyStatesSecurityLevel{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.SecurityLevel.DeepCopy().(BACnetSecurityLevelTagged),
+		utils.DeepCopy[BACnetSecurityLevelTagged](m.SecurityLevel),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesSecurityLevelCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesSecurityLevelCopy
 }
 

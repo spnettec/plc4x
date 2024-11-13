@@ -84,6 +84,8 @@ type BACnetSpecialEventPeriodCalendarEntryBuilder interface {
 	WithCalendarEntry(BACnetCalendarEntryEnclosed) BACnetSpecialEventPeriodCalendarEntryBuilder
 	// WithCalendarEntryBuilder adds CalendarEntry (property field) which is build by the builder
 	WithCalendarEntryBuilder(func(BACnetCalendarEntryEnclosedBuilder) BACnetCalendarEntryEnclosedBuilder) BACnetSpecialEventPeriodCalendarEntryBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetSpecialEventPeriodBuilder
 	// Build builds the BACnetSpecialEventPeriodCalendarEntry or returns an error if something is wrong
 	Build() (BACnetSpecialEventPeriodCalendarEntry, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetSpecialEventPeriodCalendarEntryBuilder) = (*_BACnetSpecialEventPeri
 
 func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) setParent(contract BACnetSpecialEventPeriodContract) {
 	b.BACnetSpecialEventPeriodContract = contract
+	contract.(*_BACnetSpecialEventPeriod)._SubType = b._BACnetSpecialEventPeriodCalendarEntry
 }
 
 func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) WithMandatoryFields(calendarEntry BACnetCalendarEntryEnclosed) BACnetSpecialEventPeriodCalendarEntryBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) MustBuild() BACnetSpecia
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetSpecialEventPeriodCalendarEntryBuilder) Done() BACnetSpecialEventPeriodBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetSpecialEventPeriodBuilder().(*_BACnetSpecialEventPeriodBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) deepCopy() *_BACnetSpecialEvent
 	}
 	_BACnetSpecialEventPeriodCalendarEntryCopy := &_BACnetSpecialEventPeriodCalendarEntry{
 		m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod).deepCopy(),
-		m.CalendarEntry.DeepCopy().(BACnetCalendarEntryEnclosed),
+		utils.DeepCopy[BACnetCalendarEntryEnclosed](m.CalendarEntry),
 	}
-	m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = m
+	_BACnetSpecialEventPeriodCalendarEntryCopy.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = m
 	return _BACnetSpecialEventPeriodCalendarEntryCopy
 }
 

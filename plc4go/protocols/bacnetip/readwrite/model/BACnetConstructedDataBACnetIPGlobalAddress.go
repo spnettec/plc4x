@@ -86,6 +86,8 @@ type BACnetConstructedDataBACnetIPGlobalAddressBuilder interface {
 	WithBacnetIpGlobalAddress(BACnetHostNPort) BACnetConstructedDataBACnetIPGlobalAddressBuilder
 	// WithBacnetIpGlobalAddressBuilder adds BacnetIpGlobalAddress (property field) which is build by the builder
 	WithBacnetIpGlobalAddressBuilder(func(BACnetHostNPortBuilder) BACnetHostNPortBuilder) BACnetConstructedDataBACnetIPGlobalAddressBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBACnetIPGlobalAddress or returns an error if something is wrong
 	Build() (BACnetConstructedDataBACnetIPGlobalAddress, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBACnetIPGlobalAddressBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBACnetIPGlobalAddress
 }
 
 func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) WithMandatoryFields(bacnetIpGlobalAddress BACnetHostNPort) BACnetConstructedDataBACnetIPGlobalAddressBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataBACnetIPGlobalAddressCopy := &_BACnetConstructedDataBACnetIPGlobalAddress{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.BacnetIpGlobalAddress.DeepCopy().(BACnetHostNPort),
+		utils.DeepCopy[BACnetHostNPort](m.BacnetIpGlobalAddress),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBACnetIPGlobalAddressCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBACnetIPGlobalAddressCopy
 }
 

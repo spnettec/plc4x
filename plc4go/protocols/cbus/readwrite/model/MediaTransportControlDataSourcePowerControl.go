@@ -83,6 +83,8 @@ type MediaTransportControlDataSourcePowerControlBuilder interface {
 	WithMandatoryFields(state byte) MediaTransportControlDataSourcePowerControlBuilder
 	// WithState adds State (property field)
 	WithState(byte) MediaTransportControlDataSourcePowerControlBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataSourcePowerControl or returns an error if something is wrong
 	Build() (MediaTransportControlDataSourcePowerControl, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,6 +108,7 @@ var _ (MediaTransportControlDataSourcePowerControlBuilder) = (*_MediaTransportCo
 
 func (b *_MediaTransportControlDataSourcePowerControlBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataSourcePowerControl
 }
 
 func (b *_MediaTransportControlDataSourcePowerControlBuilder) WithMandatoryFields(state byte) MediaTransportControlDataSourcePowerControlBuilder {
@@ -132,8 +135,10 @@ func (b *_MediaTransportControlDataSourcePowerControlBuilder) MustBuild() MediaT
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataSourcePowerControlBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -336,7 +341,7 @@ func (m *_MediaTransportControlDataSourcePowerControl) deepCopy() *_MediaTranspo
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.State,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataSourcePowerControlCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataSourcePowerControlCopy
 }
 

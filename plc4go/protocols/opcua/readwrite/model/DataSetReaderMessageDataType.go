@@ -71,6 +71,8 @@ type DataSetReaderMessageDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DataSetReaderMessageDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataSetReaderMessageDataType or returns an error if something is wrong
 	Build() (DataSetReaderMessageDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (DataSetReaderMessageDataTypeBuilder) = (*_DataSetReaderMessageDataTypeBui
 
 func (b *_DataSetReaderMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataSetReaderMessageDataType
 }
 
 func (b *_DataSetReaderMessageDataTypeBuilder) WithMandatoryFields() DataSetReaderMessageDataTypeBuilder {
@@ -115,8 +118,10 @@ func (b *_DataSetReaderMessageDataTypeBuilder) MustBuild() DataSetReaderMessageD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataSetReaderMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_DataSetReaderMessageDataType) deepCopy() *_DataSetReaderMessageDataTyp
 	_DataSetReaderMessageDataTypeCopy := &_DataSetReaderMessageDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataSetReaderMessageDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataSetReaderMessageDataTypeCopy
 }
 

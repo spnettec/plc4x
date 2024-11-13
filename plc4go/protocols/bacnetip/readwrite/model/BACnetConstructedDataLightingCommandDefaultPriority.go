@@ -86,6 +86,8 @@ type BACnetConstructedDataLightingCommandDefaultPriorityBuilder interface {
 	WithLightingCommandDefaultPriority(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLightingCommandDefaultPriorityBuilder
 	// WithLightingCommandDefaultPriorityBuilder adds LightingCommandDefaultPriority (property field) which is build by the builder
 	WithLightingCommandDefaultPriorityBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLightingCommandDefaultPriorityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLightingCommandDefaultPriority or returns an error if something is wrong
 	Build() (BACnetConstructedDataLightingCommandDefaultPriority, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLightingCommandDefaultPriorityBuilder) = (*_BACnetCo
 
 func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLightingCommandDefaultPriority
 }
 
 func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) WithMandatoryFields(lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLightingCommandDefaultPriorityBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) MustBuild(
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLightingCommandDefaultPriorityBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) deepCopy() *_BACn
 	}
 	_BACnetConstructedDataLightingCommandDefaultPriorityCopy := &_BACnetConstructedDataLightingCommandDefaultPriority{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LightingCommandDefaultPriority.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.LightingCommandDefaultPriority),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLightingCommandDefaultPriorityCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLightingCommandDefaultPriorityCopy
 }
 

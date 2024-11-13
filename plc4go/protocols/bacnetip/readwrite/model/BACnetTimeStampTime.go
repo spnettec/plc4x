@@ -84,6 +84,8 @@ type BACnetTimeStampTimeBuilder interface {
 	WithTimeValue(BACnetContextTagTime) BACnetTimeStampTimeBuilder
 	// WithTimeValueBuilder adds TimeValue (property field) which is build by the builder
 	WithTimeValueBuilder(func(BACnetContextTagTimeBuilder) BACnetContextTagTimeBuilder) BACnetTimeStampTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimeStampBuilder
 	// Build builds the BACnetTimeStampTime or returns an error if something is wrong
 	Build() (BACnetTimeStampTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimeStampTimeBuilder) = (*_BACnetTimeStampTimeBuilder)(nil)
 
 func (b *_BACnetTimeStampTimeBuilder) setParent(contract BACnetTimeStampContract) {
 	b.BACnetTimeStampContract = contract
+	contract.(*_BACnetTimeStamp)._SubType = b._BACnetTimeStampTime
 }
 
 func (b *_BACnetTimeStampTimeBuilder) WithMandatoryFields(timeValue BACnetContextTagTime) BACnetTimeStampTimeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimeStampTimeBuilder) MustBuild() BACnetTimeStampTime {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimeStampTimeBuilder) Done() BACnetTimeStampBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimeStampBuilder().(*_BACnetTimeStampBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimeStampTime) deepCopy() *_BACnetTimeStampTime {
 	}
 	_BACnetTimeStampTimeCopy := &_BACnetTimeStampTime{
 		m.BACnetTimeStampContract.(*_BACnetTimeStamp).deepCopy(),
-		m.TimeValue.DeepCopy().(BACnetContextTagTime),
+		utils.DeepCopy[BACnetContextTagTime](m.TimeValue),
 	}
-	m.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
+	_BACnetTimeStampTimeCopy.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
 	return _BACnetTimeStampTimeCopy
 }
 

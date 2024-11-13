@@ -91,6 +91,8 @@ type RequestObsoleteBuilder interface {
 	WithOptionalAlpha(Alpha) RequestObsoleteBuilder
 	// WithOptionalAlphaBuilder adds Alpha (property field) which is build by the builder
 	WithOptionalAlphaBuilder(func(AlphaBuilder) AlphaBuilder) RequestObsoleteBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() RequestBuilder
 	// Build builds the RequestObsolete or returns an error if something is wrong
 	Build() (RequestObsolete, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (RequestObsoleteBuilder) = (*_RequestObsoleteBuilder)(nil)
 
 func (b *_RequestObsoleteBuilder) setParent(contract RequestContract) {
 	b.RequestContract = contract
+	contract.(*_Request)._SubType = b._RequestObsolete
 }
 
 func (b *_RequestObsoleteBuilder) WithMandatoryFields(calData CALData) RequestObsoleteBuilder {
@@ -177,8 +180,10 @@ func (b *_RequestObsoleteBuilder) MustBuild() RequestObsolete {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RequestObsoleteBuilder) Done() RequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewRequestBuilder().(*_RequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -383,10 +388,10 @@ func (m *_RequestObsolete) deepCopy() *_RequestObsolete {
 	}
 	_RequestObsoleteCopy := &_RequestObsolete{
 		m.RequestContract.(*_Request).deepCopy(),
-		m.CalData.DeepCopy().(CALData),
-		m.Alpha.DeepCopy().(Alpha),
+		utils.DeepCopy[CALData](m.CalData),
+		utils.DeepCopy[Alpha](m.Alpha),
 	}
-	m.RequestContract.(*_Request)._SubType = m
+	_RequestObsoleteCopy.RequestContract.(*_Request)._SubType = m
 	return _RequestObsoleteCopy
 }
 

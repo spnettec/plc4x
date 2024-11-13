@@ -89,6 +89,8 @@ type BACnetConstructedDataExecutionDelayBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataExecutionDelayBuilder
 	// WithExecutionDelay adds ExecutionDelay (property field)
 	WithExecutionDelay(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataExecutionDelayBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataExecutionDelay or returns an error if something is wrong
 	Build() (BACnetConstructedDataExecutionDelay, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataExecutionDelayBuilder) = (*_BACnetConstructedDataExe
 
 func (b *_BACnetConstructedDataExecutionDelayBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataExecutionDelay
 }
 
 func (b *_BACnetConstructedDataExecutionDelayBuilder) WithMandatoryFields(executionDelay []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataExecutionDelayBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataExecutionDelayBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataExecutionDelayBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataExecutionDelay) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataExecutionDelayCopy := &_BACnetConstructedDataExecutionDelay{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ExecutionDelay),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataExecutionDelayCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataExecutionDelayCopy
 }
 

@@ -89,6 +89,8 @@ type BACnetConstructedDataSubordinateRelationshipsBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateRelationshipsBuilder
 	// WithSubordinateRelationships adds SubordinateRelationships (property field)
 	WithSubordinateRelationships(...BACnetRelationshipTagged) BACnetConstructedDataSubordinateRelationshipsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataSubordinateRelationships or returns an error if something is wrong
 	Build() (BACnetConstructedDataSubordinateRelationships, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataSubordinateRelationshipsBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataSubordinateRelationshipsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataSubordinateRelationships
 }
 
 func (b *_BACnetConstructedDataSubordinateRelationshipsBuilder) WithMandatoryFields(subordinateRelationships []BACnetRelationshipTagged) BACnetConstructedDataSubordinateRelationshipsBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataSubordinateRelationshipsBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataSubordinateRelationshipsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,10 +380,10 @@ func (m *_BACnetConstructedDataSubordinateRelationships) deepCopy() *_BACnetCons
 	}
 	_BACnetConstructedDataSubordinateRelationshipsCopy := &_BACnetConstructedDataSubordinateRelationships{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetRelationshipTagged, BACnetRelationshipTagged](m.SubordinateRelationships),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataSubordinateRelationshipsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataSubordinateRelationshipsCopy
 }
 

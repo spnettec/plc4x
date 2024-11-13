@@ -112,6 +112,8 @@ type CEMIAdditionalInformationBusmonitorInfoBuilder interface {
 	WithLostFlag(bool) CEMIAdditionalInformationBusmonitorInfoBuilder
 	// WithSequenceNumber adds SequenceNumber (property field)
 	WithSequenceNumber(uint8) CEMIAdditionalInformationBusmonitorInfoBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIAdditionalInformationBuilder
 	// Build builds the CEMIAdditionalInformationBusmonitorInfo or returns an error if something is wrong
 	Build() (CEMIAdditionalInformationBusmonitorInfo, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (CEMIAdditionalInformationBusmonitorInfoBuilder) = (*_CEMIAdditionalInform
 
 func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) setParent(contract CEMIAdditionalInformationContract) {
 	b.CEMIAdditionalInformationContract = contract
+	contract.(*_CEMIAdditionalInformation)._SubType = b._CEMIAdditionalInformationBusmonitorInfo
 }
 
 func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithMandatoryFields(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) CEMIAdditionalInformationBusmonitorInfoBuilder {
@@ -186,8 +189,10 @@ func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) MustBuild() CEMIAdditi
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) Done() CEMIAdditionalInformationBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIAdditionalInformationBuilder().(*_CEMIAdditionalInformationBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -460,7 +465,7 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) deepCopy() *_CEMIAdditionalIn
 		m.LostFlag,
 		m.SequenceNumber,
 	}
-	m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = m
+	_CEMIAdditionalInformationBusmonitorInfoCopy.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = m
 	return _CEMIAdditionalInformationBusmonitorInfoCopy
 }
 

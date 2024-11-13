@@ -103,6 +103,8 @@ type BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder interface {
 	WithOptionalServiceParameters(BACnetConstructedData) BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder
 	// WithOptionalServiceParametersBuilder adds ServiceParameters (property field) which is build by the builder
 	WithOptionalServiceParametersBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestConfirmedPrivateTransfer or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder) = (*_BACnet
 
 func (b *_BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestConfirmedPrivateTransfer
 }
 
 func (b *_BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder) WithMandatoryFields(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder {
@@ -213,8 +216,10 @@ func (b *_BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder) MustBuil
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -410,11 +415,11 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) deepCopy() *_BA
 	}
 	_BACnetConfirmedServiceRequestConfirmedPrivateTransferCopy := &_BACnetConfirmedServiceRequestConfirmedPrivateTransfer{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
-		m.ServiceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ServiceParameters.DeepCopy().(BACnetConstructedData),
+		utils.DeepCopy[BACnetVendorIdTagged](m.VendorId),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ServiceNumber),
+		utils.DeepCopy[BACnetConstructedData](m.ServiceParameters),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestConfirmedPrivateTransferCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestConfirmedPrivateTransferCopy
 }
 

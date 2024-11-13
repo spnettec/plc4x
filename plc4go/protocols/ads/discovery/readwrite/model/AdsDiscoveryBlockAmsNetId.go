@@ -87,6 +87,8 @@ type AdsDiscoveryBlockAmsNetIdBuilder interface {
 	WithAmsNetId(AmsNetId) AdsDiscoveryBlockAmsNetIdBuilder
 	// WithAmsNetIdBuilder adds AmsNetId (property field) which is build by the builder
 	WithAmsNetIdBuilder(func(AmsNetIdBuilder) AmsNetIdBuilder) AdsDiscoveryBlockAmsNetIdBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AdsDiscoveryBlockBuilder
 	// Build builds the AdsDiscoveryBlockAmsNetId or returns an error if something is wrong
 	Build() (AdsDiscoveryBlockAmsNetId, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (AdsDiscoveryBlockAmsNetIdBuilder) = (*_AdsDiscoveryBlockAmsNetIdBuilder)(
 
 func (b *_AdsDiscoveryBlockAmsNetIdBuilder) setParent(contract AdsDiscoveryBlockContract) {
 	b.AdsDiscoveryBlockContract = contract
+	contract.(*_AdsDiscoveryBlock)._SubType = b._AdsDiscoveryBlockAmsNetId
 }
 
 func (b *_AdsDiscoveryBlockAmsNetIdBuilder) WithMandatoryFields(amsNetId AmsNetId) AdsDiscoveryBlockAmsNetIdBuilder {
@@ -155,8 +158,10 @@ func (b *_AdsDiscoveryBlockAmsNetIdBuilder) MustBuild() AdsDiscoveryBlockAmsNetI
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsDiscoveryBlockAmsNetIdBuilder) Done() AdsDiscoveryBlockBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAdsDiscoveryBlockBuilder().(*_AdsDiscoveryBlockBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -337,9 +342,9 @@ func (m *_AdsDiscoveryBlockAmsNetId) deepCopy() *_AdsDiscoveryBlockAmsNetId {
 	}
 	_AdsDiscoveryBlockAmsNetIdCopy := &_AdsDiscoveryBlockAmsNetId{
 		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
-		m.AmsNetId.DeepCopy().(AmsNetId),
+		utils.DeepCopy[AmsNetId](m.AmsNetId),
 	}
-	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	_AdsDiscoveryBlockAmsNetIdCopy.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
 	return _AdsDiscoveryBlockAmsNetIdCopy
 }
 

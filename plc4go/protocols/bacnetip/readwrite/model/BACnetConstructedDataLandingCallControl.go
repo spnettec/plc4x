@@ -86,6 +86,8 @@ type BACnetConstructedDataLandingCallControlBuilder interface {
 	WithLandingCallControl(BACnetLandingCallStatus) BACnetConstructedDataLandingCallControlBuilder
 	// WithLandingCallControlBuilder adds LandingCallControl (property field) which is build by the builder
 	WithLandingCallControlBuilder(func(BACnetLandingCallStatusBuilder) BACnetLandingCallStatusBuilder) BACnetConstructedDataLandingCallControlBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLandingCallControl or returns an error if something is wrong
 	Build() (BACnetConstructedDataLandingCallControl, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLandingCallControlBuilder) = (*_BACnetConstructedDat
 
 func (b *_BACnetConstructedDataLandingCallControlBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLandingCallControl
 }
 
 func (b *_BACnetConstructedDataLandingCallControlBuilder) WithMandatoryFields(landingCallControl BACnetLandingCallStatus) BACnetConstructedDataLandingCallControlBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLandingCallControlBuilder) MustBuild() BACnetCons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLandingCallControlBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLandingCallControl) deepCopy() *_BACnetConstructe
 	}
 	_BACnetConstructedDataLandingCallControlCopy := &_BACnetConstructedDataLandingCallControl{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LandingCallControl.DeepCopy().(BACnetLandingCallStatus),
+		utils.DeepCopy[BACnetLandingCallStatus](m.LandingCallControl),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLandingCallControlCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLandingCallControlCopy
 }
 

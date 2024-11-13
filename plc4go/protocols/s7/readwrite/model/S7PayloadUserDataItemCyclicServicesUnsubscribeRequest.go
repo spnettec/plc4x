@@ -85,6 +85,8 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder interface {
 	WithFunction(uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
 	// WithJobId adds JobId (property field)
 	WithJobId(uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadUserDataItemCyclicServicesUnsubscribeRequest or returns an error if something is wrong
 	Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) = (*_S7Payl
 
 func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
 }
 
 func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) WithMandatoryFields(function uint8, jobId uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
@@ -139,8 +142,10 @@ func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) MustBuil
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -324,7 +329,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) deepCopy() *_S7
 		m.Function,
 		m.JobId,
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemCyclicServicesUnsubscribeRequestCopy
 }
 

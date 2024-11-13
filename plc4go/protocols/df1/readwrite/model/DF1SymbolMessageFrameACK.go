@@ -72,6 +72,8 @@ type DF1SymbolMessageFrameACKBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DF1SymbolMessageFrameACKBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() DF1SymbolBuilder
 	// Build builds the DF1SymbolMessageFrameACK or returns an error if something is wrong
 	Build() (DF1SymbolMessageFrameACK, error)
 	// MustBuild does the same as Build but panics on error
@@ -95,6 +97,7 @@ var _ (DF1SymbolMessageFrameACKBuilder) = (*_DF1SymbolMessageFrameACKBuilder)(ni
 
 func (b *_DF1SymbolMessageFrameACKBuilder) setParent(contract DF1SymbolContract) {
 	b.DF1SymbolContract = contract
+	contract.(*_DF1Symbol)._SubType = b._DF1SymbolMessageFrameACK
 }
 
 func (b *_DF1SymbolMessageFrameACKBuilder) WithMandatoryFields() DF1SymbolMessageFrameACKBuilder {
@@ -116,8 +119,10 @@ func (b *_DF1SymbolMessageFrameACKBuilder) MustBuild() DF1SymbolMessageFrameACK 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DF1SymbolMessageFrameACKBuilder) Done() DF1SymbolBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewDF1SymbolBuilder().(*_DF1SymbolBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -246,7 +251,7 @@ func (m *_DF1SymbolMessageFrameACK) deepCopy() *_DF1SymbolMessageFrameACK {
 	_DF1SymbolMessageFrameACKCopy := &_DF1SymbolMessageFrameACK{
 		m.DF1SymbolContract.(*_DF1Symbol).deepCopy(),
 	}
-	m.DF1SymbolContract.(*_DF1Symbol)._SubType = m
+	_DF1SymbolMessageFrameACKCopy.DF1SymbolContract.(*_DF1Symbol)._SubType = m
 	return _DF1SymbolMessageFrameACKCopy
 }
 

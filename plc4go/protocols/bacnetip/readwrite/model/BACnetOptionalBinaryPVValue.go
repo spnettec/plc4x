@@ -84,6 +84,8 @@ type BACnetOptionalBinaryPVValueBuilder interface {
 	WithBinaryPv(BACnetBinaryPVTagged) BACnetOptionalBinaryPVValueBuilder
 	// WithBinaryPvBuilder adds BinaryPv (property field) which is build by the builder
 	WithBinaryPvBuilder(func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetOptionalBinaryPVValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetOptionalBinaryPVBuilder
 	// Build builds the BACnetOptionalBinaryPVValue or returns an error if something is wrong
 	Build() (BACnetOptionalBinaryPVValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetOptionalBinaryPVValueBuilder) = (*_BACnetOptionalBinaryPVValueBuild
 
 func (b *_BACnetOptionalBinaryPVValueBuilder) setParent(contract BACnetOptionalBinaryPVContract) {
 	b.BACnetOptionalBinaryPVContract = contract
+	contract.(*_BACnetOptionalBinaryPV)._SubType = b._BACnetOptionalBinaryPVValue
 }
 
 func (b *_BACnetOptionalBinaryPVValueBuilder) WithMandatoryFields(binaryPv BACnetBinaryPVTagged) BACnetOptionalBinaryPVValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetOptionalBinaryPVValueBuilder) MustBuild() BACnetOptionalBinaryPV
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetOptionalBinaryPVValueBuilder) Done() BACnetOptionalBinaryPVBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetOptionalBinaryPVBuilder().(*_BACnetOptionalBinaryPVBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetOptionalBinaryPVValue) deepCopy() *_BACnetOptionalBinaryPVValue 
 	}
 	_BACnetOptionalBinaryPVValueCopy := &_BACnetOptionalBinaryPVValue{
 		m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV).deepCopy(),
-		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
+		utils.DeepCopy[BACnetBinaryPVTagged](m.BinaryPv),
 	}
-	m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = m
+	_BACnetOptionalBinaryPVValueCopy.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = m
 	return _BACnetOptionalBinaryPVValueCopy
 }
 

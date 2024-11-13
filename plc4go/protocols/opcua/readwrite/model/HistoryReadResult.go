@@ -106,6 +106,8 @@ type HistoryReadResultBuilder interface {
 	WithHistoryData(ExtensionObject) HistoryReadResultBuilder
 	// WithHistoryDataBuilder adds HistoryData (property field) which is build by the builder
 	WithHistoryDataBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) HistoryReadResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the HistoryReadResult or returns an error if something is wrong
 	Build() (HistoryReadResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (HistoryReadResultBuilder) = (*_HistoryReadResultBuilder)(nil)
 
 func (b *_HistoryReadResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._HistoryReadResult
 }
 
 func (b *_HistoryReadResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) HistoryReadResultBuilder {
@@ -222,8 +225,10 @@ func (b *_HistoryReadResultBuilder) MustBuild() HistoryReadResult {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_HistoryReadResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,11 +417,11 @@ func (m *_HistoryReadResult) deepCopy() *_HistoryReadResult {
 	}
 	_HistoryReadResultCopy := &_HistoryReadResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.StatusCode.DeepCopy().(StatusCode),
-		m.ContinuationPoint.DeepCopy().(PascalByteString),
-		m.HistoryData.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[StatusCode](m.StatusCode),
+		utils.DeepCopy[PascalByteString](m.ContinuationPoint),
+		utils.DeepCopy[ExtensionObject](m.HistoryData),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_HistoryReadResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryReadResultCopy
 }
 

@@ -79,6 +79,8 @@ type BACnetConstructedDataActiveVTSessionsBuilder interface {
 	WithMandatoryFields(activeVTSession []BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder
 	// WithActiveVTSession adds ActiveVTSession (property field)
 	WithActiveVTSession(...BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataActiveVTSessions or returns an error if something is wrong
 	Build() (BACnetConstructedDataActiveVTSessions, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataActiveVTSessionsBuilder) = (*_BACnetConstructedDataA
 
 func (b *_BACnetConstructedDataActiveVTSessionsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataActiveVTSessions
 }
 
 func (b *_BACnetConstructedDataActiveVTSessionsBuilder) WithMandatoryFields(activeVTSession []BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataActiveVTSessionsBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataActiveVTSessionsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataActiveVTSessions) deepCopy() *_BACnetConstructedD
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetVTSession, BACnetVTSession](m.ActiveVTSession),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataActiveVTSessionsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataActiveVTSessionsCopy
 }
 

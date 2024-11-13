@@ -84,6 +84,8 @@ type LiteralOperandBuilder interface {
 	WithValue(Variant) LiteralOperandBuilder
 	// WithValueBuilder adds Value (property field) which is build by the builder
 	WithValueBuilder(func(VariantBuilder) VariantBuilder) LiteralOperandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the LiteralOperand or returns an error if something is wrong
 	Build() (LiteralOperand, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (LiteralOperandBuilder) = (*_LiteralOperandBuilder)(nil)
 
 func (b *_LiteralOperandBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._LiteralOperand
 }
 
 func (b *_LiteralOperandBuilder) WithMandatoryFields(value Variant) LiteralOperandBuilder {
@@ -152,8 +155,10 @@ func (b *_LiteralOperandBuilder) MustBuild() LiteralOperand {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LiteralOperandBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_LiteralOperand) deepCopy() *_LiteralOperand {
 	}
 	_LiteralOperandCopy := &_LiteralOperand{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Value.DeepCopy().(Variant),
+		utils.DeepCopy[Variant](m.Value),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_LiteralOperandCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _LiteralOperandCopy
 }
 

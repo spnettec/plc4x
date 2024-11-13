@@ -86,6 +86,8 @@ type BACnetConstructedDataLastKeyServerBuilder interface {
 	WithLastKeyServer(BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder
 	// WithLastKeyServerBuilder adds LastKeyServer (property field) which is build by the builder
 	WithLastKeyServerBuilder(func(BACnetAddressBindingBuilder) BACnetAddressBindingBuilder) BACnetConstructedDataLastKeyServerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLastKeyServer or returns an error if something is wrong
 	Build() (BACnetConstructedDataLastKeyServer, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLastKeyServerBuilder) = (*_BACnetConstructedDataLast
 
 func (b *_BACnetConstructedDataLastKeyServerBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLastKeyServer
 }
 
 func (b *_BACnetConstructedDataLastKeyServerBuilder) WithMandatoryFields(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLastKeyServerBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLastKeyServerBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLastKeyServer) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataLastKeyServerCopy := &_BACnetConstructedDataLastKeyServer{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LastKeyServer.DeepCopy().(BACnetAddressBinding),
+		utils.DeepCopy[BACnetAddressBinding](m.LastKeyServer),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLastKeyServerCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLastKeyServerCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataAbsenteeLimitBuilder interface {
 	WithAbsenteeLimit(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAbsenteeLimitBuilder
 	// WithAbsenteeLimitBuilder adds AbsenteeLimit (property field) which is build by the builder
 	WithAbsenteeLimitBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAbsenteeLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAbsenteeLimit or returns an error if something is wrong
 	Build() (BACnetConstructedDataAbsenteeLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAbsenteeLimitBuilder) = (*_BACnetConstructedDataAbse
 
 func (b *_BACnetConstructedDataAbsenteeLimitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAbsenteeLimit
 }
 
 func (b *_BACnetConstructedDataAbsenteeLimitBuilder) WithMandatoryFields(absenteeLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAbsenteeLimitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAbsenteeLimitBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAbsenteeLimitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataAbsenteeLimit) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataAbsenteeLimitCopy := &_BACnetConstructedDataAbsenteeLimit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AbsenteeLimit.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.AbsenteeLimit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAbsenteeLimitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAbsenteeLimitCopy
 }
 

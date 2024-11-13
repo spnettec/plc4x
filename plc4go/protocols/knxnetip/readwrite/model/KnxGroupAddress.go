@@ -87,20 +87,11 @@ type KnxGroupAddressBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() KnxGroupAddressBuilder
 	// AsKnxGroupAddressFreeLevel converts this build to a subType of KnxGroupAddress. It is always possible to return to current builder using Done()
-	AsKnxGroupAddressFreeLevel() interface {
-		KnxGroupAddressFreeLevelBuilder
-		Done() KnxGroupAddressBuilder
-	}
+	AsKnxGroupAddressFreeLevel() KnxGroupAddressFreeLevelBuilder
 	// AsKnxGroupAddress2Level converts this build to a subType of KnxGroupAddress. It is always possible to return to current builder using Done()
-	AsKnxGroupAddress2Level() interface {
-		KnxGroupAddress2LevelBuilder
-		Done() KnxGroupAddressBuilder
-	}
+	AsKnxGroupAddress2Level() KnxGroupAddress2LevelBuilder
 	// AsKnxGroupAddress3Level converts this build to a subType of KnxGroupAddress. It is always possible to return to current builder using Done()
-	AsKnxGroupAddress3Level() interface {
-		KnxGroupAddress3LevelBuilder
-		Done() KnxGroupAddressBuilder
-	}
+	AsKnxGroupAddress3Level() KnxGroupAddress3LevelBuilder
 	// Build builds the KnxGroupAddress or returns an error if something is wrong
 	PartialBuild() (KnxGroupAddressContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,14 +142,8 @@ func (b *_KnxGroupAddressBuilder) PartialMustBuild() KnxGroupAddressContract {
 	return build
 }
 
-func (b *_KnxGroupAddressBuilder) AsKnxGroupAddressFreeLevel() interface {
-	KnxGroupAddressFreeLevelBuilder
-	Done() KnxGroupAddressBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		KnxGroupAddressFreeLevelBuilder
-		Done() KnxGroupAddressBuilder
-	}); ok {
+func (b *_KnxGroupAddressBuilder) AsKnxGroupAddressFreeLevel() KnxGroupAddressFreeLevelBuilder {
+	if cb, ok := b.childBuilder.(KnxGroupAddressFreeLevelBuilder); ok {
 		return cb
 	}
 	cb := NewKnxGroupAddressFreeLevelBuilder().(*_KnxGroupAddressFreeLevelBuilder)
@@ -167,14 +152,8 @@ func (b *_KnxGroupAddressBuilder) AsKnxGroupAddressFreeLevel() interface {
 	return cb
 }
 
-func (b *_KnxGroupAddressBuilder) AsKnxGroupAddress2Level() interface {
-	KnxGroupAddress2LevelBuilder
-	Done() KnxGroupAddressBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		KnxGroupAddress2LevelBuilder
-		Done() KnxGroupAddressBuilder
-	}); ok {
+func (b *_KnxGroupAddressBuilder) AsKnxGroupAddress2Level() KnxGroupAddress2LevelBuilder {
+	if cb, ok := b.childBuilder.(KnxGroupAddress2LevelBuilder); ok {
 		return cb
 	}
 	cb := NewKnxGroupAddress2LevelBuilder().(*_KnxGroupAddress2LevelBuilder)
@@ -183,14 +162,8 @@ func (b *_KnxGroupAddressBuilder) AsKnxGroupAddress2Level() interface {
 	return cb
 }
 
-func (b *_KnxGroupAddressBuilder) AsKnxGroupAddress3Level() interface {
-	KnxGroupAddress3LevelBuilder
-	Done() KnxGroupAddressBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		KnxGroupAddress3LevelBuilder
-		Done() KnxGroupAddressBuilder
-	}); ok {
+func (b *_KnxGroupAddressBuilder) AsKnxGroupAddress3Level() KnxGroupAddress3LevelBuilder {
+	if cb, ok := b.childBuilder.(KnxGroupAddress3LevelBuilder); ok {
 		return cb
 	}
 	cb := NewKnxGroupAddress3LevelBuilder().(*_KnxGroupAddress3LevelBuilder)

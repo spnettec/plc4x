@@ -79,6 +79,8 @@ type BACnetConstructedDataEntryPointsBuilder interface {
 	WithMandatoryFields(entryPoints []BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder
 	// WithEntryPoints adds EntryPoints (property field)
 	WithEntryPoints(...BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEntryPoints or returns an error if something is wrong
 	Build() (BACnetConstructedDataEntryPoints, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataEntryPointsBuilder) = (*_BACnetConstructedDataEntryP
 
 func (b *_BACnetConstructedDataEntryPointsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEntryPoints
 }
 
 func (b *_BACnetConstructedDataEntryPointsBuilder) WithMandatoryFields(entryPoints []BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataEntryPointsBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEntryPointsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataEntryPoints) deepCopy() *_BACnetConstructedDataEn
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.EntryPoints),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEntryPointsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEntryPointsCopy
 }
 

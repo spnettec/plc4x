@@ -117,6 +117,8 @@ type BACnetEventParameterChangeOfStatusFlagsBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfStatusFlagsBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfStatusFlagsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterBuilder
 	// Build builds the BACnetEventParameterChangeOfStatusFlags or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfStatusFlags, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +142,7 @@ var _ (BACnetEventParameterChangeOfStatusFlagsBuilder) = (*_BACnetEventParameter
 
 func (b *_BACnetEventParameterChangeOfStatusFlagsBuilder) setParent(contract BACnetEventParameterContract) {
 	b.BACnetEventParameterContract = contract
+	contract.(*_BACnetEventParameter)._SubType = b._BACnetEventParameterChangeOfStatusFlags
 }
 
 func (b *_BACnetEventParameterChangeOfStatusFlagsBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, selectedFlags BACnetStatusFlagsTagged, closingTag BACnetClosingTag) BACnetEventParameterChangeOfStatusFlagsBuilder {
@@ -257,8 +260,10 @@ func (b *_BACnetEventParameterChangeOfStatusFlagsBuilder) MustBuild() BACnetEven
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterChangeOfStatusFlagsBuilder) Done() BACnetEventParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -460,12 +465,12 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) deepCopy() *_BACnetEventParam
 	}
 	_BACnetEventParameterChangeOfStatusFlagsCopy := &_BACnetEventParameterChangeOfStatusFlags{
 		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.SelectedFlags.DeepCopy().(BACnetStatusFlagsTagged),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeDelay),
+		utils.DeepCopy[BACnetStatusFlagsTagged](m.SelectedFlags),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	_BACnetEventParameterChangeOfStatusFlagsCopy.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
 	return _BACnetEventParameterChangeOfStatusFlagsCopy
 }
 

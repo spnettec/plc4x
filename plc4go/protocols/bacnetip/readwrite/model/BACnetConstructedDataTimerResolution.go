@@ -86,6 +86,8 @@ type BACnetConstructedDataTimerResolutionBuilder interface {
 	WithResolution(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerResolutionBuilder
 	// WithResolutionBuilder adds Resolution (property field) which is build by the builder
 	WithResolutionBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimerResolutionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTimerResolution or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimerResolution, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTimerResolutionBuilder) = (*_BACnetConstructedDataTi
 
 func (b *_BACnetConstructedDataTimerResolutionBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTimerResolution
 }
 
 func (b *_BACnetConstructedDataTimerResolutionBuilder) WithMandatoryFields(resolution BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerResolutionBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTimerResolutionBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTimerResolutionBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataTimerResolution) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataTimerResolutionCopy := &_BACnetConstructedDataTimerResolution{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Resolution.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.Resolution),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTimerResolutionCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimerResolutionCopy
 }
 

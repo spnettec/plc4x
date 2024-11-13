@@ -71,6 +71,8 @@ type ApduDataExtDomainAddressWriteBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtDomainAddressWriteBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtDomainAddressWrite or returns an error if something is wrong
 	Build() (ApduDataExtDomainAddressWrite, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataExtDomainAddressWriteBuilder) = (*_ApduDataExtDomainAddressWriteB
 
 func (b *_ApduDataExtDomainAddressWriteBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtDomainAddressWrite
 }
 
 func (b *_ApduDataExtDomainAddressWriteBuilder) WithMandatoryFields() ApduDataExtDomainAddressWriteBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataExtDomainAddressWriteBuilder) MustBuild() ApduDataExtDomainAdd
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtDomainAddressWriteBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataExtDomainAddressWrite) deepCopy() *_ApduDataExtDomainAddressWr
 	_ApduDataExtDomainAddressWriteCopy := &_ApduDataExtDomainAddressWrite{
 		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtDomainAddressWriteCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtDomainAddressWriteCopy
 }
 

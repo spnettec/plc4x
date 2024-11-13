@@ -330,8 +330,8 @@ func (m *_BACnetPrescale) deepCopy() *_BACnetPrescale {
 		return nil
 	}
 	_BACnetPrescaleCopy := &_BACnetPrescale{
-		m.Multiplier.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ModuloDivide.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Multiplier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ModuloDivide),
 	}
 	return _BACnetPrescaleCopy
 }

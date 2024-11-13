@@ -86,6 +86,8 @@ type BACnetConstructedDataInProgressBuilder interface {
 	WithInProgress(BACnetLightingInProgressTagged) BACnetConstructedDataInProgressBuilder
 	// WithInProgressBuilder adds InProgress (property field) which is build by the builder
 	WithInProgressBuilder(func(BACnetLightingInProgressTaggedBuilder) BACnetLightingInProgressTaggedBuilder) BACnetConstructedDataInProgressBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataInProgress or returns an error if something is wrong
 	Build() (BACnetConstructedDataInProgress, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataInProgressBuilder) = (*_BACnetConstructedDataInProgr
 
 func (b *_BACnetConstructedDataInProgressBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataInProgress
 }
 
 func (b *_BACnetConstructedDataInProgressBuilder) WithMandatoryFields(inProgress BACnetLightingInProgressTagged) BACnetConstructedDataInProgressBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataInProgressBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataInProgressBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataInProgress) deepCopy() *_BACnetConstructedDataInP
 	}
 	_BACnetConstructedDataInProgressCopy := &_BACnetConstructedDataInProgress{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.InProgress.DeepCopy().(BACnetLightingInProgressTagged),
+		utils.DeepCopy[BACnetLightingInProgressTagged](m.InProgress),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataInProgressCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataInProgressCopy
 }
 

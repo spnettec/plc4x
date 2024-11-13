@@ -71,6 +71,8 @@ type DiscoveryConfigurationBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DiscoveryConfigurationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DiscoveryConfiguration or returns an error if something is wrong
 	Build() (DiscoveryConfiguration, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (DiscoveryConfigurationBuilder) = (*_DiscoveryConfigurationBuilder)(nil)
 
 func (b *_DiscoveryConfigurationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DiscoveryConfiguration
 }
 
 func (b *_DiscoveryConfigurationBuilder) WithMandatoryFields() DiscoveryConfigurationBuilder {
@@ -115,8 +118,10 @@ func (b *_DiscoveryConfigurationBuilder) MustBuild() DiscoveryConfiguration {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DiscoveryConfigurationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_DiscoveryConfiguration) deepCopy() *_DiscoveryConfiguration {
 	_DiscoveryConfigurationCopy := &_DiscoveryConfiguration{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DiscoveryConfigurationCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DiscoveryConfigurationCopy
 }
 

@@ -393,7 +393,7 @@ func (m *_BACnetLoggingTypeTagged) deepCopy() *_BACnetLoggingTypeTagged {
 		return nil
 	}
 	_BACnetLoggingTypeTaggedCopy := &_BACnetLoggingTypeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

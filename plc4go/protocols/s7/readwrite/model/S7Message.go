@@ -113,25 +113,13 @@ type S7MessageBuilder interface {
 	// WithOptionalPayloadBuilder adds Payload (property field) which is build by the builder
 	WithOptionalPayloadBuilder(func(S7PayloadBuilder) S7PayloadBuilder) S7MessageBuilder
 	// AsS7MessageRequest converts this build to a subType of S7Message. It is always possible to return to current builder using Done()
-	AsS7MessageRequest() interface {
-		S7MessageRequestBuilder
-		Done() S7MessageBuilder
-	}
+	AsS7MessageRequest() S7MessageRequestBuilder
 	// AsS7MessageResponse converts this build to a subType of S7Message. It is always possible to return to current builder using Done()
-	AsS7MessageResponse() interface {
-		S7MessageResponseBuilder
-		Done() S7MessageBuilder
-	}
+	AsS7MessageResponse() S7MessageResponseBuilder
 	// AsS7MessageResponseData converts this build to a subType of S7Message. It is always possible to return to current builder using Done()
-	AsS7MessageResponseData() interface {
-		S7MessageResponseDataBuilder
-		Done() S7MessageBuilder
-	}
+	AsS7MessageResponseData() S7MessageResponseDataBuilder
 	// AsS7MessageUserData converts this build to a subType of S7Message. It is always possible to return to current builder using Done()
-	AsS7MessageUserData() interface {
-		S7MessageUserDataBuilder
-		Done() S7MessageBuilder
-	}
+	AsS7MessageUserData() S7MessageUserDataBuilder
 	// Build builds the S7Message or returns an error if something is wrong
 	PartialBuild() (S7MessageContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -223,14 +211,8 @@ func (b *_S7MessageBuilder) PartialMustBuild() S7MessageContract {
 	return build
 }
 
-func (b *_S7MessageBuilder) AsS7MessageRequest() interface {
-	S7MessageRequestBuilder
-	Done() S7MessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7MessageRequestBuilder
-		Done() S7MessageBuilder
-	}); ok {
+func (b *_S7MessageBuilder) AsS7MessageRequest() S7MessageRequestBuilder {
+	if cb, ok := b.childBuilder.(S7MessageRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7MessageRequestBuilder().(*_S7MessageRequestBuilder)
@@ -239,14 +221,8 @@ func (b *_S7MessageBuilder) AsS7MessageRequest() interface {
 	return cb
 }
 
-func (b *_S7MessageBuilder) AsS7MessageResponse() interface {
-	S7MessageResponseBuilder
-	Done() S7MessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7MessageResponseBuilder
-		Done() S7MessageBuilder
-	}); ok {
+func (b *_S7MessageBuilder) AsS7MessageResponse() S7MessageResponseBuilder {
+	if cb, ok := b.childBuilder.(S7MessageResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7MessageResponseBuilder().(*_S7MessageResponseBuilder)
@@ -255,14 +231,8 @@ func (b *_S7MessageBuilder) AsS7MessageResponse() interface {
 	return cb
 }
 
-func (b *_S7MessageBuilder) AsS7MessageResponseData() interface {
-	S7MessageResponseDataBuilder
-	Done() S7MessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7MessageResponseDataBuilder
-		Done() S7MessageBuilder
-	}); ok {
+func (b *_S7MessageBuilder) AsS7MessageResponseData() S7MessageResponseDataBuilder {
+	if cb, ok := b.childBuilder.(S7MessageResponseDataBuilder); ok {
 		return cb
 	}
 	cb := NewS7MessageResponseDataBuilder().(*_S7MessageResponseDataBuilder)
@@ -271,14 +241,8 @@ func (b *_S7MessageBuilder) AsS7MessageResponseData() interface {
 	return cb
 }
 
-func (b *_S7MessageBuilder) AsS7MessageUserData() interface {
-	S7MessageUserDataBuilder
-	Done() S7MessageBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7MessageUserDataBuilder
-		Done() S7MessageBuilder
-	}); ok {
+func (b *_S7MessageBuilder) AsS7MessageUserData() S7MessageUserDataBuilder {
+	if cb, ok := b.childBuilder.(S7MessageUserDataBuilder); ok {
 		return cb
 	}
 	cb := NewS7MessageUserDataBuilder().(*_S7MessageUserDataBuilder)
@@ -612,8 +576,8 @@ func (m *_S7Message) deepCopy() *_S7Message {
 	_S7MessageCopy := &_S7Message{
 		nil, // will be set by child
 		m.TpduReference,
-		m.Parameter.DeepCopy().(S7Parameter),
-		m.Payload.DeepCopy().(S7Payload),
+		utils.DeepCopy[S7Parameter](m.Parameter),
+		utils.DeepCopy[S7Payload](m.Payload),
 		m.reservedField0,
 	}
 	return _S7MessageCopy

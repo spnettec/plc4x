@@ -97,6 +97,8 @@ type SamplingIntervalDiagnosticsDataTypeBuilder interface {
 	WithMaxMonitoredItemCount(uint32) SamplingIntervalDiagnosticsDataTypeBuilder
 	// WithDisabledMonitoredItemCount adds DisabledMonitoredItemCount (property field)
 	WithDisabledMonitoredItemCount(uint32) SamplingIntervalDiagnosticsDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SamplingIntervalDiagnosticsDataType or returns an error if something is wrong
 	Build() (SamplingIntervalDiagnosticsDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (SamplingIntervalDiagnosticsDataTypeBuilder) = (*_SamplingIntervalDiagnost
 
 func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SamplingIntervalDiagnosticsDataType
 }
 
 func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithMandatoryFields(samplingInterval float64, monitoredItemCount uint32, maxMonitoredItemCount uint32, disabledMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
@@ -161,8 +164,10 @@ func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) MustBuild() SamplingInterv
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -373,7 +378,7 @@ func (m *_SamplingIntervalDiagnosticsDataType) deepCopy() *_SamplingIntervalDiag
 		m.MaxMonitoredItemCount,
 		m.DisabledMonitoredItemCount,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SamplingIntervalDiagnosticsDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SamplingIntervalDiagnosticsDataTypeCopy
 }
 

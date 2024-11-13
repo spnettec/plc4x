@@ -105,6 +105,8 @@ type MultipleServiceResponseBuilder interface {
 	WithOffsets(...uint16) MultipleServiceResponseBuilder
 	// WithServicesData adds ServicesData (property field)
 	WithServicesData(...byte) MultipleServiceResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the MultipleServiceResponse or returns an error if something is wrong
 	Build() (MultipleServiceResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +130,7 @@ var _ (MultipleServiceResponseBuilder) = (*_MultipleServiceResponseBuilder)(nil)
 
 func (b *_MultipleServiceResponseBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._MultipleServiceResponse
 }
 
 func (b *_MultipleServiceResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) MultipleServiceResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_MultipleServiceResponseBuilder) MustBuild() MultipleServiceResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MultipleServiceResponseBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -430,7 +435,7 @@ func (m *_MultipleServiceResponse) deepCopy() *_MultipleServiceResponse {
 		utils.DeepCopySlice[byte, byte](m.ServicesData),
 		m.reservedField0,
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_MultipleServiceResponseCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _MultipleServiceResponseCopy
 }
 

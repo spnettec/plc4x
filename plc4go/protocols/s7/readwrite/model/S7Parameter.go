@@ -91,40 +91,19 @@ type S7ParameterBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7ParameterBuilder
 	// AsS7ParameterSetupCommunication converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
-	AsS7ParameterSetupCommunication() interface {
-		S7ParameterSetupCommunicationBuilder
-		Done() S7ParameterBuilder
-	}
+	AsS7ParameterSetupCommunication() S7ParameterSetupCommunicationBuilder
 	// AsS7ParameterReadVarRequest converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
-	AsS7ParameterReadVarRequest() interface {
-		S7ParameterReadVarRequestBuilder
-		Done() S7ParameterBuilder
-	}
+	AsS7ParameterReadVarRequest() S7ParameterReadVarRequestBuilder
 	// AsS7ParameterReadVarResponse converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
-	AsS7ParameterReadVarResponse() interface {
-		S7ParameterReadVarResponseBuilder
-		Done() S7ParameterBuilder
-	}
+	AsS7ParameterReadVarResponse() S7ParameterReadVarResponseBuilder
 	// AsS7ParameterWriteVarRequest converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
-	AsS7ParameterWriteVarRequest() interface {
-		S7ParameterWriteVarRequestBuilder
-		Done() S7ParameterBuilder
-	}
+	AsS7ParameterWriteVarRequest() S7ParameterWriteVarRequestBuilder
 	// AsS7ParameterWriteVarResponse converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
-	AsS7ParameterWriteVarResponse() interface {
-		S7ParameterWriteVarResponseBuilder
-		Done() S7ParameterBuilder
-	}
+	AsS7ParameterWriteVarResponse() S7ParameterWriteVarResponseBuilder
 	// AsS7ParameterUserData converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
-	AsS7ParameterUserData() interface {
-		S7ParameterUserDataBuilder
-		Done() S7ParameterBuilder
-	}
+	AsS7ParameterUserData() S7ParameterUserDataBuilder
 	// AsS7ParameterModeTransition converts this build to a subType of S7Parameter. It is always possible to return to current builder using Done()
-	AsS7ParameterModeTransition() interface {
-		S7ParameterModeTransitionBuilder
-		Done() S7ParameterBuilder
-	}
+	AsS7ParameterModeTransition() S7ParameterModeTransitionBuilder
 	// Build builds the S7Parameter or returns an error if something is wrong
 	PartialBuild() (S7ParameterContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -175,14 +154,8 @@ func (b *_S7ParameterBuilder) PartialMustBuild() S7ParameterContract {
 	return build
 }
 
-func (b *_S7ParameterBuilder) AsS7ParameterSetupCommunication() interface {
-	S7ParameterSetupCommunicationBuilder
-	Done() S7ParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7ParameterSetupCommunicationBuilder
-		Done() S7ParameterBuilder
-	}); ok {
+func (b *_S7ParameterBuilder) AsS7ParameterSetupCommunication() S7ParameterSetupCommunicationBuilder {
+	if cb, ok := b.childBuilder.(S7ParameterSetupCommunicationBuilder); ok {
 		return cb
 	}
 	cb := NewS7ParameterSetupCommunicationBuilder().(*_S7ParameterSetupCommunicationBuilder)
@@ -191,14 +164,8 @@ func (b *_S7ParameterBuilder) AsS7ParameterSetupCommunication() interface {
 	return cb
 }
 
-func (b *_S7ParameterBuilder) AsS7ParameterReadVarRequest() interface {
-	S7ParameterReadVarRequestBuilder
-	Done() S7ParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7ParameterReadVarRequestBuilder
-		Done() S7ParameterBuilder
-	}); ok {
+func (b *_S7ParameterBuilder) AsS7ParameterReadVarRequest() S7ParameterReadVarRequestBuilder {
+	if cb, ok := b.childBuilder.(S7ParameterReadVarRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7ParameterReadVarRequestBuilder().(*_S7ParameterReadVarRequestBuilder)
@@ -207,14 +174,8 @@ func (b *_S7ParameterBuilder) AsS7ParameterReadVarRequest() interface {
 	return cb
 }
 
-func (b *_S7ParameterBuilder) AsS7ParameterReadVarResponse() interface {
-	S7ParameterReadVarResponseBuilder
-	Done() S7ParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7ParameterReadVarResponseBuilder
-		Done() S7ParameterBuilder
-	}); ok {
+func (b *_S7ParameterBuilder) AsS7ParameterReadVarResponse() S7ParameterReadVarResponseBuilder {
+	if cb, ok := b.childBuilder.(S7ParameterReadVarResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7ParameterReadVarResponseBuilder().(*_S7ParameterReadVarResponseBuilder)
@@ -223,14 +184,8 @@ func (b *_S7ParameterBuilder) AsS7ParameterReadVarResponse() interface {
 	return cb
 }
 
-func (b *_S7ParameterBuilder) AsS7ParameterWriteVarRequest() interface {
-	S7ParameterWriteVarRequestBuilder
-	Done() S7ParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7ParameterWriteVarRequestBuilder
-		Done() S7ParameterBuilder
-	}); ok {
+func (b *_S7ParameterBuilder) AsS7ParameterWriteVarRequest() S7ParameterWriteVarRequestBuilder {
+	if cb, ok := b.childBuilder.(S7ParameterWriteVarRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7ParameterWriteVarRequestBuilder().(*_S7ParameterWriteVarRequestBuilder)
@@ -239,14 +194,8 @@ func (b *_S7ParameterBuilder) AsS7ParameterWriteVarRequest() interface {
 	return cb
 }
 
-func (b *_S7ParameterBuilder) AsS7ParameterWriteVarResponse() interface {
-	S7ParameterWriteVarResponseBuilder
-	Done() S7ParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7ParameterWriteVarResponseBuilder
-		Done() S7ParameterBuilder
-	}); ok {
+func (b *_S7ParameterBuilder) AsS7ParameterWriteVarResponse() S7ParameterWriteVarResponseBuilder {
+	if cb, ok := b.childBuilder.(S7ParameterWriteVarResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7ParameterWriteVarResponseBuilder().(*_S7ParameterWriteVarResponseBuilder)
@@ -255,14 +204,8 @@ func (b *_S7ParameterBuilder) AsS7ParameterWriteVarResponse() interface {
 	return cb
 }
 
-func (b *_S7ParameterBuilder) AsS7ParameterUserData() interface {
-	S7ParameterUserDataBuilder
-	Done() S7ParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7ParameterUserDataBuilder
-		Done() S7ParameterBuilder
-	}); ok {
+func (b *_S7ParameterBuilder) AsS7ParameterUserData() S7ParameterUserDataBuilder {
+	if cb, ok := b.childBuilder.(S7ParameterUserDataBuilder); ok {
 		return cb
 	}
 	cb := NewS7ParameterUserDataBuilder().(*_S7ParameterUserDataBuilder)
@@ -271,14 +214,8 @@ func (b *_S7ParameterBuilder) AsS7ParameterUserData() interface {
 	return cb
 }
 
-func (b *_S7ParameterBuilder) AsS7ParameterModeTransition() interface {
-	S7ParameterModeTransitionBuilder
-	Done() S7ParameterBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7ParameterModeTransitionBuilder
-		Done() S7ParameterBuilder
-	}); ok {
+func (b *_S7ParameterBuilder) AsS7ParameterModeTransition() S7ParameterModeTransitionBuilder {
+	if cb, ok := b.childBuilder.(S7ParameterModeTransitionBuilder); ok {
 		return cb
 	}
 	cb := NewS7ParameterModeTransitionBuilder().(*_S7ParameterModeTransitionBuilder)

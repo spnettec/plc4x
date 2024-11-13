@@ -112,6 +112,8 @@ type DatagramDataSetReaderTransportDataTypeBuilder interface {
 	WithTopic(PascalString) DatagramDataSetReaderTransportDataTypeBuilder
 	// WithTopicBuilder adds Topic (property field) which is build by the builder
 	WithTopicBuilder(func(PascalStringBuilder) PascalStringBuilder) DatagramDataSetReaderTransportDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DatagramDataSetReaderTransportDataType or returns an error if something is wrong
 	Build() (DatagramDataSetReaderTransportDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (DatagramDataSetReaderTransportDataTypeBuilder) = (*_DatagramDataSetReader
 
 func (b *_DatagramDataSetReaderTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DatagramDataSetReaderTransportDataType
 }
 
 func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithMandatoryFields(address ExtensionObject, qosCategory PascalString, datagramQos []ExtensionObject, topic PascalString) DatagramDataSetReaderTransportDataTypeBuilder {
@@ -233,8 +236,10 @@ func (b *_DatagramDataSetReaderTransportDataTypeBuilder) MustBuild() DatagramDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DatagramDataSetReaderTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -460,12 +465,12 @@ func (m *_DatagramDataSetReaderTransportDataType) deepCopy() *_DatagramDataSetRe
 	}
 	_DatagramDataSetReaderTransportDataTypeCopy := &_DatagramDataSetReaderTransportDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Address.DeepCopy().(ExtensionObject),
-		m.QosCategory.DeepCopy().(PascalString),
+		utils.DeepCopy[ExtensionObject](m.Address),
+		utils.DeepCopy[PascalString](m.QosCategory),
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DatagramQos),
-		m.Topic.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Topic),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DatagramDataSetReaderTransportDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DatagramDataSetReaderTransportDataTypeCopy
 }
 

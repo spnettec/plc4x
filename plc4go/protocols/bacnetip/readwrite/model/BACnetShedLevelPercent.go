@@ -84,6 +84,8 @@ type BACnetShedLevelPercentBuilder interface {
 	WithPercent(BACnetContextTagUnsignedInteger) BACnetShedLevelPercentBuilder
 	// WithPercentBuilder adds Percent (property field) which is build by the builder
 	WithPercentBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetShedLevelPercentBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetShedLevelBuilder
 	// Build builds the BACnetShedLevelPercent or returns an error if something is wrong
 	Build() (BACnetShedLevelPercent, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetShedLevelPercentBuilder) = (*_BACnetShedLevelPercentBuilder)(nil)
 
 func (b *_BACnetShedLevelPercentBuilder) setParent(contract BACnetShedLevelContract) {
 	b.BACnetShedLevelContract = contract
+	contract.(*_BACnetShedLevel)._SubType = b._BACnetShedLevelPercent
 }
 
 func (b *_BACnetShedLevelPercentBuilder) WithMandatoryFields(percent BACnetContextTagUnsignedInteger) BACnetShedLevelPercentBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetShedLevelPercentBuilder) MustBuild() BACnetShedLevelPercent {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetShedLevelPercentBuilder) Done() BACnetShedLevelBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetShedLevelBuilder().(*_BACnetShedLevelBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetShedLevelPercent) deepCopy() *_BACnetShedLevelPercent {
 	}
 	_BACnetShedLevelPercentCopy := &_BACnetShedLevelPercent{
 		m.BACnetShedLevelContract.(*_BACnetShedLevel).deepCopy(),
-		m.Percent.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Percent),
 	}
-	m.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = m
+	_BACnetShedLevelPercentCopy.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = m
 	return _BACnetShedLevelPercentCopy
 }
 

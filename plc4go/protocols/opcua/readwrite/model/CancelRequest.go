@@ -90,6 +90,8 @@ type CancelRequestBuilder interface {
 	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CancelRequestBuilder
 	// WithRequestHandle adds RequestHandle (property field)
 	WithRequestHandle(uint32) CancelRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CancelRequest or returns an error if something is wrong
 	Build() (CancelRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (CancelRequestBuilder) = (*_CancelRequestBuilder)(nil)
 
 func (b *_CancelRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CancelRequest
 }
 
 func (b *_CancelRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, requestHandle uint32) CancelRequestBuilder {
@@ -163,8 +166,10 @@ func (b *_CancelRequestBuilder) MustBuild() CancelRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CancelRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -336,10 +341,10 @@ func (m *_CancelRequest) deepCopy() *_CancelRequest {
 	}
 	_CancelRequestCopy := &_CancelRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		m.RequestHandle,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CancelRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CancelRequestCopy
 }
 

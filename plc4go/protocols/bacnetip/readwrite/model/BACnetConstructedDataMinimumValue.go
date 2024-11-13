@@ -86,6 +86,8 @@ type BACnetConstructedDataMinimumValueBuilder interface {
 	WithMinimumValue(BACnetApplicationTagReal) BACnetConstructedDataMinimumValueBuilder
 	// WithMinimumValueBuilder adds MinimumValue (property field) which is build by the builder
 	WithMinimumValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMinimumValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMinimumValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataMinimumValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMinimumValueBuilder) = (*_BACnetConstructedDataMinim
 
 func (b *_BACnetConstructedDataMinimumValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMinimumValue
 }
 
 func (b *_BACnetConstructedDataMinimumValueBuilder) WithMandatoryFields(minimumValue BACnetApplicationTagReal) BACnetConstructedDataMinimumValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMinimumValueBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMinimumValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataMinimumValue) deepCopy() *_BACnetConstructedDataM
 	}
 	_BACnetConstructedDataMinimumValueCopy := &_BACnetConstructedDataMinimumValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MinimumValue.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.MinimumValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMinimumValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMinimumValueCopy
 }
 

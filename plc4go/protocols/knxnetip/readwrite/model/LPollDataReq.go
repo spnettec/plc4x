@@ -71,6 +71,8 @@ type LPollDataReqBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() LPollDataReqBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the LPollDataReq or returns an error if something is wrong
 	Build() (LPollDataReq, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (LPollDataReqBuilder) = (*_LPollDataReqBuilder)(nil)
 
 func (b *_LPollDataReqBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._LPollDataReq
 }
 
 func (b *_LPollDataReqBuilder) WithMandatoryFields() LPollDataReqBuilder {
@@ -115,8 +118,10 @@ func (b *_LPollDataReqBuilder) MustBuild() LPollDataReq {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LPollDataReqBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_LPollDataReq) deepCopy() *_LPollDataReq {
 	_LPollDataReqCopy := &_LPollDataReq{
 		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_LPollDataReqCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _LPollDataReqCopy
 }
 

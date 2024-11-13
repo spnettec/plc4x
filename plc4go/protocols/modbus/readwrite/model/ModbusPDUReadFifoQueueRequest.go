@@ -79,6 +79,8 @@ type ModbusPDUReadFifoQueueRequestBuilder interface {
 	WithMandatoryFields(fifoPointerAddress uint16) ModbusPDUReadFifoQueueRequestBuilder
 	// WithFifoPointerAddress adds FifoPointerAddress (property field)
 	WithFifoPointerAddress(uint16) ModbusPDUReadFifoQueueRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUReadFifoQueueRequest or returns an error if something is wrong
 	Build() (ModbusPDUReadFifoQueueRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ModbusPDUReadFifoQueueRequestBuilder) = (*_ModbusPDUReadFifoQueueRequestB
 
 func (b *_ModbusPDUReadFifoQueueRequestBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUReadFifoQueueRequest
 }
 
 func (b *_ModbusPDUReadFifoQueueRequestBuilder) WithMandatoryFields(fifoPointerAddress uint16) ModbusPDUReadFifoQueueRequestBuilder {
@@ -128,8 +131,10 @@ func (b *_ModbusPDUReadFifoQueueRequestBuilder) MustBuild() ModbusPDUReadFifoQue
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUReadFifoQueueRequestBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_ModbusPDUReadFifoQueueRequest) deepCopy() *_ModbusPDUReadFifoQueueRequ
 		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.FifoPointerAddress,
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUReadFifoQueueRequestCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUReadFifoQueueRequestCopy
 }
 

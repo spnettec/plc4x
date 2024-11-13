@@ -86,6 +86,8 @@ type BACnetConstructedDataRestoreCompletionTimeBuilder interface {
 	WithCompletionTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRestoreCompletionTimeBuilder
 	// WithCompletionTimeBuilder adds CompletionTime (property field) which is build by the builder
 	WithCompletionTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRestoreCompletionTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataRestoreCompletionTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataRestoreCompletionTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataRestoreCompletionTimeBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataRestoreCompletionTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataRestoreCompletionTime
 }
 
 func (b *_BACnetConstructedDataRestoreCompletionTimeBuilder) WithMandatoryFields(completionTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRestoreCompletionTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataRestoreCompletionTimeBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataRestoreCompletionTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataRestoreCompletionTimeCopy := &_BACnetConstructedDataRestoreCompletionTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CompletionTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.CompletionTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataRestoreCompletionTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataRestoreCompletionTimeCopy
 }
 

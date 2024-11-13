@@ -86,6 +86,8 @@ type BACnetConstructedDataOccupancyCountBuilder interface {
 	WithOccupancyCount(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataOccupancyCountBuilder
 	// WithOccupancyCountBuilder adds OccupancyCount (property field) which is build by the builder
 	WithOccupancyCountBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataOccupancyCountBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataOccupancyCount or returns an error if something is wrong
 	Build() (BACnetConstructedDataOccupancyCount, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataOccupancyCountBuilder) = (*_BACnetConstructedDataOcc
 
 func (b *_BACnetConstructedDataOccupancyCountBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataOccupancyCount
 }
 
 func (b *_BACnetConstructedDataOccupancyCountBuilder) WithMandatoryFields(occupancyCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataOccupancyCountBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataOccupancyCountBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataOccupancyCountBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataOccupancyCount) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataOccupancyCountCopy := &_BACnetConstructedDataOccupancyCount{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.OccupancyCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.OccupancyCount),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataOccupancyCountCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataOccupancyCountCopy
 }
 

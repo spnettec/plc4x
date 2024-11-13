@@ -112,6 +112,8 @@ type EnumDescriptionBuilder interface {
 	WithEnumDefinitionBuilder(func(EnumDefinitionBuilder) EnumDefinitionBuilder) EnumDescriptionBuilder
 	// WithBuiltInType adds BuiltInType (property field)
 	WithBuiltInType(uint8) EnumDescriptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the EnumDescription or returns an error if something is wrong
 	Build() (EnumDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (EnumDescriptionBuilder) = (*_EnumDescriptionBuilder)(nil)
 
 func (b *_EnumDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._EnumDescription
 }
 
 func (b *_EnumDescriptionBuilder) WithMandatoryFields(dataTypeId NodeId, name QualifiedName, enumDefinition EnumDefinition, builtInType uint8) EnumDescriptionBuilder {
@@ -233,8 +236,10 @@ func (b *_EnumDescriptionBuilder) MustBuild() EnumDescription {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EnumDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -440,12 +445,12 @@ func (m *_EnumDescription) deepCopy() *_EnumDescription {
 	}
 	_EnumDescriptionCopy := &_EnumDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.DataTypeId.DeepCopy().(NodeId),
-		m.Name.DeepCopy().(QualifiedName),
-		m.EnumDefinition.DeepCopy().(EnumDefinition),
+		utils.DeepCopy[NodeId](m.DataTypeId),
+		utils.DeepCopy[QualifiedName](m.Name),
+		utils.DeepCopy[EnumDefinition](m.EnumDefinition),
 		m.BuiltInType,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_EnumDescriptionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EnumDescriptionCopy
 }
 

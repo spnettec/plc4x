@@ -103,6 +103,8 @@ type TrustListDataTypeBuilder interface {
 	WithIssuerCertificates(...PascalByteString) TrustListDataTypeBuilder
 	// WithIssuerCrls adds IssuerCrls (property field)
 	WithIssuerCrls(...PascalByteString) TrustListDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the TrustListDataType or returns an error if something is wrong
 	Build() (TrustListDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (TrustListDataTypeBuilder) = (*_TrustListDataTypeBuilder)(nil)
 
 func (b *_TrustListDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._TrustListDataType
 }
 
 func (b *_TrustListDataTypeBuilder) WithMandatoryFields(specifiedLists uint32, trustedCertificates []PascalByteString, trustedCrls []PascalByteString, issuerCertificates []PascalByteString, issuerCrls []PascalByteString) TrustListDataTypeBuilder {
@@ -172,8 +175,10 @@ func (b *_TrustListDataTypeBuilder) MustBuild() TrustListDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TrustListDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -482,7 +487,7 @@ func (m *_TrustListDataType) deepCopy() *_TrustListDataType {
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.IssuerCertificates),
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.IssuerCrls),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_TrustListDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TrustListDataTypeCopy
 }
 

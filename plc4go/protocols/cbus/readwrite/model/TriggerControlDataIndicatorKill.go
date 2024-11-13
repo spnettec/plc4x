@@ -71,6 +71,8 @@ type TriggerControlDataIndicatorKillBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() TriggerControlDataIndicatorKillBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TriggerControlDataBuilder
 	// Build builds the TriggerControlDataIndicatorKill or returns an error if something is wrong
 	Build() (TriggerControlDataIndicatorKill, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (TriggerControlDataIndicatorKillBuilder) = (*_TriggerControlDataIndicatorK
 
 func (b *_TriggerControlDataIndicatorKillBuilder) setParent(contract TriggerControlDataContract) {
 	b.TriggerControlDataContract = contract
+	contract.(*_TriggerControlData)._SubType = b._TriggerControlDataIndicatorKill
 }
 
 func (b *_TriggerControlDataIndicatorKillBuilder) WithMandatoryFields() TriggerControlDataIndicatorKillBuilder {
@@ -115,8 +118,10 @@ func (b *_TriggerControlDataIndicatorKillBuilder) MustBuild() TriggerControlData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TriggerControlDataIndicatorKillBuilder) Done() TriggerControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTriggerControlDataBuilder().(*_TriggerControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_TriggerControlDataIndicatorKill) deepCopy() *_TriggerControlDataIndica
 	_TriggerControlDataIndicatorKillCopy := &_TriggerControlDataIndicatorKill{
 		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
 	}
-	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	_TriggerControlDataIndicatorKillCopy.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
 	return _TriggerControlDataIndicatorKillCopy
 }
 

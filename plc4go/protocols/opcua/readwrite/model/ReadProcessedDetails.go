@@ -108,6 +108,8 @@ type ReadProcessedDetailsBuilder interface {
 	WithAggregateConfiguration(AggregateConfiguration) ReadProcessedDetailsBuilder
 	// WithAggregateConfigurationBuilder adds AggregateConfiguration (property field) which is build by the builder
 	WithAggregateConfigurationBuilder(func(AggregateConfigurationBuilder) AggregateConfigurationBuilder) ReadProcessedDetailsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReadProcessedDetails or returns an error if something is wrong
 	Build() (ReadProcessedDetails, error)
 	// MustBuild does the same as Build but panics on error
@@ -131,6 +133,7 @@ var _ (ReadProcessedDetailsBuilder) = (*_ReadProcessedDetailsBuilder)(nil)
 
 func (b *_ReadProcessedDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReadProcessedDetails
 }
 
 func (b *_ReadProcessedDetailsBuilder) WithMandatoryFields(startTime int64, endTime int64, processingInterval float64, aggregateType []NodeId, aggregateConfiguration AggregateConfiguration) ReadProcessedDetailsBuilder {
@@ -196,8 +199,10 @@ func (b *_ReadProcessedDetailsBuilder) MustBuild() ReadProcessedDetails {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReadProcessedDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -444,9 +449,9 @@ func (m *_ReadProcessedDetails) deepCopy() *_ReadProcessedDetails {
 		m.EndTime,
 		m.ProcessingInterval,
 		utils.DeepCopySlice[NodeId, NodeId](m.AggregateType),
-		m.AggregateConfiguration.DeepCopy().(AggregateConfiguration),
+		utils.DeepCopy[AggregateConfiguration](m.AggregateConfiguration),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReadProcessedDetailsCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReadProcessedDetailsCopy
 }
 

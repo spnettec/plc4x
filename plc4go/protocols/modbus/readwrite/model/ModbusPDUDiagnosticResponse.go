@@ -85,6 +85,8 @@ type ModbusPDUDiagnosticResponseBuilder interface {
 	WithSubFunction(uint16) ModbusPDUDiagnosticResponseBuilder
 	// WithData adds Data (property field)
 	WithData(uint16) ModbusPDUDiagnosticResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUDiagnosticResponse or returns an error if something is wrong
 	Build() (ModbusPDUDiagnosticResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (ModbusPDUDiagnosticResponseBuilder) = (*_ModbusPDUDiagnosticResponseBuild
 
 func (b *_ModbusPDUDiagnosticResponseBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUDiagnosticResponse
 }
 
 func (b *_ModbusPDUDiagnosticResponseBuilder) WithMandatoryFields(subFunction uint16, data uint16) ModbusPDUDiagnosticResponseBuilder {
@@ -139,8 +142,10 @@ func (b *_ModbusPDUDiagnosticResponseBuilder) MustBuild() ModbusPDUDiagnosticRes
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUDiagnosticResponseBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -323,7 +328,7 @@ func (m *_ModbusPDUDiagnosticResponse) deepCopy() *_ModbusPDUDiagnosticResponse 
 		m.SubFunction,
 		m.Data,
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUDiagnosticResponseCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUDiagnosticResponseCopy
 }
 

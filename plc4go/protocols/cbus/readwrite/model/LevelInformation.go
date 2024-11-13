@@ -112,20 +112,11 @@ type LevelInformationBuilder interface {
 	// WithRaw adds Raw (property field)
 	WithRaw(uint16) LevelInformationBuilder
 	// AsLevelInformationAbsent converts this build to a subType of LevelInformation. It is always possible to return to current builder using Done()
-	AsLevelInformationAbsent() interface {
-		LevelInformationAbsentBuilder
-		Done() LevelInformationBuilder
-	}
+	AsLevelInformationAbsent() LevelInformationAbsentBuilder
 	// AsLevelInformationCorrupted converts this build to a subType of LevelInformation. It is always possible to return to current builder using Done()
-	AsLevelInformationCorrupted() interface {
-		LevelInformationCorruptedBuilder
-		Done() LevelInformationBuilder
-	}
+	AsLevelInformationCorrupted() LevelInformationCorruptedBuilder
 	// AsLevelInformationNormal converts this build to a subType of LevelInformation. It is always possible to return to current builder using Done()
-	AsLevelInformationNormal() interface {
-		LevelInformationNormalBuilder
-		Done() LevelInformationBuilder
-	}
+	AsLevelInformationNormal() LevelInformationNormalBuilder
 	// Build builds the LevelInformation or returns an error if something is wrong
 	PartialBuild() (LevelInformationContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -181,14 +172,8 @@ func (b *_LevelInformationBuilder) PartialMustBuild() LevelInformationContract {
 	return build
 }
 
-func (b *_LevelInformationBuilder) AsLevelInformationAbsent() interface {
-	LevelInformationAbsentBuilder
-	Done() LevelInformationBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LevelInformationAbsentBuilder
-		Done() LevelInformationBuilder
-	}); ok {
+func (b *_LevelInformationBuilder) AsLevelInformationAbsent() LevelInformationAbsentBuilder {
+	if cb, ok := b.childBuilder.(LevelInformationAbsentBuilder); ok {
 		return cb
 	}
 	cb := NewLevelInformationAbsentBuilder().(*_LevelInformationAbsentBuilder)
@@ -197,14 +182,8 @@ func (b *_LevelInformationBuilder) AsLevelInformationAbsent() interface {
 	return cb
 }
 
-func (b *_LevelInformationBuilder) AsLevelInformationCorrupted() interface {
-	LevelInformationCorruptedBuilder
-	Done() LevelInformationBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LevelInformationCorruptedBuilder
-		Done() LevelInformationBuilder
-	}); ok {
+func (b *_LevelInformationBuilder) AsLevelInformationCorrupted() LevelInformationCorruptedBuilder {
+	if cb, ok := b.childBuilder.(LevelInformationCorruptedBuilder); ok {
 		return cb
 	}
 	cb := NewLevelInformationCorruptedBuilder().(*_LevelInformationCorruptedBuilder)
@@ -213,14 +192,8 @@ func (b *_LevelInformationBuilder) AsLevelInformationCorrupted() interface {
 	return cb
 }
 
-func (b *_LevelInformationBuilder) AsLevelInformationNormal() interface {
-	LevelInformationNormalBuilder
-	Done() LevelInformationBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		LevelInformationNormalBuilder
-		Done() LevelInformationBuilder
-	}); ok {
+func (b *_LevelInformationBuilder) AsLevelInformationNormal() LevelInformationNormalBuilder {
+	if cb, ok := b.childBuilder.(LevelInformationNormalBuilder); ok {
 		return cb
 	}
 	cb := NewLevelInformationNormalBuilder().(*_LevelInformationNormalBuilder)

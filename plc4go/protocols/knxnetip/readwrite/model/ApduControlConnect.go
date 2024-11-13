@@ -71,6 +71,8 @@ type ApduControlConnectBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduControlConnectBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduControlBuilder
 	// Build builds the ApduControlConnect or returns an error if something is wrong
 	Build() (ApduControlConnect, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduControlConnectBuilder) = (*_ApduControlConnectBuilder)(nil)
 
 func (b *_ApduControlConnectBuilder) setParent(contract ApduControlContract) {
 	b.ApduControlContract = contract
+	contract.(*_ApduControl)._SubType = b._ApduControlConnect
 }
 
 func (b *_ApduControlConnectBuilder) WithMandatoryFields() ApduControlConnectBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduControlConnectBuilder) MustBuild() ApduControlConnect {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduControlConnectBuilder) Done() ApduControlBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduControlBuilder().(*_ApduControlBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduControlConnect) deepCopy() *_ApduControlConnect {
 	_ApduControlConnectCopy := &_ApduControlConnect{
 		m.ApduControlContract.(*_ApduControl).deepCopy(),
 	}
-	m.ApduControlContract.(*_ApduControl)._SubType = m
+	_ApduControlConnectCopy.ApduControlContract.(*_ApduControl)._SubType = m
 	return _ApduControlConnectCopy
 }
 

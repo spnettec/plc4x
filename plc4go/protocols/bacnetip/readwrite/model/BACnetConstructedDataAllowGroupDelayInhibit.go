@@ -86,6 +86,8 @@ type BACnetConstructedDataAllowGroupDelayInhibitBuilder interface {
 	WithAllowGroupDelayInhibit(BACnetApplicationTagBoolean) BACnetConstructedDataAllowGroupDelayInhibitBuilder
 	// WithAllowGroupDelayInhibitBuilder adds AllowGroupDelayInhibit (property field) which is build by the builder
 	WithAllowGroupDelayInhibitBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAllowGroupDelayInhibitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAllowGroupDelayInhibit or returns an error if something is wrong
 	Build() (BACnetConstructedDataAllowGroupDelayInhibit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAllowGroupDelayInhibitBuilder) = (*_BACnetConstructe
 
 func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAllowGroupDelayInhibit
 }
 
 func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) WithMandatoryFields(allowGroupDelayInhibit BACnetApplicationTagBoolean) BACnetConstructedDataAllowGroupDelayInhibitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAllowGroupDelayInhibitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) deepCopy() *_BACnetConstr
 	}
 	_BACnetConstructedDataAllowGroupDelayInhibitCopy := &_BACnetConstructedDataAllowGroupDelayInhibit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AllowGroupDelayInhibit.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.AllowGroupDelayInhibit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAllowGroupDelayInhibitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAllowGroupDelayInhibitCopy
 }
 

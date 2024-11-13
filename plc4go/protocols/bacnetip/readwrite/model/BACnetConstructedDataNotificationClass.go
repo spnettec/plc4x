@@ -86,6 +86,8 @@ type BACnetConstructedDataNotificationClassBuilder interface {
 	WithNotificationClass(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationClassBuilder
 	// WithNotificationClassBuilder adds NotificationClass (property field) which is build by the builder
 	WithNotificationClassBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNotificationClassBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNotificationClass or returns an error if something is wrong
 	Build() (BACnetConstructedDataNotificationClass, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataNotificationClassBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataNotificationClassBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNotificationClass
 }
 
 func (b *_BACnetConstructedDataNotificationClassBuilder) WithMandatoryFields(notificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationClassBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataNotificationClassBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNotificationClassBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataNotificationClass) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataNotificationClassCopy := &_BACnetConstructedDataNotificationClass{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NotificationClass.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NotificationClass),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNotificationClassCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNotificationClassCopy
 }
 

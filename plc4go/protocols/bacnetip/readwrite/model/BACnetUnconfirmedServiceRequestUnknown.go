@@ -79,6 +79,8 @@ type BACnetUnconfirmedServiceRequestUnknownBuilder interface {
 	WithMandatoryFields(unknownBytes []byte) BACnetUnconfirmedServiceRequestUnknownBuilder
 	// WithUnknownBytes adds UnknownBytes (property field)
 	WithUnknownBytes(...byte) BACnetUnconfirmedServiceRequestUnknownBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetUnconfirmedServiceRequestBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestUnknown or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestUnknown, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetUnconfirmedServiceRequestUnknownBuilder) = (*_BACnetUnconfirmedServ
 
 func (b *_BACnetUnconfirmedServiceRequestUnknownBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
 	b.BACnetUnconfirmedServiceRequestContract = contract
+	contract.(*_BACnetUnconfirmedServiceRequest)._SubType = b._BACnetUnconfirmedServiceRequestUnknown
 }
 
 func (b *_BACnetUnconfirmedServiceRequestUnknownBuilder) WithMandatoryFields(unknownBytes []byte) BACnetUnconfirmedServiceRequestUnknownBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetUnconfirmedServiceRequestUnknownBuilder) MustBuild() BACnetUncon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetUnconfirmedServiceRequestUnknownBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetUnconfirmedServiceRequestBuilder().(*_BACnetUnconfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -288,7 +293,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnknown) deepCopy() *_BACnetUnconfirmed
 		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.UnknownBytes),
 	}
-	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	_BACnetUnconfirmedServiceRequestUnknownCopy.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
 	return _BACnetUnconfirmedServiceRequestUnknownCopy
 }
 

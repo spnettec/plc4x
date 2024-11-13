@@ -71,6 +71,8 @@ type AdsReadStateRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() AdsReadStateRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AmsPacketBuilder
 	// Build builds the AdsReadStateRequest or returns an error if something is wrong
 	Build() (AdsReadStateRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (AdsReadStateRequestBuilder) = (*_AdsReadStateRequestBuilder)(nil)
 
 func (b *_AdsReadStateRequestBuilder) setParent(contract AmsPacketContract) {
 	b.AmsPacketContract = contract
+	contract.(*_AmsPacket)._SubType = b._AdsReadStateRequest
 }
 
 func (b *_AdsReadStateRequestBuilder) WithMandatoryFields() AdsReadStateRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_AdsReadStateRequestBuilder) MustBuild() AdsReadStateRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsReadStateRequestBuilder) Done() AmsPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAmsPacketBuilder().(*_AmsPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -249,7 +254,7 @@ func (m *_AdsReadStateRequest) deepCopy() *_AdsReadStateRequest {
 	_AdsReadStateRequestCopy := &_AdsReadStateRequest{
 		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 	}
-	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	_AdsReadStateRequestCopy.AmsPacketContract.(*_AmsPacket)._SubType = m
 	return _AdsReadStateRequestCopy
 }
 

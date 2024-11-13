@@ -86,6 +86,8 @@ type BACnetConstructedDataLowerDeckBuilder interface {
 	WithLowerDeck(BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLowerDeckBuilder
 	// WithLowerDeckBuilder adds LowerDeck (property field) which is build by the builder
 	WithLowerDeckBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataLowerDeckBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLowerDeck or returns an error if something is wrong
 	Build() (BACnetConstructedDataLowerDeck, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLowerDeckBuilder) = (*_BACnetConstructedDataLowerDec
 
 func (b *_BACnetConstructedDataLowerDeckBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLowerDeck
 }
 
 func (b *_BACnetConstructedDataLowerDeckBuilder) WithMandatoryFields(lowerDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLowerDeckBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLowerDeckBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLowerDeckBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLowerDeck) deepCopy() *_BACnetConstructedDataLowe
 	}
 	_BACnetConstructedDataLowerDeckCopy := &_BACnetConstructedDataLowerDeck{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LowerDeck.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.LowerDeck),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLowerDeckCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLowerDeckCopy
 }
 

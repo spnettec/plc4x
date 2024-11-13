@@ -107,6 +107,8 @@ type GetEndpointsRequestBuilder interface {
 	WithLocaleIds(...PascalString) GetEndpointsRequestBuilder
 	// WithProfileUris adds ProfileUris (property field)
 	WithProfileUris(...PascalString) GetEndpointsRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the GetEndpointsRequest or returns an error if something is wrong
 	Build() (GetEndpointsRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,6 +132,7 @@ var _ (GetEndpointsRequestBuilder) = (*_GetEndpointsRequestBuilder)(nil)
 
 func (b *_GetEndpointsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._GetEndpointsRequest
 }
 
 func (b *_GetEndpointsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, endpointUrl PascalString, localeIds []PascalString, profileUris []PascalString) GetEndpointsRequestBuilder {
@@ -209,8 +212,10 @@ func (b *_GetEndpointsRequestBuilder) MustBuild() GetEndpointsRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_GetEndpointsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -456,12 +461,12 @@ func (m *_GetEndpointsRequest) deepCopy() *_GetEndpointsRequest {
 	}
 	_GetEndpointsRequestCopy := &_GetEndpointsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
-		m.EndpointUrl.DeepCopy().(PascalString),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
+		utils.DeepCopy[PascalString](m.EndpointUrl),
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
 		utils.DeepCopySlice[PascalString, PascalString](m.ProfileUris),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_GetEndpointsRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _GetEndpointsRequestCopy
 }
 

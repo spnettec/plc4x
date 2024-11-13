@@ -86,6 +86,8 @@ type BACnetConstructedDataEnergyMeterRefBuilder interface {
 	WithEnergyMeterRef(BACnetDeviceObjectReference) BACnetConstructedDataEnergyMeterRefBuilder
 	// WithEnergyMeterRefBuilder adds EnergyMeterRef (property field) which is build by the builder
 	WithEnergyMeterRefBuilder(func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataEnergyMeterRefBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEnergyMeterRef or returns an error if something is wrong
 	Build() (BACnetConstructedDataEnergyMeterRef, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataEnergyMeterRefBuilder) = (*_BACnetConstructedDataEne
 
 func (b *_BACnetConstructedDataEnergyMeterRefBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEnergyMeterRef
 }
 
 func (b *_BACnetConstructedDataEnergyMeterRefBuilder) WithMandatoryFields(energyMeterRef BACnetDeviceObjectReference) BACnetConstructedDataEnergyMeterRefBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataEnergyMeterRefBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEnergyMeterRefBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataEnergyMeterRef) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataEnergyMeterRefCopy := &_BACnetConstructedDataEnergyMeterRef{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.EnergyMeterRef.DeepCopy().(BACnetDeviceObjectReference),
+		utils.DeepCopy[BACnetDeviceObjectReference](m.EnergyMeterRef),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEnergyMeterRefCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEnergyMeterRefCopy
 }
 

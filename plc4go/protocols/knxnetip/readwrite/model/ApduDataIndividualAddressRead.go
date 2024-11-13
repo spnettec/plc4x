@@ -71,6 +71,8 @@ type ApduDataIndividualAddressReadBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataIndividualAddressReadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataIndividualAddressRead or returns an error if something is wrong
 	Build() (ApduDataIndividualAddressRead, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataIndividualAddressReadBuilder) = (*_ApduDataIndividualAddressReadB
 
 func (b *_ApduDataIndividualAddressReadBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataIndividualAddressRead
 }
 
 func (b *_ApduDataIndividualAddressReadBuilder) WithMandatoryFields() ApduDataIndividualAddressReadBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataIndividualAddressReadBuilder) MustBuild() ApduDataIndividualAd
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataIndividualAddressReadBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataIndividualAddressRead) deepCopy() *_ApduDataIndividualAddressR
 	_ApduDataIndividualAddressReadCopy := &_ApduDataIndividualAddressRead{
 		m.ApduDataContract.(*_ApduData).deepCopy(),
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataIndividualAddressReadCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataIndividualAddressReadCopy
 }
 

@@ -79,6 +79,8 @@ type IdentifyReplyCommandLogicalAssignmentBuilder interface {
 	WithMandatoryFields(logicAssigment []LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder
 	// WithLogicAssigment adds LogicAssigment (property field)
 	WithLogicAssigment(...LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() IdentifyReplyCommandBuilder
 	// Build builds the IdentifyReplyCommandLogicalAssignment or returns an error if something is wrong
 	Build() (IdentifyReplyCommandLogicalAssignment, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (IdentifyReplyCommandLogicalAssignmentBuilder) = (*_IdentifyReplyCommandLo
 
 func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) setParent(contract IdentifyReplyCommandContract) {
 	b.IdentifyReplyCommandContract = contract
+	contract.(*_IdentifyReplyCommand)._SubType = b._IdentifyReplyCommandLogicalAssignment
 }
 
 func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) WithMandatoryFields(logicAssigment []LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder {
@@ -128,8 +131,10 @@ func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) MustBuild() IdentifyRepl
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) Done() IdentifyReplyCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -293,7 +298,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) deepCopy() *_IdentifyReplyComma
 		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		utils.DeepCopySlice[LogicAssignment, LogicAssignment](m.LogicAssigment),
 	}
-	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	_IdentifyReplyCommandLogicalAssignmentCopy.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
 	return _IdentifyReplyCommandLogicalAssignmentCopy
 }
 

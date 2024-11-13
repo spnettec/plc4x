@@ -128,6 +128,8 @@ type BACnetNotificationParametersBufferReadyBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersBufferReadyBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersBufferReadyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersBuilder
 	// Build builds the BACnetNotificationParametersBufferReady or returns an error if something is wrong
 	Build() (BACnetNotificationParametersBufferReady, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,6 +153,7 @@ var _ (BACnetNotificationParametersBufferReadyBuilder) = (*_BACnetNotificationPa
 
 func (b *_BACnetNotificationParametersBufferReadyBuilder) setParent(contract BACnetNotificationParametersContract) {
 	b.BACnetNotificationParametersContract = contract
+	contract.(*_BACnetNotificationParameters)._SubType = b._BACnetNotificationParametersBufferReady
 }
 
 func (b *_BACnetNotificationParametersBufferReadyBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, bufferProperty BACnetDeviceObjectPropertyReferenceEnclosed, previousNotification BACnetContextTagUnsignedInteger, currentNotification BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag) BACnetNotificationParametersBufferReadyBuilder {
@@ -292,8 +295,10 @@ func (b *_BACnetNotificationParametersBufferReadyBuilder) MustBuild() BACnetNoti
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersBufferReadyBuilder) Done() BACnetNotificationParametersBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -512,13 +517,13 @@ func (m *_BACnetNotificationParametersBufferReady) deepCopy() *_BACnetNotificati
 	}
 	_BACnetNotificationParametersBufferReadyCopy := &_BACnetNotificationParametersBufferReady{
 		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.BufferProperty.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
-		m.PreviousNotification.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.CurrentNotification.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
+		utils.DeepCopy[BACnetDeviceObjectPropertyReferenceEnclosed](m.BufferProperty),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.PreviousNotification),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.CurrentNotification),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	_BACnetNotificationParametersBufferReadyCopy.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
 	return _BACnetNotificationParametersBufferReadyCopy
 }
 

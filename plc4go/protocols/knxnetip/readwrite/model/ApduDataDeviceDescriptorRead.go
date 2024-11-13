@@ -79,6 +79,8 @@ type ApduDataDeviceDescriptorReadBuilder interface {
 	WithMandatoryFields(descriptorType uint8) ApduDataDeviceDescriptorReadBuilder
 	// WithDescriptorType adds DescriptorType (property field)
 	WithDescriptorType(uint8) ApduDataDeviceDescriptorReadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataDeviceDescriptorRead or returns an error if something is wrong
 	Build() (ApduDataDeviceDescriptorRead, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ApduDataDeviceDescriptorReadBuilder) = (*_ApduDataDeviceDescriptorReadBui
 
 func (b *_ApduDataDeviceDescriptorReadBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataDeviceDescriptorRead
 }
 
 func (b *_ApduDataDeviceDescriptorReadBuilder) WithMandatoryFields(descriptorType uint8) ApduDataDeviceDescriptorReadBuilder {
@@ -128,8 +131,10 @@ func (b *_ApduDataDeviceDescriptorReadBuilder) MustBuild() ApduDataDeviceDescrip
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataDeviceDescriptorReadBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_ApduDataDeviceDescriptorRead) deepCopy() *_ApduDataDeviceDescriptorRea
 		m.ApduDataContract.(*_ApduData).deepCopy(),
 		m.DescriptorType,
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataDeviceDescriptorReadCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataDeviceDescriptorReadCopy
 }
 

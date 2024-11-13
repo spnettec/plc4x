@@ -84,6 +84,8 @@ type BACnetContextTagOctetStringBuilder interface {
 	WithPayload(BACnetTagPayloadOctetString) BACnetContextTagOctetStringBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadOctetStringBuilder) BACnetTagPayloadOctetStringBuilder) BACnetContextTagOctetStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetContextTagBuilder
 	// Build builds the BACnetContextTagOctetString or returns an error if something is wrong
 	Build() (BACnetContextTagOctetString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetContextTagOctetStringBuilder) = (*_BACnetContextTagOctetStringBuild
 
 func (b *_BACnetContextTagOctetStringBuilder) setParent(contract BACnetContextTagContract) {
 	b.BACnetContextTagContract = contract
+	contract.(*_BACnetContextTag)._SubType = b._BACnetContextTagOctetString
 }
 
 func (b *_BACnetContextTagOctetStringBuilder) WithMandatoryFields(payload BACnetTagPayloadOctetString) BACnetContextTagOctetStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetContextTagOctetStringBuilder) MustBuild() BACnetContextTagOctetS
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetContextTagOctetStringBuilder) Done() BACnetContextTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetContextTagBuilder().(*_BACnetContextTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_BACnetContextTagOctetString) deepCopy() *_BACnetContextTagOctetString 
 	}
 	_BACnetContextTagOctetStringCopy := &_BACnetContextTagOctetString{
 		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadOctetString),
+		utils.DeepCopy[BACnetTagPayloadOctetString](m.Payload),
 	}
-	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	_BACnetContextTagOctetStringCopy.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
 	return _BACnetContextTagOctetStringCopy
 }
 

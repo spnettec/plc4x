@@ -71,6 +71,8 @@ type BACnetConstructedDataPositiveIntegerValueAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataPositiveIntegerValueAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPositiveIntegerValueAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataPositiveIntegerValueAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataPositiveIntegerValueAllBuilder) = (*_BACnetConstruct
 
 func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPositiveIntegerValueAll
 }
 
 func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) WithMandatoryFields() BACnetConstructedDataPositiveIntegerValueAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPositiveIntegerValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -255,7 +260,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueAll) deepCopy() *_BACnetConst
 	_BACnetConstructedDataPositiveIntegerValueAllCopy := &_BACnetConstructedDataPositiveIntegerValueAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPositiveIntegerValueAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPositiveIntegerValueAllCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataIntervalOffsetBuilder interface {
 	WithIntervalOffset(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntervalOffsetBuilder
 	// WithIntervalOffsetBuilder adds IntervalOffset (property field) which is build by the builder
 	WithIntervalOffsetBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntervalOffsetBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIntervalOffset or returns an error if something is wrong
 	Build() (BACnetConstructedDataIntervalOffset, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIntervalOffsetBuilder) = (*_BACnetConstructedDataInt
 
 func (b *_BACnetConstructedDataIntervalOffsetBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIntervalOffset
 }
 
 func (b *_BACnetConstructedDataIntervalOffsetBuilder) WithMandatoryFields(intervalOffset BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntervalOffsetBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIntervalOffsetBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIntervalOffsetBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataIntervalOffset) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataIntervalOffsetCopy := &_BACnetConstructedDataIntervalOffset{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.IntervalOffset.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.IntervalOffset),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIntervalOffsetCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIntervalOffsetCopy
 }
 

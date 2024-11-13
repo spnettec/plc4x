@@ -86,6 +86,8 @@ type BACnetConstructedDataDoNotHideBuilder interface {
 	WithDoNotHide(BACnetApplicationTagBoolean) BACnetConstructedDataDoNotHideBuilder
 	// WithDoNotHideBuilder adds DoNotHide (property field) which is build by the builder
 	WithDoNotHideBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataDoNotHideBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDoNotHide or returns an error if something is wrong
 	Build() (BACnetConstructedDataDoNotHide, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDoNotHideBuilder) = (*_BACnetConstructedDataDoNotHid
 
 func (b *_BACnetConstructedDataDoNotHideBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDoNotHide
 }
 
 func (b *_BACnetConstructedDataDoNotHideBuilder) WithMandatoryFields(doNotHide BACnetApplicationTagBoolean) BACnetConstructedDataDoNotHideBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDoNotHideBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDoNotHideBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDoNotHide) deepCopy() *_BACnetConstructedDataDoNo
 	}
 	_BACnetConstructedDataDoNotHideCopy := &_BACnetConstructedDataDoNotHide{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DoNotHide.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.DoNotHide),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDoNotHideCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDoNotHideCopy
 }
 

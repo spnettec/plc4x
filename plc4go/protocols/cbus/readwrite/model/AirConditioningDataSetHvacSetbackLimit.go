@@ -112,6 +112,8 @@ type AirConditioningDataSetHvacSetbackLimitBuilder interface {
 	WithHvacModeAndFlags(HVACModeAndFlags) AirConditioningDataSetHvacSetbackLimitBuilder
 	// WithHvacModeAndFlagsBuilder adds HvacModeAndFlags (property field) which is build by the builder
 	WithHvacModeAndFlagsBuilder(func(HVACModeAndFlagsBuilder) HVACModeAndFlagsBuilder) AirConditioningDataSetHvacSetbackLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AirConditioningDataBuilder
 	// Build builds the AirConditioningDataSetHvacSetbackLimit or returns an error if something is wrong
 	Build() (AirConditioningDataSetHvacSetbackLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (AirConditioningDataSetHvacSetbackLimitBuilder) = (*_AirConditioningDataSe
 
 func (b *_AirConditioningDataSetHvacSetbackLimitBuilder) setParent(contract AirConditioningDataContract) {
 	b.AirConditioningDataContract = contract
+	contract.(*_AirConditioningData)._SubType = b._AirConditioningDataSetHvacSetbackLimit
 }
 
 func (b *_AirConditioningDataSetHvacSetbackLimitBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, limit HVACTemperature, hvacModeAndFlags HVACModeAndFlags) AirConditioningDataSetHvacSetbackLimitBuilder {
@@ -233,8 +236,10 @@ func (b *_AirConditioningDataSetHvacSetbackLimitBuilder) MustBuild() AirConditio
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AirConditioningDataSetHvacSetbackLimitBuilder) Done() AirConditioningDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAirConditioningDataBuilder().(*_AirConditioningDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -437,11 +442,11 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) deepCopy() *_AirConditioningDa
 	_AirConditioningDataSetHvacSetbackLimitCopy := &_AirConditioningDataSetHvacSetbackLimit{
 		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
 		m.ZoneGroup,
-		m.ZoneList.DeepCopy().(HVACZoneList),
-		m.Limit.DeepCopy().(HVACTemperature),
-		m.HvacModeAndFlags.DeepCopy().(HVACModeAndFlags),
+		utils.DeepCopy[HVACZoneList](m.ZoneList),
+		utils.DeepCopy[HVACTemperature](m.Limit),
+		utils.DeepCopy[HVACModeAndFlags](m.HvacModeAndFlags),
 	}
-	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	_AirConditioningDataSetHvacSetbackLimitCopy.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
 	return _AirConditioningDataSetHvacSetbackLimitCopy
 }
 

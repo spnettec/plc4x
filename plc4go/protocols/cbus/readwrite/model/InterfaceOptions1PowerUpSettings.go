@@ -279,7 +279,7 @@ func (m *_InterfaceOptions1PowerUpSettings) deepCopy() *_InterfaceOptions1PowerU
 		return nil
 	}
 	_InterfaceOptions1PowerUpSettingsCopy := &_InterfaceOptions1PowerUpSettings{
-		m.InterfaceOptions1.DeepCopy().(InterfaceOptions1),
+		utils.DeepCopy[InterfaceOptions1](m.InterfaceOptions1),
 	}
 	return _InterfaceOptions1PowerUpSettingsCopy
 }

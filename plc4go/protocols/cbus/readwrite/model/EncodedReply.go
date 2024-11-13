@@ -104,15 +104,9 @@ type EncodedReplyBuilder interface {
 	// WithPeekedByte adds PeekedByte (property field)
 	WithPeekedByte(byte) EncodedReplyBuilder
 	// AsMonitoredSALReply converts this build to a subType of EncodedReply. It is always possible to return to current builder using Done()
-	AsMonitoredSALReply() interface {
-		MonitoredSALReplyBuilder
-		Done() EncodedReplyBuilder
-	}
+	AsMonitoredSALReply() MonitoredSALReplyBuilder
 	// AsEncodedReplyCALReply converts this build to a subType of EncodedReply. It is always possible to return to current builder using Done()
-	AsEncodedReplyCALReply() interface {
-		EncodedReplyCALReplyBuilder
-		Done() EncodedReplyBuilder
-	}
+	AsEncodedReplyCALReply() EncodedReplyCALReplyBuilder
 	// Build builds the EncodedReply or returns an error if something is wrong
 	PartialBuild() (EncodedReplyContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -168,14 +162,8 @@ func (b *_EncodedReplyBuilder) PartialMustBuild() EncodedReplyContract {
 	return build
 }
 
-func (b *_EncodedReplyBuilder) AsMonitoredSALReply() interface {
-	MonitoredSALReplyBuilder
-	Done() EncodedReplyBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		MonitoredSALReplyBuilder
-		Done() EncodedReplyBuilder
-	}); ok {
+func (b *_EncodedReplyBuilder) AsMonitoredSALReply() MonitoredSALReplyBuilder {
+	if cb, ok := b.childBuilder.(MonitoredSALReplyBuilder); ok {
 		return cb
 	}
 	cb := NewMonitoredSALReplyBuilder().(*_MonitoredSALReplyBuilder)
@@ -184,14 +172,8 @@ func (b *_EncodedReplyBuilder) AsMonitoredSALReply() interface {
 	return cb
 }
 
-func (b *_EncodedReplyBuilder) AsEncodedReplyCALReply() interface {
-	EncodedReplyCALReplyBuilder
-	Done() EncodedReplyBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		EncodedReplyCALReplyBuilder
-		Done() EncodedReplyBuilder
-	}); ok {
+func (b *_EncodedReplyBuilder) AsEncodedReplyCALReply() EncodedReplyCALReplyBuilder {
+	if cb, ok := b.childBuilder.(EncodedReplyCALReplyBuilder); ok {
 		return cb
 	}
 	cb := NewEncodedReplyCALReplyBuilder().(*_EncodedReplyCALReplyBuilder)

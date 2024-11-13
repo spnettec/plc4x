@@ -139,6 +139,8 @@ type BACnetEventParameterUnsignedOutOfRangeBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterUnsignedOutOfRangeBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterUnsignedOutOfRangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterBuilder
 	// Build builds the BACnetEventParameterUnsignedOutOfRange or returns an error if something is wrong
 	Build() (BACnetEventParameterUnsignedOutOfRange, error)
 	// MustBuild does the same as Build but panics on error
@@ -162,6 +164,7 @@ var _ (BACnetEventParameterUnsignedOutOfRangeBuilder) = (*_BACnetEventParameterU
 
 func (b *_BACnetEventParameterUnsignedOutOfRangeBuilder) setParent(contract BACnetEventParameterContract) {
 	b.BACnetEventParameterContract = contract
+	contract.(*_BACnetEventParameter)._SubType = b._BACnetEventParameterUnsignedOutOfRange
 }
 
 func (b *_BACnetEventParameterUnsignedOutOfRangeBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagUnsignedInteger, highLimit BACnetContextTagUnsignedInteger, deadband BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) BACnetEventParameterUnsignedOutOfRangeBuilder {
@@ -327,8 +330,10 @@ func (b *_BACnetEventParameterUnsignedOutOfRangeBuilder) MustBuild() BACnetEvent
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterUnsignedOutOfRangeBuilder) Done() BACnetEventParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -564,14 +569,14 @@ func (m *_BACnetEventParameterUnsignedOutOfRange) deepCopy() *_BACnetEventParame
 	}
 	_BACnetEventParameterUnsignedOutOfRangeCopy := &_BACnetEventParameterUnsignedOutOfRange{
 		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.LowLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.HighLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Deadband.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeDelay),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.LowLimit),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.HighLimit),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Deadband),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	_BACnetEventParameterUnsignedOutOfRangeCopy.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
 	return _BACnetEventParameterUnsignedOutOfRangeCopy
 }
 

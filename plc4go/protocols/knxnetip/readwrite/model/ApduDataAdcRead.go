@@ -71,6 +71,8 @@ type ApduDataAdcReadBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataAdcReadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataAdcRead or returns an error if something is wrong
 	Build() (ApduDataAdcRead, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataAdcReadBuilder) = (*_ApduDataAdcReadBuilder)(nil)
 
 func (b *_ApduDataAdcReadBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataAdcRead
 }
 
 func (b *_ApduDataAdcReadBuilder) WithMandatoryFields() ApduDataAdcReadBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataAdcReadBuilder) MustBuild() ApduDataAdcRead {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataAdcReadBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataAdcRead) deepCopy() *_ApduDataAdcRead {
 	_ApduDataAdcReadCopy := &_ApduDataAdcRead{
 		m.ApduDataContract.(*_ApduData).deepCopy(),
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataAdcReadCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataAdcReadCopy
 }
 

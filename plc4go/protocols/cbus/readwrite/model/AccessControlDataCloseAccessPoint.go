@@ -71,6 +71,8 @@ type AccessControlDataCloseAccessPointBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() AccessControlDataCloseAccessPointBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AccessControlDataBuilder
 	// Build builds the AccessControlDataCloseAccessPoint or returns an error if something is wrong
 	Build() (AccessControlDataCloseAccessPoint, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (AccessControlDataCloseAccessPointBuilder) = (*_AccessControlDataCloseAcce
 
 func (b *_AccessControlDataCloseAccessPointBuilder) setParent(contract AccessControlDataContract) {
 	b.AccessControlDataContract = contract
+	contract.(*_AccessControlData)._SubType = b._AccessControlDataCloseAccessPoint
 }
 
 func (b *_AccessControlDataCloseAccessPointBuilder) WithMandatoryFields() AccessControlDataCloseAccessPointBuilder {
@@ -115,8 +118,10 @@ func (b *_AccessControlDataCloseAccessPointBuilder) MustBuild() AccessControlDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AccessControlDataCloseAccessPointBuilder) Done() AccessControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAccessControlDataBuilder().(*_AccessControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_AccessControlDataCloseAccessPoint) deepCopy() *_AccessControlDataClose
 	_AccessControlDataCloseAccessPointCopy := &_AccessControlDataCloseAccessPoint{
 		m.AccessControlDataContract.(*_AccessControlData).deepCopy(),
 	}
-	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	_AccessControlDataCloseAccessPointCopy.AccessControlDataContract.(*_AccessControlData)._SubType = m
 	return _AccessControlDataCloseAccessPointCopy
 }
 

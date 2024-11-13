@@ -124,6 +124,8 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder interface {
 	WithOptionalNotificationClassFilter(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder
 	// WithOptionalNotificationClassFilterBuilder adds NotificationClassFilter (property field) which is build by the builder
 	WithOptionalNotificationClassFilterBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestGetEnrollmentSummary or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestGetEnrollmentSummary, error)
 	// MustBuild does the same as Build but panics on error
@@ -147,6 +149,7 @@ var _ (BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) = (*_BACnetConf
 
 func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestGetEnrollmentSummary
 }
 
 func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) WithMandatoryFields(acknowledgmentFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder {
@@ -282,8 +285,10 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -554,14 +559,14 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) deepCopy() *_BACnet
 	}
 	_BACnetConfirmedServiceRequestGetEnrollmentSummaryCopy := &_BACnetConfirmedServiceRequestGetEnrollmentSummary{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.AcknowledgmentFilter.DeepCopy().(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged),
-		m.EnrollmentFilter.DeepCopy().(BACnetRecipientProcessEnclosed),
-		m.EventStateFilter.DeepCopy().(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged),
-		m.EventTypeFilter.DeepCopy().(BACnetEventTypeTagged),
-		m.PriorityFilter.DeepCopy().(BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter),
-		m.NotificationClassFilter.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged](m.AcknowledgmentFilter),
+		utils.DeepCopy[BACnetRecipientProcessEnclosed](m.EnrollmentFilter),
+		utils.DeepCopy[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](m.EventStateFilter),
+		utils.DeepCopy[BACnetEventTypeTagged](m.EventTypeFilter),
+		utils.DeepCopy[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](m.PriorityFilter),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.NotificationClassFilter),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestGetEnrollmentSummaryCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestGetEnrollmentSummaryCopy
 }
 

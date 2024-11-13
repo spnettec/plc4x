@@ -86,6 +86,8 @@ type BACnetConstructedDataDaylightSavingsStatusBuilder interface {
 	WithDaylightSavingsStatus(BACnetApplicationTagBoolean) BACnetConstructedDataDaylightSavingsStatusBuilder
 	// WithDaylightSavingsStatusBuilder adds DaylightSavingsStatus (property field) which is build by the builder
 	WithDaylightSavingsStatusBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataDaylightSavingsStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDaylightSavingsStatus or returns an error if something is wrong
 	Build() (BACnetConstructedDataDaylightSavingsStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDaylightSavingsStatusBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDaylightSavingsStatus
 }
 
 func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) WithMandatoryFields(daylightSavingsStatus BACnetApplicationTagBoolean) BACnetConstructedDataDaylightSavingsStatusBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDaylightSavingsStatusBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataDaylightSavingsStatusCopy := &_BACnetConstructedDataDaylightSavingsStatus{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DaylightSavingsStatus.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.DaylightSavingsStatus),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDaylightSavingsStatusCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDaylightSavingsStatusCopy
 }
 

@@ -112,6 +112,8 @@ type SecurityDataStatusReport1Builder interface {
 	WithPanicStatusBuilder(func(PanicStatusBuilder) PanicStatusBuilder) SecurityDataStatusReport1Builder
 	// WithZoneStatus adds ZoneStatus (property field)
 	WithZoneStatus(...ZoneStatus) SecurityDataStatusReport1Builder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataStatusReport1 or returns an error if something is wrong
 	Build() (SecurityDataStatusReport1, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (SecurityDataStatusReport1Builder) = (*_SecurityDataStatusReport1Builder)(
 
 func (b *_SecurityDataStatusReport1Builder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataStatusReport1
 }
 
 func (b *_SecurityDataStatusReport1Builder) WithMandatoryFields(armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus) SecurityDataStatusReport1Builder {
@@ -233,8 +236,10 @@ func (b *_SecurityDataStatusReport1Builder) MustBuild() SecurityDataStatusReport
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataStatusReport1Builder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -443,12 +448,12 @@ func (m *_SecurityDataStatusReport1) deepCopy() *_SecurityDataStatusReport1 {
 	}
 	_SecurityDataStatusReport1Copy := &_SecurityDataStatusReport1{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
-		m.ArmCodeType.DeepCopy().(SecurityArmCode),
-		m.TamperStatus.DeepCopy().(TamperStatus),
-		m.PanicStatus.DeepCopy().(PanicStatus),
+		utils.DeepCopy[SecurityArmCode](m.ArmCodeType),
+		utils.DeepCopy[TamperStatus](m.TamperStatus),
+		utils.DeepCopy[PanicStatus](m.PanicStatus),
 		utils.DeepCopySlice[ZoneStatus, ZoneStatus](m.ZoneStatus),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataStatusReport1Copy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataStatusReport1Copy
 }
 

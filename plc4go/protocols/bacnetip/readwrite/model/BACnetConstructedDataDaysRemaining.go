@@ -86,6 +86,8 @@ type BACnetConstructedDataDaysRemainingBuilder interface {
 	WithDaysRemaining(BACnetApplicationTagSignedInteger) BACnetConstructedDataDaysRemainingBuilder
 	// WithDaysRemainingBuilder adds DaysRemaining (property field) which is build by the builder
 	WithDaysRemainingBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataDaysRemainingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDaysRemaining or returns an error if something is wrong
 	Build() (BACnetConstructedDataDaysRemaining, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDaysRemainingBuilder) = (*_BACnetConstructedDataDays
 
 func (b *_BACnetConstructedDataDaysRemainingBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDaysRemaining
 }
 
 func (b *_BACnetConstructedDataDaysRemainingBuilder) WithMandatoryFields(daysRemaining BACnetApplicationTagSignedInteger) BACnetConstructedDataDaysRemainingBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDaysRemainingBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDaysRemainingBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDaysRemaining) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataDaysRemainingCopy := &_BACnetConstructedDataDaysRemaining{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DaysRemaining.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.DaysRemaining),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDaysRemainingCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDaysRemainingCopy
 }
 

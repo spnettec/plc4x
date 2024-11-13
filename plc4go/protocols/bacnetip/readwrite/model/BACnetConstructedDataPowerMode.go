@@ -86,6 +86,8 @@ type BACnetConstructedDataPowerModeBuilder interface {
 	WithPowerMode(BACnetApplicationTagBoolean) BACnetConstructedDataPowerModeBuilder
 	// WithPowerModeBuilder adds PowerMode (property field) which is build by the builder
 	WithPowerModeBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataPowerModeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPowerMode or returns an error if something is wrong
 	Build() (BACnetConstructedDataPowerMode, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPowerModeBuilder) = (*_BACnetConstructedDataPowerMod
 
 func (b *_BACnetConstructedDataPowerModeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPowerMode
 }
 
 func (b *_BACnetConstructedDataPowerModeBuilder) WithMandatoryFields(powerMode BACnetApplicationTagBoolean) BACnetConstructedDataPowerModeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPowerModeBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPowerModeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataPowerMode) deepCopy() *_BACnetConstructedDataPowe
 	}
 	_BACnetConstructedDataPowerModeCopy := &_BACnetConstructedDataPowerMode{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PowerMode.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.PowerMode),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPowerModeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPowerModeCopy
 }
 

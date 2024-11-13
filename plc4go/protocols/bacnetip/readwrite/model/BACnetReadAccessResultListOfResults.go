@@ -378,9 +378,9 @@ func (m *_BACnetReadAccessResultListOfResults) deepCopy() *_BACnetReadAccessResu
 		return nil
 	}
 	_BACnetReadAccessResultListOfResultsCopy := &_BACnetReadAccessResultListOfResults{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetReadAccessProperty, BACnetReadAccessProperty](m.ListOfReadAccessProperty),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 		m.ObjectTypeArgument,
 	}

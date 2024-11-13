@@ -87,6 +87,8 @@ type CBusPointToMultiPointCommandStatusBuilder interface {
 	WithStatusRequest(StatusRequest) CBusPointToMultiPointCommandStatusBuilder
 	// WithStatusRequestBuilder adds StatusRequest (property field) which is build by the builder
 	WithStatusRequestBuilder(func(StatusRequestBuilder) StatusRequestBuilder) CBusPointToMultiPointCommandStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CBusPointToMultiPointCommandBuilder
 	// Build builds the CBusPointToMultiPointCommandStatus or returns an error if something is wrong
 	Build() (CBusPointToMultiPointCommandStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (CBusPointToMultiPointCommandStatusBuilder) = (*_CBusPointToMultiPointComm
 
 func (b *_CBusPointToMultiPointCommandStatusBuilder) setParent(contract CBusPointToMultiPointCommandContract) {
 	b.CBusPointToMultiPointCommandContract = contract
+	contract.(*_CBusPointToMultiPointCommand)._SubType = b._CBusPointToMultiPointCommandStatus
 }
 
 func (b *_CBusPointToMultiPointCommandStatusBuilder) WithMandatoryFields(statusRequest StatusRequest) CBusPointToMultiPointCommandStatusBuilder {
@@ -155,8 +158,10 @@ func (b *_CBusPointToMultiPointCommandStatusBuilder) MustBuild() CBusPointToMult
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CBusPointToMultiPointCommandStatusBuilder) Done() CBusPointToMultiPointCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCBusPointToMultiPointCommandBuilder().(*_CBusPointToMultiPointCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -333,11 +338,11 @@ func (m *_CBusPointToMultiPointCommandStatus) deepCopy() *_CBusPointToMultiPoint
 	}
 	_CBusPointToMultiPointCommandStatusCopy := &_CBusPointToMultiPointCommandStatus{
 		m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand).deepCopy(),
-		m.StatusRequest.DeepCopy().(StatusRequest),
+		utils.DeepCopy[StatusRequest](m.StatusRequest),
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = m
+	_CBusPointToMultiPointCommandStatusCopy.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = m
 	return _CBusPointToMultiPointCommandStatusCopy
 }
 

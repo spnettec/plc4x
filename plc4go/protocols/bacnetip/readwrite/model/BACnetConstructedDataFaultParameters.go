@@ -86,6 +86,8 @@ type BACnetConstructedDataFaultParametersBuilder interface {
 	WithFaultParameters(BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder
 	// WithFaultParametersBuilder adds FaultParameters (property field) which is build by the builder
 	WithFaultParametersBuilder(func(BACnetFaultParameterBuilder) BACnetFaultParameterBuilder) BACnetConstructedDataFaultParametersBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataFaultParameters or returns an error if something is wrong
 	Build() (BACnetConstructedDataFaultParameters, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataFaultParametersBuilder) = (*_BACnetConstructedDataFa
 
 func (b *_BACnetConstructedDataFaultParametersBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataFaultParameters
 }
 
 func (b *_BACnetConstructedDataFaultParametersBuilder) WithMandatoryFields(faultParameters BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataFaultParametersBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataFaultParametersBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataFaultParameters) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataFaultParametersCopy := &_BACnetConstructedDataFaultParameters{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.FaultParameters.DeepCopy().(BACnetFaultParameter),
+		utils.DeepCopy[BACnetFaultParameter](m.FaultParameters),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataFaultParametersCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataFaultParametersCopy
 }
 

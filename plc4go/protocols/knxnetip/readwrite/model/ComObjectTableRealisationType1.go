@@ -91,6 +91,8 @@ type ComObjectTableRealisationType1Builder interface {
 	WithRamFlagsTablePointer(uint8) ComObjectTableRealisationType1Builder
 	// WithComObjectDescriptors adds ComObjectDescriptors (property field)
 	WithComObjectDescriptors(...GroupObjectDescriptorRealisationType1) ComObjectTableRealisationType1Builder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ComObjectTableBuilder
 	// Build builds the ComObjectTableRealisationType1 or returns an error if something is wrong
 	Build() (ComObjectTableRealisationType1, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (ComObjectTableRealisationType1Builder) = (*_ComObjectTableRealisationType
 
 func (b *_ComObjectTableRealisationType1Builder) setParent(contract ComObjectTableContract) {
 	b.ComObjectTableContract = contract
+	contract.(*_ComObjectTable)._SubType = b._ComObjectTableRealisationType1
 }
 
 func (b *_ComObjectTableRealisationType1Builder) WithMandatoryFields(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType1) ComObjectTableRealisationType1Builder {
@@ -150,8 +153,10 @@ func (b *_ComObjectTableRealisationType1Builder) MustBuild() ComObjectTableReali
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ComObjectTableRealisationType1Builder) Done() ComObjectTableBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewComObjectTableBuilder().(*_ComObjectTableBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -351,7 +356,7 @@ func (m *_ComObjectTableRealisationType1) deepCopy() *_ComObjectTableRealisation
 		m.RamFlagsTablePointer,
 		utils.DeepCopySlice[GroupObjectDescriptorRealisationType1, GroupObjectDescriptorRealisationType1](m.ComObjectDescriptors),
 	}
-	m.ComObjectTableContract.(*_ComObjectTable)._SubType = m
+	_ComObjectTableRealisationType1Copy.ComObjectTableContract.(*_ComObjectTable)._SubType = m
 	return _ComObjectTableRealisationType1Copy
 }
 

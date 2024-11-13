@@ -86,6 +86,8 @@ type BACnetConstructedDataDoorStatusBuilder interface {
 	WithDoorStatus(BACnetDoorStatusTagged) BACnetConstructedDataDoorStatusBuilder
 	// WithDoorStatusBuilder adds DoorStatus (property field) which is build by the builder
 	WithDoorStatusBuilder(func(BACnetDoorStatusTaggedBuilder) BACnetDoorStatusTaggedBuilder) BACnetConstructedDataDoorStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataDoorStatus or returns an error if something is wrong
 	Build() (BACnetConstructedDataDoorStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataDoorStatusBuilder) = (*_BACnetConstructedDataDoorSta
 
 func (b *_BACnetConstructedDataDoorStatusBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataDoorStatus
 }
 
 func (b *_BACnetConstructedDataDoorStatusBuilder) WithMandatoryFields(doorStatus BACnetDoorStatusTagged) BACnetConstructedDataDoorStatusBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataDoorStatusBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataDoorStatusBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataDoorStatus) deepCopy() *_BACnetConstructedDataDoo
 	}
 	_BACnetConstructedDataDoorStatusCopy := &_BACnetConstructedDataDoorStatus{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.DoorStatus.DeepCopy().(BACnetDoorStatusTagged),
+		utils.DeepCopy[BACnetDoorStatusTagged](m.DoorStatus),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataDoorStatusCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataDoorStatusCopy
 }
 

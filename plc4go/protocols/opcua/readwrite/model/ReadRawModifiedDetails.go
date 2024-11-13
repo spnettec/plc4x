@@ -106,6 +106,8 @@ type ReadRawModifiedDetailsBuilder interface {
 	WithNumValuesPerNode(uint32) ReadRawModifiedDetailsBuilder
 	// WithReturnBounds adds ReturnBounds (property field)
 	WithReturnBounds(bool) ReadRawModifiedDetailsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReadRawModifiedDetails or returns an error if something is wrong
 	Build() (ReadRawModifiedDetails, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (ReadRawModifiedDetailsBuilder) = (*_ReadRawModifiedDetailsBuilder)(nil)
 
 func (b *_ReadRawModifiedDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReadRawModifiedDetails
 }
 
 func (b *_ReadRawModifiedDetailsBuilder) WithMandatoryFields(isReadModified bool, startTime int64, endTime int64, numValuesPerNode uint32, returnBounds bool) ReadRawModifiedDetailsBuilder {
@@ -175,8 +178,10 @@ func (b *_ReadRawModifiedDetailsBuilder) MustBuild() ReadRawModifiedDetails {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReadRawModifiedDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -433,7 +438,7 @@ func (m *_ReadRawModifiedDetails) deepCopy() *_ReadRawModifiedDetails {
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReadRawModifiedDetailsCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReadRawModifiedDetailsCopy
 }
 

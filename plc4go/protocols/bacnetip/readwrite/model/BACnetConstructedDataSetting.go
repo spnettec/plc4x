@@ -86,6 +86,8 @@ type BACnetConstructedDataSettingBuilder interface {
 	WithSetting(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSettingBuilder
 	// WithSettingBuilder adds Setting (property field) which is build by the builder
 	WithSettingBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSettingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataSetting or returns an error if something is wrong
 	Build() (BACnetConstructedDataSetting, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataSettingBuilder) = (*_BACnetConstructedDataSettingBui
 
 func (b *_BACnetConstructedDataSettingBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataSetting
 }
 
 func (b *_BACnetConstructedDataSettingBuilder) WithMandatoryFields(setting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSettingBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataSettingBuilder) MustBuild() BACnetConstructedData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataSettingBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataSetting) deepCopy() *_BACnetConstructedDataSettin
 	}
 	_BACnetConstructedDataSettingCopy := &_BACnetConstructedDataSetting{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Setting.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.Setting),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataSettingCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataSettingCopy
 }
 

@@ -83,6 +83,8 @@ type SecurityDataLowBatteryChargingBuilder interface {
 	WithMandatoryFields(startStop byte) SecurityDataLowBatteryChargingBuilder
 	// WithStartStop adds StartStop (property field)
 	WithStartStop(byte) SecurityDataLowBatteryChargingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataLowBatteryCharging or returns an error if something is wrong
 	Build() (SecurityDataLowBatteryCharging, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,6 +108,7 @@ var _ (SecurityDataLowBatteryChargingBuilder) = (*_SecurityDataLowBatteryChargin
 
 func (b *_SecurityDataLowBatteryChargingBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataLowBatteryCharging
 }
 
 func (b *_SecurityDataLowBatteryChargingBuilder) WithMandatoryFields(startStop byte) SecurityDataLowBatteryChargingBuilder {
@@ -132,8 +135,10 @@ func (b *_SecurityDataLowBatteryChargingBuilder) MustBuild() SecurityDataLowBatt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataLowBatteryChargingBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -335,7 +340,7 @@ func (m *_SecurityDataLowBatteryCharging) deepCopy() *_SecurityDataLowBatteryCha
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		m.StartStop,
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataLowBatteryChargingCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataLowBatteryChargingCopy
 }
 

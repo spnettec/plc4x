@@ -266,6 +266,8 @@ type SubscriptionDiagnosticsDataTypeBuilder interface {
 	WithNextSequenceNumber(uint32) SubscriptionDiagnosticsDataTypeBuilder
 	// WithEventQueueOverFlowCount adds EventQueueOverFlowCount (property field)
 	WithEventQueueOverFlowCount(uint32) SubscriptionDiagnosticsDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SubscriptionDiagnosticsDataType or returns an error if something is wrong
 	Build() (SubscriptionDiagnosticsDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -289,6 +291,7 @@ var _ (SubscriptionDiagnosticsDataTypeBuilder) = (*_SubscriptionDiagnosticsDataT
 
 func (b *_SubscriptionDiagnosticsDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SubscriptionDiagnosticsDataType
 }
 
 func (b *_SubscriptionDiagnosticsDataTypeBuilder) WithMandatoryFields(sessionId NodeId, subscriptionId uint32, priority uint8, publishingInterval float64, maxKeepAliveCount uint32, maxLifetimeCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, modifyCount uint32, enableCount uint32, disableCount uint32, republishRequestCount uint32, republishMessageRequestCount uint32, republishMessageCount uint32, transferRequestCount uint32, transferredToAltClientCount uint32, transferredToSameClientCount uint32, publishRequestCount uint32, dataChangeNotificationsCount uint32, eventNotificationsCount uint32, notificationsCount uint32, latePublishRequestCount uint32, currentKeepAliveCount uint32, currentLifetimeCount uint32, unacknowledgedMessageCount uint32, discardedMessageCount uint32, monitoredItemCount uint32, disabledMonitoredItemCount uint32, monitoringQueueOverflowCount uint32, nextSequenceNumber uint32, eventQueueOverFlowCount uint32) SubscriptionDiagnosticsDataTypeBuilder {
@@ -484,8 +487,10 @@ func (b *_SubscriptionDiagnosticsDataTypeBuilder) MustBuild() SubscriptionDiagno
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SubscriptionDiagnosticsDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -1163,7 +1168,7 @@ func (m *_SubscriptionDiagnosticsDataType) deepCopy() *_SubscriptionDiagnosticsD
 	}
 	_SubscriptionDiagnosticsDataTypeCopy := &_SubscriptionDiagnosticsDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.SessionId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.SessionId),
 		m.SubscriptionId,
 		m.Priority,
 		m.PublishingInterval,
@@ -1196,7 +1201,7 @@ func (m *_SubscriptionDiagnosticsDataType) deepCopy() *_SubscriptionDiagnosticsD
 		m.EventQueueOverFlowCount,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SubscriptionDiagnosticsDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SubscriptionDiagnosticsDataTypeCopy
 }
 

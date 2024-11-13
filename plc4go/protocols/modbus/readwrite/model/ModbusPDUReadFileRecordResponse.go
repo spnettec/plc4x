@@ -79,6 +79,8 @@ type ModbusPDUReadFileRecordResponseBuilder interface {
 	WithMandatoryFields(items []ModbusPDUReadFileRecordResponseItem) ModbusPDUReadFileRecordResponseBuilder
 	// WithItems adds Items (property field)
 	WithItems(...ModbusPDUReadFileRecordResponseItem) ModbusPDUReadFileRecordResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUReadFileRecordResponse or returns an error if something is wrong
 	Build() (ModbusPDUReadFileRecordResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ModbusPDUReadFileRecordResponseBuilder) = (*_ModbusPDUReadFileRecordRespo
 
 func (b *_ModbusPDUReadFileRecordResponseBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUReadFileRecordResponse
 }
 
 func (b *_ModbusPDUReadFileRecordResponseBuilder) WithMandatoryFields(items []ModbusPDUReadFileRecordResponseItem) ModbusPDUReadFileRecordResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_ModbusPDUReadFileRecordResponseBuilder) MustBuild() ModbusPDUReadFileR
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUReadFileRecordResponseBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -318,7 +323,7 @@ func (m *_ModbusPDUReadFileRecordResponse) deepCopy() *_ModbusPDUReadFileRecordR
 		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		utils.DeepCopySlice[ModbusPDUReadFileRecordResponseItem, ModbusPDUReadFileRecordResponseItem](m.Items),
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUReadFileRecordResponseCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUReadFileRecordResponseCopy
 }
 

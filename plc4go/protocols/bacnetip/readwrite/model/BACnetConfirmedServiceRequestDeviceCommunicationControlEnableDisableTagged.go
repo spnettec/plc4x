@@ -334,7 +334,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTa
 		return nil
 	}
 	_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedCopy := &_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

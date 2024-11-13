@@ -84,6 +84,8 @@ type BACnetPropertyStatesReliabilityBuilder interface {
 	WithReliability(BACnetReliabilityTagged) BACnetPropertyStatesReliabilityBuilder
 	// WithReliabilityBuilder adds Reliability (property field) which is build by the builder
 	WithReliabilityBuilder(func(BACnetReliabilityTaggedBuilder) BACnetReliabilityTaggedBuilder) BACnetPropertyStatesReliabilityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesReliability or returns an error if something is wrong
 	Build() (BACnetPropertyStatesReliability, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesReliabilityBuilder) = (*_BACnetPropertyStatesReliabil
 
 func (b *_BACnetPropertyStatesReliabilityBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesReliability
 }
 
 func (b *_BACnetPropertyStatesReliabilityBuilder) WithMandatoryFields(reliability BACnetReliabilityTagged) BACnetPropertyStatesReliabilityBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesReliabilityBuilder) MustBuild() BACnetPropertyStat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesReliabilityBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesReliability) deepCopy() *_BACnetPropertyStatesReli
 	}
 	_BACnetPropertyStatesReliabilityCopy := &_BACnetPropertyStatesReliability{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.Reliability.DeepCopy().(BACnetReliabilityTagged),
+		utils.DeepCopy[BACnetReliabilityTagged](m.Reliability),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesReliabilityCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesReliabilityCopy
 }
 

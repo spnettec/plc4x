@@ -107,6 +107,8 @@ type CALDataStatusExtendedBuilder interface {
 	WithStatusBytes(...StatusByte) CALDataStatusExtendedBuilder
 	// WithLevelInformation adds LevelInformation (property field)
 	WithLevelInformation(...LevelInformation) CALDataStatusExtendedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CALDataBuilder
 	// Build builds the CALDataStatusExtended or returns an error if something is wrong
 	Build() (CALDataStatusExtended, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,6 +132,7 @@ var _ (CALDataStatusExtendedBuilder) = (*_CALDataStatusExtendedBuilder)(nil)
 
 func (b *_CALDataStatusExtendedBuilder) setParent(contract CALDataContract) {
 	b.CALDataContract = contract
+	contract.(*_CALData)._SubType = b._CALDataStatusExtended
 }
 
 func (b *_CALDataStatusExtendedBuilder) WithMandatoryFields(coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation) CALDataStatusExtendedBuilder {
@@ -176,8 +179,10 @@ func (b *_CALDataStatusExtendedBuilder) MustBuild() CALDataStatusExtended {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CALDataStatusExtendedBuilder) Done() CALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCALDataBuilder().(*_CALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -469,7 +474,7 @@ func (m *_CALDataStatusExtended) deepCopy() *_CALDataStatusExtended {
 		utils.DeepCopySlice[StatusByte, StatusByte](m.StatusBytes),
 		utils.DeepCopySlice[LevelInformation, LevelInformation](m.LevelInformation),
 	}
-	m.CALDataContract.(*_CALData)._SubType = m
+	_CALDataStatusExtendedCopy.CALDataContract.(*_CALData)._SubType = m
 	return _CALDataStatusExtendedCopy
 }
 

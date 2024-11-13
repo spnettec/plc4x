@@ -86,6 +86,8 @@ type BACnetConstructedDataCarLoadBuilder interface {
 	WithCarLoad(BACnetApplicationTagReal) BACnetConstructedDataCarLoadBuilder
 	// WithCarLoadBuilder adds CarLoad (property field) which is build by the builder
 	WithCarLoadBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataCarLoadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCarLoad or returns an error if something is wrong
 	Build() (BACnetConstructedDataCarLoad, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataCarLoadBuilder) = (*_BACnetConstructedDataCarLoadBui
 
 func (b *_BACnetConstructedDataCarLoadBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCarLoad
 }
 
 func (b *_BACnetConstructedDataCarLoadBuilder) WithMandatoryFields(carLoad BACnetApplicationTagReal) BACnetConstructedDataCarLoadBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataCarLoadBuilder) MustBuild() BACnetConstructedData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCarLoadBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataCarLoad) deepCopy() *_BACnetConstructedDataCarLoa
 	}
 	_BACnetConstructedDataCarLoadCopy := &_BACnetConstructedDataCarLoad{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CarLoad.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.CarLoad),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCarLoadCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCarLoadCopy
 }
 

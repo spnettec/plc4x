@@ -107,6 +107,8 @@ type AirConditioningDataZoneHumidityBuilder interface {
 	WithHumidityBuilder(func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataZoneHumidityBuilder
 	// WithSensorStatus adds SensorStatus (property field)
 	WithSensorStatus(HVACSensorStatus) AirConditioningDataZoneHumidityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AirConditioningDataBuilder
 	// Build builds the AirConditioningDataZoneHumidity or returns an error if something is wrong
 	Build() (AirConditioningDataZoneHumidity, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,6 +132,7 @@ var _ (AirConditioningDataZoneHumidityBuilder) = (*_AirConditioningDataZoneHumid
 
 func (b *_AirConditioningDataZoneHumidityBuilder) setParent(contract AirConditioningDataContract) {
 	b.AirConditioningDataContract = contract
+	contract.(*_AirConditioningData)._SubType = b._AirConditioningDataZoneHumidity
 }
 
 func (b *_AirConditioningDataZoneHumidityBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, humidity HVACHumidity, sensorStatus HVACSensorStatus) AirConditioningDataZoneHumidityBuilder {
@@ -209,8 +212,10 @@ func (b *_AirConditioningDataZoneHumidityBuilder) MustBuild() AirConditioningDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AirConditioningDataZoneHumidityBuilder) Done() AirConditioningDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAirConditioningDataBuilder().(*_AirConditioningDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -413,11 +418,11 @@ func (m *_AirConditioningDataZoneHumidity) deepCopy() *_AirConditioningDataZoneH
 	_AirConditioningDataZoneHumidityCopy := &_AirConditioningDataZoneHumidity{
 		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
 		m.ZoneGroup,
-		m.ZoneList.DeepCopy().(HVACZoneList),
-		m.Humidity.DeepCopy().(HVACHumidity),
+		utils.DeepCopy[HVACZoneList](m.ZoneList),
+		utils.DeepCopy[HVACHumidity](m.Humidity),
 		m.SensorStatus,
 	}
-	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	_AirConditioningDataZoneHumidityCopy.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
 	return _AirConditioningDataZoneHumidityCopy
 }
 

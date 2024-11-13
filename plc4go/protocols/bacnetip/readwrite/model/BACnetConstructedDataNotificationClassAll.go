@@ -71,6 +71,8 @@ type BACnetConstructedDataNotificationClassAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataNotificationClassAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNotificationClassAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataNotificationClassAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataNotificationClassAllBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataNotificationClassAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNotificationClassAll
 }
 
 func (b *_BACnetConstructedDataNotificationClassAllBuilder) WithMandatoryFields() BACnetConstructedDataNotificationClassAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataNotificationClassAllBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNotificationClassAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataNotificationClassAll) deepCopy() *_BACnetConstruc
 	_BACnetConstructedDataNotificationClassAllCopy := &_BACnetConstructedDataNotificationClassAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNotificationClassAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNotificationClassAllCopy
 }
 

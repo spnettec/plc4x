@@ -112,15 +112,9 @@ type CALReplyBuilder interface {
 	// WithCalDataBuilder adds CalData (property field) which is build by the builder
 	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) CALReplyBuilder
 	// AsCALReplyLong converts this build to a subType of CALReply. It is always possible to return to current builder using Done()
-	AsCALReplyLong() interface {
-		CALReplyLongBuilder
-		Done() CALReplyBuilder
-	}
+	AsCALReplyLong() CALReplyLongBuilder
 	// AsCALReplyShort converts this build to a subType of CALReply. It is always possible to return to current builder using Done()
-	AsCALReplyShort() interface {
-		CALReplyShortBuilder
-		Done() CALReplyBuilder
-	}
+	AsCALReplyShort() CALReplyShortBuilder
 	// Build builds the CALReply or returns an error if something is wrong
 	PartialBuild() (CALReplyContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -200,14 +194,8 @@ func (b *_CALReplyBuilder) PartialMustBuild() CALReplyContract {
 	return build
 }
 
-func (b *_CALReplyBuilder) AsCALReplyLong() interface {
-	CALReplyLongBuilder
-	Done() CALReplyBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CALReplyLongBuilder
-		Done() CALReplyBuilder
-	}); ok {
+func (b *_CALReplyBuilder) AsCALReplyLong() CALReplyLongBuilder {
+	if cb, ok := b.childBuilder.(CALReplyLongBuilder); ok {
 		return cb
 	}
 	cb := NewCALReplyLongBuilder().(*_CALReplyLongBuilder)
@@ -216,14 +204,8 @@ func (b *_CALReplyBuilder) AsCALReplyLong() interface {
 	return cb
 }
 
-func (b *_CALReplyBuilder) AsCALReplyShort() interface {
-	CALReplyShortBuilder
-	Done() CALReplyBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CALReplyShortBuilder
-		Done() CALReplyBuilder
-	}); ok {
+func (b *_CALReplyBuilder) AsCALReplyShort() CALReplyShortBuilder {
+	if cb, ok := b.childBuilder.(CALReplyShortBuilder); ok {
 		return cb
 	}
 	cb := NewCALReplyShortBuilder().(*_CALReplyShortBuilder)
@@ -450,7 +432,7 @@ func (m *_CALReply) deepCopy() *_CALReply {
 	_CALReplyCopy := &_CALReply{
 		nil, // will be set by child
 		m.CalType,
-		m.CalData.DeepCopy().(CALData),
+		utils.DeepCopy[CALData](m.CalData),
 		m.CBusOptions,
 		m.RequestContext,
 	}

@@ -84,6 +84,8 @@ type ExtensiblePayloadBuilder interface {
 	WithPayload(RootExtensionObject) ExtensiblePayloadBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(RootExtensionObjectBuilder) RootExtensionObjectBuilder) ExtensiblePayloadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() PayloadBuilder
 	// Build builds the ExtensiblePayload or returns an error if something is wrong
 	Build() (ExtensiblePayload, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (ExtensiblePayloadBuilder) = (*_ExtensiblePayloadBuilder)(nil)
 
 func (b *_ExtensiblePayloadBuilder) setParent(contract PayloadContract) {
 	b.PayloadContract = contract
+	contract.(*_Payload)._SubType = b._ExtensiblePayload
 }
 
 func (b *_ExtensiblePayloadBuilder) WithMandatoryFields(payload RootExtensionObject) ExtensiblePayloadBuilder {
@@ -152,8 +155,10 @@ func (b *_ExtensiblePayloadBuilder) MustBuild() ExtensiblePayload {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ExtensiblePayloadBuilder) Done() PayloadBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewPayloadBuilder().(*_PayloadBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_ExtensiblePayload) deepCopy() *_ExtensiblePayload {
 	}
 	_ExtensiblePayloadCopy := &_ExtensiblePayload{
 		m.PayloadContract.(*_Payload).deepCopy(),
-		m.Payload.DeepCopy().(RootExtensionObject),
+		utils.DeepCopy[RootExtensionObject](m.Payload),
 	}
-	m.PayloadContract.(*_Payload)._SubType = m
+	_ExtensiblePayloadCopy.PayloadContract.(*_Payload)._SubType = m
 	return _ExtensiblePayloadCopy
 }
 

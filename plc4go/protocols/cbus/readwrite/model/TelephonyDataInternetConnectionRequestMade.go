@@ -71,6 +71,8 @@ type TelephonyDataInternetConnectionRequestMadeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() TelephonyDataInternetConnectionRequestMadeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TelephonyDataBuilder
 	// Build builds the TelephonyDataInternetConnectionRequestMade or returns an error if something is wrong
 	Build() (TelephonyDataInternetConnectionRequestMade, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (TelephonyDataInternetConnectionRequestMadeBuilder) = (*_TelephonyDataInte
 
 func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) setParent(contract TelephonyDataContract) {
 	b.TelephonyDataContract = contract
+	contract.(*_TelephonyData)._SubType = b._TelephonyDataInternetConnectionRequestMade
 }
 
 func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) WithMandatoryFields() TelephonyDataInternetConnectionRequestMadeBuilder {
@@ -115,8 +118,10 @@ func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) MustBuild() Telepho
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) Done() TelephonyDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTelephonyDataBuilder().(*_TelephonyDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -242,7 +247,7 @@ func (m *_TelephonyDataInternetConnectionRequestMade) deepCopy() *_TelephonyData
 	_TelephonyDataInternetConnectionRequestMadeCopy := &_TelephonyDataInternetConnectionRequestMade{
 		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
 	}
-	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	_TelephonyDataInternetConnectionRequestMadeCopy.TelephonyDataContract.(*_TelephonyData)._SubType = m
 	return _TelephonyDataInternetConnectionRequestMadeCopy
 }
 

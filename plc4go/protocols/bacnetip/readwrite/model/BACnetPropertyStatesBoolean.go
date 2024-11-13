@@ -84,6 +84,8 @@ type BACnetPropertyStatesBooleanBuilder interface {
 	WithBooleanValue(BACnetContextTagBoolean) BACnetPropertyStatesBooleanBuilder
 	// WithBooleanValueBuilder adds BooleanValue (property field) which is build by the builder
 	WithBooleanValueBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetPropertyStatesBooleanBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesBoolean or returns an error if something is wrong
 	Build() (BACnetPropertyStatesBoolean, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesBooleanBuilder) = (*_BACnetPropertyStatesBooleanBuild
 
 func (b *_BACnetPropertyStatesBooleanBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesBoolean
 }
 
 func (b *_BACnetPropertyStatesBooleanBuilder) WithMandatoryFields(booleanValue BACnetContextTagBoolean) BACnetPropertyStatesBooleanBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesBooleanBuilder) MustBuild() BACnetPropertyStatesBo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesBooleanBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesBoolean) deepCopy() *_BACnetPropertyStatesBoolean 
 	}
 	_BACnetPropertyStatesBooleanCopy := &_BACnetPropertyStatesBoolean{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.BooleanValue.DeepCopy().(BACnetContextTagBoolean),
+		utils.DeepCopy[BACnetContextTagBoolean](m.BooleanValue),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesBooleanCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesBooleanCopy
 }
 

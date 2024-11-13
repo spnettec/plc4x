@@ -103,6 +103,8 @@ type ClockAndTimekeepingDataUpdateDateBuilder interface {
 	WithDay(uint8) ClockAndTimekeepingDataUpdateDateBuilder
 	// WithDayOfWeek adds DayOfWeek (property field)
 	WithDayOfWeek(uint8) ClockAndTimekeepingDataUpdateDateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ClockAndTimekeepingDataBuilder
 	// Build builds the ClockAndTimekeepingDataUpdateDate or returns an error if something is wrong
 	Build() (ClockAndTimekeepingDataUpdateDate, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (ClockAndTimekeepingDataUpdateDateBuilder) = (*_ClockAndTimekeepingDataUpd
 
 func (b *_ClockAndTimekeepingDataUpdateDateBuilder) setParent(contract ClockAndTimekeepingDataContract) {
 	b.ClockAndTimekeepingDataContract = contract
+	contract.(*_ClockAndTimekeepingData)._SubType = b._ClockAndTimekeepingDataUpdateDate
 }
 
 func (b *_ClockAndTimekeepingDataUpdateDateBuilder) WithMandatoryFields(yearHigh byte, yearLow byte, month uint8, day uint8, dayOfWeek uint8) ClockAndTimekeepingDataUpdateDateBuilder {
@@ -172,8 +175,10 @@ func (b *_ClockAndTimekeepingDataUpdateDateBuilder) MustBuild() ClockAndTimekeep
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ClockAndTimekeepingDataUpdateDateBuilder) Done() ClockAndTimekeepingDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewClockAndTimekeepingDataBuilder().(*_ClockAndTimekeepingDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -398,7 +403,7 @@ func (m *_ClockAndTimekeepingDataUpdateDate) deepCopy() *_ClockAndTimekeepingDat
 		m.Day,
 		m.DayOfWeek,
 	}
-	m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = m
+	_ClockAndTimekeepingDataUpdateDateCopy.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = m
 	return _ClockAndTimekeepingDataUpdateDateCopy
 }
 

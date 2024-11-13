@@ -79,6 +79,8 @@ type BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder interface {
 	WithMandatoryFields(activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription) BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder
 	// WithActiveCOVMultipleSubscriptions adds ActiveCOVMultipleSubscriptions (property field)
 	WithActiveCOVMultipleSubscriptions(...BACnetCOVMultipleSubscription) BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataActiveCOVMultipleSubscriptions or returns an error if something is wrong
 	Build() (BACnetConstructedDataActiveCOVMultipleSubscriptions, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) = (*_BACnetCo
 
 func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataActiveCOVMultipleSubscriptions
 }
 
 func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) WithMandatoryFields(activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription) BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) MustBuild(
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) deepCopy() *_BACn
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetCOVMultipleSubscription, BACnetCOVMultipleSubscription](m.ActiveCOVMultipleSubscriptions),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataActiveCOVMultipleSubscriptionsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataActiveCOVMultipleSubscriptionsCopy
 }
 

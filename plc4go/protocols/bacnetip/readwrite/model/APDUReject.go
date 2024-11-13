@@ -92,6 +92,8 @@ type APDURejectBuilder interface {
 	WithRejectReason(BACnetRejectReasonTagged) APDURejectBuilder
 	// WithRejectReasonBuilder adds RejectReason (property field) which is build by the builder
 	WithRejectReasonBuilder(func(BACnetRejectReasonTaggedBuilder) BACnetRejectReasonTaggedBuilder) APDURejectBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() APDUBuilder
 	// Build builds the APDUReject or returns an error if something is wrong
 	Build() (APDUReject, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,6 +117,7 @@ var _ (APDURejectBuilder) = (*_APDURejectBuilder)(nil)
 
 func (b *_APDURejectBuilder) setParent(contract APDUContract) {
 	b.APDUContract = contract
+	contract.(*_APDU)._SubType = b._APDUReject
 }
 
 func (b *_APDURejectBuilder) WithMandatoryFields(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged) APDURejectBuilder {
@@ -165,8 +168,10 @@ func (b *_APDURejectBuilder) MustBuild() APDUReject {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_APDURejectBuilder) Done() APDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAPDUBuilder().(*_APDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -352,10 +357,10 @@ func (m *_APDUReject) deepCopy() *_APDUReject {
 	_APDURejectCopy := &_APDUReject{
 		m.APDUContract.(*_APDU).deepCopy(),
 		m.OriginalInvokeId,
-		m.RejectReason.DeepCopy().(BACnetRejectReasonTagged),
+		utils.DeepCopy[BACnetRejectReasonTagged](m.RejectReason),
 		m.reservedField0,
 	}
-	m.APDUContract.(*_APDU)._SubType = m
+	_APDURejectCopy.APDUContract.(*_APDU)._SubType = m
 	return _APDURejectCopy
 }
 

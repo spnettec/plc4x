@@ -333,7 +333,7 @@ func (m *_BACnetIPModeTagged) deepCopy() *_BACnetIPModeTagged {
 		return nil
 	}
 	_BACnetIPModeTaggedCopy := &_BACnetIPModeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

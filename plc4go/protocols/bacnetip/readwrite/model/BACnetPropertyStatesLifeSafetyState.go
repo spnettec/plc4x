@@ -84,6 +84,8 @@ type BACnetPropertyStatesLifeSafetyStateBuilder interface {
 	WithLifeSafetyState(BACnetLifeSafetyStateTagged) BACnetPropertyStatesLifeSafetyStateBuilder
 	// WithLifeSafetyStateBuilder adds LifeSafetyState (property field) which is build by the builder
 	WithLifeSafetyStateBuilder(func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetPropertyStatesLifeSafetyStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesLifeSafetyState or returns an error if something is wrong
 	Build() (BACnetPropertyStatesLifeSafetyState, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesLifeSafetyStateBuilder) = (*_BACnetPropertyStatesLife
 
 func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesLifeSafetyState
 }
 
 func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) WithMandatoryFields(lifeSafetyState BACnetLifeSafetyStateTagged) BACnetPropertyStatesLifeSafetyStateBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) MustBuild() BACnetProperty
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesLifeSafetyStateBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesLifeSafetyState) deepCopy() *_BACnetPropertyStates
 	}
 	_BACnetPropertyStatesLifeSafetyStateCopy := &_BACnetPropertyStatesLifeSafetyState{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.LifeSafetyState.DeepCopy().(BACnetLifeSafetyStateTagged),
+		utils.DeepCopy[BACnetLifeSafetyStateTagged](m.LifeSafetyState),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesLifeSafetyStateCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesLifeSafetyStateCopy
 }
 

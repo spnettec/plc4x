@@ -84,6 +84,8 @@ type AdsDiscoveryBlockUserNameBuilder interface {
 	WithUserName(AmsString) AdsDiscoveryBlockUserNameBuilder
 	// WithUserNameBuilder adds UserName (property field) which is build by the builder
 	WithUserNameBuilder(func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockUserNameBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AdsDiscoveryBlockBuilder
 	// Build builds the AdsDiscoveryBlockUserName or returns an error if something is wrong
 	Build() (AdsDiscoveryBlockUserName, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (AdsDiscoveryBlockUserNameBuilder) = (*_AdsDiscoveryBlockUserNameBuilder)(
 
 func (b *_AdsDiscoveryBlockUserNameBuilder) setParent(contract AdsDiscoveryBlockContract) {
 	b.AdsDiscoveryBlockContract = contract
+	contract.(*_AdsDiscoveryBlock)._SubType = b._AdsDiscoveryBlockUserName
 }
 
 func (b *_AdsDiscoveryBlockUserNameBuilder) WithMandatoryFields(userName AmsString) AdsDiscoveryBlockUserNameBuilder {
@@ -152,8 +155,10 @@ func (b *_AdsDiscoveryBlockUserNameBuilder) MustBuild() AdsDiscoveryBlockUserNam
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsDiscoveryBlockUserNameBuilder) Done() AdsDiscoveryBlockBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAdsDiscoveryBlockBuilder().(*_AdsDiscoveryBlockBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_AdsDiscoveryBlockUserName) deepCopy() *_AdsDiscoveryBlockUserName {
 	}
 	_AdsDiscoveryBlockUserNameCopy := &_AdsDiscoveryBlockUserName{
 		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
-		m.UserName.DeepCopy().(AmsString),
+		utils.DeepCopy[AmsString](m.UserName),
 	}
-	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	_AdsDiscoveryBlockUserNameCopy.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
 	return _AdsDiscoveryBlockUserNameCopy
 }
 

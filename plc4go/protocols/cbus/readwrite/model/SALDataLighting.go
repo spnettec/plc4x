@@ -84,6 +84,8 @@ type SALDataLightingBuilder interface {
 	WithLightingData(LightingData) SALDataLightingBuilder
 	// WithLightingDataBuilder adds LightingData (property field) which is build by the builder
 	WithLightingDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataLightingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataLighting or returns an error if something is wrong
 	Build() (SALDataLighting, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (SALDataLightingBuilder) = (*_SALDataLightingBuilder)(nil)
 
 func (b *_SALDataLightingBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataLighting
 }
 
 func (b *_SALDataLightingBuilder) WithMandatoryFields(lightingData LightingData) SALDataLightingBuilder {
@@ -152,8 +155,10 @@ func (b *_SALDataLightingBuilder) MustBuild() SALDataLighting {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataLightingBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_SALDataLighting) deepCopy() *_SALDataLighting {
 	}
 	_SALDataLightingCopy := &_SALDataLighting{
 		m.SALDataContract.(*_SALData).deepCopy(),
-		m.LightingData.DeepCopy().(LightingData),
+		utils.DeepCopy[LightingData](m.LightingData),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataLightingCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataLightingCopy
 }
 

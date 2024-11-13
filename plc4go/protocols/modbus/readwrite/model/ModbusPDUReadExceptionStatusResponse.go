@@ -79,6 +79,8 @@ type ModbusPDUReadExceptionStatusResponseBuilder interface {
 	WithMandatoryFields(value uint8) ModbusPDUReadExceptionStatusResponseBuilder
 	// WithValue adds Value (property field)
 	WithValue(uint8) ModbusPDUReadExceptionStatusResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUReadExceptionStatusResponse or returns an error if something is wrong
 	Build() (ModbusPDUReadExceptionStatusResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ModbusPDUReadExceptionStatusResponseBuilder) = (*_ModbusPDUReadExceptionS
 
 func (b *_ModbusPDUReadExceptionStatusResponseBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUReadExceptionStatusResponse
 }
 
 func (b *_ModbusPDUReadExceptionStatusResponseBuilder) WithMandatoryFields(value uint8) ModbusPDUReadExceptionStatusResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_ModbusPDUReadExceptionStatusResponseBuilder) MustBuild() ModbusPDURead
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUReadExceptionStatusResponseBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_ModbusPDUReadExceptionStatusResponse) deepCopy() *_ModbusPDUReadExcept
 		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.Value,
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUReadExceptionStatusResponseCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUReadExceptionStatusResponseCopy
 }
 

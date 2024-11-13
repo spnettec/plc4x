@@ -121,6 +121,8 @@ type S7ParameterUserDataItemCPUFunctionsBuilder interface {
 	WithOptionalLastDataUnit(uint8) S7ParameterUserDataItemCPUFunctionsBuilder
 	// WithErrorCode adds ErrorCode (property field)
 	WithOptionalErrorCode(uint16) S7ParameterUserDataItemCPUFunctionsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7ParameterUserDataItemBuilder
 	// Build builds the S7ParameterUserDataItemCPUFunctions or returns an error if something is wrong
 	Build() (S7ParameterUserDataItemCPUFunctions, error)
 	// MustBuild does the same as Build but panics on error
@@ -144,6 +146,7 @@ var _ (S7ParameterUserDataItemCPUFunctionsBuilder) = (*_S7ParameterUserDataItemC
 
 func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) setParent(contract S7ParameterUserDataItemContract) {
 	b.S7ParameterUserDataItemContract = contract
+	contract.(*_S7ParameterUserDataItem)._SubType = b._S7ParameterUserDataItemCPUFunctions
 }
 
 func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithMandatoryFields(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8) S7ParameterUserDataItemCPUFunctionsBuilder {
@@ -205,8 +208,10 @@ func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) MustBuild() S7ParameterUse
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) Done() S7ParameterUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7ParameterUserDataItemBuilder().(*_S7ParameterUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -511,7 +516,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) deepCopy() *_S7ParameterUserDataI
 		utils.CopyPtr[uint8](m.LastDataUnit),
 		utils.CopyPtr[uint16](m.ErrorCode),
 	}
-	m.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem)._SubType = m
+	_S7ParameterUserDataItemCPUFunctionsCopy.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem)._SubType = m
 	return _S7ParameterUserDataItemCPUFunctionsCopy
 }
 

@@ -117,6 +117,8 @@ type BACnetNotificationParametersChangeOfStateBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersChangeOfStateBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersBuilder
 	// Build builds the BACnetNotificationParametersChangeOfState or returns an error if something is wrong
 	Build() (BACnetNotificationParametersChangeOfState, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +142,7 @@ var _ (BACnetNotificationParametersChangeOfStateBuilder) = (*_BACnetNotification
 
 func (b *_BACnetNotificationParametersChangeOfStateBuilder) setParent(contract BACnetNotificationParametersContract) {
 	b.BACnetNotificationParametersContract = contract
+	contract.(*_BACnetNotificationParameters)._SubType = b._BACnetNotificationParametersChangeOfState
 }
 
 func (b *_BACnetNotificationParametersChangeOfStateBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, changeOfState BACnetPropertyStatesEnclosed, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfStateBuilder {
@@ -257,8 +260,10 @@ func (b *_BACnetNotificationParametersChangeOfStateBuilder) MustBuild() BACnetNo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersChangeOfStateBuilder) Done() BACnetNotificationParametersBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -460,12 +465,12 @@ func (m *_BACnetNotificationParametersChangeOfState) deepCopy() *_BACnetNotifica
 	}
 	_BACnetNotificationParametersChangeOfStateCopy := &_BACnetNotificationParametersChangeOfState{
 		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.ChangeOfState.DeepCopy().(BACnetPropertyStatesEnclosed),
-		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
+		utils.DeepCopy[BACnetPropertyStatesEnclosed](m.ChangeOfState),
+		utils.DeepCopy[BACnetStatusFlagsTagged](m.StatusFlags),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	_BACnetNotificationParametersChangeOfStateCopy.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
 	return _BACnetNotificationParametersChangeOfStateCopy
 }
 

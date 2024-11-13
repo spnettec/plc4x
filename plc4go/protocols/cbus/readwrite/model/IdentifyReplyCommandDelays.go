@@ -85,6 +85,8 @@ type IdentifyReplyCommandDelaysBuilder interface {
 	WithTerminalLevels(...byte) IdentifyReplyCommandDelaysBuilder
 	// WithReStrikeDelay adds ReStrikeDelay (property field)
 	WithReStrikeDelay(byte) IdentifyReplyCommandDelaysBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() IdentifyReplyCommandBuilder
 	// Build builds the IdentifyReplyCommandDelays or returns an error if something is wrong
 	Build() (IdentifyReplyCommandDelays, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (IdentifyReplyCommandDelaysBuilder) = (*_IdentifyReplyCommandDelaysBuilder
 
 func (b *_IdentifyReplyCommandDelaysBuilder) setParent(contract IdentifyReplyCommandContract) {
 	b.IdentifyReplyCommandContract = contract
+	contract.(*_IdentifyReplyCommand)._SubType = b._IdentifyReplyCommandDelays
 }
 
 func (b *_IdentifyReplyCommandDelaysBuilder) WithMandatoryFields(terminalLevels []byte, reStrikeDelay byte) IdentifyReplyCommandDelaysBuilder {
@@ -139,8 +142,10 @@ func (b *_IdentifyReplyCommandDelaysBuilder) MustBuild() IdentifyReplyCommandDel
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentifyReplyCommandDelaysBuilder) Done() IdentifyReplyCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -317,7 +322,7 @@ func (m *_IdentifyReplyCommandDelays) deepCopy() *_IdentifyReplyCommandDelays {
 		utils.DeepCopySlice[byte, byte](m.TerminalLevels),
 		m.ReStrikeDelay,
 	}
-	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	_IdentifyReplyCommandDelaysCopy.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
 	return _IdentifyReplyCommandDelaysCopy
 }
 

@@ -96,6 +96,8 @@ type RepublishRequestBuilder interface {
 	WithSubscriptionId(uint32) RepublishRequestBuilder
 	// WithRetransmitSequenceNumber adds RetransmitSequenceNumber (property field)
 	WithRetransmitSequenceNumber(uint32) RepublishRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RepublishRequest or returns an error if something is wrong
 	Build() (RepublishRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (RepublishRequestBuilder) = (*_RepublishRequestBuilder)(nil)
 
 func (b *_RepublishRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RepublishRequest
 }
 
 func (b *_RepublishRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, retransmitSequenceNumber uint32) RepublishRequestBuilder {
@@ -174,8 +177,10 @@ func (b *_RepublishRequestBuilder) MustBuild() RepublishRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RepublishRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -364,11 +369,11 @@ func (m *_RepublishRequest) deepCopy() *_RepublishRequest {
 	}
 	_RepublishRequestCopy := &_RepublishRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		m.SubscriptionId,
 		m.RetransmitSequenceNumber,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RepublishRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RepublishRequestCopy
 }
 

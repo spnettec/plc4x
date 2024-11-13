@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueBitStringBuilder interface {
 	WithBitStringValue(BACnetApplicationTagBitString) BACnetTimerStateChangeValueBitStringBuilder
 	// WithBitStringValueBuilder adds BitStringValue (property field) which is build by the builder
 	WithBitStringValueBuilder(func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetTimerStateChangeValueBitStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueBitString or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueBitString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueBitStringBuilder) = (*_BACnetTimerStateChangeV
 
 func (b *_BACnetTimerStateChangeValueBitStringBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueBitString
 }
 
 func (b *_BACnetTimerStateChangeValueBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetTimerStateChangeValueBitStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueBitStringBuilder) MustBuild() BACnetTimerSt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueBitStringBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimerStateChangeValueBitString) deepCopy() *_BACnetTimerStateCha
 	}
 	_BACnetTimerStateChangeValueBitStringCopy := &_BACnetTimerStateChangeValueBitString{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+		utils.DeepCopy[BACnetApplicationTagBitString](m.BitStringValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueBitStringCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueBitStringCopy
 }
 

@@ -84,6 +84,8 @@ type S7VarRequestParameterItemAddressBuilder interface {
 	WithAddress(S7Address) S7VarRequestParameterItemAddressBuilder
 	// WithAddressBuilder adds Address (property field) which is build by the builder
 	WithAddressBuilder(func(S7AddressBuilder) S7AddressBuilder) S7VarRequestParameterItemAddressBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7VarRequestParameterItemBuilder
 	// Build builds the S7VarRequestParameterItemAddress or returns an error if something is wrong
 	Build() (S7VarRequestParameterItemAddress, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (S7VarRequestParameterItemAddressBuilder) = (*_S7VarRequestParameterItemAd
 
 func (b *_S7VarRequestParameterItemAddressBuilder) setParent(contract S7VarRequestParameterItemContract) {
 	b.S7VarRequestParameterItemContract = contract
+	contract.(*_S7VarRequestParameterItem)._SubType = b._S7VarRequestParameterItemAddress
 }
 
 func (b *_S7VarRequestParameterItemAddressBuilder) WithMandatoryFields(address S7Address) S7VarRequestParameterItemAddressBuilder {
@@ -152,8 +155,10 @@ func (b *_S7VarRequestParameterItemAddressBuilder) MustBuild() S7VarRequestParam
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7VarRequestParameterItemAddressBuilder) Done() S7VarRequestParameterItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7VarRequestParameterItemBuilder().(*_S7VarRequestParameterItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -321,9 +326,9 @@ func (m *_S7VarRequestParameterItemAddress) deepCopy() *_S7VarRequestParameterIt
 	}
 	_S7VarRequestParameterItemAddressCopy := &_S7VarRequestParameterItemAddress{
 		m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem).deepCopy(),
-		m.Address.DeepCopy().(S7Address),
+		utils.DeepCopy[S7Address](m.Address),
 	}
-	m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = m
+	_S7VarRequestParameterItemAddressCopy.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = m
 	return _S7VarRequestParameterItemAddressCopy
 }
 

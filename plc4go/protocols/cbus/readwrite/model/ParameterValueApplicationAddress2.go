@@ -90,6 +90,8 @@ type ParameterValueApplicationAddress2Builder interface {
 	WithValueBuilder(func(ApplicationAddress2Builder) ApplicationAddress2Builder) ParameterValueApplicationAddress2Builder
 	// WithData adds Data (property field)
 	WithData(...byte) ParameterValueApplicationAddress2Builder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ParameterValueBuilder
 	// Build builds the ParameterValueApplicationAddress2 or returns an error if something is wrong
 	Build() (ParameterValueApplicationAddress2, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (ParameterValueApplicationAddress2Builder) = (*_ParameterValueApplicationA
 
 func (b *_ParameterValueApplicationAddress2Builder) setParent(contract ParameterValueContract) {
 	b.ParameterValueContract = contract
+	contract.(*_ParameterValue)._SubType = b._ParameterValueApplicationAddress2
 }
 
 func (b *_ParameterValueApplicationAddress2Builder) WithMandatoryFields(value ApplicationAddress2, data []byte) ParameterValueApplicationAddress2Builder {
@@ -163,8 +166,10 @@ func (b *_ParameterValueApplicationAddress2Builder) MustBuild() ParameterValueAp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ParameterValueApplicationAddress2Builder) Done() ParameterValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewParameterValueBuilder().(*_ParameterValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,10 +348,10 @@ func (m *_ParameterValueApplicationAddress2) deepCopy() *_ParameterValueApplicat
 	}
 	_ParameterValueApplicationAddress2Copy := &_ParameterValueApplicationAddress2{
 		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
-		m.Value.DeepCopy().(ApplicationAddress2),
+		utils.DeepCopy[ApplicationAddress2](m.Value),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	_ParameterValueApplicationAddress2Copy.ParameterValueContract.(*_ParameterValue)._SubType = m
 	return _ParameterValueApplicationAddress2Copy
 }
 

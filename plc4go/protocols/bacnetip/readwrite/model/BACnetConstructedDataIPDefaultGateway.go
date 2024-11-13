@@ -86,6 +86,8 @@ type BACnetConstructedDataIPDefaultGatewayBuilder interface {
 	WithIpDefaultGateway(BACnetApplicationTagOctetString) BACnetConstructedDataIPDefaultGatewayBuilder
 	// WithIpDefaultGatewayBuilder adds IpDefaultGateway (property field) which is build by the builder
 	WithIpDefaultGatewayBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPDefaultGatewayBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIPDefaultGateway or returns an error if something is wrong
 	Build() (BACnetConstructedDataIPDefaultGateway, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIPDefaultGatewayBuilder) = (*_BACnetConstructedDataI
 
 func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIPDefaultGateway
 }
 
 func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) WithMandatoryFields(ipDefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPDefaultGatewayBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataIPDefaultGateway) deepCopy() *_BACnetConstructedD
 	}
 	_BACnetConstructedDataIPDefaultGatewayCopy := &_BACnetConstructedDataIPDefaultGateway{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.IpDefaultGateway.DeepCopy().(BACnetApplicationTagOctetString),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.IpDefaultGateway),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIPDefaultGatewayCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIPDefaultGatewayCopy
 }
 

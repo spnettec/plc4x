@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueCharacterStringBuilder interface {
 	WithCharacterStringValue(BACnetApplicationTagCharacterString) BACnetTimerStateChangeValueCharacterStringBuilder
 	// WithCharacterStringValueBuilder adds CharacterStringValue (property field) which is build by the builder
 	WithCharacterStringValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetTimerStateChangeValueCharacterStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueCharacterString or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueCharacterString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueCharacterStringBuilder) = (*_BACnetTimerStateC
 
 func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueCharacterString
 }
 
 func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetTimerStateChangeValueCharacterStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) MustBuild() BACnetT
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueCharacterStringBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetTimerStateChangeValueCharacterString) deepCopy() *_BACnetTimerSt
 	}
 	_BACnetTimerStateChangeValueCharacterStringCopy := &_BACnetTimerStateChangeValueCharacterString{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.CharacterStringValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueCharacterStringCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueCharacterStringCopy
 }
 

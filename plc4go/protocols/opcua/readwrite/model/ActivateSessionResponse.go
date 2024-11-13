@@ -107,6 +107,8 @@ type ActivateSessionResponseBuilder interface {
 	WithResults(...StatusCode) ActivateSessionResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) ActivateSessionResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ActivateSessionResponse or returns an error if something is wrong
 	Build() (ActivateSessionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,6 +132,7 @@ var _ (ActivateSessionResponseBuilder) = (*_ActivateSessionResponseBuilder)(nil)
 
 func (b *_ActivateSessionResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ActivateSessionResponse
 }
 
 func (b *_ActivateSessionResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, serverNonce PascalByteString, results []StatusCode, diagnosticInfos []DiagnosticInfo) ActivateSessionResponseBuilder {
@@ -209,8 +212,10 @@ func (b *_ActivateSessionResponseBuilder) MustBuild() ActivateSessionResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ActivateSessionResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -456,12 +461,12 @@ func (m *_ActivateSessionResponse) deepCopy() *_ActivateSessionResponse {
 	}
 	_ActivateSessionResponseCopy := &_ActivateSessionResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
-		m.ServerNonce.DeepCopy().(PascalByteString),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
+		utils.DeepCopy[PascalByteString](m.ServerNonce),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ActivateSessionResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ActivateSessionResponseCopy
 }
 

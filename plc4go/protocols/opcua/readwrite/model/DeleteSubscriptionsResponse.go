@@ -96,6 +96,8 @@ type DeleteSubscriptionsResponseBuilder interface {
 	WithResults(...StatusCode) DeleteSubscriptionsResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) DeleteSubscriptionsResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DeleteSubscriptionsResponse or returns an error if something is wrong
 	Build() (DeleteSubscriptionsResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (DeleteSubscriptionsResponseBuilder) = (*_DeleteSubscriptionsResponseBuild
 
 func (b *_DeleteSubscriptionsResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DeleteSubscriptionsResponse
 }
 
 func (b *_DeleteSubscriptionsResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) DeleteSubscriptionsResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_DeleteSubscriptionsResponseBuilder) MustBuild() DeleteSubscriptionsRes
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeleteSubscriptionsResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_DeleteSubscriptionsResponse) deepCopy() *_DeleteSubscriptionsResponse 
 	}
 	_DeleteSubscriptionsResponseCopy := &_DeleteSubscriptionsResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DeleteSubscriptionsResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteSubscriptionsResponseCopy
 }
 

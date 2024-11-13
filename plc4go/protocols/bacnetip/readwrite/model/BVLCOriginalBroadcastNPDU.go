@@ -89,6 +89,8 @@ type BVLCOriginalBroadcastNPDUBuilder interface {
 	WithNpdu(NPDU) BVLCOriginalBroadcastNPDUBuilder
 	// WithNpduBuilder adds Npdu (property field) which is build by the builder
 	WithNpduBuilder(func(NPDUBuilder) NPDUBuilder) BVLCOriginalBroadcastNPDUBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BVLCBuilder
 	// Build builds the BVLCOriginalBroadcastNPDU or returns an error if something is wrong
 	Build() (BVLCOriginalBroadcastNPDU, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BVLCOriginalBroadcastNPDUBuilder) = (*_BVLCOriginalBroadcastNPDUBuilder)(
 
 func (b *_BVLCOriginalBroadcastNPDUBuilder) setParent(contract BVLCContract) {
 	b.BVLCContract = contract
+	contract.(*_BVLC)._SubType = b._BVLCOriginalBroadcastNPDU
 }
 
 func (b *_BVLCOriginalBroadcastNPDUBuilder) WithMandatoryFields(npdu NPDU) BVLCOriginalBroadcastNPDUBuilder {
@@ -157,8 +160,10 @@ func (b *_BVLCOriginalBroadcastNPDUBuilder) MustBuild() BVLCOriginalBroadcastNPD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BVLCOriginalBroadcastNPDUBuilder) Done() BVLCBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBVLCBuilder().(*_BVLCBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -323,10 +328,10 @@ func (m *_BVLCOriginalBroadcastNPDU) deepCopy() *_BVLCOriginalBroadcastNPDU {
 	}
 	_BVLCOriginalBroadcastNPDUCopy := &_BVLCOriginalBroadcastNPDU{
 		m.BVLCContract.(*_BVLC).deepCopy(),
-		m.Npdu.DeepCopy().(NPDU),
+		utils.DeepCopy[NPDU](m.Npdu),
 		m.BvlcPayloadLength,
 	}
-	m.BVLCContract.(*_BVLC)._SubType = m
+	_BVLCOriginalBroadcastNPDUCopy.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCOriginalBroadcastNPDUCopy
 }
 

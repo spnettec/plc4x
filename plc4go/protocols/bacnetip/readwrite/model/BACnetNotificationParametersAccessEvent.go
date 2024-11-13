@@ -158,6 +158,8 @@ type BACnetNotificationParametersAccessEventBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersAccessEventBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersAccessEventBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersBuilder
 	// Build builds the BACnetNotificationParametersAccessEvent or returns an error if something is wrong
 	Build() (BACnetNotificationParametersAccessEvent, error)
 	// MustBuild does the same as Build but panics on error
@@ -181,6 +183,7 @@ var _ (BACnetNotificationParametersAccessEventBuilder) = (*_BACnetNotificationPa
 
 func (b *_BACnetNotificationParametersAccessEventBuilder) setParent(contract BACnetNotificationParametersContract) {
 	b.BACnetNotificationParametersContract = contract
+	contract.(*_BACnetNotificationParameters)._SubType = b._BACnetNotificationParametersAccessEvent
 }
 
 func (b *_BACnetNotificationParametersAccessEventBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, accessEvent BACnetAccessEventTagged, statusFlags BACnetStatusFlagsTagged, accessEventTag BACnetContextTagUnsignedInteger, accessEventTime BACnetTimeStampEnclosed, accessCredential BACnetDeviceObjectReferenceEnclosed, innerClosingTag BACnetClosingTag) BACnetNotificationParametersAccessEventBuilder {
@@ -388,8 +391,10 @@ func (b *_BACnetNotificationParametersAccessEventBuilder) MustBuild() BACnetNoti
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersAccessEventBuilder) Done() BACnetNotificationParametersBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -665,16 +670,16 @@ func (m *_BACnetNotificationParametersAccessEvent) deepCopy() *_BACnetNotificati
 	}
 	_BACnetNotificationParametersAccessEventCopy := &_BACnetNotificationParametersAccessEvent{
 		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.AccessEvent.DeepCopy().(BACnetAccessEventTagged),
-		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
-		m.AccessEventTag.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.AccessEventTime.DeepCopy().(BACnetTimeStampEnclosed),
-		m.AccessCredential.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
-		m.AuthenticationFactor.DeepCopy().(BACnetAuthenticationFactorTypeTagged),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
+		utils.DeepCopy[BACnetAccessEventTagged](m.AccessEvent),
+		utils.DeepCopy[BACnetStatusFlagsTagged](m.StatusFlags),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.AccessEventTag),
+		utils.DeepCopy[BACnetTimeStampEnclosed](m.AccessEventTime),
+		utils.DeepCopy[BACnetDeviceObjectReferenceEnclosed](m.AccessCredential),
+		utils.DeepCopy[BACnetAuthenticationFactorTypeTagged](m.AuthenticationFactor),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	_BACnetNotificationParametersAccessEventCopy.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
 	return _BACnetNotificationParametersAccessEventCopy
 }
 

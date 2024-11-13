@@ -84,6 +84,8 @@ type BACnetLogDataLogDataEntryRealValueBuilder interface {
 	WithRealValue(BACnetContextTagReal) BACnetLogDataLogDataEntryRealValueBuilder
 	// WithRealValueBuilder adds RealValue (property field) which is build by the builder
 	WithRealValueBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLogDataLogDataEntryRealValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogDataLogDataEntryBuilder
 	// Build builds the BACnetLogDataLogDataEntryRealValue or returns an error if something is wrong
 	Build() (BACnetLogDataLogDataEntryRealValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogDataLogDataEntryRealValueBuilder) = (*_BACnetLogDataLogDataEntry
 
 func (b *_BACnetLogDataLogDataEntryRealValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
 	b.BACnetLogDataLogDataEntryContract = contract
+	contract.(*_BACnetLogDataLogDataEntry)._SubType = b._BACnetLogDataLogDataEntryRealValue
 }
 
 func (b *_BACnetLogDataLogDataEntryRealValueBuilder) WithMandatoryFields(realValue BACnetContextTagReal) BACnetLogDataLogDataEntryRealValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogDataLogDataEntryRealValueBuilder) MustBuild() BACnetLogDataLo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogDataLogDataEntryRealValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogDataLogDataEntryBuilder().(*_BACnetLogDataLogDataEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogDataLogDataEntryRealValue) deepCopy() *_BACnetLogDataLogDataE
 	}
 	_BACnetLogDataLogDataEntryRealValueCopy := &_BACnetLogDataLogDataEntryRealValue{
 		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
-		m.RealValue.DeepCopy().(BACnetContextTagReal),
+		utils.DeepCopy[BACnetContextTagReal](m.RealValue),
 	}
-	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	_BACnetLogDataLogDataEntryRealValueCopy.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
 	return _BACnetLogDataLogDataEntryRealValueCopy
 }
 

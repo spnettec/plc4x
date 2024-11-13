@@ -86,6 +86,8 @@ type BACnetConstructedDataProgramStateBuilder interface {
 	WithProgramState(BACnetProgramStateTagged) BACnetConstructedDataProgramStateBuilder
 	// WithProgramStateBuilder adds ProgramState (property field) which is build by the builder
 	WithProgramStateBuilder(func(BACnetProgramStateTaggedBuilder) BACnetProgramStateTaggedBuilder) BACnetConstructedDataProgramStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataProgramState or returns an error if something is wrong
 	Build() (BACnetConstructedDataProgramState, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataProgramStateBuilder) = (*_BACnetConstructedDataProgr
 
 func (b *_BACnetConstructedDataProgramStateBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataProgramState
 }
 
 func (b *_BACnetConstructedDataProgramStateBuilder) WithMandatoryFields(programState BACnetProgramStateTagged) BACnetConstructedDataProgramStateBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataProgramStateBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataProgramStateBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataProgramState) deepCopy() *_BACnetConstructedDataP
 	}
 	_BACnetConstructedDataProgramStateCopy := &_BACnetConstructedDataProgramState{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ProgramState.DeepCopy().(BACnetProgramStateTagged),
+		utils.DeepCopy[BACnetProgramStateTagged](m.ProgramState),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataProgramStateCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataProgramStateCopy
 }
 

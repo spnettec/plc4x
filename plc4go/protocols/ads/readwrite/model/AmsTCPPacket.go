@@ -309,7 +309,7 @@ func (m *_AmsTCPPacket) deepCopy() *_AmsTCPPacket {
 		return nil
 	}
 	_AmsTCPPacketCopy := &_AmsTCPPacket{
-		m.Userdata.DeepCopy().(AmsPacket),
+		utils.DeepCopy[AmsPacket](m.Userdata),
 		m.reservedField0,
 	}
 	return _AmsTCPPacketCopy

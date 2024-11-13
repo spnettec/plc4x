@@ -96,6 +96,8 @@ type LDataIndBuilder interface {
 	WithDataFrame(LDataFrame) LDataIndBuilder
 	// WithDataFrameBuilder adds DataFrame (property field) which is build by the builder
 	WithDataFrameBuilder(func(LDataFrameBuilder) LDataFrameBuilder) LDataIndBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the LDataInd or returns an error if something is wrong
 	Build() (LDataInd, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (LDataIndBuilder) = (*_LDataIndBuilder)(nil)
 
 func (b *_LDataIndBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._LDataInd
 }
 
 func (b *_LDataIndBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataIndBuilder {
@@ -174,8 +177,10 @@ func (b *_LDataIndBuilder) MustBuild() LDataInd {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LDataIndBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -370,9 +375,9 @@ func (m *_LDataInd) deepCopy() *_LDataInd {
 		m.CEMIContract.(*_CEMI).deepCopy(),
 		m.AdditionalInformationLength,
 		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
-		m.DataFrame.DeepCopy().(LDataFrame),
+		utils.DeepCopy[LDataFrame](m.DataFrame),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_LDataIndCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _LDataIndCopy
 }
 

@@ -103,6 +103,8 @@ type ConnectionResponseBuilder interface {
 	WithOptionalConnectionResponseDataBlock(ConnectionResponseDataBlock) ConnectionResponseBuilder
 	// WithOptionalConnectionResponseDataBlockBuilder adds ConnectionResponseDataBlock (property field) which is build by the builder
 	WithOptionalConnectionResponseDataBlockBuilder(func(ConnectionResponseDataBlockBuilder) ConnectionResponseDataBlockBuilder) ConnectionResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the ConnectionResponse or returns an error if something is wrong
 	Build() (ConnectionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (ConnectionResponseBuilder) = (*_ConnectionResponseBuilder)(nil)
 
 func (b *_ConnectionResponseBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._ConnectionResponse
 }
 
 func (b *_ConnectionResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) ConnectionResponseBuilder {
@@ -193,8 +196,10 @@ func (b *_ConnectionResponseBuilder) MustBuild() ConnectionResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ConnectionResponseBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -414,10 +419,10 @@ func (m *_ConnectionResponse) deepCopy() *_ConnectionResponse {
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.CommunicationChannelId,
 		m.Status,
-		m.HpaiDataEndpoint.DeepCopy().(HPAIDataEndpoint),
-		m.ConnectionResponseDataBlock.DeepCopy().(ConnectionResponseDataBlock),
+		utils.DeepCopy[HPAIDataEndpoint](m.HpaiDataEndpoint),
+		utils.DeepCopy[ConnectionResponseDataBlock](m.ConnectionResponseDataBlock),
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_ConnectionResponseCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _ConnectionResponseCopy
 }
 

@@ -85,6 +85,8 @@ type VariantDateTimeBuilder interface {
 	WithOptionalArrayLength(int32) VariantDateTimeBuilder
 	// WithValue adds Value (property field)
 	WithValue(...int64) VariantDateTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantDateTime or returns an error if something is wrong
 	Build() (VariantDateTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantDateTimeBuilder) = (*_VariantDateTimeBuilder)(nil)
 
 func (b *_VariantDateTimeBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantDateTime
 }
 
 func (b *_VariantDateTimeBuilder) WithMandatoryFields(value []int64) VariantDateTimeBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantDateTimeBuilder) MustBuild() VariantDateTime {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantDateTimeBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -320,7 +325,7 @@ func (m *_VariantDateTime) deepCopy() *_VariantDateTime {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[int64, int64](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantDateTimeCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantDateTimeCopy
 }
 

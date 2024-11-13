@@ -331,8 +331,8 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) deepCopy() *_BACnetLandi
 		return nil
 	}
 	_BACnetLandingDoorStatusLandingDoorsListEntryCopy := &_BACnetLandingDoorStatusLandingDoorsListEntry{
-		m.FloorNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.DoorStatus.DeepCopy().(BACnetDoorStatusTagged),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.FloorNumber),
+		utils.DeepCopy[BACnetDoorStatusTagged](m.DoorStatus),
 	}
 	return _BACnetLandingDoorStatusLandingDoorsListEntryCopy
 }

@@ -84,6 +84,8 @@ type BACnetChannelValueUnsignedBuilder interface {
 	WithUnsignedValue(BACnetApplicationTagUnsignedInteger) BACnetChannelValueUnsignedBuilder
 	// WithUnsignedValueBuilder adds UnsignedValue (property field) which is build by the builder
 	WithUnsignedValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetChannelValueUnsignedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueUnsigned or returns an error if something is wrong
 	Build() (BACnetChannelValueUnsigned, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueUnsignedBuilder) = (*_BACnetChannelValueUnsignedBuilder
 
 func (b *_BACnetChannelValueUnsignedBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueUnsigned
 }
 
 func (b *_BACnetChannelValueUnsignedBuilder) WithMandatoryFields(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetChannelValueUnsignedBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueUnsignedBuilder) MustBuild() BACnetChannelValueUnsig
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueUnsignedBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueUnsigned) deepCopy() *_BACnetChannelValueUnsigned {
 	}
 	_BACnetChannelValueUnsignedCopy := &_BACnetChannelValueUnsigned{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.UnsignedValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueUnsignedCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueUnsignedCopy
 }
 

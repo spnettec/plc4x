@@ -108,75 +108,33 @@ type BACnetContextTagBuilder interface {
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetContextTagBuilder
 	// AsBACnetContextTagNull converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagNull() interface {
-		BACnetContextTagNullBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagNull() BACnetContextTagNullBuilder
 	// AsBACnetContextTagBoolean converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagBoolean() interface {
-		BACnetContextTagBooleanBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagBoolean() BACnetContextTagBooleanBuilder
 	// AsBACnetContextTagUnsignedInteger converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagUnsignedInteger() interface {
-		BACnetContextTagUnsignedIntegerBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagUnsignedInteger() BACnetContextTagUnsignedIntegerBuilder
 	// AsBACnetContextTagSignedInteger converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagSignedInteger() interface {
-		BACnetContextTagSignedIntegerBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagSignedInteger() BACnetContextTagSignedIntegerBuilder
 	// AsBACnetContextTagReal converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagReal() interface {
-		BACnetContextTagRealBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagReal() BACnetContextTagRealBuilder
 	// AsBACnetContextTagDouble converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagDouble() interface {
-		BACnetContextTagDoubleBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagDouble() BACnetContextTagDoubleBuilder
 	// AsBACnetContextTagOctetString converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagOctetString() interface {
-		BACnetContextTagOctetStringBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagOctetString() BACnetContextTagOctetStringBuilder
 	// AsBACnetContextTagCharacterString converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagCharacterString() interface {
-		BACnetContextTagCharacterStringBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagCharacterString() BACnetContextTagCharacterStringBuilder
 	// AsBACnetContextTagBitString converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagBitString() interface {
-		BACnetContextTagBitStringBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagBitString() BACnetContextTagBitStringBuilder
 	// AsBACnetContextTagEnumerated converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagEnumerated() interface {
-		BACnetContextTagEnumeratedBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagEnumerated() BACnetContextTagEnumeratedBuilder
 	// AsBACnetContextTagDate converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagDate() interface {
-		BACnetContextTagDateBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagDate() BACnetContextTagDateBuilder
 	// AsBACnetContextTagTime converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagTime() interface {
-		BACnetContextTagTimeBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagTime() BACnetContextTagTimeBuilder
 	// AsBACnetContextTagObjectIdentifier converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagObjectIdentifier() interface {
-		BACnetContextTagObjectIdentifierBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagObjectIdentifier() BACnetContextTagObjectIdentifierBuilder
 	// AsBACnetContextTagUnknown converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
-	AsBACnetContextTagUnknown() interface {
-		BACnetContextTagUnknownBuilder
-		Done() BACnetContextTagBuilder
-	}
+	AsBACnetContextTagUnknown() BACnetContextTagUnknownBuilder
 	// Build builds the BACnetContextTag or returns an error if something is wrong
 	PartialBuild() (BACnetContextTagContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -251,14 +209,8 @@ func (b *_BACnetContextTagBuilder) PartialMustBuild() BACnetContextTagContract {
 	return build
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagNull() interface {
-	BACnetContextTagNullBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagNullBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagNull() BACnetContextTagNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagNullBuilder().(*_BACnetContextTagNullBuilder)
@@ -267,14 +219,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagNull() interface {
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagBoolean() interface {
-	BACnetContextTagBooleanBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagBooleanBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagBoolean() BACnetContextTagBooleanBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagBooleanBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagBooleanBuilder().(*_BACnetContextTagBooleanBuilder)
@@ -283,14 +229,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagBoolean() interface {
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagUnsignedInteger() interface {
-	BACnetContextTagUnsignedIntegerBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagUnsignedIntegerBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagUnsignedInteger() BACnetContextTagUnsignedIntegerBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagUnsignedIntegerBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagUnsignedIntegerBuilder().(*_BACnetContextTagUnsignedIntegerBuilder)
@@ -299,14 +239,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagUnsignedInteger() interface
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagSignedInteger() interface {
-	BACnetContextTagSignedIntegerBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagSignedIntegerBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagSignedInteger() BACnetContextTagSignedIntegerBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagSignedIntegerBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagSignedIntegerBuilder().(*_BACnetContextTagSignedIntegerBuilder)
@@ -315,14 +249,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagSignedInteger() interface {
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagReal() interface {
-	BACnetContextTagRealBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagRealBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagReal() BACnetContextTagRealBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagRealBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagRealBuilder().(*_BACnetContextTagRealBuilder)
@@ -331,14 +259,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagReal() interface {
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagDouble() interface {
-	BACnetContextTagDoubleBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagDoubleBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagDouble() BACnetContextTagDoubleBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagDoubleBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagDoubleBuilder().(*_BACnetContextTagDoubleBuilder)
@@ -347,14 +269,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagDouble() interface {
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagOctetString() interface {
-	BACnetContextTagOctetStringBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagOctetStringBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagOctetString() BACnetContextTagOctetStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagOctetStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagOctetStringBuilder().(*_BACnetContextTagOctetStringBuilder)
@@ -363,14 +279,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagOctetString() interface {
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagCharacterString() interface {
-	BACnetContextTagCharacterStringBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagCharacterStringBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagCharacterString() BACnetContextTagCharacterStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagCharacterStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagCharacterStringBuilder().(*_BACnetContextTagCharacterStringBuilder)
@@ -379,14 +289,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagCharacterString() interface
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagBitString() interface {
-	BACnetContextTagBitStringBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagBitStringBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagBitString() BACnetContextTagBitStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagBitStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagBitStringBuilder().(*_BACnetContextTagBitStringBuilder)
@@ -395,14 +299,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagBitString() interface {
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagEnumerated() interface {
-	BACnetContextTagEnumeratedBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagEnumeratedBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagEnumerated() BACnetContextTagEnumeratedBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagEnumeratedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagEnumeratedBuilder().(*_BACnetContextTagEnumeratedBuilder)
@@ -411,14 +309,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagEnumerated() interface {
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagDate() interface {
-	BACnetContextTagDateBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagDateBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagDate() BACnetContextTagDateBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagDateBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagDateBuilder().(*_BACnetContextTagDateBuilder)
@@ -427,14 +319,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagDate() interface {
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagTime() interface {
-	BACnetContextTagTimeBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagTimeBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagTime() BACnetContextTagTimeBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagTimeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagTimeBuilder().(*_BACnetContextTagTimeBuilder)
@@ -443,14 +329,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagTime() interface {
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagObjectIdentifier() interface {
-	BACnetContextTagObjectIdentifierBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagObjectIdentifierBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagObjectIdentifier() BACnetContextTagObjectIdentifierBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagObjectIdentifierBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagObjectIdentifierBuilder().(*_BACnetContextTagObjectIdentifierBuilder)
@@ -459,14 +339,8 @@ func (b *_BACnetContextTagBuilder) AsBACnetContextTagObjectIdentifier() interfac
 	return cb
 }
 
-func (b *_BACnetContextTagBuilder) AsBACnetContextTagUnknown() interface {
-	BACnetContextTagUnknownBuilder
-	Done() BACnetContextTagBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetContextTagUnknownBuilder
-		Done() BACnetContextTagBuilder
-	}); ok {
+func (b *_BACnetContextTagBuilder) AsBACnetContextTagUnknown() BACnetContextTagUnknownBuilder {
+	if cb, ok := b.childBuilder.(BACnetContextTagUnknownBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetContextTagUnknownBuilder().(*_BACnetContextTagUnknownBuilder)
@@ -793,7 +667,7 @@ func (m *_BACnetContextTag) deepCopy() *_BACnetContextTag {
 	}
 	_BACnetContextTagCopy := &_BACnetContextTag{
 		nil, // will be set by child
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.TagNumberArgument,
 	}
 	return _BACnetContextTagCopy

@@ -86,6 +86,8 @@ type BACnetApplicationTagSignedIntegerBuilder interface {
 	WithPayload(BACnetTagPayloadSignedInteger) BACnetApplicationTagSignedIntegerBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadSignedIntegerBuilder) BACnetTagPayloadSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetApplicationTagBuilder
 	// Build builds the BACnetApplicationTagSignedInteger or returns an error if something is wrong
 	Build() (BACnetApplicationTagSignedInteger, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetApplicationTagSignedIntegerBuilder) = (*_BACnetApplicationTagSigned
 
 func (b *_BACnetApplicationTagSignedIntegerBuilder) setParent(contract BACnetApplicationTagContract) {
 	b.BACnetApplicationTagContract = contract
+	contract.(*_BACnetApplicationTag)._SubType = b._BACnetApplicationTagSignedInteger
 }
 
 func (b *_BACnetApplicationTagSignedIntegerBuilder) WithMandatoryFields(payload BACnetTagPayloadSignedInteger) BACnetApplicationTagSignedIntegerBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetApplicationTagSignedIntegerBuilder) MustBuild() BACnetApplicatio
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetApplicationTagSignedIntegerBuilder) Done() BACnetApplicationTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetApplicationTagBuilder().(*_BACnetApplicationTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -335,9 +340,9 @@ func (m *_BACnetApplicationTagSignedInteger) deepCopy() *_BACnetApplicationTagSi
 	}
 	_BACnetApplicationTagSignedIntegerCopy := &_BACnetApplicationTagSignedInteger{
 		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadSignedInteger),
+		utils.DeepCopy[BACnetTagPayloadSignedInteger](m.Payload),
 	}
-	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	_BACnetApplicationTagSignedIntegerCopy.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
 	return _BACnetApplicationTagSignedIntegerCopy
 }
 

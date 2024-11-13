@@ -86,6 +86,8 @@ type BACnetConstructedDataCredentialDataInputUpdateTimeBuilder interface {
 	WithUpdateTime(BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
 	// WithUpdateTimeBuilder adds UpdateTime (property field) which is build by the builder
 	WithUpdateTimeBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCredentialDataInputUpdateTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataCredentialDataInputUpdateTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) = (*_BACnetCon
 
 func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCredentialDataInputUpdateTime
 }
 
 func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithMandatoryFields(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) MustBuild()
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) deepCopy() *_BACne
 	}
 	_BACnetConstructedDataCredentialDataInputUpdateTimeCopy := &_BACnetConstructedDataCredentialDataInputUpdateTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.UpdateTime.DeepCopy().(BACnetTimeStamp),
+		utils.DeepCopy[BACnetTimeStamp](m.UpdateTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCredentialDataInputUpdateTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCredentialDataInputUpdateTimeCopy
 }
 

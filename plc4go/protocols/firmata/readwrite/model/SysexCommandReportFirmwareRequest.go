@@ -71,6 +71,8 @@ type SysexCommandReportFirmwareRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SysexCommandReportFirmwareRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandReportFirmwareRequest or returns an error if something is wrong
 	Build() (SysexCommandReportFirmwareRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SysexCommandReportFirmwareRequestBuilder) = (*_SysexCommandReportFirmware
 
 func (b *_SysexCommandReportFirmwareRequestBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandReportFirmwareRequest
 }
 
 func (b *_SysexCommandReportFirmwareRequestBuilder) WithMandatoryFields() SysexCommandReportFirmwareRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_SysexCommandReportFirmwareRequestBuilder) MustBuild() SysexCommandRepo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandReportFirmwareRequestBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -249,7 +254,7 @@ func (m *_SysexCommandReportFirmwareRequest) deepCopy() *_SysexCommandReportFirm
 	_SysexCommandReportFirmwareRequestCopy := &_SysexCommandReportFirmwareRequest{
 		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandReportFirmwareRequestCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandReportFirmwareRequestCopy
 }
 

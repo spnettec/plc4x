@@ -110,6 +110,8 @@ type MonitoringParametersBuilder interface {
 	WithQueueSize(uint32) MonitoringParametersBuilder
 	// WithDiscardOldest adds DiscardOldest (property field)
 	WithDiscardOldest(bool) MonitoringParametersBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the MonitoringParameters or returns an error if something is wrong
 	Build() (MonitoringParameters, error)
 	// MustBuild does the same as Build but panics on error
@@ -133,6 +135,7 @@ var _ (MonitoringParametersBuilder) = (*_MonitoringParametersBuilder)(nil)
 
 func (b *_MonitoringParametersBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._MonitoringParameters
 }
 
 func (b *_MonitoringParametersBuilder) WithMandatoryFields(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) MonitoringParametersBuilder {
@@ -198,8 +201,10 @@ func (b *_MonitoringParametersBuilder) MustBuild() MonitoringParameters {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MonitoringParametersBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -437,12 +442,12 @@ func (m *_MonitoringParameters) deepCopy() *_MonitoringParameters {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ClientHandle,
 		m.SamplingInterval,
-		m.Filter.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[ExtensionObject](m.Filter),
 		m.QueueSize,
 		m.DiscardOldest,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_MonitoringParametersCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _MonitoringParametersCopy
 }
 

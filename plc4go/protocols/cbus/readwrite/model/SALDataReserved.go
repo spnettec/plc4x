@@ -71,6 +71,8 @@ type SALDataReservedBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SALDataReservedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataReserved or returns an error if something is wrong
 	Build() (SALDataReserved, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SALDataReservedBuilder) = (*_SALDataReservedBuilder)(nil)
 
 func (b *_SALDataReservedBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataReserved
 }
 
 func (b *_SALDataReservedBuilder) WithMandatoryFields() SALDataReservedBuilder {
@@ -115,8 +118,10 @@ func (b *_SALDataReservedBuilder) MustBuild() SALDataReserved {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataReservedBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -250,7 +255,7 @@ func (m *_SALDataReserved) deepCopy() *_SALDataReserved {
 	_SALDataReservedCopy := &_SALDataReserved{
 		m.SALDataContract.(*_SALData).deepCopy(),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataReservedCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataReservedCopy
 }
 

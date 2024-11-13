@@ -82,6 +82,8 @@ type BACnetConfirmedServiceRequestAuthenticateBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestAuthenticateBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetConfirmedServiceRequestAuthenticateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestAuthenticate or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestAuthenticate, error)
 	// MustBuild does the same as Build but panics on error
@@ -105,6 +107,7 @@ var _ (BACnetConfirmedServiceRequestAuthenticateBuilder) = (*_BACnetConfirmedSer
 
 func (b *_BACnetConfirmedServiceRequestAuthenticateBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestAuthenticate
 }
 
 func (b *_BACnetConfirmedServiceRequestAuthenticateBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestAuthenticateBuilder {
@@ -131,8 +134,10 @@ func (b *_BACnetConfirmedServiceRequestAuthenticateBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestAuthenticateBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -302,7 +307,7 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) deepCopy() *_BACnetConfirme
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
 		m.ServiceRequestPayloadLength,
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestAuthenticateCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestAuthenticateCopy
 }
 

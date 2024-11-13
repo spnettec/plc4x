@@ -79,6 +79,8 @@ type NLMReservedBuilder interface {
 	WithMandatoryFields(unknownBytes []byte) NLMReservedBuilder
 	// WithUnknownBytes adds UnknownBytes (property field)
 	WithUnknownBytes(...byte) NLMReservedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMReserved or returns an error if something is wrong
 	Build() (NLMReserved, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (NLMReservedBuilder) = (*_NLMReservedBuilder)(nil)
 
 func (b *_NLMReservedBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMReserved
 }
 
 func (b *_NLMReservedBuilder) WithMandatoryFields(unknownBytes []byte) NLMReservedBuilder {
@@ -128,8 +131,10 @@ func (b *_NLMReservedBuilder) MustBuild() NLMReserved {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMReservedBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -288,7 +293,7 @@ func (m *_NLMReserved) deepCopy() *_NLMReserved {
 		m.NLMContract.(*_NLM).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.UnknownBytes),
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMReservedCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMReservedCopy
 }
 

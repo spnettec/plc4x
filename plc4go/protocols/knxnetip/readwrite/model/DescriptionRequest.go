@@ -86,6 +86,8 @@ type DescriptionRequestBuilder interface {
 	WithHpaiControlEndpoint(HPAIControlEndpoint) DescriptionRequestBuilder
 	// WithHpaiControlEndpointBuilder adds HpaiControlEndpoint (property field) which is build by the builder
 	WithHpaiControlEndpointBuilder(func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) DescriptionRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the DescriptionRequest or returns an error if something is wrong
 	Build() (DescriptionRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (DescriptionRequestBuilder) = (*_DescriptionRequestBuilder)(nil)
 
 func (b *_DescriptionRequestBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._DescriptionRequest
 }
 
 func (b *_DescriptionRequestBuilder) WithMandatoryFields(hpaiControlEndpoint HPAIControlEndpoint) DescriptionRequestBuilder {
@@ -154,8 +157,10 @@ func (b *_DescriptionRequestBuilder) MustBuild() DescriptionRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DescriptionRequestBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -310,9 +315,9 @@ func (m *_DescriptionRequest) deepCopy() *_DescriptionRequest {
 	}
 	_DescriptionRequestCopy := &_DescriptionRequest{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
-		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+		utils.DeepCopy[HPAIControlEndpoint](m.HpaiControlEndpoint),
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_DescriptionRequestCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _DescriptionRequestCopy
 }
 

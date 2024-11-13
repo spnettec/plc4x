@@ -101,6 +101,8 @@ type MonitoredItemCreateRequestBuilder interface {
 	WithRequestedParameters(MonitoringParameters) MonitoredItemCreateRequestBuilder
 	// WithRequestedParametersBuilder adds RequestedParameters (property field) which is build by the builder
 	WithRequestedParametersBuilder(func(MonitoringParametersBuilder) MonitoringParametersBuilder) MonitoredItemCreateRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the MonitoredItemCreateRequest or returns an error if something is wrong
 	Build() (MonitoredItemCreateRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (MonitoredItemCreateRequestBuilder) = (*_MonitoredItemCreateRequestBuilder
 
 func (b *_MonitoredItemCreateRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._MonitoredItemCreateRequest
 }
 
 func (b *_MonitoredItemCreateRequestBuilder) WithMandatoryFields(itemToMonitor ReadValueId, monitoringMode MonitoringMode, requestedParameters MonitoringParameters) MonitoredItemCreateRequestBuilder {
@@ -198,8 +201,10 @@ func (b *_MonitoredItemCreateRequestBuilder) MustBuild() MonitoredItemCreateRequ
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MonitoredItemCreateRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -388,11 +393,11 @@ func (m *_MonitoredItemCreateRequest) deepCopy() *_MonitoredItemCreateRequest {
 	}
 	_MonitoredItemCreateRequestCopy := &_MonitoredItemCreateRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ItemToMonitor.DeepCopy().(ReadValueId),
+		utils.DeepCopy[ReadValueId](m.ItemToMonitor),
 		m.MonitoringMode,
-		m.RequestedParameters.DeepCopy().(MonitoringParameters),
+		utils.DeepCopy[MonitoringParameters](m.RequestedParameters),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_MonitoredItemCreateRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _MonitoredItemCreateRequestCopy
 }
 

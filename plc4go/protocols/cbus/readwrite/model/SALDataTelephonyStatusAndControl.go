@@ -84,6 +84,8 @@ type SALDataTelephonyStatusAndControlBuilder interface {
 	WithTelephonyData(TelephonyData) SALDataTelephonyStatusAndControlBuilder
 	// WithTelephonyDataBuilder adds TelephonyData (property field) which is build by the builder
 	WithTelephonyDataBuilder(func(TelephonyDataBuilder) TelephonyDataBuilder) SALDataTelephonyStatusAndControlBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataTelephonyStatusAndControl or returns an error if something is wrong
 	Build() (SALDataTelephonyStatusAndControl, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (SALDataTelephonyStatusAndControlBuilder) = (*_SALDataTelephonyStatusAndCo
 
 func (b *_SALDataTelephonyStatusAndControlBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataTelephonyStatusAndControl
 }
 
 func (b *_SALDataTelephonyStatusAndControlBuilder) WithMandatoryFields(telephonyData TelephonyData) SALDataTelephonyStatusAndControlBuilder {
@@ -152,8 +155,10 @@ func (b *_SALDataTelephonyStatusAndControlBuilder) MustBuild() SALDataTelephonyS
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataTelephonyStatusAndControlBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_SALDataTelephonyStatusAndControl) deepCopy() *_SALDataTelephonyStatusA
 	}
 	_SALDataTelephonyStatusAndControlCopy := &_SALDataTelephonyStatusAndControl{
 		m.SALDataContract.(*_SALData).deepCopy(),
-		m.TelephonyData.DeepCopy().(TelephonyData),
+		utils.DeepCopy[TelephonyData](m.TelephonyData),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataTelephonyStatusAndControlCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataTelephonyStatusAndControlCopy
 }
 

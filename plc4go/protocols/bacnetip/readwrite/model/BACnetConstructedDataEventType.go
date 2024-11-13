@@ -86,6 +86,8 @@ type BACnetConstructedDataEventTypeBuilder interface {
 	WithEventType(BACnetEventTypeTagged) BACnetConstructedDataEventTypeBuilder
 	// WithEventTypeBuilder adds EventType (property field) which is build by the builder
 	WithEventTypeBuilder(func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetConstructedDataEventTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEventType or returns an error if something is wrong
 	Build() (BACnetConstructedDataEventType, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataEventTypeBuilder) = (*_BACnetConstructedDataEventTyp
 
 func (b *_BACnetConstructedDataEventTypeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEventType
 }
 
 func (b *_BACnetConstructedDataEventTypeBuilder) WithMandatoryFields(eventType BACnetEventTypeTagged) BACnetConstructedDataEventTypeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataEventTypeBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEventTypeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataEventType) deepCopy() *_BACnetConstructedDataEven
 	}
 	_BACnetConstructedDataEventTypeCopy := &_BACnetConstructedDataEventType{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.EventType.DeepCopy().(BACnetEventTypeTagged),
+		utils.DeepCopy[BACnetEventTypeTagged](m.EventType),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEventTypeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEventTypeCopy
 }
 

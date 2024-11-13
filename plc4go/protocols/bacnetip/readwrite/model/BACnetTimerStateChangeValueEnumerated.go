@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueEnumeratedBuilder interface {
 	WithEnumeratedValue(BACnetApplicationTagEnumerated) BACnetTimerStateChangeValueEnumeratedBuilder
 	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
 	WithEnumeratedValueBuilder(func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetTimerStateChangeValueEnumeratedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueEnumerated or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueEnumerated, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueEnumeratedBuilder) = (*_BACnetTimerStateChange
 
 func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueEnumerated
 }
 
 func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetTimerStateChangeValueEnumeratedBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) MustBuild() BACnetTimerS
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimerStateChangeValueEnumerated) deepCopy() *_BACnetTimerStateCh
 	}
 	_BACnetTimerStateChangeValueEnumeratedCopy := &_BACnetTimerStateChangeValueEnumerated{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+		utils.DeepCopy[BACnetApplicationTagEnumerated](m.EnumeratedValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueEnumeratedCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueEnumeratedCopy
 }
 

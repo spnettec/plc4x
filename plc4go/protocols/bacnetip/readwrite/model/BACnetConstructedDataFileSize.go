@@ -86,6 +86,8 @@ type BACnetConstructedDataFileSizeBuilder interface {
 	WithFileSize(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFileSizeBuilder
 	// WithFileSizeBuilder adds FileSize (property field) which is build by the builder
 	WithFileSizeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFileSizeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataFileSize or returns an error if something is wrong
 	Build() (BACnetConstructedDataFileSize, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataFileSizeBuilder) = (*_BACnetConstructedDataFileSizeB
 
 func (b *_BACnetConstructedDataFileSizeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataFileSize
 }
 
 func (b *_BACnetConstructedDataFileSizeBuilder) WithMandatoryFields(fileSize BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFileSizeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataFileSizeBuilder) MustBuild() BACnetConstructedDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataFileSizeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataFileSize) deepCopy() *_BACnetConstructedDataFileS
 	}
 	_BACnetConstructedDataFileSizeCopy := &_BACnetConstructedDataFileSize{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.FileSize.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.FileSize),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataFileSizeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataFileSizeCopy
 }
 

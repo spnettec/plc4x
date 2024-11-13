@@ -105,75 +105,33 @@ type BACnetChannelValueBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetChannelValueBuilder
 	// AsBACnetChannelValueNull converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueNull() interface {
-		BACnetChannelValueNullBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueNull() BACnetChannelValueNullBuilder
 	// AsBACnetChannelValueReal converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueReal() interface {
-		BACnetChannelValueRealBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueReal() BACnetChannelValueRealBuilder
 	// AsBACnetChannelValueEnumerated converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueEnumerated() interface {
-		BACnetChannelValueEnumeratedBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueEnumerated() BACnetChannelValueEnumeratedBuilder
 	// AsBACnetChannelValueUnsigned converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueUnsigned() interface {
-		BACnetChannelValueUnsignedBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueUnsigned() BACnetChannelValueUnsignedBuilder
 	// AsBACnetChannelValueBoolean converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueBoolean() interface {
-		BACnetChannelValueBooleanBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueBoolean() BACnetChannelValueBooleanBuilder
 	// AsBACnetChannelValueInteger converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueInteger() interface {
-		BACnetChannelValueIntegerBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueInteger() BACnetChannelValueIntegerBuilder
 	// AsBACnetChannelValueDouble converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueDouble() interface {
-		BACnetChannelValueDoubleBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueDouble() BACnetChannelValueDoubleBuilder
 	// AsBACnetChannelValueTime converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueTime() interface {
-		BACnetChannelValueTimeBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueTime() BACnetChannelValueTimeBuilder
 	// AsBACnetChannelValueCharacterString converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueCharacterString() interface {
-		BACnetChannelValueCharacterStringBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueCharacterString() BACnetChannelValueCharacterStringBuilder
 	// AsBACnetChannelValueOctetString converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueOctetString() interface {
-		BACnetChannelValueOctetStringBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueOctetString() BACnetChannelValueOctetStringBuilder
 	// AsBACnetChannelValueBitString converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueBitString() interface {
-		BACnetChannelValueBitStringBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueBitString() BACnetChannelValueBitStringBuilder
 	// AsBACnetChannelValueDate converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueDate() interface {
-		BACnetChannelValueDateBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueDate() BACnetChannelValueDateBuilder
 	// AsBACnetChannelValueObjectidentifier converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueObjectidentifier() interface {
-		BACnetChannelValueObjectidentifierBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueObjectidentifier() BACnetChannelValueObjectidentifierBuilder
 	// AsBACnetChannelValueLightingCommand converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
-	AsBACnetChannelValueLightingCommand() interface {
-		BACnetChannelValueLightingCommandBuilder
-		Done() BACnetChannelValueBuilder
-	}
+	AsBACnetChannelValueLightingCommand() BACnetChannelValueLightingCommandBuilder
 	// Build builds the BACnetChannelValue or returns an error if something is wrong
 	PartialBuild() (BACnetChannelValueContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -248,14 +206,8 @@ func (b *_BACnetChannelValueBuilder) PartialMustBuild() BACnetChannelValueContra
 	return build
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueNull() interface {
-	BACnetChannelValueNullBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueNullBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueNull() BACnetChannelValueNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueNullBuilder().(*_BACnetChannelValueNullBuilder)
@@ -264,14 +216,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueNull() interface {
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueReal() interface {
-	BACnetChannelValueRealBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueRealBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueReal() BACnetChannelValueRealBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueRealBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueRealBuilder().(*_BACnetChannelValueRealBuilder)
@@ -280,14 +226,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueReal() interface {
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueEnumerated() interface {
-	BACnetChannelValueEnumeratedBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueEnumeratedBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueEnumerated() BACnetChannelValueEnumeratedBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueEnumeratedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueEnumeratedBuilder().(*_BACnetChannelValueEnumeratedBuilder)
@@ -296,14 +236,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueEnumerated() interface 
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueUnsigned() interface {
-	BACnetChannelValueUnsignedBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueUnsignedBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueUnsigned() BACnetChannelValueUnsignedBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueUnsignedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueUnsignedBuilder().(*_BACnetChannelValueUnsignedBuilder)
@@ -312,14 +246,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueUnsigned() interface {
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueBoolean() interface {
-	BACnetChannelValueBooleanBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueBooleanBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueBoolean() BACnetChannelValueBooleanBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueBooleanBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueBooleanBuilder().(*_BACnetChannelValueBooleanBuilder)
@@ -328,14 +256,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueBoolean() interface {
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueInteger() interface {
-	BACnetChannelValueIntegerBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueIntegerBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueInteger() BACnetChannelValueIntegerBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueIntegerBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueIntegerBuilder().(*_BACnetChannelValueIntegerBuilder)
@@ -344,14 +266,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueInteger() interface {
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueDouble() interface {
-	BACnetChannelValueDoubleBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueDoubleBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueDouble() BACnetChannelValueDoubleBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueDoubleBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueDoubleBuilder().(*_BACnetChannelValueDoubleBuilder)
@@ -360,14 +276,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueDouble() interface {
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueTime() interface {
-	BACnetChannelValueTimeBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueTimeBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueTime() BACnetChannelValueTimeBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueTimeBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueTimeBuilder().(*_BACnetChannelValueTimeBuilder)
@@ -376,14 +286,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueTime() interface {
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueCharacterString() interface {
-	BACnetChannelValueCharacterStringBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueCharacterStringBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueCharacterString() BACnetChannelValueCharacterStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueCharacterStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueCharacterStringBuilder().(*_BACnetChannelValueCharacterStringBuilder)
@@ -392,14 +296,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueCharacterString() inter
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueOctetString() interface {
-	BACnetChannelValueOctetStringBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueOctetStringBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueOctetString() BACnetChannelValueOctetStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueOctetStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueOctetStringBuilder().(*_BACnetChannelValueOctetStringBuilder)
@@ -408,14 +306,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueOctetString() interface
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueBitString() interface {
-	BACnetChannelValueBitStringBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueBitStringBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueBitString() BACnetChannelValueBitStringBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueBitStringBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueBitStringBuilder().(*_BACnetChannelValueBitStringBuilder)
@@ -424,14 +316,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueBitString() interface {
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueDate() interface {
-	BACnetChannelValueDateBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueDateBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueDate() BACnetChannelValueDateBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueDateBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueDateBuilder().(*_BACnetChannelValueDateBuilder)
@@ -440,14 +326,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueDate() interface {
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueObjectidentifier() interface {
-	BACnetChannelValueObjectidentifierBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueObjectidentifierBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueObjectidentifier() BACnetChannelValueObjectidentifierBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueObjectidentifierBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueObjectidentifierBuilder().(*_BACnetChannelValueObjectidentifierBuilder)
@@ -456,14 +336,8 @@ func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueObjectidentifier() inte
 	return cb
 }
 
-func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueLightingCommand() interface {
-	BACnetChannelValueLightingCommandBuilder
-	Done() BACnetChannelValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetChannelValueLightingCommandBuilder
-		Done() BACnetChannelValueBuilder
-	}); ok {
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueLightingCommand() BACnetChannelValueLightingCommandBuilder {
+	if cb, ok := b.childBuilder.(BACnetChannelValueLightingCommandBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetChannelValueLightingCommandBuilder().(*_BACnetChannelValueLightingCommandBuilder)
@@ -763,7 +637,7 @@ func (m *_BACnetChannelValue) deepCopy() *_BACnetChannelValue {
 	}
 	_BACnetChannelValueCopy := &_BACnetChannelValue{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetChannelValueCopy
 }

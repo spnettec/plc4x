@@ -117,6 +117,8 @@ type BACnetFaultParameterFaultOutOfRangeBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultOutOfRangeBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultOutOfRangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetFaultParameterBuilder
 	// Build builds the BACnetFaultParameterFaultOutOfRange or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultOutOfRange, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +142,7 @@ var _ (BACnetFaultParameterFaultOutOfRangeBuilder) = (*_BACnetFaultParameterFaul
 
 func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) setParent(contract BACnetFaultParameterContract) {
 	b.BACnetFaultParameterContract = contract
+	contract.(*_BACnetFaultParameter)._SubType = b._BACnetFaultParameterFaultOutOfRange
 }
 
 func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, minNormalValue BACnetFaultParameterFaultOutOfRangeMinNormalValue, maxNormalValue BACnetFaultParameterFaultOutOfRangeMaxNormalValue, closingTag BACnetClosingTag) BACnetFaultParameterFaultOutOfRangeBuilder {
@@ -257,8 +260,10 @@ func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) MustBuild() BACnetFaultPar
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetFaultParameterFaultOutOfRangeBuilder) Done() BACnetFaultParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetFaultParameterBuilder().(*_BACnetFaultParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -460,12 +465,12 @@ func (m *_BACnetFaultParameterFaultOutOfRange) deepCopy() *_BACnetFaultParameter
 	}
 	_BACnetFaultParameterFaultOutOfRangeCopy := &_BACnetFaultParameterFaultOutOfRange{
 		m.BACnetFaultParameterContract.(*_BACnetFaultParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.MinNormalValue.DeepCopy().(BACnetFaultParameterFaultOutOfRangeMinNormalValue),
-		m.MaxNormalValue.DeepCopy().(BACnetFaultParameterFaultOutOfRangeMaxNormalValue),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetFaultParameterFaultOutOfRangeMinNormalValue](m.MinNormalValue),
+		utils.DeepCopy[BACnetFaultParameterFaultOutOfRangeMaxNormalValue](m.MaxNormalValue),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = m
+	_BACnetFaultParameterFaultOutOfRangeCopy.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = m
 	return _BACnetFaultParameterFaultOutOfRangeCopy
 }
 

@@ -101,15 +101,9 @@ type BACnetOptionalCharacterStringBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalCharacterStringBuilder
 	// AsBACnetOptionalCharacterStringNull converts this build to a subType of BACnetOptionalCharacterString. It is always possible to return to current builder using Done()
-	AsBACnetOptionalCharacterStringNull() interface {
-		BACnetOptionalCharacterStringNullBuilder
-		Done() BACnetOptionalCharacterStringBuilder
-	}
+	AsBACnetOptionalCharacterStringNull() BACnetOptionalCharacterStringNullBuilder
 	// AsBACnetOptionalCharacterStringValue converts this build to a subType of BACnetOptionalCharacterString. It is always possible to return to current builder using Done()
-	AsBACnetOptionalCharacterStringValue() interface {
-		BACnetOptionalCharacterStringValueBuilder
-		Done() BACnetOptionalCharacterStringBuilder
-	}
+	AsBACnetOptionalCharacterStringValue() BACnetOptionalCharacterStringValueBuilder
 	// Build builds the BACnetOptionalCharacterString or returns an error if something is wrong
 	PartialBuild() (BACnetOptionalCharacterStringContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetOptionalCharacterStringBuilder) PartialMustBuild() BACnetOptiona
 	return build
 }
 
-func (b *_BACnetOptionalCharacterStringBuilder) AsBACnetOptionalCharacterStringNull() interface {
-	BACnetOptionalCharacterStringNullBuilder
-	Done() BACnetOptionalCharacterStringBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetOptionalCharacterStringNullBuilder
-		Done() BACnetOptionalCharacterStringBuilder
-	}); ok {
+func (b *_BACnetOptionalCharacterStringBuilder) AsBACnetOptionalCharacterStringNull() BACnetOptionalCharacterStringNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetOptionalCharacterStringNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetOptionalCharacterStringNullBuilder().(*_BACnetOptionalCharacterStringNullBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetOptionalCharacterStringBuilder) AsBACnetOptionalCharacterStringN
 	return cb
 }
 
-func (b *_BACnetOptionalCharacterStringBuilder) AsBACnetOptionalCharacterStringValue() interface {
-	BACnetOptionalCharacterStringValueBuilder
-	Done() BACnetOptionalCharacterStringBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetOptionalCharacterStringValueBuilder
-		Done() BACnetOptionalCharacterStringBuilder
-	}); ok {
+func (b *_BACnetOptionalCharacterStringBuilder) AsBACnetOptionalCharacterStringValue() BACnetOptionalCharacterStringValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetOptionalCharacterStringValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetOptionalCharacterStringValueBuilder().(*_BACnetOptionalCharacterStringValueBuilder)
@@ -433,7 +415,7 @@ func (m *_BACnetOptionalCharacterString) deepCopy() *_BACnetOptionalCharacterStr
 	}
 	_BACnetOptionalCharacterStringCopy := &_BACnetOptionalCharacterString{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetOptionalCharacterStringCopy
 }

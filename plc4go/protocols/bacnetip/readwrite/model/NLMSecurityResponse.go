@@ -97,6 +97,8 @@ type NLMSecurityResponseBuilder interface {
 	WithOriginalTimestamp(uint32) NLMSecurityResponseBuilder
 	// WithVariableParameters adds VariableParameters (property field)
 	WithVariableParameters(...byte) NLMSecurityResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMSecurityResponse or returns an error if something is wrong
 	Build() (NLMSecurityResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (NLMSecurityResponseBuilder) = (*_NLMSecurityResponseBuilder)(nil)
 
 func (b *_NLMSecurityResponseBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMSecurityResponse
 }
 
 func (b *_NLMSecurityResponseBuilder) WithMandatoryFields(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte) NLMSecurityResponseBuilder {
@@ -161,8 +164,10 @@ func (b *_NLMSecurityResponseBuilder) MustBuild() NLMSecurityResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMSecurityResponseBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,7 +380,7 @@ func (m *_NLMSecurityResponse) deepCopy() *_NLMSecurityResponse {
 		m.OriginalTimestamp,
 		utils.DeepCopySlice[byte, byte](m.VariableParameters),
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMSecurityResponseCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMSecurityResponseCopy
 }
 

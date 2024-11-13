@@ -86,6 +86,8 @@ type BACnetConstructedDataCharacterStringValuePresentValueBuilder interface {
 	WithPresentValue(BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValuePresentValueBuilder
 	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
 	WithPresentValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataCharacterStringValuePresentValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCharacterStringValuePresentValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataCharacterStringValuePresentValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataCharacterStringValuePresentValueBuilder) = (*_BACnet
 
 func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCharacterStringValuePresentValue
 }
 
 func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValuePresentValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) MustBuil
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataCharacterStringValuePresentValue) deepCopy() *_BA
 	}
 	_BACnetConstructedDataCharacterStringValuePresentValueCopy := &_BACnetConstructedDataCharacterStringValuePresentValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PresentValue.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.PresentValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCharacterStringValuePresentValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCharacterStringValuePresentValueCopy
 }
 

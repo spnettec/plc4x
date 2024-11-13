@@ -84,6 +84,8 @@ type EncodedReplyCALReplyBuilder interface {
 	WithCalReply(CALReply) EncodedReplyCALReplyBuilder
 	// WithCalReplyBuilder adds CalReply (property field) which is build by the builder
 	WithCalReplyBuilder(func(CALReplyBuilder) CALReplyBuilder) EncodedReplyCALReplyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EncodedReplyBuilder
 	// Build builds the EncodedReplyCALReply or returns an error if something is wrong
 	Build() (EncodedReplyCALReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (EncodedReplyCALReplyBuilder) = (*_EncodedReplyCALReplyBuilder)(nil)
 
 func (b *_EncodedReplyCALReplyBuilder) setParent(contract EncodedReplyContract) {
 	b.EncodedReplyContract = contract
+	contract.(*_EncodedReply)._SubType = b._EncodedReplyCALReply
 }
 
 func (b *_EncodedReplyCALReplyBuilder) WithMandatoryFields(calReply CALReply) EncodedReplyCALReplyBuilder {
@@ -152,8 +155,10 @@ func (b *_EncodedReplyCALReplyBuilder) MustBuild() EncodedReplyCALReply {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EncodedReplyCALReplyBuilder) Done() EncodedReplyBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEncodedReplyBuilder().(*_EncodedReplyBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_EncodedReplyCALReply) deepCopy() *_EncodedReplyCALReply {
 	}
 	_EncodedReplyCALReplyCopy := &_EncodedReplyCALReply{
 		m.EncodedReplyContract.(*_EncodedReply).deepCopy(),
-		m.CalReply.DeepCopy().(CALReply),
+		utils.DeepCopy[CALReply](m.CalReply),
 	}
-	m.EncodedReplyContract.(*_EncodedReply)._SubType = m
+	_EncodedReplyCALReplyCopy.EncodedReplyContract.(*_EncodedReply)._SubType = m
 	return _EncodedReplyCALReplyCopy
 }
 

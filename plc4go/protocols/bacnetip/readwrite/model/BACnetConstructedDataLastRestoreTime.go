@@ -86,6 +86,8 @@ type BACnetConstructedDataLastRestoreTimeBuilder interface {
 	WithLastRestoreTime(BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder
 	// WithLastRestoreTimeBuilder adds LastRestoreTime (property field) which is build by the builder
 	WithLastRestoreTimeBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataLastRestoreTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLastRestoreTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataLastRestoreTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLastRestoreTimeBuilder) = (*_BACnetConstructedDataLa
 
 func (b *_BACnetConstructedDataLastRestoreTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLastRestoreTime
 }
 
 func (b *_BACnetConstructedDataLastRestoreTimeBuilder) WithMandatoryFields(lastRestoreTime BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLastRestoreTimeBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLastRestoreTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLastRestoreTime) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataLastRestoreTimeCopy := &_BACnetConstructedDataLastRestoreTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LastRestoreTime.DeepCopy().(BACnetTimeStamp),
+		utils.DeepCopy[BACnetTimeStamp](m.LastRestoreTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLastRestoreTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLastRestoreTimeCopy
 }
 

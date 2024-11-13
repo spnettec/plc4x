@@ -150,6 +150,8 @@ type BACnetEventParameterFloatingLimitBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterFloatingLimitBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterFloatingLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterBuilder
 	// Build builds the BACnetEventParameterFloatingLimit or returns an error if something is wrong
 	Build() (BACnetEventParameterFloatingLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -173,6 +175,7 @@ var _ (BACnetEventParameterFloatingLimitBuilder) = (*_BACnetEventParameterFloati
 
 func (b *_BACnetEventParameterFloatingLimitBuilder) setParent(contract BACnetEventParameterContract) {
 	b.BACnetEventParameterContract = contract
+	contract.(*_BACnetEventParameter)._SubType = b._BACnetEventParameterFloatingLimit
 }
 
 func (b *_BACnetEventParameterFloatingLimitBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, setpointReference BACnetDeviceObjectPropertyReferenceEnclosed, lowDiffLimit BACnetContextTagReal, highDiffLimit BACnetContextTagReal, deadband BACnetContextTagReal, closingTag BACnetClosingTag) BACnetEventParameterFloatingLimitBuilder {
@@ -362,8 +365,10 @@ func (b *_BACnetEventParameterFloatingLimitBuilder) MustBuild() BACnetEventParam
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterFloatingLimitBuilder) Done() BACnetEventParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -616,15 +621,15 @@ func (m *_BACnetEventParameterFloatingLimit) deepCopy() *_BACnetEventParameterFl
 	}
 	_BACnetEventParameterFloatingLimitCopy := &_BACnetEventParameterFloatingLimit{
 		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.SetpointReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
-		m.LowDiffLimit.DeepCopy().(BACnetContextTagReal),
-		m.HighDiffLimit.DeepCopy().(BACnetContextTagReal),
-		m.Deadband.DeepCopy().(BACnetContextTagReal),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeDelay),
+		utils.DeepCopy[BACnetDeviceObjectPropertyReferenceEnclosed](m.SetpointReference),
+		utils.DeepCopy[BACnetContextTagReal](m.LowDiffLimit),
+		utils.DeepCopy[BACnetContextTagReal](m.HighDiffLimit),
+		utils.DeepCopy[BACnetContextTagReal](m.Deadband),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	_BACnetEventParameterFloatingLimitCopy.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
 	return _BACnetEventParameterFloatingLimitCopy
 }
 

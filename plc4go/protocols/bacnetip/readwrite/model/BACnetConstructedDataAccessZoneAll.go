@@ -71,6 +71,8 @@ type BACnetConstructedDataAccessZoneAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataAccessZoneAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAccessZoneAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataAccessZoneAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataAccessZoneAllBuilder) = (*_BACnetConstructedDataAcce
 
 func (b *_BACnetConstructedDataAccessZoneAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAccessZoneAll
 }
 
 func (b *_BACnetConstructedDataAccessZoneAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessZoneAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataAccessZoneAllBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAccessZoneAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataAccessZoneAll) deepCopy() *_BACnetConstructedData
 	_BACnetConstructedDataAccessZoneAllCopy := &_BACnetConstructedDataAccessZoneAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAccessZoneAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAccessZoneAllCopy
 }
 

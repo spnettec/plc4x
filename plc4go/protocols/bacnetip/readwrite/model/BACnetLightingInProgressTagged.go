@@ -333,7 +333,7 @@ func (m *_BACnetLightingInProgressTagged) deepCopy() *_BACnetLightingInProgressT
 		return nil
 	}
 	_BACnetLightingInProgressTaggedCopy := &_BACnetLightingInProgressTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

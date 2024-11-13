@@ -496,11 +496,11 @@ func (m *_BACnetEventPriorities) deepCopy() *_BACnetEventPriorities {
 		return nil
 	}
 	_BACnetEventPrioritiesCopy := &_BACnetEventPriorities{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.ToOffnormal.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.ToFault.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.ToNormal.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ToOffnormal),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ToFault),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ToNormal),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetEventPrioritiesCopy

@@ -86,6 +86,8 @@ type BACnetConstructedDataZoneToBuilder interface {
 	WithZoneTo(BACnetDeviceObjectReference) BACnetConstructedDataZoneToBuilder
 	// WithZoneToBuilder adds ZoneTo (property field) which is build by the builder
 	WithZoneToBuilder(func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataZoneToBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataZoneTo or returns an error if something is wrong
 	Build() (BACnetConstructedDataZoneTo, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataZoneToBuilder) = (*_BACnetConstructedDataZoneToBuild
 
 func (b *_BACnetConstructedDataZoneToBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataZoneTo
 }
 
 func (b *_BACnetConstructedDataZoneToBuilder) WithMandatoryFields(zoneTo BACnetDeviceObjectReference) BACnetConstructedDataZoneToBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataZoneToBuilder) MustBuild() BACnetConstructedDataZ
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataZoneToBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataZoneTo) deepCopy() *_BACnetConstructedDataZoneTo 
 	}
 	_BACnetConstructedDataZoneToCopy := &_BACnetConstructedDataZoneTo{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ZoneTo.DeepCopy().(BACnetDeviceObjectReference),
+		utils.DeepCopy[BACnetDeviceObjectReference](m.ZoneTo),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataZoneToCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataZoneToCopy
 }
 

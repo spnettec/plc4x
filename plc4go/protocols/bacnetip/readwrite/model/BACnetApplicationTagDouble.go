@@ -86,6 +86,8 @@ type BACnetApplicationTagDoubleBuilder interface {
 	WithPayload(BACnetTagPayloadDouble) BACnetApplicationTagDoubleBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetApplicationTagDoubleBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetApplicationTagBuilder
 	// Build builds the BACnetApplicationTagDouble or returns an error if something is wrong
 	Build() (BACnetApplicationTagDouble, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetApplicationTagDoubleBuilder) = (*_BACnetApplicationTagDoubleBuilder
 
 func (b *_BACnetApplicationTagDoubleBuilder) setParent(contract BACnetApplicationTagContract) {
 	b.BACnetApplicationTagContract = contract
+	contract.(*_BACnetApplicationTag)._SubType = b._BACnetApplicationTagDouble
 }
 
 func (b *_BACnetApplicationTagDoubleBuilder) WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetApplicationTagDoubleBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetApplicationTagDoubleBuilder) MustBuild() BACnetApplicationTagDou
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetApplicationTagDoubleBuilder) Done() BACnetApplicationTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetApplicationTagBuilder().(*_BACnetApplicationTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -335,9 +340,9 @@ func (m *_BACnetApplicationTagDouble) deepCopy() *_BACnetApplicationTagDouble {
 	}
 	_BACnetApplicationTagDoubleCopy := &_BACnetApplicationTagDouble{
 		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadDouble),
+		utils.DeepCopy[BACnetTagPayloadDouble](m.Payload),
 	}
-	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	_BACnetApplicationTagDoubleCopy.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
 	return _BACnetApplicationTagDoubleCopy
 }
 

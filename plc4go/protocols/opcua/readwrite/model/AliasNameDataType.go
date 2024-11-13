@@ -90,6 +90,8 @@ type AliasNameDataTypeBuilder interface {
 	WithAliasNameBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) AliasNameDataTypeBuilder
 	// WithReferencedNodes adds ReferencedNodes (property field)
 	WithReferencedNodes(...ExpandedNodeId) AliasNameDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AliasNameDataType or returns an error if something is wrong
 	Build() (AliasNameDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (AliasNameDataTypeBuilder) = (*_AliasNameDataTypeBuilder)(nil)
 
 func (b *_AliasNameDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AliasNameDataType
 }
 
 func (b *_AliasNameDataTypeBuilder) WithMandatoryFields(aliasName QualifiedName, referencedNodes []ExpandedNodeId) AliasNameDataTypeBuilder {
@@ -163,8 +166,10 @@ func (b *_AliasNameDataTypeBuilder) MustBuild() AliasNameDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AliasNameDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_AliasNameDataType) deepCopy() *_AliasNameDataType {
 	}
 	_AliasNameDataTypeCopy := &_AliasNameDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.AliasName.DeepCopy().(QualifiedName),
+		utils.DeepCopy[QualifiedName](m.AliasName),
 		utils.DeepCopySlice[ExpandedNodeId, ExpandedNodeId](m.ReferencedNodes),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AliasNameDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AliasNameDataTypeCopy
 }
 

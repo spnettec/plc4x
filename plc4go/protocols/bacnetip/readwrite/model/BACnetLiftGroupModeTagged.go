@@ -333,7 +333,7 @@ func (m *_BACnetLiftGroupModeTagged) deepCopy() *_BACnetLiftGroupModeTagged {
 		return nil
 	}
 	_BACnetLiftGroupModeTaggedCopy := &_BACnetLiftGroupModeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

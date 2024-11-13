@@ -138,6 +138,8 @@ type ReferenceTypeAttributesBuilder interface {
 	WithInverseName(LocalizedText) ReferenceTypeAttributesBuilder
 	// WithInverseNameBuilder adds InverseName (property field) which is build by the builder
 	WithInverseNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceTypeAttributesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReferenceTypeAttributes or returns an error if something is wrong
 	Build() (ReferenceTypeAttributes, error)
 	// MustBuild does the same as Build but panics on error
@@ -161,6 +163,7 @@ var _ (ReferenceTypeAttributesBuilder) = (*_ReferenceTypeAttributesBuilder)(nil)
 
 func (b *_ReferenceTypeAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReferenceTypeAttributes
 }
 
 func (b *_ReferenceTypeAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, symmetric bool, isAbstract bool, inverseName LocalizedText) ReferenceTypeAttributesBuilder {
@@ -279,8 +282,10 @@ func (b *_ReferenceTypeAttributesBuilder) MustBuild() ReferenceTypeAttributes {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReferenceTypeAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -568,16 +573,16 @@ func (m *_ReferenceTypeAttributes) deepCopy() *_ReferenceTypeAttributes {
 	_ReferenceTypeAttributesCopy := &_ReferenceTypeAttributes{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedAttributes,
-		m.DisplayName.DeepCopy().(LocalizedText),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.DisplayName),
+		utils.DeepCopy[LocalizedText](m.Description),
 		m.WriteMask,
 		m.UserWriteMask,
 		m.Symmetric,
 		m.IsAbstract,
-		m.InverseName.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.InverseName),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReferenceTypeAttributesCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReferenceTypeAttributesCopy
 }
 

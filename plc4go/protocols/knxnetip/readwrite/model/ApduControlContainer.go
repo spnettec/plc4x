@@ -84,6 +84,8 @@ type ApduControlContainerBuilder interface {
 	WithControlApdu(ApduControl) ApduControlContainerBuilder
 	// WithControlApduBuilder adds ControlApdu (property field) which is build by the builder
 	WithControlApduBuilder(func(ApduControlBuilder) ApduControlBuilder) ApduControlContainerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduBuilder
 	// Build builds the ApduControlContainer or returns an error if something is wrong
 	Build() (ApduControlContainer, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (ApduControlContainerBuilder) = (*_ApduControlContainerBuilder)(nil)
 
 func (b *_ApduControlContainerBuilder) setParent(contract ApduContract) {
 	b.ApduContract = contract
+	contract.(*_Apdu)._SubType = b._ApduControlContainer
 }
 
 func (b *_ApduControlContainerBuilder) WithMandatoryFields(controlApdu ApduControl) ApduControlContainerBuilder {
@@ -152,8 +155,10 @@ func (b *_ApduControlContainerBuilder) MustBuild() ApduControlContainer {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduControlContainerBuilder) Done() ApduBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduBuilder().(*_ApduBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_ApduControlContainer) deepCopy() *_ApduControlContainer {
 	}
 	_ApduControlContainerCopy := &_ApduControlContainer{
 		m.ApduContract.(*_Apdu).deepCopy(),
-		m.ControlApdu.DeepCopy().(ApduControl),
+		utils.DeepCopy[ApduControl](m.ControlApdu),
 	}
-	m.ApduContract.(*_Apdu)._SubType = m
+	_ApduControlContainerCopy.ApduContract.(*_Apdu)._SubType = m
 	return _ApduControlContainerCopy
 }
 

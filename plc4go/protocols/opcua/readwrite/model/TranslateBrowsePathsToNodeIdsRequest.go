@@ -90,6 +90,8 @@ type TranslateBrowsePathsToNodeIdsRequestBuilder interface {
 	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) TranslateBrowsePathsToNodeIdsRequestBuilder
 	// WithBrowsePaths adds BrowsePaths (property field)
 	WithBrowsePaths(...BrowsePath) TranslateBrowsePathsToNodeIdsRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the TranslateBrowsePathsToNodeIdsRequest or returns an error if something is wrong
 	Build() (TranslateBrowsePathsToNodeIdsRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (TranslateBrowsePathsToNodeIdsRequestBuilder) = (*_TranslateBrowsePathsToN
 
 func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._TranslateBrowsePathsToNodeIdsRequest
 }
 
 func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, browsePaths []BrowsePath) TranslateBrowsePathsToNodeIdsRequestBuilder {
@@ -163,8 +166,10 @@ func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) MustBuild() TranslateBrow
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TranslateBrowsePathsToNodeIdsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) deepCopy() *_TranslateBrowsePath
 	}
 	_TranslateBrowsePathsToNodeIdsRequestCopy := &_TranslateBrowsePathsToNodeIdsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		utils.DeepCopySlice[BrowsePath, BrowsePath](m.BrowsePaths),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_TranslateBrowsePathsToNodeIdsRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TranslateBrowsePathsToNodeIdsRequestCopy
 }
 

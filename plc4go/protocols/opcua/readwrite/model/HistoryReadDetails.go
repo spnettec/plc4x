@@ -71,6 +71,8 @@ type HistoryReadDetailsBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() HistoryReadDetailsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the HistoryReadDetails or returns an error if something is wrong
 	Build() (HistoryReadDetails, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (HistoryReadDetailsBuilder) = (*_HistoryReadDetailsBuilder)(nil)
 
 func (b *_HistoryReadDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._HistoryReadDetails
 }
 
 func (b *_HistoryReadDetailsBuilder) WithMandatoryFields() HistoryReadDetailsBuilder {
@@ -115,8 +118,10 @@ func (b *_HistoryReadDetailsBuilder) MustBuild() HistoryReadDetails {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_HistoryReadDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_HistoryReadDetails) deepCopy() *_HistoryReadDetails {
 	_HistoryReadDetailsCopy := &_HistoryReadDetails{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_HistoryReadDetailsCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryReadDetailsCopy
 }
 

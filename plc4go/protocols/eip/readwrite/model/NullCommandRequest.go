@@ -71,6 +71,8 @@ type NullCommandRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() NullCommandRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EipPacketBuilder
 	// Build builds the NullCommandRequest or returns an error if something is wrong
 	Build() (NullCommandRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (NullCommandRequestBuilder) = (*_NullCommandRequestBuilder)(nil)
 
 func (b *_NullCommandRequestBuilder) setParent(contract EipPacketContract) {
 	b.EipPacketContract = contract
+	contract.(*_EipPacket)._SubType = b._NullCommandRequest
 }
 
 func (b *_NullCommandRequestBuilder) WithMandatoryFields() NullCommandRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_NullCommandRequestBuilder) MustBuild() NullCommandRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NullCommandRequestBuilder) Done() EipPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEipPacketBuilder().(*_EipPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -253,7 +258,7 @@ func (m *_NullCommandRequest) deepCopy() *_NullCommandRequest {
 	_NullCommandRequestCopy := &_NullCommandRequest{
 		m.EipPacketContract.(*_EipPacket).deepCopy(),
 	}
-	m.EipPacketContract.(*_EipPacket)._SubType = m
+	_NullCommandRequestCopy.EipPacketContract.(*_EipPacket)._SubType = m
 	return _NullCommandRequestCopy
 }
 

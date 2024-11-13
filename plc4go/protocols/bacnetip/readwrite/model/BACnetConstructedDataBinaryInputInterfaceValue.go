@@ -86,6 +86,8 @@ type BACnetConstructedDataBinaryInputInterfaceValueBuilder interface {
 	WithInterfaceValue(BACnetOptionalBinaryPV) BACnetConstructedDataBinaryInputInterfaceValueBuilder
 	// WithInterfaceValueBuilder adds InterfaceValue (property field) which is build by the builder
 	WithInterfaceValueBuilder(func(BACnetOptionalBinaryPVBuilder) BACnetOptionalBinaryPVBuilder) BACnetConstructedDataBinaryInputInterfaceValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBinaryInputInterfaceValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataBinaryInputInterfaceValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBinaryInputInterfaceValueBuilder) = (*_BACnetConstru
 
 func (b *_BACnetConstructedDataBinaryInputInterfaceValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBinaryInputInterfaceValue
 }
 
 func (b *_BACnetConstructedDataBinaryInputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataBinaryInputInterfaceValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBinaryInputInterfaceValueBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBinaryInputInterfaceValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBinaryInputInterfaceValue) deepCopy() *_BACnetCon
 	}
 	_BACnetConstructedDataBinaryInputInterfaceValueCopy := &_BACnetConstructedDataBinaryInputInterfaceValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.InterfaceValue.DeepCopy().(BACnetOptionalBinaryPV),
+		utils.DeepCopy[BACnetOptionalBinaryPV](m.InterfaceValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBinaryInputInterfaceValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBinaryInputInterfaceValueCopy
 }
 

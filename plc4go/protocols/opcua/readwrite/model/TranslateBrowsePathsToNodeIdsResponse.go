@@ -96,6 +96,8 @@ type TranslateBrowsePathsToNodeIdsResponseBuilder interface {
 	WithResults(...BrowsePathResult) TranslateBrowsePathsToNodeIdsResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the TranslateBrowsePathsToNodeIdsResponse or returns an error if something is wrong
 	Build() (TranslateBrowsePathsToNodeIdsResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (TranslateBrowsePathsToNodeIdsResponseBuilder) = (*_TranslateBrowsePathsTo
 
 func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._TranslateBrowsePathsToNodeIdsResponse
 }
 
 func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []BrowsePathResult, diagnosticInfos []DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) MustBuild() TranslateBro
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TranslateBrowsePathsToNodeIdsResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) deepCopy() *_TranslateBrowsePat
 	}
 	_TranslateBrowsePathsToNodeIdsResponseCopy := &_TranslateBrowsePathsToNodeIdsResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[BrowsePathResult, BrowsePathResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_TranslateBrowsePathsToNodeIdsResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TranslateBrowsePathsToNodeIdsResponseCopy
 }
 

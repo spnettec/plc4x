@@ -89,6 +89,8 @@ type BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder interface
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder
 	// WithReferences adds References (property field)
 	WithReferences(...BACnetDeviceObjectPropertyReference) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataChannelListOfObjectPropertyReferences or returns an error if something is wrong
 	Build() (BACnetConstructedDataChannelListOfObjectPropertyReferences, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) = (*_B
 
 func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataChannelListOfObjectPropertyReferences
 }
 
 func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) WithMandatoryFields(references []BACnetDeviceObjectPropertyReference) BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) Mus
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,10 +380,10 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) deepCopy()
 	}
 	_BACnetConstructedDataChannelListOfObjectPropertyReferencesCopy := &_BACnetConstructedDataChannelListOfObjectPropertyReferences{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetDeviceObjectPropertyReference, BACnetDeviceObjectPropertyReference](m.References),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataChannelListOfObjectPropertyReferencesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataChannelListOfObjectPropertyReferencesCopy
 }
 

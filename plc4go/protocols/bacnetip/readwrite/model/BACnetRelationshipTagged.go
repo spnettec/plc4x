@@ -393,7 +393,7 @@ func (m *_BACnetRelationshipTagged) deepCopy() *_BACnetRelationshipTagged {
 		return nil
 	}
 	_BACnetRelationshipTaggedCopy := &_BACnetRelationshipTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

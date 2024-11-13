@@ -72,6 +72,8 @@ type RoutingIndicationBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() RoutingIndicationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the RoutingIndication or returns an error if something is wrong
 	Build() (RoutingIndication, error)
 	// MustBuild does the same as Build but panics on error
@@ -95,6 +97,7 @@ var _ (RoutingIndicationBuilder) = (*_RoutingIndicationBuilder)(nil)
 
 func (b *_RoutingIndicationBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._RoutingIndication
 }
 
 func (b *_RoutingIndicationBuilder) WithMandatoryFields() RoutingIndicationBuilder {
@@ -116,8 +119,10 @@ func (b *_RoutingIndicationBuilder) MustBuild() RoutingIndication {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RoutingIndicationBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -246,7 +251,7 @@ func (m *_RoutingIndication) deepCopy() *_RoutingIndication {
 	_RoutingIndicationCopy := &_RoutingIndication{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_RoutingIndicationCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _RoutingIndicationCopy
 }
 

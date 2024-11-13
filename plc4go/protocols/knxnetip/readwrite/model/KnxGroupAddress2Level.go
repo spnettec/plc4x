@@ -85,6 +85,8 @@ type KnxGroupAddress2LevelBuilder interface {
 	WithMainGroup(uint8) KnxGroupAddress2LevelBuilder
 	// WithSubGroup adds SubGroup (property field)
 	WithSubGroup(uint16) KnxGroupAddress2LevelBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxGroupAddressBuilder
 	// Build builds the KnxGroupAddress2Level or returns an error if something is wrong
 	Build() (KnxGroupAddress2Level, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (KnxGroupAddress2LevelBuilder) = (*_KnxGroupAddress2LevelBuilder)(nil)
 
 func (b *_KnxGroupAddress2LevelBuilder) setParent(contract KnxGroupAddressContract) {
 	b.KnxGroupAddressContract = contract
+	contract.(*_KnxGroupAddress)._SubType = b._KnxGroupAddress2Level
 }
 
 func (b *_KnxGroupAddress2LevelBuilder) WithMandatoryFields(mainGroup uint8, subGroup uint16) KnxGroupAddress2LevelBuilder {
@@ -139,8 +142,10 @@ func (b *_KnxGroupAddress2LevelBuilder) MustBuild() KnxGroupAddress2Level {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_KnxGroupAddress2LevelBuilder) Done() KnxGroupAddressBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxGroupAddressBuilder().(*_KnxGroupAddressBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_KnxGroupAddress2Level) deepCopy() *_KnxGroupAddress2Level {
 		m.MainGroup,
 		m.SubGroup,
 	}
-	m.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = m
+	_KnxGroupAddress2LevelCopy.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = m
 	return _KnxGroupAddress2LevelCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataLockStatusBuilder interface {
 	WithLockStatus(BACnetLockStatusTagged) BACnetConstructedDataLockStatusBuilder
 	// WithLockStatusBuilder adds LockStatus (property field) which is build by the builder
 	WithLockStatusBuilder(func(BACnetLockStatusTaggedBuilder) BACnetLockStatusTaggedBuilder) BACnetConstructedDataLockStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLockStatus or returns an error if something is wrong
 	Build() (BACnetConstructedDataLockStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLockStatusBuilder) = (*_BACnetConstructedDataLockSta
 
 func (b *_BACnetConstructedDataLockStatusBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLockStatus
 }
 
 func (b *_BACnetConstructedDataLockStatusBuilder) WithMandatoryFields(lockStatus BACnetLockStatusTagged) BACnetConstructedDataLockStatusBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLockStatusBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLockStatusBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLockStatus) deepCopy() *_BACnetConstructedDataLoc
 	}
 	_BACnetConstructedDataLockStatusCopy := &_BACnetConstructedDataLockStatus{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LockStatus.DeepCopy().(BACnetLockStatusTagged),
+		utils.DeepCopy[BACnetLockStatusTagged](m.LockStatus),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLockStatusCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLockStatusCopy
 }
 

@@ -568,10 +568,10 @@ func (m *_BACnetConstructedDataElement) deepCopy() *_BACnetConstructedDataElemen
 		return nil
 	}
 	_BACnetConstructedDataElementCopy := &_BACnetConstructedDataElement{
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
-		m.ApplicationTag.DeepCopy().(BACnetApplicationTag),
-		m.ContextTag.DeepCopy().(BACnetContextTag),
-		m.ConstructedData.DeepCopy().(BACnetConstructedData),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
+		utils.DeepCopy[BACnetApplicationTag](m.ApplicationTag),
+		utils.DeepCopy[BACnetContextTag](m.ContextTag),
+		utils.DeepCopy[BACnetConstructedData](m.ConstructedData),
 		m.ObjectTypeArgument,
 		m.PropertyIdentifierArgument,
 		m.ArrayIndexArgument,

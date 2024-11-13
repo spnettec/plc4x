@@ -85,6 +85,8 @@ type DF1UnprotectedReadRequestBuilder interface {
 	WithAddress(uint16) DF1UnprotectedReadRequestBuilder
 	// WithSize adds Size (property field)
 	WithSize(uint8) DF1UnprotectedReadRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() DF1CommandBuilder
 	// Build builds the DF1UnprotectedReadRequest or returns an error if something is wrong
 	Build() (DF1UnprotectedReadRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (DF1UnprotectedReadRequestBuilder) = (*_DF1UnprotectedReadRequestBuilder)(
 
 func (b *_DF1UnprotectedReadRequestBuilder) setParent(contract DF1CommandContract) {
 	b.DF1CommandContract = contract
+	contract.(*_DF1Command)._SubType = b._DF1UnprotectedReadRequest
 }
 
 func (b *_DF1UnprotectedReadRequestBuilder) WithMandatoryFields(address uint16, size uint8) DF1UnprotectedReadRequestBuilder {
@@ -139,8 +142,10 @@ func (b *_DF1UnprotectedReadRequestBuilder) MustBuild() DF1UnprotectedReadReques
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DF1UnprotectedReadRequestBuilder) Done() DF1CommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewDF1CommandBuilder().(*_DF1CommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_DF1UnprotectedReadRequest) deepCopy() *_DF1UnprotectedReadRequest {
 		m.Address,
 		m.Size,
 	}
-	m.DF1CommandContract.(*_DF1Command)._SubType = m
+	_DF1UnprotectedReadRequestCopy.DF1CommandContract.(*_DF1Command)._SubType = m
 	return _DF1UnprotectedReadRequestCopy
 }
 

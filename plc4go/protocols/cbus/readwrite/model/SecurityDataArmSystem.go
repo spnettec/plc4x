@@ -91,6 +91,8 @@ type SecurityDataArmSystemBuilder interface {
 	WithMandatoryFields(armMode byte) SecurityDataArmSystemBuilder
 	// WithArmMode adds ArmMode (property field)
 	WithArmMode(byte) SecurityDataArmSystemBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataArmSystem or returns an error if something is wrong
 	Build() (SecurityDataArmSystem, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (SecurityDataArmSystemBuilder) = (*_SecurityDataArmSystemBuilder)(nil)
 
 func (b *_SecurityDataArmSystemBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataArmSystem
 }
 
 func (b *_SecurityDataArmSystemBuilder) WithMandatoryFields(armMode byte) SecurityDataArmSystemBuilder {
@@ -140,8 +143,10 @@ func (b *_SecurityDataArmSystemBuilder) MustBuild() SecurityDataArmSystem {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataArmSystemBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -423,7 +428,7 @@ func (m *_SecurityDataArmSystem) deepCopy() *_SecurityDataArmSystem {
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		m.ArmMode,
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataArmSystemCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataArmSystemCopy
 }
 

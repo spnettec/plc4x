@@ -79,6 +79,8 @@ type ApduDataExtAuthorizeResponseBuilder interface {
 	WithMandatoryFields(level uint8) ApduDataExtAuthorizeResponseBuilder
 	// WithLevel adds Level (property field)
 	WithLevel(uint8) ApduDataExtAuthorizeResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtAuthorizeResponse or returns an error if something is wrong
 	Build() (ApduDataExtAuthorizeResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ApduDataExtAuthorizeResponseBuilder) = (*_ApduDataExtAuthorizeResponseBui
 
 func (b *_ApduDataExtAuthorizeResponseBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtAuthorizeResponse
 }
 
 func (b *_ApduDataExtAuthorizeResponseBuilder) WithMandatoryFields(level uint8) ApduDataExtAuthorizeResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_ApduDataExtAuthorizeResponseBuilder) MustBuild() ApduDataExtAuthorizeR
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtAuthorizeResponseBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_ApduDataExtAuthorizeResponse) deepCopy() *_ApduDataExtAuthorizeRespons
 		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 		m.Level,
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtAuthorizeResponseCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtAuthorizeResponseCopy
 }
 

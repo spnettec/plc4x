@@ -117,6 +117,8 @@ type BACnetEventParameterAccessEventBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterAccessEventBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterAccessEventBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterBuilder
 	// Build builds the BACnetEventParameterAccessEvent or returns an error if something is wrong
 	Build() (BACnetEventParameterAccessEvent, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +142,7 @@ var _ (BACnetEventParameterAccessEventBuilder) = (*_BACnetEventParameterAccessEv
 
 func (b *_BACnetEventParameterAccessEventBuilder) setParent(contract BACnetEventParameterContract) {
 	b.BACnetEventParameterContract = contract
+	contract.(*_BACnetEventParameter)._SubType = b._BACnetEventParameterAccessEvent
 }
 
 func (b *_BACnetEventParameterAccessEventBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfAccessEvents BACnetEventParameterAccessEventListOfAccessEvents, accessEventTimeReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) BACnetEventParameterAccessEventBuilder {
@@ -257,8 +260,10 @@ func (b *_BACnetEventParameterAccessEventBuilder) MustBuild() BACnetEventParamet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterAccessEventBuilder) Done() BACnetEventParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -460,12 +465,12 @@ func (m *_BACnetEventParameterAccessEvent) deepCopy() *_BACnetEventParameterAcce
 	}
 	_BACnetEventParameterAccessEventCopy := &_BACnetEventParameterAccessEvent{
 		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.ListOfAccessEvents.DeepCopy().(BACnetEventParameterAccessEventListOfAccessEvents),
-		m.AccessEventTimeReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetEventParameterAccessEventListOfAccessEvents](m.ListOfAccessEvents),
+		utils.DeepCopy[BACnetDeviceObjectPropertyReferenceEnclosed](m.AccessEventTimeReference),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	_BACnetEventParameterAccessEventCopy.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
 	return _BACnetEventParameterAccessEventCopy
 }
 

@@ -79,6 +79,8 @@ type BACnetConstructedDataCredentialsBuilder interface {
 	WithMandatoryFields(credentials []BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder
 	// WithCredentials adds Credentials (property field)
 	WithCredentials(...BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCredentials or returns an error if something is wrong
 	Build() (BACnetConstructedDataCredentials, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataCredentialsBuilder) = (*_BACnetConstructedDataCreden
 
 func (b *_BACnetConstructedDataCredentialsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCredentials
 }
 
 func (b *_BACnetConstructedDataCredentialsBuilder) WithMandatoryFields(credentials []BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataCredentialsBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCredentialsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataCredentials) deepCopy() *_BACnetConstructedDataCr
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.Credentials),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCredentialsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCredentialsCopy
 }
 

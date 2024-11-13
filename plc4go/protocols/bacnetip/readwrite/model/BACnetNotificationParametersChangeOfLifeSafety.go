@@ -139,6 +139,8 @@ type BACnetNotificationParametersChangeOfLifeSafetyBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersChangeOfLifeSafetyBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfLifeSafetyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersBuilder
 	// Build builds the BACnetNotificationParametersChangeOfLifeSafety or returns an error if something is wrong
 	Build() (BACnetNotificationParametersChangeOfLifeSafety, error)
 	// MustBuild does the same as Build but panics on error
@@ -162,6 +164,7 @@ var _ (BACnetNotificationParametersChangeOfLifeSafetyBuilder) = (*_BACnetNotific
 
 func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) setParent(contract BACnetNotificationParametersContract) {
 	b.BACnetNotificationParametersContract = contract
+	contract.(*_BACnetNotificationParameters)._SubType = b._BACnetNotificationParametersChangeOfLifeSafety
 }
 
 func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, newState BACnetLifeSafetyStateTagged, newMode BACnetLifeSafetyModeTagged, statusFlags BACnetStatusFlagsTagged, operationExpected BACnetLifeSafetyOperationTagged, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfLifeSafetyBuilder {
@@ -327,8 +330,10 @@ func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersChangeOfLifeSafetyBuilder) Done() BACnetNotificationParametersBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -565,14 +570,14 @@ func (m *_BACnetNotificationParametersChangeOfLifeSafety) deepCopy() *_BACnetNot
 	}
 	_BACnetNotificationParametersChangeOfLifeSafetyCopy := &_BACnetNotificationParametersChangeOfLifeSafety{
 		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.NewState.DeepCopy().(BACnetLifeSafetyStateTagged),
-		m.NewMode.DeepCopy().(BACnetLifeSafetyModeTagged),
-		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
-		m.OperationExpected.DeepCopy().(BACnetLifeSafetyOperationTagged),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
+		utils.DeepCopy[BACnetLifeSafetyStateTagged](m.NewState),
+		utils.DeepCopy[BACnetLifeSafetyModeTagged](m.NewMode),
+		utils.DeepCopy[BACnetStatusFlagsTagged](m.StatusFlags),
+		utils.DeepCopy[BACnetLifeSafetyOperationTagged](m.OperationExpected),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	_BACnetNotificationParametersChangeOfLifeSafetyCopy.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
 	return _BACnetNotificationParametersChangeOfLifeSafetyCopy
 }
 

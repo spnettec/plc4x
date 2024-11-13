@@ -86,6 +86,8 @@ type BACnetConstructedDataClientCOVIncrementBuilder interface {
 	WithCovIncrement(BACnetClientCOV) BACnetConstructedDataClientCOVIncrementBuilder
 	// WithCovIncrementBuilder adds CovIncrement (property field) which is build by the builder
 	WithCovIncrementBuilder(func(BACnetClientCOVBuilder) BACnetClientCOVBuilder) BACnetConstructedDataClientCOVIncrementBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataClientCOVIncrement or returns an error if something is wrong
 	Build() (BACnetConstructedDataClientCOVIncrement, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataClientCOVIncrementBuilder) = (*_BACnetConstructedDat
 
 func (b *_BACnetConstructedDataClientCOVIncrementBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataClientCOVIncrement
 }
 
 func (b *_BACnetConstructedDataClientCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetClientCOV) BACnetConstructedDataClientCOVIncrementBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataClientCOVIncrementBuilder) MustBuild() BACnetCons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataClientCOVIncrementBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataClientCOVIncrement) deepCopy() *_BACnetConstructe
 	}
 	_BACnetConstructedDataClientCOVIncrementCopy := &_BACnetConstructedDataClientCOVIncrement{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.CovIncrement.DeepCopy().(BACnetClientCOV),
+		utils.DeepCopy[BACnetClientCOV](m.CovIncrement),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataClientCOVIncrementCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataClientCOVIncrementCopy
 }
 

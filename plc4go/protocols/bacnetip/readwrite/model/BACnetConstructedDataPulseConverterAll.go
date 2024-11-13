@@ -71,6 +71,8 @@ type BACnetConstructedDataPulseConverterAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataPulseConverterAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPulseConverterAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataPulseConverterAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataPulseConverterAllBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataPulseConverterAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPulseConverterAll
 }
 
 func (b *_BACnetConstructedDataPulseConverterAllBuilder) WithMandatoryFields() BACnetConstructedDataPulseConverterAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataPulseConverterAllBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPulseConverterAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataPulseConverterAll) deepCopy() *_BACnetConstructed
 	_BACnetConstructedDataPulseConverterAllCopy := &_BACnetConstructedDataPulseConverterAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPulseConverterAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPulseConverterAllCopy
 }
 

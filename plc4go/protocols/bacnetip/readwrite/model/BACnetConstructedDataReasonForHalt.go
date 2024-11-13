@@ -86,6 +86,8 @@ type BACnetConstructedDataReasonForHaltBuilder interface {
 	WithProgramError(BACnetProgramErrorTagged) BACnetConstructedDataReasonForHaltBuilder
 	// WithProgramErrorBuilder adds ProgramError (property field) which is build by the builder
 	WithProgramErrorBuilder(func(BACnetProgramErrorTaggedBuilder) BACnetProgramErrorTaggedBuilder) BACnetConstructedDataReasonForHaltBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataReasonForHalt or returns an error if something is wrong
 	Build() (BACnetConstructedDataReasonForHalt, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataReasonForHaltBuilder) = (*_BACnetConstructedDataReas
 
 func (b *_BACnetConstructedDataReasonForHaltBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataReasonForHalt
 }
 
 func (b *_BACnetConstructedDataReasonForHaltBuilder) WithMandatoryFields(programError BACnetProgramErrorTagged) BACnetConstructedDataReasonForHaltBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataReasonForHaltBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataReasonForHaltBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataReasonForHalt) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataReasonForHaltCopy := &_BACnetConstructedDataReasonForHalt{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ProgramError.DeepCopy().(BACnetProgramErrorTagged),
+		utils.DeepCopy[BACnetProgramErrorTagged](m.ProgramError),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataReasonForHaltCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataReasonForHaltCopy
 }
 

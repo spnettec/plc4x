@@ -95,6 +95,8 @@ type BACnetServiceAckAtomicReadFileBuilder interface {
 	WithAccessMethod(BACnetServiceAckAtomicReadFileStreamOrRecord) BACnetServiceAckAtomicReadFileBuilder
 	// WithAccessMethodBuilder adds AccessMethod (property field) which is build by the builder
 	WithAccessMethodBuilder(func(BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) BACnetServiceAckAtomicReadFileBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckAtomicReadFile or returns an error if something is wrong
 	Build() (BACnetServiceAckAtomicReadFile, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (BACnetServiceAckAtomicReadFileBuilder) = (*_BACnetServiceAckAtomicReadFil
 
 func (b *_BACnetServiceAckAtomicReadFileBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckAtomicReadFile
 }
 
 func (b *_BACnetServiceAckAtomicReadFileBuilder) WithMandatoryFields(endOfFile BACnetApplicationTagBoolean, accessMethod BACnetServiceAckAtomicReadFileStreamOrRecord) BACnetServiceAckAtomicReadFileBuilder {
@@ -187,8 +190,10 @@ func (b *_BACnetServiceAckAtomicReadFileBuilder) MustBuild() BACnetServiceAckAto
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckAtomicReadFileBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_BACnetServiceAckAtomicReadFile) deepCopy() *_BACnetServiceAckAtomicRea
 	}
 	_BACnetServiceAckAtomicReadFileCopy := &_BACnetServiceAckAtomicReadFile{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
-		m.EndOfFile.DeepCopy().(BACnetApplicationTagBoolean),
-		m.AccessMethod.DeepCopy().(BACnetServiceAckAtomicReadFileStreamOrRecord),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.EndOfFile),
+		utils.DeepCopy[BACnetServiceAckAtomicReadFileStreamOrRecord](m.AccessMethod),
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckAtomicReadFileCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckAtomicReadFileCopy
 }
 

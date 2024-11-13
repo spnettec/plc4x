@@ -119,6 +119,8 @@ type OpenSecureChannelRequestBuilder interface {
 	WithClientNonceBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) OpenSecureChannelRequestBuilder
 	// WithRequestedLifetime adds RequestedLifetime (property field)
 	WithRequestedLifetime(uint32) OpenSecureChannelRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the OpenSecureChannelRequest or returns an error if something is wrong
 	Build() (OpenSecureChannelRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -142,6 +144,7 @@ var _ (OpenSecureChannelRequestBuilder) = (*_OpenSecureChannelRequestBuilder)(ni
 
 func (b *_OpenSecureChannelRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._OpenSecureChannelRequest
 }
 
 func (b *_OpenSecureChannelRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, clientProtocolVersion uint32, requestType SecurityTokenRequestType, securityMode MessageSecurityMode, clientNonce PascalByteString, requestedLifetime uint32) OpenSecureChannelRequestBuilder {
@@ -231,8 +234,10 @@ func (b *_OpenSecureChannelRequestBuilder) MustBuild() OpenSecureChannelRequest 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_OpenSecureChannelRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -472,14 +477,14 @@ func (m *_OpenSecureChannelRequest) deepCopy() *_OpenSecureChannelRequest {
 	}
 	_OpenSecureChannelRequestCopy := &_OpenSecureChannelRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		m.ClientProtocolVersion,
 		m.RequestType,
 		m.SecurityMode,
-		m.ClientNonce.DeepCopy().(PascalByteString),
+		utils.DeepCopy[PascalByteString](m.ClientNonce),
 		m.RequestedLifetime,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_OpenSecureChannelRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _OpenSecureChannelRequestCopy
 }
 

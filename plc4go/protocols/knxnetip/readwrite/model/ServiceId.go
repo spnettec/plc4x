@@ -89,40 +89,19 @@ type ServiceIdBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ServiceIdBuilder
 	// AsKnxNetIpCore converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
-	AsKnxNetIpCore() interface {
-		KnxNetIpCoreBuilder
-		Done() ServiceIdBuilder
-	}
+	AsKnxNetIpCore() KnxNetIpCoreBuilder
 	// AsKnxNetIpDeviceManagement converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
-	AsKnxNetIpDeviceManagement() interface {
-		KnxNetIpDeviceManagementBuilder
-		Done() ServiceIdBuilder
-	}
+	AsKnxNetIpDeviceManagement() KnxNetIpDeviceManagementBuilder
 	// AsKnxNetIpTunneling converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
-	AsKnxNetIpTunneling() interface {
-		KnxNetIpTunnelingBuilder
-		Done() ServiceIdBuilder
-	}
+	AsKnxNetIpTunneling() KnxNetIpTunnelingBuilder
 	// AsKnxNetIpRouting converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
-	AsKnxNetIpRouting() interface {
-		KnxNetIpRoutingBuilder
-		Done() ServiceIdBuilder
-	}
+	AsKnxNetIpRouting() KnxNetIpRoutingBuilder
 	// AsKnxNetRemoteLogging converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
-	AsKnxNetRemoteLogging() interface {
-		KnxNetRemoteLoggingBuilder
-		Done() ServiceIdBuilder
-	}
+	AsKnxNetRemoteLogging() KnxNetRemoteLoggingBuilder
 	// AsKnxNetRemoteConfigurationAndDiagnosis converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
-	AsKnxNetRemoteConfigurationAndDiagnosis() interface {
-		KnxNetRemoteConfigurationAndDiagnosisBuilder
-		Done() ServiceIdBuilder
-	}
+	AsKnxNetRemoteConfigurationAndDiagnosis() KnxNetRemoteConfigurationAndDiagnosisBuilder
 	// AsKnxNetObjectServer converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
-	AsKnxNetObjectServer() interface {
-		KnxNetObjectServerBuilder
-		Done() ServiceIdBuilder
-	}
+	AsKnxNetObjectServer() KnxNetObjectServerBuilder
 	// Build builds the ServiceId or returns an error if something is wrong
 	PartialBuild() (ServiceIdContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -173,14 +152,8 @@ func (b *_ServiceIdBuilder) PartialMustBuild() ServiceIdContract {
 	return build
 }
 
-func (b *_ServiceIdBuilder) AsKnxNetIpCore() interface {
-	KnxNetIpCoreBuilder
-	Done() ServiceIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		KnxNetIpCoreBuilder
-		Done() ServiceIdBuilder
-	}); ok {
+func (b *_ServiceIdBuilder) AsKnxNetIpCore() KnxNetIpCoreBuilder {
+	if cb, ok := b.childBuilder.(KnxNetIpCoreBuilder); ok {
 		return cb
 	}
 	cb := NewKnxNetIpCoreBuilder().(*_KnxNetIpCoreBuilder)
@@ -189,14 +162,8 @@ func (b *_ServiceIdBuilder) AsKnxNetIpCore() interface {
 	return cb
 }
 
-func (b *_ServiceIdBuilder) AsKnxNetIpDeviceManagement() interface {
-	KnxNetIpDeviceManagementBuilder
-	Done() ServiceIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		KnxNetIpDeviceManagementBuilder
-		Done() ServiceIdBuilder
-	}); ok {
+func (b *_ServiceIdBuilder) AsKnxNetIpDeviceManagement() KnxNetIpDeviceManagementBuilder {
+	if cb, ok := b.childBuilder.(KnxNetIpDeviceManagementBuilder); ok {
 		return cb
 	}
 	cb := NewKnxNetIpDeviceManagementBuilder().(*_KnxNetIpDeviceManagementBuilder)
@@ -205,14 +172,8 @@ func (b *_ServiceIdBuilder) AsKnxNetIpDeviceManagement() interface {
 	return cb
 }
 
-func (b *_ServiceIdBuilder) AsKnxNetIpTunneling() interface {
-	KnxNetIpTunnelingBuilder
-	Done() ServiceIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		KnxNetIpTunnelingBuilder
-		Done() ServiceIdBuilder
-	}); ok {
+func (b *_ServiceIdBuilder) AsKnxNetIpTunneling() KnxNetIpTunnelingBuilder {
+	if cb, ok := b.childBuilder.(KnxNetIpTunnelingBuilder); ok {
 		return cb
 	}
 	cb := NewKnxNetIpTunnelingBuilder().(*_KnxNetIpTunnelingBuilder)
@@ -221,14 +182,8 @@ func (b *_ServiceIdBuilder) AsKnxNetIpTunneling() interface {
 	return cb
 }
 
-func (b *_ServiceIdBuilder) AsKnxNetIpRouting() interface {
-	KnxNetIpRoutingBuilder
-	Done() ServiceIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		KnxNetIpRoutingBuilder
-		Done() ServiceIdBuilder
-	}); ok {
+func (b *_ServiceIdBuilder) AsKnxNetIpRouting() KnxNetIpRoutingBuilder {
+	if cb, ok := b.childBuilder.(KnxNetIpRoutingBuilder); ok {
 		return cb
 	}
 	cb := NewKnxNetIpRoutingBuilder().(*_KnxNetIpRoutingBuilder)
@@ -237,14 +192,8 @@ func (b *_ServiceIdBuilder) AsKnxNetIpRouting() interface {
 	return cb
 }
 
-func (b *_ServiceIdBuilder) AsKnxNetRemoteLogging() interface {
-	KnxNetRemoteLoggingBuilder
-	Done() ServiceIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		KnxNetRemoteLoggingBuilder
-		Done() ServiceIdBuilder
-	}); ok {
+func (b *_ServiceIdBuilder) AsKnxNetRemoteLogging() KnxNetRemoteLoggingBuilder {
+	if cb, ok := b.childBuilder.(KnxNetRemoteLoggingBuilder); ok {
 		return cb
 	}
 	cb := NewKnxNetRemoteLoggingBuilder().(*_KnxNetRemoteLoggingBuilder)
@@ -253,14 +202,8 @@ func (b *_ServiceIdBuilder) AsKnxNetRemoteLogging() interface {
 	return cb
 }
 
-func (b *_ServiceIdBuilder) AsKnxNetRemoteConfigurationAndDiagnosis() interface {
-	KnxNetRemoteConfigurationAndDiagnosisBuilder
-	Done() ServiceIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		KnxNetRemoteConfigurationAndDiagnosisBuilder
-		Done() ServiceIdBuilder
-	}); ok {
+func (b *_ServiceIdBuilder) AsKnxNetRemoteConfigurationAndDiagnosis() KnxNetRemoteConfigurationAndDiagnosisBuilder {
+	if cb, ok := b.childBuilder.(KnxNetRemoteConfigurationAndDiagnosisBuilder); ok {
 		return cb
 	}
 	cb := NewKnxNetRemoteConfigurationAndDiagnosisBuilder().(*_KnxNetRemoteConfigurationAndDiagnosisBuilder)
@@ -269,14 +212,8 @@ func (b *_ServiceIdBuilder) AsKnxNetRemoteConfigurationAndDiagnosis() interface 
 	return cb
 }
 
-func (b *_ServiceIdBuilder) AsKnxNetObjectServer() interface {
-	KnxNetObjectServerBuilder
-	Done() ServiceIdBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		KnxNetObjectServerBuilder
-		Done() ServiceIdBuilder
-	}); ok {
+func (b *_ServiceIdBuilder) AsKnxNetObjectServer() KnxNetObjectServerBuilder {
+	if cb, ok := b.childBuilder.(KnxNetObjectServerBuilder); ok {
 		return cb
 	}
 	cb := NewKnxNetObjectServerBuilder().(*_KnxNetObjectServerBuilder)

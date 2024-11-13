@@ -96,6 +96,8 @@ type ViewDescriptionBuilder interface {
 	WithTimestamp(int64) ViewDescriptionBuilder
 	// WithViewVersion adds ViewVersion (property field)
 	WithViewVersion(uint32) ViewDescriptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ViewDescription or returns an error if something is wrong
 	Build() (ViewDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (ViewDescriptionBuilder) = (*_ViewDescriptionBuilder)(nil)
 
 func (b *_ViewDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ViewDescription
 }
 
 func (b *_ViewDescriptionBuilder) WithMandatoryFields(viewId NodeId, timestamp int64, viewVersion uint32) ViewDescriptionBuilder {
@@ -174,8 +177,10 @@ func (b *_ViewDescriptionBuilder) MustBuild() ViewDescription {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ViewDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -364,11 +369,11 @@ func (m *_ViewDescription) deepCopy() *_ViewDescription {
 	}
 	_ViewDescriptionCopy := &_ViewDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ViewId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.ViewId),
 		m.Timestamp,
 		m.ViewVersion,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ViewDescriptionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ViewDescriptionCopy
 }
 

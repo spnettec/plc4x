@@ -84,6 +84,8 @@ type BACnetPropertyStatesProtocolLevelBuilder interface {
 	WithProtocolLevel(BACnetProtocolLevelTagged) BACnetPropertyStatesProtocolLevelBuilder
 	// WithProtocolLevelBuilder adds ProtocolLevel (property field) which is build by the builder
 	WithProtocolLevelBuilder(func(BACnetProtocolLevelTaggedBuilder) BACnetProtocolLevelTaggedBuilder) BACnetPropertyStatesProtocolLevelBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesProtocolLevel or returns an error if something is wrong
 	Build() (BACnetPropertyStatesProtocolLevel, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesProtocolLevelBuilder) = (*_BACnetPropertyStatesProtoc
 
 func (b *_BACnetPropertyStatesProtocolLevelBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesProtocolLevel
 }
 
 func (b *_BACnetPropertyStatesProtocolLevelBuilder) WithMandatoryFields(protocolLevel BACnetProtocolLevelTagged) BACnetPropertyStatesProtocolLevelBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesProtocolLevelBuilder) MustBuild() BACnetPropertySt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesProtocolLevelBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesProtocolLevel) deepCopy() *_BACnetPropertyStatesPr
 	}
 	_BACnetPropertyStatesProtocolLevelCopy := &_BACnetPropertyStatesProtocolLevel{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.ProtocolLevel.DeepCopy().(BACnetProtocolLevelTagged),
+		utils.DeepCopy[BACnetProtocolLevelTagged](m.ProtocolLevel),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesProtocolLevelCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesProtocolLevelCopy
 }
 

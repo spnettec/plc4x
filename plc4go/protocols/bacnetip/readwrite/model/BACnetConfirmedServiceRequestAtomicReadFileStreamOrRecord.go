@@ -121,15 +121,9 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder interface 
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
 	// AsBACnetConfirmedServiceRequestAtomicReadFileStream converts this build to a subType of BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord. It is always possible to return to current builder using Done()
-	AsBACnetConfirmedServiceRequestAtomicReadFileStream() interface {
-		BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
-		Done() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
-	}
+	AsBACnetConfirmedServiceRequestAtomicReadFileStream() BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
 	// AsBACnetConfirmedServiceRequestAtomicReadFileRecord converts this build to a subType of BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord. It is always possible to return to current builder using Done()
-	AsBACnetConfirmedServiceRequestAtomicReadFileRecord() interface {
-		BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder
-		Done() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
-	}
+	AsBACnetConfirmedServiceRequestAtomicReadFileRecord() BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder
 	// Build builds the BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord or returns an error if something is wrong
 	PartialBuild() (BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -252,14 +246,8 @@ func (b *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder) Part
 	return build
 }
 
-func (b *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder) AsBACnetConfirmedServiceRequestAtomicReadFileStream() interface {
-	BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
-	Done() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
-		Done() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
-	}); ok {
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder) AsBACnetConfirmedServiceRequestAtomicReadFileStream() BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder {
+	if cb, ok := b.childBuilder.(BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetConfirmedServiceRequestAtomicReadFileStreamBuilder().(*_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder)
@@ -268,14 +256,8 @@ func (b *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder) AsBA
 	return cb
 }
 
-func (b *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder) AsBACnetConfirmedServiceRequestAtomicReadFileRecord() interface {
-	BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder
-	Done() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder
-		Done() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
-	}); ok {
+func (b *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder) AsBACnetConfirmedServiceRequestAtomicReadFileRecord() BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
+	if cb, ok := b.childBuilder.(BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetConfirmedServiceRequestAtomicReadFileRecordBuilder().(*_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder)
@@ -536,9 +518,9 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) deepCopy() 
 	}
 	_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordCopy := &_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
 	return _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordCopy
 }

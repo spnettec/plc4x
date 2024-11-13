@@ -124,6 +124,8 @@ type QueryFirstRequestBuilder interface {
 	WithMaxDataSetsToReturn(uint32) QueryFirstRequestBuilder
 	// WithMaxReferencesToReturn adds MaxReferencesToReturn (property field)
 	WithMaxReferencesToReturn(uint32) QueryFirstRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the QueryFirstRequest or returns an error if something is wrong
 	Build() (QueryFirstRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -147,6 +149,7 @@ var _ (QueryFirstRequestBuilder) = (*_QueryFirstRequestBuilder)(nil)
 
 func (b *_QueryFirstRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._QueryFirstRequest
 }
 
 func (b *_QueryFirstRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, view ViewDescription, nodeTypes []NodeTypeDescription, filter ContentFilter, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) QueryFirstRequestBuilder {
@@ -255,8 +258,10 @@ func (b *_QueryFirstRequestBuilder) MustBuild() QueryFirstRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_QueryFirstRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -516,14 +521,14 @@ func (m *_QueryFirstRequest) deepCopy() *_QueryFirstRequest {
 	}
 	_QueryFirstRequestCopy := &_QueryFirstRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
-		m.View.DeepCopy().(ViewDescription),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
+		utils.DeepCopy[ViewDescription](m.View),
 		utils.DeepCopySlice[NodeTypeDescription, NodeTypeDescription](m.NodeTypes),
-		m.Filter.DeepCopy().(ContentFilter),
+		utils.DeepCopy[ContentFilter](m.Filter),
 		m.MaxDataSetsToReturn,
 		m.MaxReferencesToReturn,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_QueryFirstRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _QueryFirstRequestCopy
 }
 

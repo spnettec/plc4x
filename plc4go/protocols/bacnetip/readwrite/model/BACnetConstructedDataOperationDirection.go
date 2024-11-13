@@ -86,6 +86,8 @@ type BACnetConstructedDataOperationDirectionBuilder interface {
 	WithOperationDirection(BACnetEscalatorOperationDirectionTagged) BACnetConstructedDataOperationDirectionBuilder
 	// WithOperationDirectionBuilder adds OperationDirection (property field) which is build by the builder
 	WithOperationDirectionBuilder(func(BACnetEscalatorOperationDirectionTaggedBuilder) BACnetEscalatorOperationDirectionTaggedBuilder) BACnetConstructedDataOperationDirectionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataOperationDirection or returns an error if something is wrong
 	Build() (BACnetConstructedDataOperationDirection, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataOperationDirectionBuilder) = (*_BACnetConstructedDat
 
 func (b *_BACnetConstructedDataOperationDirectionBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataOperationDirection
 }
 
 func (b *_BACnetConstructedDataOperationDirectionBuilder) WithMandatoryFields(operationDirection BACnetEscalatorOperationDirectionTagged) BACnetConstructedDataOperationDirectionBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataOperationDirectionBuilder) MustBuild() BACnetCons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataOperationDirectionBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataOperationDirection) deepCopy() *_BACnetConstructe
 	}
 	_BACnetConstructedDataOperationDirectionCopy := &_BACnetConstructedDataOperationDirection{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.OperationDirection.DeepCopy().(BACnetEscalatorOperationDirectionTagged),
+		utils.DeepCopy[BACnetEscalatorOperationDirectionTagged](m.OperationDirection),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataOperationDirectionCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataOperationDirectionCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataCountBuilder interface {
 	WithCount(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBuilder
 	// WithCountBuilder adds Count (property field) which is build by the builder
 	WithCountBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCountBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataCount or returns an error if something is wrong
 	Build() (BACnetConstructedDataCount, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataCountBuilder) = (*_BACnetConstructedDataCountBuilder
 
 func (b *_BACnetConstructedDataCountBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataCount
 }
 
 func (b *_BACnetConstructedDataCountBuilder) WithMandatoryFields(count BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataCountBuilder) MustBuild() BACnetConstructedDataCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataCountBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataCount) deepCopy() *_BACnetConstructedDataCount {
 	}
 	_BACnetConstructedDataCountCopy := &_BACnetConstructedDataCount{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Count.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.Count),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataCountCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataCountCopy
 }
 

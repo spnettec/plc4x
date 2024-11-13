@@ -101,6 +101,8 @@ type BrowseResultBuilder interface {
 	WithContinuationPointBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) BrowseResultBuilder
 	// WithReferences adds References (property field)
 	WithReferences(...ReferenceDescription) BrowseResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BrowseResult or returns an error if something is wrong
 	Build() (BrowseResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (BrowseResultBuilder) = (*_BrowseResultBuilder)(nil)
 
 func (b *_BrowseResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BrowseResult
 }
 
 func (b *_BrowseResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, references []ReferenceDescription) BrowseResultBuilder {
@@ -198,8 +201,10 @@ func (b *_BrowseResultBuilder) MustBuild() BrowseResult {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BrowseResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -408,11 +413,11 @@ func (m *_BrowseResult) deepCopy() *_BrowseResult {
 	}
 	_BrowseResultCopy := &_BrowseResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.StatusCode.DeepCopy().(StatusCode),
-		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		utils.DeepCopy[StatusCode](m.StatusCode),
+		utils.DeepCopy[PascalByteString](m.ContinuationPoint),
 		utils.DeepCopySlice[ReferenceDescription, ReferenceDescription](m.References),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BrowseResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowseResultCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataPulseRateBuilder interface {
 	WithPulseRate(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPulseRateBuilder
 	// WithPulseRateBuilder adds PulseRate (property field) which is build by the builder
 	WithPulseRateBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPulseRateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPulseRate or returns an error if something is wrong
 	Build() (BACnetConstructedDataPulseRate, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPulseRateBuilder) = (*_BACnetConstructedDataPulseRat
 
 func (b *_BACnetConstructedDataPulseRateBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPulseRate
 }
 
 func (b *_BACnetConstructedDataPulseRateBuilder) WithMandatoryFields(pulseRate BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPulseRateBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPulseRateBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPulseRateBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataPulseRate) deepCopy() *_BACnetConstructedDataPuls
 	}
 	_BACnetConstructedDataPulseRateCopy := &_BACnetConstructedDataPulseRate{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PulseRate.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.PulseRate),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPulseRateCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPulseRateCopy
 }
 

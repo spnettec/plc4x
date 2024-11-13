@@ -85,6 +85,8 @@ type LightingDataRampToLevelBuilder interface {
 	WithGroup(byte) LightingDataRampToLevelBuilder
 	// WithLevel adds Level (property field)
 	WithLevel(byte) LightingDataRampToLevelBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LightingDataBuilder
 	// Build builds the LightingDataRampToLevel or returns an error if something is wrong
 	Build() (LightingDataRampToLevel, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (LightingDataRampToLevelBuilder) = (*_LightingDataRampToLevelBuilder)(nil)
 
 func (b *_LightingDataRampToLevelBuilder) setParent(contract LightingDataContract) {
 	b.LightingDataContract = contract
+	contract.(*_LightingData)._SubType = b._LightingDataRampToLevel
 }
 
 func (b *_LightingDataRampToLevelBuilder) WithMandatoryFields(group byte, level byte) LightingDataRampToLevelBuilder {
@@ -139,8 +142,10 @@ func (b *_LightingDataRampToLevelBuilder) MustBuild() LightingDataRampToLevel {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LightingDataRampToLevelBuilder) Done() LightingDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLightingDataBuilder().(*_LightingDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -311,7 +316,7 @@ func (m *_LightingDataRampToLevel) deepCopy() *_LightingDataRampToLevel {
 		m.Group,
 		m.Level,
 	}
-	m.LightingDataContract.(*_LightingData)._SubType = m
+	_LightingDataRampToLevelCopy.LightingDataContract.(*_LightingData)._SubType = m
 	return _LightingDataRampToLevelCopy
 }
 

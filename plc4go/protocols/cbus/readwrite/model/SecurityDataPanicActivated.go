@@ -71,6 +71,8 @@ type SecurityDataPanicActivatedBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataPanicActivatedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataPanicActivated or returns an error if something is wrong
 	Build() (SecurityDataPanicActivated, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataPanicActivatedBuilder) = (*_SecurityDataPanicActivatedBuilder
 
 func (b *_SecurityDataPanicActivatedBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataPanicActivated
 }
 
 func (b *_SecurityDataPanicActivatedBuilder) WithMandatoryFields() SecurityDataPanicActivatedBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataPanicActivatedBuilder) MustBuild() SecurityDataPanicActiva
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataPanicActivatedBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataPanicActivated) deepCopy() *_SecurityDataPanicActivated {
 	_SecurityDataPanicActivatedCopy := &_SecurityDataPanicActivated{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataPanicActivatedCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataPanicActivatedCopy
 }
 

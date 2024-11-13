@@ -95,6 +95,8 @@ type GetAttributeAllRequestBuilder interface {
 	WithInstanceSegment(PathSegment) GetAttributeAllRequestBuilder
 	// WithInstanceSegmentBuilder adds InstanceSegment (property field) which is build by the builder
 	WithInstanceSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) GetAttributeAllRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the GetAttributeAllRequest or returns an error if something is wrong
 	Build() (GetAttributeAllRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (GetAttributeAllRequestBuilder) = (*_GetAttributeAllRequestBuilder)(nil)
 
 func (b *_GetAttributeAllRequestBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._GetAttributeAllRequest
 }
 
 func (b *_GetAttributeAllRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment) GetAttributeAllRequestBuilder {
@@ -187,8 +190,10 @@ func (b *_GetAttributeAllRequestBuilder) MustBuild() GetAttributeAllRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_GetAttributeAllRequestBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -381,10 +386,10 @@ func (m *_GetAttributeAllRequest) deepCopy() *_GetAttributeAllRequest {
 	}
 	_GetAttributeAllRequestCopy := &_GetAttributeAllRequest{
 		m.CipServiceContract.(*_CipService).deepCopy(),
-		m.ClassSegment.DeepCopy().(PathSegment),
-		m.InstanceSegment.DeepCopy().(PathSegment),
+		utils.DeepCopy[PathSegment](m.ClassSegment),
+		utils.DeepCopy[PathSegment](m.InstanceSegment),
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_GetAttributeAllRequestCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _GetAttributeAllRequestCopy
 }
 

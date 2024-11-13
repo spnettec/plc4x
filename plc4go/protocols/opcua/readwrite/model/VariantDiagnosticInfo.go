@@ -85,6 +85,8 @@ type VariantDiagnosticInfoBuilder interface {
 	WithOptionalArrayLength(int32) VariantDiagnosticInfoBuilder
 	// WithValue adds Value (property field)
 	WithValue(...DiagnosticInfo) VariantDiagnosticInfoBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantDiagnosticInfo or returns an error if something is wrong
 	Build() (VariantDiagnosticInfo, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantDiagnosticInfoBuilder) = (*_VariantDiagnosticInfoBuilder)(nil)
 
 func (b *_VariantDiagnosticInfoBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantDiagnosticInfo
 }
 
 func (b *_VariantDiagnosticInfoBuilder) WithMandatoryFields(value []DiagnosticInfo) VariantDiagnosticInfoBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantDiagnosticInfoBuilder) MustBuild() VariantDiagnosticInfo {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantDiagnosticInfoBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -325,7 +330,7 @@ func (m *_VariantDiagnosticInfo) deepCopy() *_VariantDiagnosticInfo {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantDiagnosticInfoCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantDiagnosticInfoCopy
 }
 

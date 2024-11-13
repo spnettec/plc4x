@@ -85,6 +85,8 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder interface
 	WithResult(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
 	// WithReserved01 adds Reserved01 (property field)
 	WithReserved01(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse or returns an error if something is wrong
 	Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) = (*_S
 
 func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithMandatoryFields(result uint8, reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
@@ -139,8 +142,10 @@ func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) Mus
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -324,7 +329,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) deepCopy()
 		m.Result,
 		m.Reserved01,
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseCopy
 }
 

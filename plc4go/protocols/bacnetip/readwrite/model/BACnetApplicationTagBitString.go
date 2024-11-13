@@ -84,6 +84,8 @@ type BACnetApplicationTagBitStringBuilder interface {
 	WithPayload(BACnetTagPayloadBitString) BACnetApplicationTagBitStringBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetApplicationTagBitStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetApplicationTagBuilder
 	// Build builds the BACnetApplicationTagBitString or returns an error if something is wrong
 	Build() (BACnetApplicationTagBitString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetApplicationTagBitStringBuilder) = (*_BACnetApplicationTagBitStringB
 
 func (b *_BACnetApplicationTagBitStringBuilder) setParent(contract BACnetApplicationTagContract) {
 	b.BACnetApplicationTagContract = contract
+	contract.(*_BACnetApplicationTag)._SubType = b._BACnetApplicationTagBitString
 }
 
 func (b *_BACnetApplicationTagBitStringBuilder) WithMandatoryFields(payload BACnetTagPayloadBitString) BACnetApplicationTagBitStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetApplicationTagBitStringBuilder) MustBuild() BACnetApplicationTag
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetApplicationTagBitStringBuilder) Done() BACnetApplicationTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetApplicationTagBuilder().(*_BACnetApplicationTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetApplicationTagBitString) deepCopy() *_BACnetApplicationTagBitStr
 	}
 	_BACnetApplicationTagBitStringCopy := &_BACnetApplicationTagBitString{
 		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		utils.DeepCopy[BACnetTagPayloadBitString](m.Payload),
 	}
-	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	_BACnetApplicationTagBitStringCopy.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
 	return _BACnetApplicationTagBitStringCopy
 }
 

@@ -162,6 +162,8 @@ type CreateSessionRequestBuilder interface {
 	WithRequestedSessionTimeout(float64) CreateSessionRequestBuilder
 	// WithMaxResponseMessageSize adds MaxResponseMessageSize (property field)
 	WithMaxResponseMessageSize(uint32) CreateSessionRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CreateSessionRequest or returns an error if something is wrong
 	Build() (CreateSessionRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -185,6 +187,7 @@ var _ (CreateSessionRequestBuilder) = (*_CreateSessionRequestBuilder)(nil)
 
 func (b *_CreateSessionRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CreateSessionRequest
 }
 
 func (b *_CreateSessionRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, clientDescription ApplicationDescription, serverUri PascalString, endpointUrl PascalString, sessionName PascalString, clientNonce PascalByteString, clientCertificate PascalByteString, requestedSessionTimeout float64, maxResponseMessageSize uint32) CreateSessionRequestBuilder {
@@ -384,8 +387,10 @@ func (b *_CreateSessionRequestBuilder) MustBuild() CreateSessionRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CreateSessionRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -676,17 +681,17 @@ func (m *_CreateSessionRequest) deepCopy() *_CreateSessionRequest {
 	}
 	_CreateSessionRequestCopy := &_CreateSessionRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
-		m.ClientDescription.DeepCopy().(ApplicationDescription),
-		m.ServerUri.DeepCopy().(PascalString),
-		m.EndpointUrl.DeepCopy().(PascalString),
-		m.SessionName.DeepCopy().(PascalString),
-		m.ClientNonce.DeepCopy().(PascalByteString),
-		m.ClientCertificate.DeepCopy().(PascalByteString),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
+		utils.DeepCopy[ApplicationDescription](m.ClientDescription),
+		utils.DeepCopy[PascalString](m.ServerUri),
+		utils.DeepCopy[PascalString](m.EndpointUrl),
+		utils.DeepCopy[PascalString](m.SessionName),
+		utils.DeepCopy[PascalByteString](m.ClientNonce),
+		utils.DeepCopy[PascalByteString](m.ClientCertificate),
 		m.RequestedSessionTimeout,
 		m.MaxResponseMessageSize,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CreateSessionRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CreateSessionRequestCopy
 }
 

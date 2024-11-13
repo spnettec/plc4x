@@ -89,10 +89,7 @@ type S7ParameterUserDataItemBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7ParameterUserDataItemBuilder
 	// AsS7ParameterUserDataItemCPUFunctions converts this build to a subType of S7ParameterUserDataItem. It is always possible to return to current builder using Done()
-	AsS7ParameterUserDataItemCPUFunctions() interface {
-		S7ParameterUserDataItemCPUFunctionsBuilder
-		Done() S7ParameterUserDataItemBuilder
-	}
+	AsS7ParameterUserDataItemCPUFunctions() S7ParameterUserDataItemCPUFunctionsBuilder
 	// Build builds the S7ParameterUserDataItem or returns an error if something is wrong
 	PartialBuild() (S7ParameterUserDataItemContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -143,14 +140,8 @@ func (b *_S7ParameterUserDataItemBuilder) PartialMustBuild() S7ParameterUserData
 	return build
 }
 
-func (b *_S7ParameterUserDataItemBuilder) AsS7ParameterUserDataItemCPUFunctions() interface {
-	S7ParameterUserDataItemCPUFunctionsBuilder
-	Done() S7ParameterUserDataItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7ParameterUserDataItemCPUFunctionsBuilder
-		Done() S7ParameterUserDataItemBuilder
-	}); ok {
+func (b *_S7ParameterUserDataItemBuilder) AsS7ParameterUserDataItemCPUFunctions() S7ParameterUserDataItemCPUFunctionsBuilder {
+	if cb, ok := b.childBuilder.(S7ParameterUserDataItemCPUFunctionsBuilder); ok {
 		return cb
 	}
 	cb := NewS7ParameterUserDataItemCPUFunctionsBuilder().(*_S7ParameterUserDataItemCPUFunctionsBuilder)

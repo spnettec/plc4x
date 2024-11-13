@@ -84,6 +84,8 @@ type BACnetPriorityValueObjectidentifierBuilder interface {
 	WithObjectidentifierValue(BACnetApplicationTagObjectIdentifier) BACnetPriorityValueObjectidentifierBuilder
 	// WithObjectidentifierValueBuilder adds ObjectidentifierValue (property field) which is build by the builder
 	WithObjectidentifierValueBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetPriorityValueObjectidentifierBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPriorityValueBuilder
 	// Build builds the BACnetPriorityValueObjectidentifier or returns an error if something is wrong
 	Build() (BACnetPriorityValueObjectidentifier, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPriorityValueObjectidentifierBuilder) = (*_BACnetPriorityValueObjec
 
 func (b *_BACnetPriorityValueObjectidentifierBuilder) setParent(contract BACnetPriorityValueContract) {
 	b.BACnetPriorityValueContract = contract
+	contract.(*_BACnetPriorityValue)._SubType = b._BACnetPriorityValueObjectidentifier
 }
 
 func (b *_BACnetPriorityValueObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetPriorityValueObjectidentifierBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPriorityValueObjectidentifierBuilder) MustBuild() BACnetPriority
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPriorityValueObjectidentifierBuilder) Done() BACnetPriorityValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPriorityValueObjectidentifier) deepCopy() *_BACnetPriorityValueO
 	}
 	_BACnetPriorityValueObjectidentifierCopy := &_BACnetPriorityValueObjectidentifier{
 		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
-		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectidentifierValue),
 	}
-	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	_BACnetPriorityValueObjectidentifierCopy.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
 	return _BACnetPriorityValueObjectidentifierCopy
 }
 

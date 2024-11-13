@@ -71,6 +71,8 @@ type MediaTransportControlDataStopBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() MediaTransportControlDataStopBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataStop or returns an error if something is wrong
 	Build() (MediaTransportControlDataStop, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (MediaTransportControlDataStopBuilder) = (*_MediaTransportControlDataStopB
 
 func (b *_MediaTransportControlDataStopBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataStop
 }
 
 func (b *_MediaTransportControlDataStopBuilder) WithMandatoryFields() MediaTransportControlDataStopBuilder {
@@ -115,8 +118,10 @@ func (b *_MediaTransportControlDataStopBuilder) MustBuild() MediaTransportContro
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataStopBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_MediaTransportControlDataStop) deepCopy() *_MediaTransportControlDataS
 	_MediaTransportControlDataStopCopy := &_MediaTransportControlDataStop{
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataStopCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataStopCopy
 }
 

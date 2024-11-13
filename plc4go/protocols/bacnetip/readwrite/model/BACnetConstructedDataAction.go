@@ -89,6 +89,8 @@ type BACnetConstructedDataActionBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataActionBuilder
 	// WithActionLists adds ActionLists (property field)
 	WithActionLists(...BACnetActionList) BACnetConstructedDataActionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAction or returns an error if something is wrong
 	Build() (BACnetConstructedDataAction, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataActionBuilder) = (*_BACnetConstructedDataActionBuild
 
 func (b *_BACnetConstructedDataActionBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAction
 }
 
 func (b *_BACnetConstructedDataActionBuilder) WithMandatoryFields(actionLists []BACnetActionList) BACnetConstructedDataActionBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataActionBuilder) MustBuild() BACnetConstructedDataA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataActionBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataAction) deepCopy() *_BACnetConstructedDataAction 
 	}
 	_BACnetConstructedDataActionCopy := &_BACnetConstructedDataAction{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetActionList, BACnetActionList](m.ActionLists),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataActionCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataActionCopy
 }
 

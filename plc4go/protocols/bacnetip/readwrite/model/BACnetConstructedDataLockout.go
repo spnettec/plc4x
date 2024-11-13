@@ -86,6 +86,8 @@ type BACnetConstructedDataLockoutBuilder interface {
 	WithLockout(BACnetApplicationTagBoolean) BACnetConstructedDataLockoutBuilder
 	// WithLockoutBuilder adds Lockout (property field) which is build by the builder
 	WithLockoutBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLockoutBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLockout or returns an error if something is wrong
 	Build() (BACnetConstructedDataLockout, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLockoutBuilder) = (*_BACnetConstructedDataLockoutBui
 
 func (b *_BACnetConstructedDataLockoutBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLockout
 }
 
 func (b *_BACnetConstructedDataLockoutBuilder) WithMandatoryFields(lockout BACnetApplicationTagBoolean) BACnetConstructedDataLockoutBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLockoutBuilder) MustBuild() BACnetConstructedData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLockoutBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLockout) deepCopy() *_BACnetConstructedDataLockou
 	}
 	_BACnetConstructedDataLockoutCopy := &_BACnetConstructedDataLockout{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Lockout.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.Lockout),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLockoutCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLockoutCopy
 }
 

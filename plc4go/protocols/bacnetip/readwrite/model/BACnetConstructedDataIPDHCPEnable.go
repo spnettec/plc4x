@@ -86,6 +86,8 @@ type BACnetConstructedDataIPDHCPEnableBuilder interface {
 	WithIpDhcpEnable(BACnetApplicationTagBoolean) BACnetConstructedDataIPDHCPEnableBuilder
 	// WithIpDhcpEnableBuilder adds IpDhcpEnable (property field) which is build by the builder
 	WithIpDhcpEnableBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataIPDHCPEnableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIPDHCPEnable or returns an error if something is wrong
 	Build() (BACnetConstructedDataIPDHCPEnable, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIPDHCPEnableBuilder) = (*_BACnetConstructedDataIPDHC
 
 func (b *_BACnetConstructedDataIPDHCPEnableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIPDHCPEnable
 }
 
 func (b *_BACnetConstructedDataIPDHCPEnableBuilder) WithMandatoryFields(ipDhcpEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPDHCPEnableBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIPDHCPEnableBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIPDHCPEnableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataIPDHCPEnable) deepCopy() *_BACnetConstructedDataI
 	}
 	_BACnetConstructedDataIPDHCPEnableCopy := &_BACnetConstructedDataIPDHCPEnable{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.IpDhcpEnable.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.IpDhcpEnable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIPDHCPEnableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIPDHCPEnableCopy
 }
 

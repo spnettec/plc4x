@@ -102,6 +102,8 @@ type DF1SymbolMessageFrameBuilder interface {
 	WithCommand(DF1Command) DF1SymbolMessageFrameBuilder
 	// WithCommandBuilder adds Command (property field) which is build by the builder
 	WithCommandBuilder(func(DF1CommandBuilder) DF1CommandBuilder) DF1SymbolMessageFrameBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() DF1SymbolBuilder
 	// Build builds the DF1SymbolMessageFrame or returns an error if something is wrong
 	Build() (DF1SymbolMessageFrame, error)
 	// MustBuild does the same as Build but panics on error
@@ -125,6 +127,7 @@ var _ (DF1SymbolMessageFrameBuilder) = (*_DF1SymbolMessageFrameBuilder)(nil)
 
 func (b *_DF1SymbolMessageFrameBuilder) setParent(contract DF1SymbolContract) {
 	b.DF1SymbolContract = contract
+	contract.(*_DF1Symbol)._SubType = b._DF1SymbolMessageFrame
 }
 
 func (b *_DF1SymbolMessageFrameBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, command DF1Command) DF1SymbolMessageFrameBuilder {
@@ -180,8 +183,10 @@ func (b *_DF1SymbolMessageFrameBuilder) MustBuild() DF1SymbolMessageFrame {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DF1SymbolMessageFrameBuilder) Done() DF1SymbolBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewDF1SymbolBuilder().(*_DF1SymbolBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -428,9 +433,9 @@ func (m *_DF1SymbolMessageFrame) deepCopy() *_DF1SymbolMessageFrame {
 		m.DF1SymbolContract.(*_DF1Symbol).deepCopy(),
 		m.DestinationAddress,
 		m.SourceAddress,
-		m.Command.DeepCopy().(DF1Command),
+		utils.DeepCopy[DF1Command](m.Command),
 	}
-	m.DF1SymbolContract.(*_DF1Symbol)._SubType = m
+	_DF1SymbolMessageFrameCopy.DF1SymbolContract.(*_DF1Symbol)._SubType = m
 	return _DF1SymbolMessageFrameCopy
 }
 

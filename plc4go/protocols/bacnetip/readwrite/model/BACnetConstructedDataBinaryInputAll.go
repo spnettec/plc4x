@@ -71,6 +71,8 @@ type BACnetConstructedDataBinaryInputAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataBinaryInputAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBinaryInputAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataBinaryInputAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataBinaryInputAllBuilder) = (*_BACnetConstructedDataBin
 
 func (b *_BACnetConstructedDataBinaryInputAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBinaryInputAll
 }
 
 func (b *_BACnetConstructedDataBinaryInputAllBuilder) WithMandatoryFields() BACnetConstructedDataBinaryInputAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataBinaryInputAllBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBinaryInputAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataBinaryInputAll) deepCopy() *_BACnetConstructedDat
 	_BACnetConstructedDataBinaryInputAllCopy := &_BACnetConstructedDataBinaryInputAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBinaryInputAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBinaryInputAllCopy
 }
 

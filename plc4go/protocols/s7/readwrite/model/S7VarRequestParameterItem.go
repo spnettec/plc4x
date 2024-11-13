@@ -89,10 +89,7 @@ type S7VarRequestParameterItemBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7VarRequestParameterItemBuilder
 	// AsS7VarRequestParameterItemAddress converts this build to a subType of S7VarRequestParameterItem. It is always possible to return to current builder using Done()
-	AsS7VarRequestParameterItemAddress() interface {
-		S7VarRequestParameterItemAddressBuilder
-		Done() S7VarRequestParameterItemBuilder
-	}
+	AsS7VarRequestParameterItemAddress() S7VarRequestParameterItemAddressBuilder
 	// Build builds the S7VarRequestParameterItem or returns an error if something is wrong
 	PartialBuild() (S7VarRequestParameterItemContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -143,14 +140,8 @@ func (b *_S7VarRequestParameterItemBuilder) PartialMustBuild() S7VarRequestParam
 	return build
 }
 
-func (b *_S7VarRequestParameterItemBuilder) AsS7VarRequestParameterItemAddress() interface {
-	S7VarRequestParameterItemAddressBuilder
-	Done() S7VarRequestParameterItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7VarRequestParameterItemAddressBuilder
-		Done() S7VarRequestParameterItemBuilder
-	}); ok {
+func (b *_S7VarRequestParameterItemBuilder) AsS7VarRequestParameterItemAddress() S7VarRequestParameterItemAddressBuilder {
+	if cb, ok := b.childBuilder.(S7VarRequestParameterItemAddressBuilder); ok {
 		return cb
 	}
 	cb := NewS7VarRequestParameterItemAddressBuilder().(*_S7VarRequestParameterItemAddressBuilder)

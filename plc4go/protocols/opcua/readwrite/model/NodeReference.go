@@ -109,6 +109,8 @@ type NodeReferenceBuilder interface {
 	WithIsForward(bool) NodeReferenceBuilder
 	// WithReferencedNodeIds adds ReferencedNodeIds (property field)
 	WithReferencedNodeIds(...NodeId) NodeReferenceBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the NodeReference or returns an error if something is wrong
 	Build() (NodeReference, error)
 	// MustBuild does the same as Build but panics on error
@@ -132,6 +134,7 @@ var _ (NodeReferenceBuilder) = (*_NodeReferenceBuilder)(nil)
 
 func (b *_NodeReferenceBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._NodeReference
 }
 
 func (b *_NodeReferenceBuilder) WithMandatoryFields(nodeId NodeId, referenceTypeId NodeId, isForward bool, referencedNodeIds []NodeId) NodeReferenceBuilder {
@@ -211,8 +214,10 @@ func (b *_NodeReferenceBuilder) MustBuild() NodeReference {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NodeReferenceBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -451,13 +456,13 @@ func (m *_NodeReference) deepCopy() *_NodeReference {
 	}
 	_NodeReferenceCopy := &_NodeReference{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
-		m.ReferenceTypeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.NodeId),
+		utils.DeepCopy[NodeId](m.ReferenceTypeId),
 		m.IsForward,
 		utils.DeepCopySlice[NodeId, NodeId](m.ReferencedNodeIds),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_NodeReferenceCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _NodeReferenceCopy
 }
 

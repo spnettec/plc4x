@@ -96,6 +96,8 @@ type DeleteMonitoredItemsRequestBuilder interface {
 	WithSubscriptionId(uint32) DeleteMonitoredItemsRequestBuilder
 	// WithMonitoredItemIds adds MonitoredItemIds (property field)
 	WithMonitoredItemIds(...uint32) DeleteMonitoredItemsRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DeleteMonitoredItemsRequest or returns an error if something is wrong
 	Build() (DeleteMonitoredItemsRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (DeleteMonitoredItemsRequestBuilder) = (*_DeleteMonitoredItemsRequestBuild
 
 func (b *_DeleteMonitoredItemsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DeleteMonitoredItemsRequest
 }
 
 func (b *_DeleteMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, monitoredItemIds []uint32) DeleteMonitoredItemsRequestBuilder {
@@ -174,8 +177,10 @@ func (b *_DeleteMonitoredItemsRequestBuilder) MustBuild() DeleteMonitoredItemsRe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeleteMonitoredItemsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -379,11 +384,11 @@ func (m *_DeleteMonitoredItemsRequest) deepCopy() *_DeleteMonitoredItemsRequest 
 	}
 	_DeleteMonitoredItemsRequestCopy := &_DeleteMonitoredItemsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		m.SubscriptionId,
 		utils.DeepCopySlice[uint32, uint32](m.MonitoredItemIds),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DeleteMonitoredItemsRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteMonitoredItemsRequestCopy
 }
 

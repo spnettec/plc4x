@@ -333,7 +333,7 @@ func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) deepCopy() *_BACnetAccessRul
 		return nil
 	}
 	_BACnetAccessRuleTimeRangeSpecifierTaggedCopy := &_BACnetAccessRuleTimeRangeSpecifierTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

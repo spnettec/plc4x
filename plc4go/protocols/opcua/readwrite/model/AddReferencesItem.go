@@ -131,6 +131,8 @@ type AddReferencesItemBuilder interface {
 	WithTargetNodeIdBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddReferencesItemBuilder
 	// WithTargetNodeClass adds TargetNodeClass (property field)
 	WithTargetNodeClass(NodeClass) AddReferencesItemBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AddReferencesItem or returns an error if something is wrong
 	Build() (AddReferencesItem, error)
 	// MustBuild does the same as Build but panics on error
@@ -154,6 +156,7 @@ var _ (AddReferencesItemBuilder) = (*_AddReferencesItemBuilder)(nil)
 
 func (b *_AddReferencesItemBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AddReferencesItem
 }
 
 func (b *_AddReferencesItemBuilder) WithMandatoryFields(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) AddReferencesItemBuilder {
@@ -281,8 +284,10 @@ func (b *_AddReferencesItemBuilder) MustBuild() AddReferencesItem {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AddReferencesItemBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -535,15 +540,15 @@ func (m *_AddReferencesItem) deepCopy() *_AddReferencesItem {
 	}
 	_AddReferencesItemCopy := &_AddReferencesItem{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.SourceNodeId.DeepCopy().(NodeId),
-		m.ReferenceTypeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.SourceNodeId),
+		utils.DeepCopy[NodeId](m.ReferenceTypeId),
 		m.IsForward,
-		m.TargetServerUri.DeepCopy().(PascalString),
-		m.TargetNodeId.DeepCopy().(ExpandedNodeId),
+		utils.DeepCopy[PascalString](m.TargetServerUri),
+		utils.DeepCopy[ExpandedNodeId](m.TargetNodeId),
 		m.TargetNodeClass,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AddReferencesItemCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AddReferencesItemCopy
 }
 

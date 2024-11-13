@@ -86,6 +86,8 @@ type BACnetConstructedDataAckRequiredBuilder interface {
 	WithAckRequired(BACnetEventTransitionBitsTagged) BACnetConstructedDataAckRequiredBuilder
 	// WithAckRequiredBuilder adds AckRequired (property field) which is build by the builder
 	WithAckRequiredBuilder(func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetConstructedDataAckRequiredBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAckRequired or returns an error if something is wrong
 	Build() (BACnetConstructedDataAckRequired, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAckRequiredBuilder) = (*_BACnetConstructedDataAckReq
 
 func (b *_BACnetConstructedDataAckRequiredBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAckRequired
 }
 
 func (b *_BACnetConstructedDataAckRequiredBuilder) WithMandatoryFields(ackRequired BACnetEventTransitionBitsTagged) BACnetConstructedDataAckRequiredBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAckRequiredBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAckRequiredBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataAckRequired) deepCopy() *_BACnetConstructedDataAc
 	}
 	_BACnetConstructedDataAckRequiredCopy := &_BACnetConstructedDataAckRequired{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AckRequired.DeepCopy().(BACnetEventTransitionBitsTagged),
+		utils.DeepCopy[BACnetEventTransitionBitsTagged](m.AckRequired),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAckRequiredCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAckRequiredCopy
 }
 

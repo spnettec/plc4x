@@ -71,6 +71,8 @@ type ApduDataExtKeyResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtKeyResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtKeyResponse or returns an error if something is wrong
 	Build() (ApduDataExtKeyResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataExtKeyResponseBuilder) = (*_ApduDataExtKeyResponseBuilder)(nil)
 
 func (b *_ApduDataExtKeyResponseBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtKeyResponse
 }
 
 func (b *_ApduDataExtKeyResponseBuilder) WithMandatoryFields() ApduDataExtKeyResponseBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataExtKeyResponseBuilder) MustBuild() ApduDataExtKeyResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtKeyResponseBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataExtKeyResponse) deepCopy() *_ApduDataExtKeyResponse {
 	_ApduDataExtKeyResponseCopy := &_ApduDataExtKeyResponse{
 		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtKeyResponseCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtKeyResponseCopy
 }
 

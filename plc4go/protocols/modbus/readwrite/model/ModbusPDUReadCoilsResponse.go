@@ -79,6 +79,8 @@ type ModbusPDUReadCoilsResponseBuilder interface {
 	WithMandatoryFields(value []byte) ModbusPDUReadCoilsResponseBuilder
 	// WithValue adds Value (property field)
 	WithValue(...byte) ModbusPDUReadCoilsResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUReadCoilsResponse or returns an error if something is wrong
 	Build() (ModbusPDUReadCoilsResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ModbusPDUReadCoilsResponseBuilder) = (*_ModbusPDUReadCoilsResponseBuilder
 
 func (b *_ModbusPDUReadCoilsResponseBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUReadCoilsResponse
 }
 
 func (b *_ModbusPDUReadCoilsResponseBuilder) WithMandatoryFields(value []byte) ModbusPDUReadCoilsResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_ModbusPDUReadCoilsResponseBuilder) MustBuild() ModbusPDUReadCoilsRespo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUReadCoilsResponseBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -309,7 +314,7 @@ func (m *_ModbusPDUReadCoilsResponse) deepCopy() *_ModbusPDUReadCoilsResponse {
 		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Value),
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUReadCoilsResponseCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUReadCoilsResponseCopy
 }
 

@@ -111,6 +111,8 @@ type BACnetConfirmedServiceRequestSubscribeCOVBuilder interface {
 	WithOptionalLifetimeInSeconds(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVBuilder
 	// WithOptionalLifetimeInSecondsBuilder adds LifetimeInSeconds (property field) which is build by the builder
 	WithOptionalLifetimeInSecondsBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestSubscribeCOV or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestSubscribeCOV, error)
 	// MustBuild does the same as Build but panics on error
@@ -134,6 +136,7 @@ var _ (BACnetConfirmedServiceRequestSubscribeCOVBuilder) = (*_BACnetConfirmedSer
 
 func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestSubscribeCOV
 }
 
 func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestSubscribeCOVBuilder {
@@ -239,8 +242,10 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -458,12 +463,12 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) deepCopy() *_BACnetConfirme
 	}
 	_BACnetConfirmedServiceRequestSubscribeCOVCopy := &_BACnetConfirmedServiceRequestSubscribeCOV{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.SubscriberProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.IssueConfirmed.DeepCopy().(BACnetContextTagBoolean),
-		m.LifetimeInSeconds.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.SubscriberProcessIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.MonitoredObjectIdentifier),
+		utils.DeepCopy[BACnetContextTagBoolean](m.IssueConfirmed),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.LifetimeInSeconds),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestSubscribeCOVCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestSubscribeCOVCopy
 }
 

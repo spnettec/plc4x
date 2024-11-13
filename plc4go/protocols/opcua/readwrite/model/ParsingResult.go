@@ -96,6 +96,8 @@ type ParsingResultBuilder interface {
 	WithDataStatusCodes(...StatusCode) ParsingResultBuilder
 	// WithDataDiagnosticInfos adds DataDiagnosticInfos (property field)
 	WithDataDiagnosticInfos(...DiagnosticInfo) ParsingResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ParsingResult or returns an error if something is wrong
 	Build() (ParsingResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (ParsingResultBuilder) = (*_ParsingResultBuilder)(nil)
 
 func (b *_ParsingResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ParsingResult
 }
 
 func (b *_ParsingResultBuilder) WithMandatoryFields(statusCode StatusCode, dataStatusCodes []StatusCode, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder {
@@ -174,8 +177,10 @@ func (b *_ParsingResultBuilder) MustBuild() ParsingResult {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ParsingResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_ParsingResult) deepCopy() *_ParsingResult {
 	}
 	_ParsingResultCopy := &_ParsingResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.StatusCode.DeepCopy().(StatusCode),
+		utils.DeepCopy[StatusCode](m.StatusCode),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.DataStatusCodes),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DataDiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ParsingResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ParsingResultCopy
 }
 

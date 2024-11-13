@@ -84,6 +84,8 @@ type BACnetPropertyStatesLockStatusBuilder interface {
 	WithLockStatus(BACnetLockStatusTagged) BACnetPropertyStatesLockStatusBuilder
 	// WithLockStatusBuilder adds LockStatus (property field) which is build by the builder
 	WithLockStatusBuilder(func(BACnetLockStatusTaggedBuilder) BACnetLockStatusTaggedBuilder) BACnetPropertyStatesLockStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesLockStatus or returns an error if something is wrong
 	Build() (BACnetPropertyStatesLockStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesLockStatusBuilder) = (*_BACnetPropertyStatesLockStatu
 
 func (b *_BACnetPropertyStatesLockStatusBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesLockStatus
 }
 
 func (b *_BACnetPropertyStatesLockStatusBuilder) WithMandatoryFields(lockStatus BACnetLockStatusTagged) BACnetPropertyStatesLockStatusBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesLockStatusBuilder) MustBuild() BACnetPropertyState
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesLockStatusBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesLockStatus) deepCopy() *_BACnetPropertyStatesLockS
 	}
 	_BACnetPropertyStatesLockStatusCopy := &_BACnetPropertyStatesLockStatus{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.LockStatus.DeepCopy().(BACnetLockStatusTagged),
+		utils.DeepCopy[BACnetLockStatusTagged](m.LockStatus),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesLockStatusCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesLockStatusCopy
 }
 

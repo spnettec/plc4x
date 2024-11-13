@@ -84,6 +84,8 @@ type BACnetChannelValueCharacterStringBuilder interface {
 	WithCharacterStringValue(BACnetApplicationTagCharacterString) BACnetChannelValueCharacterStringBuilder
 	// WithCharacterStringValueBuilder adds CharacterStringValue (property field) which is build by the builder
 	WithCharacterStringValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetChannelValueCharacterStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueCharacterString or returns an error if something is wrong
 	Build() (BACnetChannelValueCharacterString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueCharacterStringBuilder) = (*_BACnetChannelValueCharacte
 
 func (b *_BACnetChannelValueCharacterStringBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueCharacterString
 }
 
 func (b *_BACnetChannelValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetChannelValueCharacterStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueCharacterStringBuilder) MustBuild() BACnetChannelVal
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueCharacterStringBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueCharacterString) deepCopy() *_BACnetChannelValueChar
 	}
 	_BACnetChannelValueCharacterStringCopy := &_BACnetChannelValueCharacterString{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.CharacterStringValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueCharacterStringCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueCharacterStringCopy
 }
 

@@ -96,6 +96,8 @@ type BrowseNextResponseBuilder interface {
 	WithResults(...BrowseResult) BrowseNextResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) BrowseNextResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BrowseNextResponse or returns an error if something is wrong
 	Build() (BrowseNextResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (BrowseNextResponseBuilder) = (*_BrowseNextResponseBuilder)(nil)
 
 func (b *_BrowseNextResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BrowseNextResponse
 }
 
 func (b *_BrowseNextResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []BrowseResult, diagnosticInfos []DiagnosticInfo) BrowseNextResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_BrowseNextResponseBuilder) MustBuild() BrowseNextResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BrowseNextResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_BrowseNextResponse) deepCopy() *_BrowseNextResponse {
 	}
 	_BrowseNextResponseCopy := &_BrowseNextResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[BrowseResult, BrowseResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BrowseNextResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowseNextResponseCopy
 }
 

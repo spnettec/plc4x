@@ -100,6 +100,8 @@ type DeviceConfigurationRequestBuilder interface {
 	WithCemi(CEMI) DeviceConfigurationRequestBuilder
 	// WithCemiBuilder adds Cemi (property field) which is build by the builder
 	WithCemiBuilder(func(CEMIBuilder) CEMIBuilder) DeviceConfigurationRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the DeviceConfigurationRequest or returns an error if something is wrong
 	Build() (DeviceConfigurationRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -123,6 +125,7 @@ var _ (DeviceConfigurationRequestBuilder) = (*_DeviceConfigurationRequestBuilder
 
 func (b *_DeviceConfigurationRequestBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._DeviceConfigurationRequest
 }
 
 func (b *_DeviceConfigurationRequestBuilder) WithMandatoryFields(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI) DeviceConfigurationRequestBuilder {
@@ -192,8 +195,10 @@ func (b *_DeviceConfigurationRequestBuilder) MustBuild() DeviceConfigurationRequ
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeviceConfigurationRequestBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,11 +380,11 @@ func (m *_DeviceConfigurationRequest) deepCopy() *_DeviceConfigurationRequest {
 	}
 	_DeviceConfigurationRequestCopy := &_DeviceConfigurationRequest{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
-		m.DeviceConfigurationRequestDataBlock.DeepCopy().(DeviceConfigurationRequestDataBlock),
-		m.Cemi.DeepCopy().(CEMI),
+		utils.DeepCopy[DeviceConfigurationRequestDataBlock](m.DeviceConfigurationRequestDataBlock),
+		utils.DeepCopy[CEMI](m.Cemi),
 		m.TotalLength,
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_DeviceConfigurationRequestCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _DeviceConfigurationRequestCopy
 }
 

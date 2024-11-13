@@ -333,7 +333,7 @@ func (m *_BACnetBinaryPVTagged) deepCopy() *_BACnetBinaryPVTagged {
 		return nil
 	}
 	_BACnetBinaryPVTaggedCopy := &_BACnetBinaryPVTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

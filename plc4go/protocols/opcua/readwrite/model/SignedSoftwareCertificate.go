@@ -95,6 +95,8 @@ type SignedSoftwareCertificateBuilder interface {
 	WithSignature(PascalByteString) SignedSoftwareCertificateBuilder
 	// WithSignatureBuilder adds Signature (property field) which is build by the builder
 	WithSignatureBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) SignedSoftwareCertificateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SignedSoftwareCertificate or returns an error if something is wrong
 	Build() (SignedSoftwareCertificate, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (SignedSoftwareCertificateBuilder) = (*_SignedSoftwareCertificateBuilder)(
 
 func (b *_SignedSoftwareCertificateBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SignedSoftwareCertificate
 }
 
 func (b *_SignedSoftwareCertificateBuilder) WithMandatoryFields(certificateData PascalByteString, signature PascalByteString) SignedSoftwareCertificateBuilder {
@@ -187,8 +190,10 @@ func (b *_SignedSoftwareCertificateBuilder) MustBuild() SignedSoftwareCertificat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SignedSoftwareCertificateBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_SignedSoftwareCertificate) deepCopy() *_SignedSoftwareCertificate {
 	}
 	_SignedSoftwareCertificateCopy := &_SignedSoftwareCertificate{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.CertificateData.DeepCopy().(PascalByteString),
-		m.Signature.DeepCopy().(PascalByteString),
+		utils.DeepCopy[PascalByteString](m.CertificateData),
+		utils.DeepCopy[PascalByteString](m.Signature),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SignedSoftwareCertificateCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SignedSoftwareCertificateCopy
 }
 

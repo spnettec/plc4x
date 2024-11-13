@@ -86,6 +86,8 @@ type BACnetConstructedDataLastStateChangeBuilder interface {
 	WithLastStateChange(BACnetTimerTransitionTagged) BACnetConstructedDataLastStateChangeBuilder
 	// WithLastStateChangeBuilder adds LastStateChange (property field) which is build by the builder
 	WithLastStateChangeBuilder(func(BACnetTimerTransitionTaggedBuilder) BACnetTimerTransitionTaggedBuilder) BACnetConstructedDataLastStateChangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLastStateChange or returns an error if something is wrong
 	Build() (BACnetConstructedDataLastStateChange, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLastStateChangeBuilder) = (*_BACnetConstructedDataLa
 
 func (b *_BACnetConstructedDataLastStateChangeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLastStateChange
 }
 
 func (b *_BACnetConstructedDataLastStateChangeBuilder) WithMandatoryFields(lastStateChange BACnetTimerTransitionTagged) BACnetConstructedDataLastStateChangeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLastStateChangeBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLastStateChangeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLastStateChange) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataLastStateChangeCopy := &_BACnetConstructedDataLastStateChange{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LastStateChange.DeepCopy().(BACnetTimerTransitionTagged),
+		utils.DeepCopy[BACnetTimerTransitionTagged](m.LastStateChange),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLastStateChangeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLastStateChangeCopy
 }
 

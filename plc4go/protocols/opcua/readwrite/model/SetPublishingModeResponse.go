@@ -96,6 +96,8 @@ type SetPublishingModeResponseBuilder interface {
 	WithResults(...StatusCode) SetPublishingModeResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) SetPublishingModeResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SetPublishingModeResponse or returns an error if something is wrong
 	Build() (SetPublishingModeResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (SetPublishingModeResponseBuilder) = (*_SetPublishingModeResponseBuilder)(
 
 func (b *_SetPublishingModeResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SetPublishingModeResponse
 }
 
 func (b *_SetPublishingModeResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) SetPublishingModeResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_SetPublishingModeResponseBuilder) MustBuild() SetPublishingModeRespons
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SetPublishingModeResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_SetPublishingModeResponse) deepCopy() *_SetPublishingModeResponse {
 	}
 	_SetPublishingModeResponseCopy := &_SetPublishingModeResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SetPublishingModeResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SetPublishingModeResponseCopy
 }
 

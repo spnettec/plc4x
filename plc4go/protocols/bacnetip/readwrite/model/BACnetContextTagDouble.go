@@ -86,6 +86,8 @@ type BACnetContextTagDoubleBuilder interface {
 	WithPayload(BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetContextTagDoubleBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetContextTagBuilder
 	// Build builds the BACnetContextTagDouble or returns an error if something is wrong
 	Build() (BACnetContextTagDouble, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetContextTagDoubleBuilder) = (*_BACnetContextTagDoubleBuilder)(nil)
 
 func (b *_BACnetContextTagDoubleBuilder) setParent(contract BACnetContextTagContract) {
 	b.BACnetContextTagContract = contract
+	contract.(*_BACnetContextTag)._SubType = b._BACnetContextTagDouble
 }
 
 func (b *_BACnetContextTagDoubleBuilder) WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetContextTagDoubleBuilder) MustBuild() BACnetContextTagDouble {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetContextTagDoubleBuilder) Done() BACnetContextTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetContextTagBuilder().(*_BACnetContextTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -339,9 +344,9 @@ func (m *_BACnetContextTagDouble) deepCopy() *_BACnetContextTagDouble {
 	}
 	_BACnetContextTagDoubleCopy := &_BACnetContextTagDouble{
 		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
-		m.Payload.DeepCopy().(BACnetTagPayloadDouble),
+		utils.DeepCopy[BACnetTagPayloadDouble](m.Payload),
 	}
-	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	_BACnetContextTagDoubleCopy.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
 	return _BACnetContextTagDoubleCopy
 }
 

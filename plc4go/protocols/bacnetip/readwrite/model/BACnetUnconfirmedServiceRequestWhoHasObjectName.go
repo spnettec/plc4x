@@ -84,6 +84,8 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder interface {
 	WithObjectName(BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
 	// WithObjectNameBuilder adds ObjectName (property field) which is build by the builder
 	WithObjectNameBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestWhoHasObjectName or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestWhoHasObjectName, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) = (*_BACnetUnconf
 
 func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) setParent(contract BACnetUnconfirmedServiceRequestWhoHasObjectContract) {
 	b.BACnetUnconfirmedServiceRequestWhoHasObjectContract = contract
+	contract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = b._BACnetUnconfirmedServiceRequestWhoHasObjectName
 }
 
 func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) WithMandatoryFields(objectName BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) MustBuild() BA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetUnconfirmedServiceRequestWhoHasObjectBuilder().(*_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) deepCopy() *_BACnetUn
 	}
 	_BACnetUnconfirmedServiceRequestWhoHasObjectNameCopy := &_BACnetUnconfirmedServiceRequestWhoHasObjectName{
 		m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject).deepCopy(),
-		m.ObjectName.DeepCopy().(BACnetContextTagCharacterString),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.ObjectName),
 	}
-	m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = m
+	_BACnetUnconfirmedServiceRequestWhoHasObjectNameCopy.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = m
 	return _BACnetUnconfirmedServiceRequestWhoHasObjectNameCopy
 }
 

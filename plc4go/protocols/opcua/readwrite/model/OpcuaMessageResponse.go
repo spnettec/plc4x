@@ -98,6 +98,8 @@ type OpcuaMessageResponseBuilder interface {
 	WithMessage(Payload) OpcuaMessageResponseBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaMessageResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MessagePDUBuilder
 	// Build builds the OpcuaMessageResponse or returns an error if something is wrong
 	Build() (OpcuaMessageResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -121,6 +123,7 @@ var _ (OpcuaMessageResponseBuilder) = (*_OpcuaMessageResponseBuilder)(nil)
 
 func (b *_OpcuaMessageResponseBuilder) setParent(contract MessagePDUContract) {
 	b.MessagePDUContract = contract
+	contract.(*_MessagePDU)._SubType = b._OpcuaMessageResponse
 }
 
 func (b *_OpcuaMessageResponseBuilder) WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaMessageResponseBuilder {
@@ -190,8 +193,10 @@ func (b *_OpcuaMessageResponseBuilder) MustBuild() OpcuaMessageResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_OpcuaMessageResponseBuilder) Done() MessagePDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMessagePDUBuilder().(*_MessagePDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -377,11 +382,11 @@ func (m *_OpcuaMessageResponse) deepCopy() *_OpcuaMessageResponse {
 	}
 	_OpcuaMessageResponseCopy := &_OpcuaMessageResponse{
 		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
-		m.SecurityHeader.DeepCopy().(SecurityHeader),
-		m.Message.DeepCopy().(Payload),
+		utils.DeepCopy[SecurityHeader](m.SecurityHeader),
+		utils.DeepCopy[Payload](m.Message),
 		m.TotalLength,
 	}
-	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	_OpcuaMessageResponseCopy.MessagePDUContract.(*_MessagePDU)._SubType = m
 	return _OpcuaMessageResponseCopy
 }
 

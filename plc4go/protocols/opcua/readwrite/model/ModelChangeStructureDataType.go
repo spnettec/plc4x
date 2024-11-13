@@ -101,6 +101,8 @@ type ModelChangeStructureDataTypeBuilder interface {
 	WithAffectedTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) ModelChangeStructureDataTypeBuilder
 	// WithVerb adds Verb (property field)
 	WithVerb(uint8) ModelChangeStructureDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ModelChangeStructureDataType or returns an error if something is wrong
 	Build() (ModelChangeStructureDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (ModelChangeStructureDataTypeBuilder) = (*_ModelChangeStructureDataTypeBui
 
 func (b *_ModelChangeStructureDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ModelChangeStructureDataType
 }
 
 func (b *_ModelChangeStructureDataTypeBuilder) WithMandatoryFields(affected NodeId, affectedType NodeId, verb uint8) ModelChangeStructureDataTypeBuilder {
@@ -198,8 +201,10 @@ func (b *_ModelChangeStructureDataTypeBuilder) MustBuild() ModelChangeStructureD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModelChangeStructureDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -388,11 +393,11 @@ func (m *_ModelChangeStructureDataType) deepCopy() *_ModelChangeStructureDataTyp
 	}
 	_ModelChangeStructureDataTypeCopy := &_ModelChangeStructureDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Affected.DeepCopy().(NodeId),
-		m.AffectedType.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.Affected),
+		utils.DeepCopy[NodeId](m.AffectedType),
 		m.Verb,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ModelChangeStructureDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ModelChangeStructureDataTypeCopy
 }
 

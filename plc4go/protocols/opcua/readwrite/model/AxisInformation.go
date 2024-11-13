@@ -118,6 +118,8 @@ type AxisInformationBuilder interface {
 	WithAxisScaleType(AxisScaleEnumeration) AxisInformationBuilder
 	// WithAxisSteps adds AxisSteps (property field)
 	WithAxisSteps(...float64) AxisInformationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AxisInformation or returns an error if something is wrong
 	Build() (AxisInformation, error)
 	// MustBuild does the same as Build but panics on error
@@ -141,6 +143,7 @@ var _ (AxisInformationBuilder) = (*_AxisInformationBuilder)(nil)
 
 func (b *_AxisInformationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AxisInformation
 }
 
 func (b *_AxisInformationBuilder) WithMandatoryFields(engineeringUnits EUInformation, eURange Range, title LocalizedText, axisScaleType AxisScaleEnumeration, axisSteps []float64) AxisInformationBuilder {
@@ -244,8 +247,10 @@ func (b *_AxisInformationBuilder) MustBuild() AxisInformation {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AxisInformationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -483,13 +488,13 @@ func (m *_AxisInformation) deepCopy() *_AxisInformation {
 	}
 	_AxisInformationCopy := &_AxisInformation{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.EngineeringUnits.DeepCopy().(EUInformation),
-		m.EURange.DeepCopy().(Range),
-		m.Title.DeepCopy().(LocalizedText),
+		utils.DeepCopy[EUInformation](m.EngineeringUnits),
+		utils.DeepCopy[Range](m.EURange),
+		utils.DeepCopy[LocalizedText](m.Title),
 		m.AxisScaleType,
 		utils.DeepCopySlice[float64, float64](m.AxisSteps),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AxisInformationCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AxisInformationCopy
 }
 

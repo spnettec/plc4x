@@ -86,6 +86,8 @@ type BACnetConstructedDataLogIntervalBuilder interface {
 	WithLogInterval(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLogIntervalBuilder
 	// WithLogIntervalBuilder adds LogInterval (property field) which is build by the builder
 	WithLogIntervalBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLogIntervalBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLogInterval or returns an error if something is wrong
 	Build() (BACnetConstructedDataLogInterval, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLogIntervalBuilder) = (*_BACnetConstructedDataLogInt
 
 func (b *_BACnetConstructedDataLogIntervalBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLogInterval
 }
 
 func (b *_BACnetConstructedDataLogIntervalBuilder) WithMandatoryFields(logInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLogIntervalBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLogIntervalBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLogIntervalBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLogInterval) deepCopy() *_BACnetConstructedDataLo
 	}
 	_BACnetConstructedDataLogIntervalCopy := &_BACnetConstructedDataLogInterval{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LogInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.LogInterval),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLogIntervalCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLogIntervalCopy
 }
 

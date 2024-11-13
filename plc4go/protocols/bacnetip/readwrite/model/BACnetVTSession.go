@@ -381,9 +381,9 @@ func (m *_BACnetVTSession) deepCopy() *_BACnetVTSession {
 		return nil
 	}
 	_BACnetVTSessionCopy := &_BACnetVTSession{
-		m.LocalVtSessionId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.RemoveVtSessionId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.RemoteVtAddress.DeepCopy().(BACnetAddress),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.LocalVtSessionId),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.RemoveVtSessionId),
+		utils.DeepCopy[BACnetAddress](m.RemoteVtAddress),
 	}
 	return _BACnetVTSessionCopy
 }

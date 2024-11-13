@@ -91,6 +91,8 @@ type ModbusPDUWriteMultipleHoldingRegistersRequestBuilder interface {
 	WithQuantity(uint16) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
 	// WithValue adds Value (property field)
 	WithValue(...byte) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUWriteMultipleHoldingRegistersRequest or returns an error if something is wrong
 	Build() (ModbusPDUWriteMultipleHoldingRegistersRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) = (*_ModbusPDUWrite
 
 func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUWriteMultipleHoldingRegistersRequest
 }
 
 func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16, value []byte) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
@@ -150,8 +153,10 @@ func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) MustBuild() Modb
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -368,7 +373,7 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) deepCopy() *_ModbusPDUW
 		m.Quantity,
 		utils.DeepCopySlice[byte, byte](m.Value),
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUWriteMultipleHoldingRegistersRequestCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUWriteMultipleHoldingRegistersRequestCopy
 }
 

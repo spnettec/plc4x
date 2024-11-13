@@ -71,6 +71,8 @@ type BACnetConstructedDataNetworkPortAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataNetworkPortAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNetworkPortAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataNetworkPortAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataNetworkPortAllBuilder) = (*_BACnetConstructedDataNet
 
 func (b *_BACnetConstructedDataNetworkPortAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNetworkPortAll
 }
 
 func (b *_BACnetConstructedDataNetworkPortAllBuilder) WithMandatoryFields() BACnetConstructedDataNetworkPortAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataNetworkPortAllBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNetworkPortAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataNetworkPortAll) deepCopy() *_BACnetConstructedDat
 	_BACnetConstructedDataNetworkPortAllCopy := &_BACnetConstructedDataNetworkPortAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNetworkPortAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNetworkPortAllCopy
 }
 

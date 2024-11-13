@@ -95,6 +95,8 @@ type CipConnectedResponseBuilder interface {
 	WithOptionalData(CIPDataConnected) CipConnectedResponseBuilder
 	// WithOptionalDataBuilder adds Data (property field) which is build by the builder
 	WithOptionalDataBuilder(func(CIPDataConnectedBuilder) CIPDataConnectedBuilder) CipConnectedResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the CipConnectedResponse or returns an error if something is wrong
 	Build() (CipConnectedResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (CipConnectedResponseBuilder) = (*_CipConnectedResponseBuilder)(nil)
 
 func (b *_CipConnectedResponseBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._CipConnectedResponse
 }
 
 func (b *_CipConnectedResponseBuilder) WithMandatoryFields(status uint8, additionalStatusWords uint8) CipConnectedResponseBuilder {
@@ -167,8 +170,10 @@ func (b *_CipConnectedResponseBuilder) MustBuild() CipConnectedResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipConnectedResponseBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -386,10 +391,10 @@ func (m *_CipConnectedResponse) deepCopy() *_CipConnectedResponse {
 		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.Status,
 		m.AdditionalStatusWords,
-		m.Data.DeepCopy().(CIPDataConnected),
+		utils.DeepCopy[CIPDataConnected](m.Data),
 		m.reservedField0,
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_CipConnectedResponseCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _CipConnectedResponseCopy
 }
 

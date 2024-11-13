@@ -95,6 +95,8 @@ type BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder interface {
 	WithSynchronizedTime(BACnetApplicationTagTime) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
 	// WithSynchronizedTimeBuilder adds SynchronizedTime (property field) which is build by the builder
 	WithSynchronizedTimeBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetUnconfirmedServiceRequestBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestTimeSynchronization or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestTimeSynchronization, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) = (*_BACnetUnc
 
 func (b *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
 	b.BACnetUnconfirmedServiceRequestContract = contract
+	contract.(*_BACnetUnconfirmedServiceRequest)._SubType = b._BACnetUnconfirmedServiceRequestTimeSynchronization
 }
 
 func (b *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) WithMandatoryFields(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder {
@@ -187,8 +190,10 @@ func (b *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) MustBuild()
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetUnconfirmedServiceRequestBuilder().(*_BACnetUnconfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -361,10 +366,10 @@ func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) deepCopy() *_BACne
 	}
 	_BACnetUnconfirmedServiceRequestTimeSynchronizationCopy := &_BACnetUnconfirmedServiceRequestTimeSynchronization{
 		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
-		m.SynchronizedDate.DeepCopy().(BACnetApplicationTagDate),
-		m.SynchronizedTime.DeepCopy().(BACnetApplicationTagTime),
+		utils.DeepCopy[BACnetApplicationTagDate](m.SynchronizedDate),
+		utils.DeepCopy[BACnetApplicationTagTime](m.SynchronizedTime),
 	}
-	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	_BACnetUnconfirmedServiceRequestTimeSynchronizationCopy.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
 	return _BACnetUnconfirmedServiceRequestTimeSynchronizationCopy
 }
 

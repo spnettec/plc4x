@@ -90,6 +90,8 @@ type ParameterValueInterfaceOptions1Builder interface {
 	WithValueBuilder(func(InterfaceOptions1Builder) InterfaceOptions1Builder) ParameterValueInterfaceOptions1Builder
 	// WithData adds Data (property field)
 	WithData(...byte) ParameterValueInterfaceOptions1Builder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ParameterValueBuilder
 	// Build builds the ParameterValueInterfaceOptions1 or returns an error if something is wrong
 	Build() (ParameterValueInterfaceOptions1, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (ParameterValueInterfaceOptions1Builder) = (*_ParameterValueInterfaceOptio
 
 func (b *_ParameterValueInterfaceOptions1Builder) setParent(contract ParameterValueContract) {
 	b.ParameterValueContract = contract
+	contract.(*_ParameterValue)._SubType = b._ParameterValueInterfaceOptions1
 }
 
 func (b *_ParameterValueInterfaceOptions1Builder) WithMandatoryFields(value InterfaceOptions1, data []byte) ParameterValueInterfaceOptions1Builder {
@@ -163,8 +166,10 @@ func (b *_ParameterValueInterfaceOptions1Builder) MustBuild() ParameterValueInte
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ParameterValueInterfaceOptions1Builder) Done() ParameterValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewParameterValueBuilder().(*_ParameterValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,10 +348,10 @@ func (m *_ParameterValueInterfaceOptions1) deepCopy() *_ParameterValueInterfaceO
 	}
 	_ParameterValueInterfaceOptions1Copy := &_ParameterValueInterfaceOptions1{
 		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
-		m.Value.DeepCopy().(InterfaceOptions1),
+		utils.DeepCopy[InterfaceOptions1](m.Value),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	_ParameterValueInterfaceOptions1Copy.ParameterValueContract.(*_ParameterValue)._SubType = m
 	return _ParameterValueInterfaceOptions1Copy
 }
 

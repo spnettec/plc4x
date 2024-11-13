@@ -102,6 +102,8 @@ type LBusmonIndBuilder interface {
 	WithDataFrameBuilder(func(LDataFrameBuilder) LDataFrameBuilder) LBusmonIndBuilder
 	// WithCrc adds Crc (property field)
 	WithOptionalCrc(uint8) LBusmonIndBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the LBusmonInd or returns an error if something is wrong
 	Build() (LBusmonInd, error)
 	// MustBuild does the same as Build but panics on error
@@ -125,6 +127,7 @@ var _ (LBusmonIndBuilder) = (*_LBusmonIndBuilder)(nil)
 
 func (b *_LBusmonIndBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._LBusmonInd
 }
 
 func (b *_LBusmonIndBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LBusmonIndBuilder {
@@ -185,8 +188,10 @@ func (b *_LBusmonIndBuilder) MustBuild() LBusmonInd {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LBusmonIndBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -401,10 +406,10 @@ func (m *_LBusmonInd) deepCopy() *_LBusmonInd {
 		m.CEMIContract.(*_CEMI).deepCopy(),
 		m.AdditionalInformationLength,
 		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
-		m.DataFrame.DeepCopy().(LDataFrame),
+		utils.DeepCopy[LDataFrame](m.DataFrame),
 		utils.CopyPtr[uint8](m.Crc),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_LBusmonIndCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _LBusmonIndCopy
 }
 

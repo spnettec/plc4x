@@ -108,6 +108,8 @@ type CreateSubscriptionResponseBuilder interface {
 	WithRevisedLifetimeCount(uint32) CreateSubscriptionResponseBuilder
 	// WithRevisedMaxKeepAliveCount adds RevisedMaxKeepAliveCount (property field)
 	WithRevisedMaxKeepAliveCount(uint32) CreateSubscriptionResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CreateSubscriptionResponse or returns an error if something is wrong
 	Build() (CreateSubscriptionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -131,6 +133,7 @@ var _ (CreateSubscriptionResponseBuilder) = (*_CreateSubscriptionResponseBuilder
 
 func (b *_CreateSubscriptionResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CreateSubscriptionResponse
 }
 
 func (b *_CreateSubscriptionResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, subscriptionId uint32, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) CreateSubscriptionResponseBuilder {
@@ -196,8 +199,10 @@ func (b *_CreateSubscriptionResponseBuilder) MustBuild() CreateSubscriptionRespo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CreateSubscriptionResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -420,13 +425,13 @@ func (m *_CreateSubscriptionResponse) deepCopy() *_CreateSubscriptionResponse {
 	}
 	_CreateSubscriptionResponseCopy := &_CreateSubscriptionResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		m.SubscriptionId,
 		m.RevisedPublishingInterval,
 		m.RevisedLifetimeCount,
 		m.RevisedMaxKeepAliveCount,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CreateSubscriptionResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CreateSubscriptionResponseCopy
 }
 

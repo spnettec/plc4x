@@ -92,6 +92,8 @@ type DeleteNodesItemBuilder interface {
 	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) DeleteNodesItemBuilder
 	// WithDeleteTargetReferences adds DeleteTargetReferences (property field)
 	WithDeleteTargetReferences(bool) DeleteNodesItemBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DeleteNodesItem or returns an error if something is wrong
 	Build() (DeleteNodesItem, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,6 +117,7 @@ var _ (DeleteNodesItemBuilder) = (*_DeleteNodesItemBuilder)(nil)
 
 func (b *_DeleteNodesItemBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DeleteNodesItem
 }
 
 func (b *_DeleteNodesItemBuilder) WithMandatoryFields(nodeId NodeId, deleteTargetReferences bool) DeleteNodesItemBuilder {
@@ -165,8 +168,10 @@ func (b *_DeleteNodesItemBuilder) MustBuild() DeleteNodesItem {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeleteNodesItemBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -351,11 +356,11 @@ func (m *_DeleteNodesItem) deepCopy() *_DeleteNodesItem {
 	}
 	_DeleteNodesItemCopy := &_DeleteNodesItem{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.NodeId),
 		m.DeleteTargetReferences,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DeleteNodesItemCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteNodesItemCopy
 }
 

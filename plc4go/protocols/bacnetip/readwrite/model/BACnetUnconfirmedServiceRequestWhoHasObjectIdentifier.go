@@ -84,6 +84,8 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder interface {
 	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
 	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
 	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) = (*_BACnet
 
 func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) setParent(contract BACnetUnconfirmedServiceRequestWhoHasObjectContract) {
 	b.BACnetUnconfirmedServiceRequestWhoHasObjectContract = contract
+	contract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = b._BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
 }
 
 func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) MustBuil
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetUnconfirmedServiceRequestWhoHasObjectBuilder().(*_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) deepCopy() *_BA
 	}
 	_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierCopy := &_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{
 		m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject).deepCopy(),
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
 	}
-	m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = m
+	_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierCopy.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = m
 	return _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierCopy
 }
 

@@ -71,6 +71,8 @@ type SecurityDataMainsRestoredOrAppliedBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataMainsRestoredOrAppliedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataMainsRestoredOrApplied or returns an error if something is wrong
 	Build() (SecurityDataMainsRestoredOrApplied, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataMainsRestoredOrAppliedBuilder) = (*_SecurityDataMainsRestored
 
 func (b *_SecurityDataMainsRestoredOrAppliedBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataMainsRestoredOrApplied
 }
 
 func (b *_SecurityDataMainsRestoredOrAppliedBuilder) WithMandatoryFields() SecurityDataMainsRestoredOrAppliedBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataMainsRestoredOrAppliedBuilder) MustBuild() SecurityDataMai
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataMainsRestoredOrAppliedBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataMainsRestoredOrApplied) deepCopy() *_SecurityDataMainsRest
 	_SecurityDataMainsRestoredOrAppliedCopy := &_SecurityDataMainsRestoredOrApplied{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataMainsRestoredOrAppliedCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataMainsRestoredOrAppliedCopy
 }
 

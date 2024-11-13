@@ -374,9 +374,9 @@ func (m *_BACnetLiftCarCallListFloorList) deepCopy() *_BACnetLiftCarCallListFloo
 		return nil
 	}
 	_BACnetLiftCarCallListFloorListCopy := &_BACnetLiftCarCallListFloorList{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.FloorNumbers),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetLiftCarCallListFloorListCopy

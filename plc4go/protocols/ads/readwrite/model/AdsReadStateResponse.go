@@ -91,6 +91,8 @@ type AdsReadStateResponseBuilder interface {
 	WithAdsState(uint16) AdsReadStateResponseBuilder
 	// WithDeviceState adds DeviceState (property field)
 	WithDeviceState(uint16) AdsReadStateResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() AmsPacketBuilder
 	// Build builds the AdsReadStateResponse or returns an error if something is wrong
 	Build() (AdsReadStateResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -114,6 +116,7 @@ var _ (AdsReadStateResponseBuilder) = (*_AdsReadStateResponseBuilder)(nil)
 
 func (b *_AdsReadStateResponseBuilder) setParent(contract AmsPacketContract) {
 	b.AmsPacketContract = contract
+	contract.(*_AmsPacket)._SubType = b._AdsReadStateResponse
 }
 
 func (b *_AdsReadStateResponseBuilder) WithMandatoryFields(result ReturnCode, adsState uint16, deviceState uint16) AdsReadStateResponseBuilder {
@@ -150,8 +153,10 @@ func (b *_AdsReadStateResponseBuilder) MustBuild() AdsReadStateResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AdsReadStateResponseBuilder) Done() AmsPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAmsPacketBuilder().(*_AmsPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -348,7 +353,7 @@ func (m *_AdsReadStateResponse) deepCopy() *_AdsReadStateResponse {
 		m.AdsState,
 		m.DeviceState,
 	}
-	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	_AdsReadStateResponseCopy.AmsPacketContract.(*_AmsPacket)._SubType = m
 	return _AdsReadStateResponseCopy
 }
 

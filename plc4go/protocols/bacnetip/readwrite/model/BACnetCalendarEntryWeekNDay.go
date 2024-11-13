@@ -84,6 +84,8 @@ type BACnetCalendarEntryWeekNDayBuilder interface {
 	WithWeekNDay(BACnetWeekNDayTagged) BACnetCalendarEntryWeekNDayBuilder
 	// WithWeekNDayBuilder adds WeekNDay (property field) which is build by the builder
 	WithWeekNDayBuilder(func(BACnetWeekNDayTaggedBuilder) BACnetWeekNDayTaggedBuilder) BACnetCalendarEntryWeekNDayBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetCalendarEntryBuilder
 	// Build builds the BACnetCalendarEntryWeekNDay or returns an error if something is wrong
 	Build() (BACnetCalendarEntryWeekNDay, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetCalendarEntryWeekNDayBuilder) = (*_BACnetCalendarEntryWeekNDayBuild
 
 func (b *_BACnetCalendarEntryWeekNDayBuilder) setParent(contract BACnetCalendarEntryContract) {
 	b.BACnetCalendarEntryContract = contract
+	contract.(*_BACnetCalendarEntry)._SubType = b._BACnetCalendarEntryWeekNDay
 }
 
 func (b *_BACnetCalendarEntryWeekNDayBuilder) WithMandatoryFields(weekNDay BACnetWeekNDayTagged) BACnetCalendarEntryWeekNDayBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetCalendarEntryWeekNDayBuilder) MustBuild() BACnetCalendarEntryWee
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetCalendarEntryWeekNDayBuilder) Done() BACnetCalendarEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetCalendarEntryBuilder().(*_BACnetCalendarEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetCalendarEntryWeekNDay) deepCopy() *_BACnetCalendarEntryWeekNDay 
 	}
 	_BACnetCalendarEntryWeekNDayCopy := &_BACnetCalendarEntryWeekNDay{
 		m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).deepCopy(),
-		m.WeekNDay.DeepCopy().(BACnetWeekNDayTagged),
+		utils.DeepCopy[BACnetWeekNDayTagged](m.WeekNDay),
 	}
-	m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
+	_BACnetCalendarEntryWeekNDayCopy.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
 	return _BACnetCalendarEntryWeekNDayCopy
 }
 

@@ -394,9 +394,9 @@ func (m *_BACnetDeviceObjectReferenceEnclosed) deepCopy() *_BACnetDeviceObjectRe
 		return nil
 	}
 	_BACnetDeviceObjectReferenceEnclosedCopy := &_BACnetDeviceObjectReferenceEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.ObjectReference.DeepCopy().(BACnetDeviceObjectReference),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetDeviceObjectReference](m.ObjectReference),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetDeviceObjectReferenceEnclosedCopy

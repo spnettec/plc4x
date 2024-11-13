@@ -338,7 +338,7 @@ func (m *_TPKTPacket) deepCopy() *_TPKTPacket {
 		return nil
 	}
 	_TPKTPacketCopy := &_TPKTPacket{
-		m.Payload.DeepCopy().(COTPPacket),
+		utils.DeepCopy[COTPPacket](m.Payload),
 		m.reservedField0,
 	}
 	return _TPKTPacketCopy

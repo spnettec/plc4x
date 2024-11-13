@@ -84,6 +84,8 @@ type ParameterValueInterfaceOptions1PowerUpSettingsBuilder interface {
 	WithValue(InterfaceOptions1PowerUpSettings) ParameterValueInterfaceOptions1PowerUpSettingsBuilder
 	// WithValueBuilder adds Value (property field) which is build by the builder
 	WithValueBuilder(func(InterfaceOptions1PowerUpSettingsBuilder) InterfaceOptions1PowerUpSettingsBuilder) ParameterValueInterfaceOptions1PowerUpSettingsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ParameterValueBuilder
 	// Build builds the ParameterValueInterfaceOptions1PowerUpSettings or returns an error if something is wrong
 	Build() (ParameterValueInterfaceOptions1PowerUpSettings, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (ParameterValueInterfaceOptions1PowerUpSettingsBuilder) = (*_ParameterValu
 
 func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) setParent(contract ParameterValueContract) {
 	b.ParameterValueContract = contract
+	contract.(*_ParameterValue)._SubType = b._ParameterValueInterfaceOptions1PowerUpSettings
 }
 
 func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) WithMandatoryFields(value InterfaceOptions1PowerUpSettings) ParameterValueInterfaceOptions1PowerUpSettingsBuilder {
@@ -152,8 +155,10 @@ func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) MustBuild() Par
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ParameterValueInterfaceOptions1PowerUpSettingsBuilder) Done() ParameterValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewParameterValueBuilder().(*_ParameterValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -314,9 +319,9 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) deepCopy() *_Parameter
 	}
 	_ParameterValueInterfaceOptions1PowerUpSettingsCopy := &_ParameterValueInterfaceOptions1PowerUpSettings{
 		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
-		m.Value.DeepCopy().(InterfaceOptions1PowerUpSettings),
+		utils.DeepCopy[InterfaceOptions1PowerUpSettings](m.Value),
 	}
-	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	_ParameterValueInterfaceOptions1PowerUpSettingsCopy.ParameterValueContract.(*_ParameterValue)._SubType = m
 	return _ParameterValueInterfaceOptions1PowerUpSettingsCopy
 }
 

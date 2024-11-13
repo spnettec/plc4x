@@ -86,6 +86,8 @@ type BACnetConstructedDataIPv6AutoAddressingEnableBuilder interface {
 	WithAutoAddressingEnable(BACnetApplicationTagBoolean) BACnetConstructedDataIPv6AutoAddressingEnableBuilder
 	// WithAutoAddressingEnableBuilder adds AutoAddressingEnable (property field) which is build by the builder
 	WithAutoAddressingEnableBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataIPv6AutoAddressingEnableBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIPv6AutoAddressingEnable or returns an error if something is wrong
 	Build() (BACnetConstructedDataIPv6AutoAddressingEnable, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIPv6AutoAddressingEnableBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIPv6AutoAddressingEnable
 }
 
 func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) WithMandatoryFields(autoAddressingEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPv6AutoAddressingEnableBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) deepCopy() *_BACnetCons
 	}
 	_BACnetConstructedDataIPv6AutoAddressingEnableCopy := &_BACnetConstructedDataIPv6AutoAddressingEnable{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.AutoAddressingEnable.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.AutoAddressingEnable),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIPv6AutoAddressingEnableCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIPv6AutoAddressingEnableCopy
 }
 

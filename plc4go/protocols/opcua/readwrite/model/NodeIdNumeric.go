@@ -89,6 +89,8 @@ type NodeIdNumericBuilder interface {
 	WithNamespaceIndex(uint16) NodeIdNumericBuilder
 	// WithId adds Id (property field)
 	WithId(uint32) NodeIdNumericBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NodeIdTypeDefinitionBuilder
 	// Build builds the NodeIdNumeric or returns an error if something is wrong
 	Build() (NodeIdNumeric, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (NodeIdNumericBuilder) = (*_NodeIdNumericBuilder)(nil)
 
 func (b *_NodeIdNumericBuilder) setParent(contract NodeIdTypeDefinitionContract) {
 	b.NodeIdTypeDefinitionContract = contract
+	contract.(*_NodeIdTypeDefinition)._SubType = b._NodeIdNumeric
 }
 
 func (b *_NodeIdNumericBuilder) WithMandatoryFields(namespaceIndex uint16, id uint32) NodeIdNumericBuilder {
@@ -143,8 +146,10 @@ func (b *_NodeIdNumericBuilder) MustBuild() NodeIdNumeric {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NodeIdNumericBuilder) Done() NodeIdTypeDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNodeIdTypeDefinitionBuilder().(*_NodeIdTypeDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -368,7 +373,7 @@ func (m *_NodeIdNumeric) deepCopy() *_NodeIdNumeric {
 		m.NamespaceIndex,
 		m.Id,
 	}
-	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	_NodeIdNumericCopy.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
 	return _NodeIdNumericCopy
 }
 

@@ -378,9 +378,9 @@ func (m *_BACnetGroupChannelValue) deepCopy() *_BACnetGroupChannelValue {
 		return nil
 	}
 	_BACnetGroupChannelValueCopy := &_BACnetGroupChannelValue{
-		m.Channel.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.OverridingPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Value.DeepCopy().(BACnetChannelValue),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Channel),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.OverridingPriority),
+		utils.DeepCopy[BACnetChannelValue](m.Value),
 	}
 	return _BACnetGroupChannelValueCopy
 }

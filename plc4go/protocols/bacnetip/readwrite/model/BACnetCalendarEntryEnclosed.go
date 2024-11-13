@@ -394,9 +394,9 @@ func (m *_BACnetCalendarEntryEnclosed) deepCopy() *_BACnetCalendarEntryEnclosed 
 		return nil
 	}
 	_BACnetCalendarEntryEnclosedCopy := &_BACnetCalendarEntryEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.CalendarEntry.DeepCopy().(BACnetCalendarEntry),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetCalendarEntry](m.CalendarEntry),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetCalendarEntryEnclosedCopy

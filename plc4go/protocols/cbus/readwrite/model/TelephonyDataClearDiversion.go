@@ -71,6 +71,8 @@ type TelephonyDataClearDiversionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() TelephonyDataClearDiversionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TelephonyDataBuilder
 	// Build builds the TelephonyDataClearDiversion or returns an error if something is wrong
 	Build() (TelephonyDataClearDiversion, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (TelephonyDataClearDiversionBuilder) = (*_TelephonyDataClearDiversionBuild
 
 func (b *_TelephonyDataClearDiversionBuilder) setParent(contract TelephonyDataContract) {
 	b.TelephonyDataContract = contract
+	contract.(*_TelephonyData)._SubType = b._TelephonyDataClearDiversion
 }
 
 func (b *_TelephonyDataClearDiversionBuilder) WithMandatoryFields() TelephonyDataClearDiversionBuilder {
@@ -115,8 +118,10 @@ func (b *_TelephonyDataClearDiversionBuilder) MustBuild() TelephonyDataClearDive
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TelephonyDataClearDiversionBuilder) Done() TelephonyDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTelephonyDataBuilder().(*_TelephonyDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_TelephonyDataClearDiversion) deepCopy() *_TelephonyDataClearDiversion 
 	_TelephonyDataClearDiversionCopy := &_TelephonyDataClearDiversion{
 		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
 	}
-	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	_TelephonyDataClearDiversionCopy.TelephonyDataContract.(*_TelephonyData)._SubType = m
 	return _TelephonyDataClearDiversionCopy
 }
 

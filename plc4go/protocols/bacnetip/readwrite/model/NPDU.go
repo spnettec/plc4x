@@ -756,7 +756,7 @@ func (m *_NPDU) deepCopy() *_NPDU {
 	}
 	_NPDUCopy := &_NPDU{
 		m.ProtocolVersionNumber,
-		m.Control.DeepCopy().(NPDUControl),
+		utils.DeepCopy[NPDUControl](m.Control),
 		utils.CopyPtr[uint16](m.DestinationNetworkAddress),
 		utils.CopyPtr[uint8](m.DestinationLength),
 		utils.DeepCopySlice[uint8, uint8](m.DestinationAddress),
@@ -764,8 +764,8 @@ func (m *_NPDU) deepCopy() *_NPDU {
 		utils.CopyPtr[uint8](m.SourceLength),
 		utils.DeepCopySlice[uint8, uint8](m.SourceAddress),
 		utils.CopyPtr[uint8](m.HopCount),
-		m.Nlm.DeepCopy().(NLM),
-		m.Apdu.DeepCopy().(APDU),
+		utils.DeepCopy[NLM](m.Nlm),
+		utils.DeepCopy[APDU](m.Apdu),
 		m.NpduLength,
 	}
 	return _NPDUCopy

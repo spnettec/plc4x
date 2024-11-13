@@ -85,6 +85,8 @@ type VariantVariantBuilder interface {
 	WithOptionalArrayLength(int32) VariantVariantBuilder
 	// WithValue adds Value (property field)
 	WithValue(...Variant) VariantVariantBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantVariant or returns an error if something is wrong
 	Build() (VariantVariant, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantVariantBuilder) = (*_VariantVariantBuilder)(nil)
 
 func (b *_VariantVariantBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantVariant
 }
 
 func (b *_VariantVariantBuilder) WithMandatoryFields(value []Variant) VariantVariantBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantVariantBuilder) MustBuild() VariantVariant {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantVariantBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -325,7 +330,7 @@ func (m *_VariantVariant) deepCopy() *_VariantVariant {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[Variant, Variant](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantVariantCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantVariantCopy
 }
 

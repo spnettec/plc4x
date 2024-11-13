@@ -71,6 +71,8 @@ type ModbusPDUGetComEventLogRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ModbusPDUGetComEventLogRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUGetComEventLogRequest or returns an error if something is wrong
 	Build() (ModbusPDUGetComEventLogRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ModbusPDUGetComEventLogRequestBuilder) = (*_ModbusPDUGetComEventLogReques
 
 func (b *_ModbusPDUGetComEventLogRequestBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUGetComEventLogRequest
 }
 
 func (b *_ModbusPDUGetComEventLogRequestBuilder) WithMandatoryFields() ModbusPDUGetComEventLogRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_ModbusPDUGetComEventLogRequestBuilder) MustBuild() ModbusPDUGetComEven
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUGetComEventLogRequestBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -253,7 +258,7 @@ func (m *_ModbusPDUGetComEventLogRequest) deepCopy() *_ModbusPDUGetComEventLogRe
 	_ModbusPDUGetComEventLogRequestCopy := &_ModbusPDUGetComEventLogRequest{
 		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUGetComEventLogRequestCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUGetComEventLogRequestCopy
 }
 

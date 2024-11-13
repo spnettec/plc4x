@@ -393,7 +393,7 @@ func (m *_BACnetRestartReasonTagged) deepCopy() *_BACnetRestartReasonTagged {
 		return nil
 	}
 	_BACnetRestartReasonTaggedCopy := &_BACnetRestartReasonTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

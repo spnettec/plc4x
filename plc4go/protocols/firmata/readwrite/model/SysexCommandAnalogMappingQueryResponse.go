@@ -79,6 +79,8 @@ type SysexCommandAnalogMappingQueryResponseBuilder interface {
 	WithMandatoryFields(pin uint8) SysexCommandAnalogMappingQueryResponseBuilder
 	// WithPin adds Pin (property field)
 	WithPin(uint8) SysexCommandAnalogMappingQueryResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandAnalogMappingQueryResponse or returns an error if something is wrong
 	Build() (SysexCommandAnalogMappingQueryResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (SysexCommandAnalogMappingQueryResponseBuilder) = (*_SysexCommandAnalogMap
 
 func (b *_SysexCommandAnalogMappingQueryResponseBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandAnalogMappingQueryResponse
 }
 
 func (b *_SysexCommandAnalogMappingQueryResponseBuilder) WithMandatoryFields(pin uint8) SysexCommandAnalogMappingQueryResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_SysexCommandAnalogMappingQueryResponseBuilder) MustBuild() SysexComman
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandAnalogMappingQueryResponseBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -290,7 +295,7 @@ func (m *_SysexCommandAnalogMappingQueryResponse) deepCopy() *_SysexCommandAnalo
 		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 		m.Pin,
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandAnalogMappingQueryResponseCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandAnalogMappingQueryResponseCopy
 }
 

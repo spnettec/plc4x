@@ -102,6 +102,8 @@ type SetMonitoringModeRequestBuilder interface {
 	WithMonitoringMode(MonitoringMode) SetMonitoringModeRequestBuilder
 	// WithMonitoredItemIds adds MonitoredItemIds (property field)
 	WithMonitoredItemIds(...uint32) SetMonitoringModeRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SetMonitoringModeRequest or returns an error if something is wrong
 	Build() (SetMonitoringModeRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -125,6 +127,7 @@ var _ (SetMonitoringModeRequestBuilder) = (*_SetMonitoringModeRequestBuilder)(ni
 
 func (b *_SetMonitoringModeRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SetMonitoringModeRequest
 }
 
 func (b *_SetMonitoringModeRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, monitoringMode MonitoringMode, monitoredItemIds []uint32) SetMonitoringModeRequestBuilder {
@@ -185,8 +188,10 @@ func (b *_SetMonitoringModeRequestBuilder) MustBuild() SetMonitoringModeRequest 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SetMonitoringModeRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -407,12 +412,12 @@ func (m *_SetMonitoringModeRequest) deepCopy() *_SetMonitoringModeRequest {
 	}
 	_SetMonitoringModeRequestCopy := &_SetMonitoringModeRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		m.SubscriptionId,
 		m.MonitoringMode,
 		utils.DeepCopySlice[uint32, uint32](m.MonitoredItemIds),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SetMonitoringModeRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SetMonitoringModeRequestCopy
 }
 

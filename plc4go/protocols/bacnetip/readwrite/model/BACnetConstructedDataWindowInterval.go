@@ -86,6 +86,8 @@ type BACnetConstructedDataWindowIntervalBuilder interface {
 	WithWindowInterval(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowIntervalBuilder
 	// WithWindowIntervalBuilder adds WindowInterval (property field) which is build by the builder
 	WithWindowIntervalBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataWindowIntervalBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataWindowInterval or returns an error if something is wrong
 	Build() (BACnetConstructedDataWindowInterval, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataWindowIntervalBuilder) = (*_BACnetConstructedDataWin
 
 func (b *_BACnetConstructedDataWindowIntervalBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataWindowInterval
 }
 
 func (b *_BACnetConstructedDataWindowIntervalBuilder) WithMandatoryFields(windowInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowIntervalBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataWindowIntervalBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataWindowIntervalBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataWindowInterval) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataWindowIntervalCopy := &_BACnetConstructedDataWindowInterval{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.WindowInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.WindowInterval),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataWindowIntervalCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataWindowIntervalCopy
 }
 

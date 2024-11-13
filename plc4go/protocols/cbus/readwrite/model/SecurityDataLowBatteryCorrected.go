@@ -71,6 +71,8 @@ type SecurityDataLowBatteryCorrectedBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataLowBatteryCorrectedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataLowBatteryCorrected or returns an error if something is wrong
 	Build() (SecurityDataLowBatteryCorrected, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataLowBatteryCorrectedBuilder) = (*_SecurityDataLowBatteryCorrec
 
 func (b *_SecurityDataLowBatteryCorrectedBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataLowBatteryCorrected
 }
 
 func (b *_SecurityDataLowBatteryCorrectedBuilder) WithMandatoryFields() SecurityDataLowBatteryCorrectedBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataLowBatteryCorrectedBuilder) MustBuild() SecurityDataLowBat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataLowBatteryCorrectedBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataLowBatteryCorrected) deepCopy() *_SecurityDataLowBatteryCo
 	_SecurityDataLowBatteryCorrectedCopy := &_SecurityDataLowBatteryCorrected{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataLowBatteryCorrectedCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataLowBatteryCorrectedCopy
 }
 

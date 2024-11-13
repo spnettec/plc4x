@@ -94,25 +94,13 @@ type S7PayloadBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7PayloadBuilder
 	// AsS7PayloadReadVarResponse converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
-	AsS7PayloadReadVarResponse() interface {
-		S7PayloadReadVarResponseBuilder
-		Done() S7PayloadBuilder
-	}
+	AsS7PayloadReadVarResponse() S7PayloadReadVarResponseBuilder
 	// AsS7PayloadWriteVarRequest converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
-	AsS7PayloadWriteVarRequest() interface {
-		S7PayloadWriteVarRequestBuilder
-		Done() S7PayloadBuilder
-	}
+	AsS7PayloadWriteVarRequest() S7PayloadWriteVarRequestBuilder
 	// AsS7PayloadWriteVarResponse converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
-	AsS7PayloadWriteVarResponse() interface {
-		S7PayloadWriteVarResponseBuilder
-		Done() S7PayloadBuilder
-	}
+	AsS7PayloadWriteVarResponse() S7PayloadWriteVarResponseBuilder
 	// AsS7PayloadUserData converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
-	AsS7PayloadUserData() interface {
-		S7PayloadUserDataBuilder
-		Done() S7PayloadBuilder
-	}
+	AsS7PayloadUserData() S7PayloadUserDataBuilder
 	// Build builds the S7Payload or returns an error if something is wrong
 	PartialBuild() (S7PayloadContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -163,14 +151,8 @@ func (b *_S7PayloadBuilder) PartialMustBuild() S7PayloadContract {
 	return build
 }
 
-func (b *_S7PayloadBuilder) AsS7PayloadReadVarResponse() interface {
-	S7PayloadReadVarResponseBuilder
-	Done() S7PayloadBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadReadVarResponseBuilder
-		Done() S7PayloadBuilder
-	}); ok {
+func (b *_S7PayloadBuilder) AsS7PayloadReadVarResponse() S7PayloadReadVarResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadReadVarResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadReadVarResponseBuilder().(*_S7PayloadReadVarResponseBuilder)
@@ -179,14 +161,8 @@ func (b *_S7PayloadBuilder) AsS7PayloadReadVarResponse() interface {
 	return cb
 }
 
-func (b *_S7PayloadBuilder) AsS7PayloadWriteVarRequest() interface {
-	S7PayloadWriteVarRequestBuilder
-	Done() S7PayloadBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadWriteVarRequestBuilder
-		Done() S7PayloadBuilder
-	}); ok {
+func (b *_S7PayloadBuilder) AsS7PayloadWriteVarRequest() S7PayloadWriteVarRequestBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadWriteVarRequestBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadWriteVarRequestBuilder().(*_S7PayloadWriteVarRequestBuilder)
@@ -195,14 +171,8 @@ func (b *_S7PayloadBuilder) AsS7PayloadWriteVarRequest() interface {
 	return cb
 }
 
-func (b *_S7PayloadBuilder) AsS7PayloadWriteVarResponse() interface {
-	S7PayloadWriteVarResponseBuilder
-	Done() S7PayloadBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadWriteVarResponseBuilder
-		Done() S7PayloadBuilder
-	}); ok {
+func (b *_S7PayloadBuilder) AsS7PayloadWriteVarResponse() S7PayloadWriteVarResponseBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadWriteVarResponseBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadWriteVarResponseBuilder().(*_S7PayloadWriteVarResponseBuilder)
@@ -211,14 +181,8 @@ func (b *_S7PayloadBuilder) AsS7PayloadWriteVarResponse() interface {
 	return cb
 }
 
-func (b *_S7PayloadBuilder) AsS7PayloadUserData() interface {
-	S7PayloadUserDataBuilder
-	Done() S7PayloadBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		S7PayloadUserDataBuilder
-		Done() S7PayloadBuilder
-	}); ok {
+func (b *_S7PayloadBuilder) AsS7PayloadUserData() S7PayloadUserDataBuilder {
+	if cb, ok := b.childBuilder.(S7PayloadUserDataBuilder); ok {
 		return cb
 	}
 	cb := NewS7PayloadUserDataBuilder().(*_S7PayloadUserDataBuilder)

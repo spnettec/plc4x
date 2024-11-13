@@ -101,15 +101,9 @@ type BACnetOptionalBinaryPVBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalBinaryPVBuilder
 	// AsBACnetOptionalBinaryPVNull converts this build to a subType of BACnetOptionalBinaryPV. It is always possible to return to current builder using Done()
-	AsBACnetOptionalBinaryPVNull() interface {
-		BACnetOptionalBinaryPVNullBuilder
-		Done() BACnetOptionalBinaryPVBuilder
-	}
+	AsBACnetOptionalBinaryPVNull() BACnetOptionalBinaryPVNullBuilder
 	// AsBACnetOptionalBinaryPVValue converts this build to a subType of BACnetOptionalBinaryPV. It is always possible to return to current builder using Done()
-	AsBACnetOptionalBinaryPVValue() interface {
-		BACnetOptionalBinaryPVValueBuilder
-		Done() BACnetOptionalBinaryPVBuilder
-	}
+	AsBACnetOptionalBinaryPVValue() BACnetOptionalBinaryPVValueBuilder
 	// Build builds the BACnetOptionalBinaryPV or returns an error if something is wrong
 	PartialBuild() (BACnetOptionalBinaryPVContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetOptionalBinaryPVBuilder) PartialMustBuild() BACnetOptionalBinary
 	return build
 }
 
-func (b *_BACnetOptionalBinaryPVBuilder) AsBACnetOptionalBinaryPVNull() interface {
-	BACnetOptionalBinaryPVNullBuilder
-	Done() BACnetOptionalBinaryPVBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetOptionalBinaryPVNullBuilder
-		Done() BACnetOptionalBinaryPVBuilder
-	}); ok {
+func (b *_BACnetOptionalBinaryPVBuilder) AsBACnetOptionalBinaryPVNull() BACnetOptionalBinaryPVNullBuilder {
+	if cb, ok := b.childBuilder.(BACnetOptionalBinaryPVNullBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetOptionalBinaryPVNullBuilder().(*_BACnetOptionalBinaryPVNullBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetOptionalBinaryPVBuilder) AsBACnetOptionalBinaryPVNull() interfac
 	return cb
 }
 
-func (b *_BACnetOptionalBinaryPVBuilder) AsBACnetOptionalBinaryPVValue() interface {
-	BACnetOptionalBinaryPVValueBuilder
-	Done() BACnetOptionalBinaryPVBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetOptionalBinaryPVValueBuilder
-		Done() BACnetOptionalBinaryPVBuilder
-	}); ok {
+func (b *_BACnetOptionalBinaryPVBuilder) AsBACnetOptionalBinaryPVValue() BACnetOptionalBinaryPVValueBuilder {
+	if cb, ok := b.childBuilder.(BACnetOptionalBinaryPVValueBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetOptionalBinaryPVValueBuilder().(*_BACnetOptionalBinaryPVValueBuilder)
@@ -433,7 +415,7 @@ func (m *_BACnetOptionalBinaryPV) deepCopy() *_BACnetOptionalBinaryPV {
 	}
 	_BACnetOptionalBinaryPVCopy := &_BACnetOptionalBinaryPV{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetOptionalBinaryPVCopy
 }

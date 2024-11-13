@@ -429,10 +429,10 @@ func (m *_BACnetRouterEntry) deepCopy() *_BACnetRouterEntry {
 		return nil
 	}
 	_BACnetRouterEntryCopy := &_BACnetRouterEntry{
-		m.NetworkNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.MacAddress.DeepCopy().(BACnetContextTagOctetString),
-		m.Status.DeepCopy().(BACnetRouterEntryStatusTagged),
-		m.PerformanceIndex.DeepCopy().(BACnetContextTagOctetString),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.NetworkNumber),
+		utils.DeepCopy[BACnetContextTagOctetString](m.MacAddress),
+		utils.DeepCopy[BACnetRouterEntryStatusTagged](m.Status),
+		utils.DeepCopy[BACnetContextTagOctetString](m.PerformanceIndex),
 	}
 	return _BACnetRouterEntryCopy
 }

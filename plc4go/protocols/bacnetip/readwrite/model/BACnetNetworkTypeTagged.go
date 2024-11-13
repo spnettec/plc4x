@@ -393,7 +393,7 @@ func (m *_BACnetNetworkTypeTagged) deepCopy() *_BACnetNetworkTypeTagged {
 		return nil
 	}
 	_BACnetNetworkTypeTaggedCopy := &_BACnetNetworkTypeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

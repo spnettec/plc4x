@@ -84,6 +84,8 @@ type S7PayloadAlarmSCBuilder interface {
 	WithAlarmMessage(AlarmMessagePushType) S7PayloadAlarmSCBuilder
 	// WithAlarmMessageBuilder adds AlarmMessage (property field) which is build by the builder
 	WithAlarmMessageBuilder(func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadAlarmSCBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadAlarmSC or returns an error if something is wrong
 	Build() (S7PayloadAlarmSC, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (S7PayloadAlarmSCBuilder) = (*_S7PayloadAlarmSCBuilder)(nil)
 
 func (b *_S7PayloadAlarmSCBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadAlarmSC
 }
 
 func (b *_S7PayloadAlarmSCBuilder) WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadAlarmSCBuilder {
@@ -152,8 +155,10 @@ func (b *_S7PayloadAlarmSCBuilder) MustBuild() S7PayloadAlarmSC {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadAlarmSCBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -316,9 +321,9 @@ func (m *_S7PayloadAlarmSC) deepCopy() *_S7PayloadAlarmSC {
 	}
 	_S7PayloadAlarmSCCopy := &_S7PayloadAlarmSC{
 		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
-		m.AlarmMessage.DeepCopy().(AlarmMessagePushType),
+		utils.DeepCopy[AlarmMessagePushType](m.AlarmMessage),
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadAlarmSCCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadAlarmSCCopy
 }
 

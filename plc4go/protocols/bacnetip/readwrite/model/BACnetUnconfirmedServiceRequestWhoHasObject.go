@@ -101,15 +101,9 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
 	// AsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier converts this build to a subType of BACnetUnconfirmedServiceRequestWhoHasObject. It is always possible to return to current builder using Done()
-	AsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier() interface {
-		BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
-		Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
-	}
+	AsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier() BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
 	// AsBACnetUnconfirmedServiceRequestWhoHasObjectName converts this build to a subType of BACnetUnconfirmedServiceRequestWhoHasObject. It is always possible to return to current builder using Done()
-	AsBACnetUnconfirmedServiceRequestWhoHasObjectName() interface {
-		BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
-		Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
-	}
+	AsBACnetUnconfirmedServiceRequestWhoHasObjectName() BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestWhoHasObject or returns an error if something is wrong
 	PartialBuild() (BACnetUnconfirmedServiceRequestWhoHasObjectContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) PartialMustBuild()
 	return build
 }
 
-func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) AsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier() interface {
-	BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
-	Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
-		Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
-	}); ok {
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) AsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier() BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder {
+	if cb, ok := b.childBuilder.(BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder().(*_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) AsBACnetUnconfirme
 	return cb
 }
 
-func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) AsBACnetUnconfirmedServiceRequestWhoHasObjectName() interface {
-	BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
-	Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
-		Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
-	}); ok {
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) AsBACnetUnconfirmedServiceRequestWhoHasObjectName() BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder {
+	if cb, ok := b.childBuilder.(BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder().(*_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder)
@@ -434,7 +416,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) deepCopy() *_BACnetUnconf
 	}
 	_BACnetUnconfirmedServiceRequestWhoHasObjectCopy := &_BACnetUnconfirmedServiceRequestWhoHasObject{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetUnconfirmedServiceRequestWhoHasObjectCopy
 }

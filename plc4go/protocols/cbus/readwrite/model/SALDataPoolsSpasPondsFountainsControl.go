@@ -84,6 +84,8 @@ type SALDataPoolsSpasPondsFountainsControlBuilder interface {
 	WithPoolsSpaPondsFountainsData(LightingData) SALDataPoolsSpasPondsFountainsControlBuilder
 	// WithPoolsSpaPondsFountainsDataBuilder adds PoolsSpaPondsFountainsData (property field) which is build by the builder
 	WithPoolsSpaPondsFountainsDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataPoolsSpasPondsFountainsControlBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataPoolsSpasPondsFountainsControl or returns an error if something is wrong
 	Build() (SALDataPoolsSpasPondsFountainsControl, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (SALDataPoolsSpasPondsFountainsControlBuilder) = (*_SALDataPoolsSpasPondsF
 
 func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataPoolsSpasPondsFountainsControl
 }
 
 func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) WithMandatoryFields(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder {
@@ -152,8 +155,10 @@ func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) MustBuild() SALDataPools
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) deepCopy() *_SALDataPoolsSpasPo
 	}
 	_SALDataPoolsSpasPondsFountainsControlCopy := &_SALDataPoolsSpasPondsFountainsControl{
 		m.SALDataContract.(*_SALData).deepCopy(),
-		m.PoolsSpaPondsFountainsData.DeepCopy().(LightingData),
+		utils.DeepCopy[LightingData](m.PoolsSpaPondsFountainsData),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataPoolsSpasPondsFountainsControlCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataPoolsSpasPondsFountainsControlCopy
 }
 

@@ -86,6 +86,8 @@ type BACnetConstructedDataOccupancyStateBuilder interface {
 	WithOccupancyState(BACnetAccessZoneOccupancyStateTagged) BACnetConstructedDataOccupancyStateBuilder
 	// WithOccupancyStateBuilder adds OccupancyState (property field) which is build by the builder
 	WithOccupancyStateBuilder(func(BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetConstructedDataOccupancyStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataOccupancyState or returns an error if something is wrong
 	Build() (BACnetConstructedDataOccupancyState, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataOccupancyStateBuilder) = (*_BACnetConstructedDataOcc
 
 func (b *_BACnetConstructedDataOccupancyStateBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataOccupancyState
 }
 
 func (b *_BACnetConstructedDataOccupancyStateBuilder) WithMandatoryFields(occupancyState BACnetAccessZoneOccupancyStateTagged) BACnetConstructedDataOccupancyStateBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataOccupancyStateBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataOccupancyStateBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataOccupancyState) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataOccupancyStateCopy := &_BACnetConstructedDataOccupancyState{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.OccupancyState.DeepCopy().(BACnetAccessZoneOccupancyStateTagged),
+		utils.DeepCopy[BACnetAccessZoneOccupancyStateTagged](m.OccupancyState),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataOccupancyStateCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataOccupancyStateCopy
 }
 

@@ -127,6 +127,8 @@ type MonitoredSALLongFormSmartModeBuilder interface {
 	WithOptionalSalData(SALData) MonitoredSALLongFormSmartModeBuilder
 	// WithOptionalSalDataBuilder adds SalData (property field) which is build by the builder
 	WithOptionalSalDataBuilder(func(SALDataBuilder) SALDataBuilder) MonitoredSALLongFormSmartModeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MonitoredSALBuilder
 	// Build builds the MonitoredSALLongFormSmartMode or returns an error if something is wrong
 	Build() (MonitoredSALLongFormSmartMode, error)
 	// MustBuild does the same as Build but panics on error
@@ -150,6 +152,7 @@ var _ (MonitoredSALLongFormSmartModeBuilder) = (*_MonitoredSALLongFormSmartModeB
 
 func (b *_MonitoredSALLongFormSmartModeBuilder) setParent(contract MonitoredSALContract) {
 	b.MonitoredSALContract = contract
+	contract.(*_MonitoredSAL)._SubType = b._MonitoredSALLongFormSmartMode
 }
 
 func (b *_MonitoredSALLongFormSmartModeBuilder) WithMandatoryFields(terminatingByte uint32, application ApplicationIdContainer) MonitoredSALLongFormSmartModeBuilder {
@@ -258,8 +261,10 @@ func (b *_MonitoredSALLongFormSmartModeBuilder) MustBuild() MonitoredSALLongForm
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MonitoredSALLongFormSmartModeBuilder) Done() MonitoredSALBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMonitoredSALBuilder().(*_MonitoredSALBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -590,15 +595,15 @@ func (m *_MonitoredSALLongFormSmartMode) deepCopy() *_MonitoredSALLongFormSmartM
 	_MonitoredSALLongFormSmartModeCopy := &_MonitoredSALLongFormSmartMode{
 		m.MonitoredSALContract.(*_MonitoredSAL).deepCopy(),
 		m.TerminatingByte,
-		m.UnitAddress.DeepCopy().(UnitAddress),
-		m.BridgeAddress.DeepCopy().(BridgeAddress),
+		utils.DeepCopy[UnitAddress](m.UnitAddress),
+		utils.DeepCopy[BridgeAddress](m.BridgeAddress),
 		m.Application,
 		utils.CopyPtr[byte](m.ReservedByte),
-		m.ReplyNetwork.DeepCopy().(ReplyNetwork),
-		m.SalData.DeepCopy().(SALData),
+		utils.DeepCopy[ReplyNetwork](m.ReplyNetwork),
+		utils.DeepCopy[SALData](m.SalData),
 		m.reservedField0,
 	}
-	m.MonitoredSALContract.(*_MonitoredSAL)._SubType = m
+	_MonitoredSALLongFormSmartModeCopy.MonitoredSALContract.(*_MonitoredSAL)._SubType = m
 	return _MonitoredSALLongFormSmartModeCopy
 }
 

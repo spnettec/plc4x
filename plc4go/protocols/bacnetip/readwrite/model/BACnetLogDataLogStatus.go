@@ -84,6 +84,8 @@ type BACnetLogDataLogStatusBuilder interface {
 	WithLogStatus(BACnetLogStatusTagged) BACnetLogDataLogStatusBuilder
 	// WithLogStatusBuilder adds LogStatus (property field) which is build by the builder
 	WithLogStatusBuilder(func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogDataLogStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogDataBuilder
 	// Build builds the BACnetLogDataLogStatus or returns an error if something is wrong
 	Build() (BACnetLogDataLogStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogDataLogStatusBuilder) = (*_BACnetLogDataLogStatusBuilder)(nil)
 
 func (b *_BACnetLogDataLogStatusBuilder) setParent(contract BACnetLogDataContract) {
 	b.BACnetLogDataContract = contract
+	contract.(*_BACnetLogData)._SubType = b._BACnetLogDataLogStatus
 }
 
 func (b *_BACnetLogDataLogStatusBuilder) WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogDataLogStatusBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogDataLogStatusBuilder) MustBuild() BACnetLogDataLogStatus {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogDataLogStatusBuilder) Done() BACnetLogDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogDataBuilder().(*_BACnetLogDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogDataLogStatus) deepCopy() *_BACnetLogDataLogStatus {
 	}
 	_BACnetLogDataLogStatusCopy := &_BACnetLogDataLogStatus{
 		m.BACnetLogDataContract.(*_BACnetLogData).deepCopy(),
-		m.LogStatus.DeepCopy().(BACnetLogStatusTagged),
+		utils.DeepCopy[BACnetLogStatusTagged](m.LogStatus),
 	}
-	m.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
+	_BACnetLogDataLogStatusCopy.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
 	return _BACnetLogDataLogStatusCopy
 }
 

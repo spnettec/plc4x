@@ -84,6 +84,8 @@ type SALDataMeteringBuilder interface {
 	WithMeteringData(MeteringData) SALDataMeteringBuilder
 	// WithMeteringDataBuilder adds MeteringData (property field) which is build by the builder
 	WithMeteringDataBuilder(func(MeteringDataBuilder) MeteringDataBuilder) SALDataMeteringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataMetering or returns an error if something is wrong
 	Build() (SALDataMetering, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (SALDataMeteringBuilder) = (*_SALDataMeteringBuilder)(nil)
 
 func (b *_SALDataMeteringBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataMetering
 }
 
 func (b *_SALDataMeteringBuilder) WithMandatoryFields(meteringData MeteringData) SALDataMeteringBuilder {
@@ -152,8 +155,10 @@ func (b *_SALDataMeteringBuilder) MustBuild() SALDataMetering {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataMeteringBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_SALDataMetering) deepCopy() *_SALDataMetering {
 	}
 	_SALDataMeteringCopy := &_SALDataMetering{
 		m.SALDataContract.(*_SALData).deepCopy(),
-		m.MeteringData.DeepCopy().(MeteringData),
+		utils.DeepCopy[MeteringData](m.MeteringData),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataMeteringCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataMeteringCopy
 }
 

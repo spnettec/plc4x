@@ -117,6 +117,8 @@ type BACnetUnconfirmedServiceRequestIAmBuilder interface {
 	WithVendorId(BACnetVendorIdTagged) BACnetUnconfirmedServiceRequestIAmBuilder
 	// WithVendorIdBuilder adds VendorId (property field) which is build by the builder
 	WithVendorIdBuilder(func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetUnconfirmedServiceRequestIAmBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetUnconfirmedServiceRequestBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestIAm or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestIAm, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +142,7 @@ var _ (BACnetUnconfirmedServiceRequestIAmBuilder) = (*_BACnetUnconfirmedServiceR
 
 func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
 	b.BACnetUnconfirmedServiceRequestContract = contract
+	contract.(*_BACnetUnconfirmedServiceRequest)._SubType = b._BACnetUnconfirmedServiceRequestIAm
 }
 
 func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) WithMandatoryFields(deviceIdentifier BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength BACnetApplicationTagUnsignedInteger, segmentationSupported BACnetSegmentationTagged, vendorId BACnetVendorIdTagged) BACnetUnconfirmedServiceRequestIAmBuilder {
@@ -257,8 +260,10 @@ func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) MustBuild() BACnetUnconfirm
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetUnconfirmedServiceRequestBuilder().(*_BACnetUnconfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -464,12 +469,12 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) deepCopy() *_BACnetUnconfirmedServ
 	}
 	_BACnetUnconfirmedServiceRequestIAmCopy := &_BACnetUnconfirmedServiceRequestIAm{
 		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
-		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
-		m.MaximumApduLengthAcceptedLength.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.SegmentationSupported.DeepCopy().(BACnetSegmentationTagged),
-		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.DeviceIdentifier),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.MaximumApduLengthAcceptedLength),
+		utils.DeepCopy[BACnetSegmentationTagged](m.SegmentationSupported),
+		utils.DeepCopy[BACnetVendorIdTagged](m.VendorId),
 	}
-	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	_BACnetUnconfirmedServiceRequestIAmCopy.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
 	return _BACnetUnconfirmedServiceRequestIAmCopy
 }
 

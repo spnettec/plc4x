@@ -85,6 +85,8 @@ type ContentFilterResultBuilder interface {
 	WithElementResults(...ContentFilterElementResult) ContentFilterResultBuilder
 	// WithElementDiagnosticInfos adds ElementDiagnosticInfos (property field)
 	WithElementDiagnosticInfos(...DiagnosticInfo) ContentFilterResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ContentFilterResult or returns an error if something is wrong
 	Build() (ContentFilterResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (ContentFilterResultBuilder) = (*_ContentFilterResultBuilder)(nil)
 
 func (b *_ContentFilterResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ContentFilterResult
 }
 
 func (b *_ContentFilterResultBuilder) WithMandatoryFields(elementResults []ContentFilterElementResult, elementDiagnosticInfos []DiagnosticInfo) ContentFilterResultBuilder {
@@ -139,8 +142,10 @@ func (b *_ContentFilterResultBuilder) MustBuild() ContentFilterResult {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ContentFilterResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -355,7 +360,7 @@ func (m *_ContentFilterResult) deepCopy() *_ContentFilterResult {
 		utils.DeepCopySlice[ContentFilterElementResult, ContentFilterElementResult](m.ElementResults),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.ElementDiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ContentFilterResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ContentFilterResultCopy
 }
 

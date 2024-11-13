@@ -333,7 +333,7 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) deepCopy() *_BACnetUnconfirmedSe
 		return nil
 	}
 	_BACnetUnconfirmedServiceChoiceTaggedCopy := &_BACnetUnconfirmedServiceChoiceTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

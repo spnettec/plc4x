@@ -117,6 +117,8 @@ type BACnetEventParameterChangeOfCharacterStringBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfCharacterStringBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfCharacterStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterBuilder
 	// Build builds the BACnetEventParameterChangeOfCharacterString or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfCharacterString, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +142,7 @@ var _ (BACnetEventParameterChangeOfCharacterStringBuilder) = (*_BACnetEventParam
 
 func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) setParent(contract BACnetEventParameterContract) {
 	b.BACnetEventParameterContract = contract
+	contract.(*_BACnetEventParameter)._SubType = b._BACnetEventParameterChangeOfCharacterString
 }
 
 func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, closingTag BACnetClosingTag) BACnetEventParameterChangeOfCharacterStringBuilder {
@@ -257,8 +260,10 @@ func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterChangeOfCharacterStringBuilder) Done() BACnetEventParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -461,12 +466,12 @@ func (m *_BACnetEventParameterChangeOfCharacterString) deepCopy() *_BACnetEventP
 	}
 	_BACnetEventParameterChangeOfCharacterStringCopy := &_BACnetEventParameterChangeOfCharacterString{
 		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ListOfAlarmValues.DeepCopy().(BACnetEventParameterChangeOfCharacterStringListOfAlarmValues),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeDelay),
+		utils.DeepCopy[BACnetEventParameterChangeOfCharacterStringListOfAlarmValues](m.ListOfAlarmValues),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	_BACnetEventParameterChangeOfCharacterStringCopy.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
 	return _BACnetEventParameterChangeOfCharacterStringCopy
 }
 

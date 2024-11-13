@@ -84,6 +84,8 @@ type TransmitQosPriorityDataTypeBuilder interface {
 	WithPriorityLabel(PascalString) TransmitQosPriorityDataTypeBuilder
 	// WithPriorityLabelBuilder adds PriorityLabel (property field) which is build by the builder
 	WithPriorityLabelBuilder(func(PascalStringBuilder) PascalStringBuilder) TransmitQosPriorityDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the TransmitQosPriorityDataType or returns an error if something is wrong
 	Build() (TransmitQosPriorityDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (TransmitQosPriorityDataTypeBuilder) = (*_TransmitQosPriorityDataTypeBuild
 
 func (b *_TransmitQosPriorityDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._TransmitQosPriorityDataType
 }
 
 func (b *_TransmitQosPriorityDataTypeBuilder) WithMandatoryFields(priorityLabel PascalString) TransmitQosPriorityDataTypeBuilder {
@@ -152,8 +155,10 @@ func (b *_TransmitQosPriorityDataTypeBuilder) MustBuild() TransmitQosPriorityDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TransmitQosPriorityDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_TransmitQosPriorityDataType) deepCopy() *_TransmitQosPriorityDataType 
 	}
 	_TransmitQosPriorityDataTypeCopy := &_TransmitQosPriorityDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.PriorityLabel.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.PriorityLabel),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_TransmitQosPriorityDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TransmitQosPriorityDataTypeCopy
 }
 

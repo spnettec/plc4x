@@ -375,9 +375,9 @@ func (m *_BACnetAuthenticationFactorFormat) deepCopy() *_BACnetAuthenticationFac
 		return nil
 	}
 	_BACnetAuthenticationFactorFormatCopy := &_BACnetAuthenticationFactorFormat{
-		m.FormatType.DeepCopy().(BACnetAuthenticationFactorTypeTagged),
-		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
-		m.VendorFormat.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetAuthenticationFactorTypeTagged](m.FormatType),
+		utils.DeepCopy[BACnetVendorIdTagged](m.VendorId),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.VendorFormat),
 	}
 	return _BACnetAuthenticationFactorFormatCopy
 }

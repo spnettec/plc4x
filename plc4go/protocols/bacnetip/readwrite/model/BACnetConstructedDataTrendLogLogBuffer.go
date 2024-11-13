@@ -79,6 +79,8 @@ type BACnetConstructedDataTrendLogLogBufferBuilder interface {
 	WithMandatoryFields(floorText []BACnetLogRecord) BACnetConstructedDataTrendLogLogBufferBuilder
 	// WithFloorText adds FloorText (property field)
 	WithFloorText(...BACnetLogRecord) BACnetConstructedDataTrendLogLogBufferBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTrendLogLogBuffer or returns an error if something is wrong
 	Build() (BACnetConstructedDataTrendLogLogBuffer, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataTrendLogLogBufferBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTrendLogLogBuffer
 }
 
 func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) WithMandatoryFields(floorText []BACnetLogRecord) BACnetConstructedDataTrendLogLogBufferBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTrendLogLogBufferBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -294,7 +299,7 @@ func (m *_BACnetConstructedDataTrendLogLogBuffer) deepCopy() *_BACnetConstructed
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetLogRecord, BACnetLogRecord](m.FloorText),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTrendLogLogBufferCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTrendLogLogBufferCopy
 }
 

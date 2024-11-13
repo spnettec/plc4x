@@ -84,6 +84,8 @@ type BACnetServiceAckAtomicWriteFileBuilder interface {
 	WithFileStartPosition(BACnetContextTagSignedInteger) BACnetServiceAckAtomicWriteFileBuilder
 	// WithFileStartPositionBuilder adds FileStartPosition (property field) which is build by the builder
 	WithFileStartPositionBuilder(func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetServiceAckAtomicWriteFileBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckAtomicWriteFile or returns an error if something is wrong
 	Build() (BACnetServiceAckAtomicWriteFile, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetServiceAckAtomicWriteFileBuilder) = (*_BACnetServiceAckAtomicWriteF
 
 func (b *_BACnetServiceAckAtomicWriteFileBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckAtomicWriteFile
 }
 
 func (b *_BACnetServiceAckAtomicWriteFileBuilder) WithMandatoryFields(fileStartPosition BACnetContextTagSignedInteger) BACnetServiceAckAtomicWriteFileBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetServiceAckAtomicWriteFileBuilder) MustBuild() BACnetServiceAckAt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckAtomicWriteFileBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_BACnetServiceAckAtomicWriteFile) deepCopy() *_BACnetServiceAckAtomicWr
 	}
 	_BACnetServiceAckAtomicWriteFileCopy := &_BACnetServiceAckAtomicWriteFile{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
-		m.FileStartPosition.DeepCopy().(BACnetContextTagSignedInteger),
+		utils.DeepCopy[BACnetContextTagSignedInteger](m.FileStartPosition),
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckAtomicWriteFileCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckAtomicWriteFileCopy
 }
 

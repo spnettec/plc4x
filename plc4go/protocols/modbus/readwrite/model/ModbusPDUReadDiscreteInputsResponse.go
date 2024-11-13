@@ -79,6 +79,8 @@ type ModbusPDUReadDiscreteInputsResponseBuilder interface {
 	WithMandatoryFields(value []byte) ModbusPDUReadDiscreteInputsResponseBuilder
 	// WithValue adds Value (property field)
 	WithValue(...byte) ModbusPDUReadDiscreteInputsResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUReadDiscreteInputsResponse or returns an error if something is wrong
 	Build() (ModbusPDUReadDiscreteInputsResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ModbusPDUReadDiscreteInputsResponseBuilder) = (*_ModbusPDUReadDiscreteInp
 
 func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUReadDiscreteInputsResponse
 }
 
 func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) WithMandatoryFields(value []byte) ModbusPDUReadDiscreteInputsResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) MustBuild() ModbusPDUReadD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUReadDiscreteInputsResponseBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -309,7 +314,7 @@ func (m *_ModbusPDUReadDiscreteInputsResponse) deepCopy() *_ModbusPDUReadDiscret
 		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Value),
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUReadDiscreteInputsResponseCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUReadDiscreteInputsResponseCopy
 }
 

@@ -95,6 +95,8 @@ type DataTypeDescriptionBuilder interface {
 	WithName(QualifiedName) DataTypeDescriptionBuilder
 	// WithNameBuilder adds Name (property field) which is build by the builder
 	WithNameBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) DataTypeDescriptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataTypeDescription or returns an error if something is wrong
 	Build() (DataTypeDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (DataTypeDescriptionBuilder) = (*_DataTypeDescriptionBuilder)(nil)
 
 func (b *_DataTypeDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataTypeDescription
 }
 
 func (b *_DataTypeDescriptionBuilder) WithMandatoryFields(dataTypeId NodeId, name QualifiedName) DataTypeDescriptionBuilder {
@@ -187,8 +190,10 @@ func (b *_DataTypeDescriptionBuilder) MustBuild() DataTypeDescription {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataTypeDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_DataTypeDescription) deepCopy() *_DataTypeDescription {
 	}
 	_DataTypeDescriptionCopy := &_DataTypeDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.DataTypeId.DeepCopy().(NodeId),
-		m.Name.DeepCopy().(QualifiedName),
+		utils.DeepCopy[NodeId](m.DataTypeId),
+		utils.DeepCopy[QualifiedName](m.Name),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataTypeDescriptionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataTypeDescriptionCopy
 }
 

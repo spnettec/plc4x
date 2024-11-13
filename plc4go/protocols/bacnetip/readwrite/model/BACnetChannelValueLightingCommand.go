@@ -84,6 +84,8 @@ type BACnetChannelValueLightingCommandBuilder interface {
 	WithLigthingCommandValue(BACnetLightingCommandEnclosed) BACnetChannelValueLightingCommandBuilder
 	// WithLigthingCommandValueBuilder adds LigthingCommandValue (property field) which is build by the builder
 	WithLigthingCommandValueBuilder(func(BACnetLightingCommandEnclosedBuilder) BACnetLightingCommandEnclosedBuilder) BACnetChannelValueLightingCommandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueLightingCommand or returns an error if something is wrong
 	Build() (BACnetChannelValueLightingCommand, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueLightingCommandBuilder) = (*_BACnetChannelValueLighting
 
 func (b *_BACnetChannelValueLightingCommandBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueLightingCommand
 }
 
 func (b *_BACnetChannelValueLightingCommandBuilder) WithMandatoryFields(ligthingCommandValue BACnetLightingCommandEnclosed) BACnetChannelValueLightingCommandBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueLightingCommandBuilder) MustBuild() BACnetChannelVal
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueLightingCommandBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueLightingCommand) deepCopy() *_BACnetChannelValueLigh
 	}
 	_BACnetChannelValueLightingCommandCopy := &_BACnetChannelValueLightingCommand{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.LigthingCommandValue.DeepCopy().(BACnetLightingCommandEnclosed),
+		utils.DeepCopy[BACnetLightingCommandEnclosed](m.LigthingCommandValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueLightingCommandCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueLightingCommandCopy
 }
 

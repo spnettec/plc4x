@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueNoValueBuilder interface {
 	WithNoValue(BACnetContextTagNull) BACnetTimerStateChangeValueNoValueBuilder
 	// WithNoValueBuilder adds NoValue (property field) which is build by the builder
 	WithNoValueBuilder(func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetTimerStateChangeValueNoValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueNoValue or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueNoValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueNoValueBuilder) = (*_BACnetTimerStateChangeVal
 
 func (b *_BACnetTimerStateChangeValueNoValueBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueNoValue
 }
 
 func (b *_BACnetTimerStateChangeValueNoValueBuilder) WithMandatoryFields(noValue BACnetContextTagNull) BACnetTimerStateChangeValueNoValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueNoValueBuilder) MustBuild() BACnetTimerStat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueNoValueBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimerStateChangeValueNoValue) deepCopy() *_BACnetTimerStateChang
 	}
 	_BACnetTimerStateChangeValueNoValueCopy := &_BACnetTimerStateChangeValueNoValue{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.NoValue.DeepCopy().(BACnetContextTagNull),
+		utils.DeepCopy[BACnetContextTagNull](m.NoValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueNoValueCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueNoValueCopy
 }
 

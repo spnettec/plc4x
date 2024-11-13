@@ -394,9 +394,9 @@ func (m *_BACnetPropertyReferenceEnclosed) deepCopy() *_BACnetPropertyReferenceE
 		return nil
 	}
 	_BACnetPropertyReferenceEnclosedCopy := &_BACnetPropertyReferenceEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.Reference.DeepCopy().(BACnetPropertyReference),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetPropertyReference](m.Reference),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetPropertyReferenceEnclosedCopy

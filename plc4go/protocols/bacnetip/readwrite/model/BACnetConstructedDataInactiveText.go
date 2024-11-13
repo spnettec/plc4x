@@ -86,6 +86,8 @@ type BACnetConstructedDataInactiveTextBuilder interface {
 	WithInactiveText(BACnetApplicationTagCharacterString) BACnetConstructedDataInactiveTextBuilder
 	// WithInactiveTextBuilder adds InactiveText (property field) which is build by the builder
 	WithInactiveTextBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataInactiveTextBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataInactiveText or returns an error if something is wrong
 	Build() (BACnetConstructedDataInactiveText, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataInactiveTextBuilder) = (*_BACnetConstructedDataInact
 
 func (b *_BACnetConstructedDataInactiveTextBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataInactiveText
 }
 
 func (b *_BACnetConstructedDataInactiveTextBuilder) WithMandatoryFields(inactiveText BACnetApplicationTagCharacterString) BACnetConstructedDataInactiveTextBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataInactiveTextBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataInactiveTextBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataInactiveText) deepCopy() *_BACnetConstructedDataI
 	}
 	_BACnetConstructedDataInactiveTextCopy := &_BACnetConstructedDataInactiveText{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.InactiveText.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.InactiveText),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataInactiveTextCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataInactiveTextCopy
 }
 

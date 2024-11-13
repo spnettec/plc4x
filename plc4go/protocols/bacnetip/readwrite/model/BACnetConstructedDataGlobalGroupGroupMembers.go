@@ -89,6 +89,8 @@ type BACnetConstructedDataGlobalGroupGroupMembersBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGlobalGroupGroupMembersBuilder
 	// WithGroupMembers adds GroupMembers (property field)
 	WithGroupMembers(...BACnetDeviceObjectPropertyReference) BACnetConstructedDataGlobalGroupGroupMembersBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataGlobalGroupGroupMembers or returns an error if something is wrong
 	Build() (BACnetConstructedDataGlobalGroupGroupMembers, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataGlobalGroupGroupMembersBuilder) = (*_BACnetConstruct
 
 func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataGlobalGroupGroupMembers
 }
 
 func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) WithMandatoryFields(groupMembers []BACnetDeviceObjectPropertyReference) BACnetConstructedDataGlobalGroupGroupMembersBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,10 +380,10 @@ func (m *_BACnetConstructedDataGlobalGroupGroupMembers) deepCopy() *_BACnetConst
 	}
 	_BACnetConstructedDataGlobalGroupGroupMembersCopy := &_BACnetConstructedDataGlobalGroupGroupMembers{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetDeviceObjectPropertyReference, BACnetDeviceObjectPropertyReference](m.GroupMembers),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataGlobalGroupGroupMembersCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataGlobalGroupGroupMembersCopy
 }
 

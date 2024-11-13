@@ -149,6 +149,8 @@ type DataSetWriterDataTypeBuilder interface {
 	WithMessageSettings(ExtensionObject) DataSetWriterDataTypeBuilder
 	// WithMessageSettingsBuilder adds MessageSettings (property field) which is build by the builder
 	WithMessageSettingsBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetWriterDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DataSetWriterDataType or returns an error if something is wrong
 	Build() (DataSetWriterDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -172,6 +174,7 @@ var _ (DataSetWriterDataTypeBuilder) = (*_DataSetWriterDataTypeBuilder)(nil)
 
 func (b *_DataSetWriterDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DataSetWriterDataType
 }
 
 func (b *_DataSetWriterDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, dataSetWriterProperties []KeyValuePair, transportSettings ExtensionObject, messageSettings ExtensionObject) DataSetWriterDataTypeBuilder {
@@ -314,8 +317,10 @@ func (b *_DataSetWriterDataTypeBuilder) MustBuild() DataSetWriterDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DataSetWriterDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -639,18 +644,18 @@ func (m *_DataSetWriterDataType) deepCopy() *_DataSetWriterDataType {
 	}
 	_DataSetWriterDataTypeCopy := &_DataSetWriterDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Name),
 		m.Enabled,
 		m.DataSetWriterId,
 		m.DataSetFieldContentMask,
 		m.KeyFrameCount,
-		m.DataSetName.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.DataSetName),
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.DataSetWriterProperties),
-		m.TransportSettings.DeepCopy().(ExtensionObject),
-		m.MessageSettings.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[ExtensionObject](m.TransportSettings),
+		utils.DeepCopy[ExtensionObject](m.MessageSettings),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DataSetWriterDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataSetWriterDataTypeCopy
 }
 

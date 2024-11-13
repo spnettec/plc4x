@@ -71,6 +71,8 @@ type SecurityDataStatus2RequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataStatus2RequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataStatus2Request or returns an error if something is wrong
 	Build() (SecurityDataStatus2Request, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataStatus2RequestBuilder) = (*_SecurityDataStatus2RequestBuilder
 
 func (b *_SecurityDataStatus2RequestBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataStatus2Request
 }
 
 func (b *_SecurityDataStatus2RequestBuilder) WithMandatoryFields() SecurityDataStatus2RequestBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataStatus2RequestBuilder) MustBuild() SecurityDataStatus2Requ
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataStatus2RequestBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataStatus2Request) deepCopy() *_SecurityDataStatus2Request {
 	_SecurityDataStatus2RequestCopy := &_SecurityDataStatus2Request{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataStatus2RequestCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataStatus2RequestCopy
 }
 

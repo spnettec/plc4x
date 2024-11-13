@@ -102,6 +102,8 @@ type FindServersOnNetworkRequestBuilder interface {
 	WithMaxRecordsToReturn(uint32) FindServersOnNetworkRequestBuilder
 	// WithServerCapabilityFilter adds ServerCapabilityFilter (property field)
 	WithServerCapabilityFilter(...PascalString) FindServersOnNetworkRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the FindServersOnNetworkRequest or returns an error if something is wrong
 	Build() (FindServersOnNetworkRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -125,6 +127,7 @@ var _ (FindServersOnNetworkRequestBuilder) = (*_FindServersOnNetworkRequestBuild
 
 func (b *_FindServersOnNetworkRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._FindServersOnNetworkRequest
 }
 
 func (b *_FindServersOnNetworkRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, startingRecordId uint32, maxRecordsToReturn uint32, serverCapabilityFilter []PascalString) FindServersOnNetworkRequestBuilder {
@@ -185,8 +188,10 @@ func (b *_FindServersOnNetworkRequestBuilder) MustBuild() FindServersOnNetworkRe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FindServersOnNetworkRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,12 +417,12 @@ func (m *_FindServersOnNetworkRequest) deepCopy() *_FindServersOnNetworkRequest 
 	}
 	_FindServersOnNetworkRequestCopy := &_FindServersOnNetworkRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		m.StartingRecordId,
 		m.MaxRecordsToReturn,
 		utils.DeepCopySlice[PascalString, PascalString](m.ServerCapabilityFilter),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_FindServersOnNetworkRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _FindServersOnNetworkRequestCopy
 }
 

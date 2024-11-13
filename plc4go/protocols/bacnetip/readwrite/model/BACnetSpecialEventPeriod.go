@@ -101,15 +101,9 @@ type BACnetSpecialEventPeriodBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSpecialEventPeriodBuilder
 	// AsBACnetSpecialEventPeriodCalendarEntry converts this build to a subType of BACnetSpecialEventPeriod. It is always possible to return to current builder using Done()
-	AsBACnetSpecialEventPeriodCalendarEntry() interface {
-		BACnetSpecialEventPeriodCalendarEntryBuilder
-		Done() BACnetSpecialEventPeriodBuilder
-	}
+	AsBACnetSpecialEventPeriodCalendarEntry() BACnetSpecialEventPeriodCalendarEntryBuilder
 	// AsBACnetSpecialEventPeriodCalendarReference converts this build to a subType of BACnetSpecialEventPeriod. It is always possible to return to current builder using Done()
-	AsBACnetSpecialEventPeriodCalendarReference() interface {
-		BACnetSpecialEventPeriodCalendarReferenceBuilder
-		Done() BACnetSpecialEventPeriodBuilder
-	}
+	AsBACnetSpecialEventPeriodCalendarReference() BACnetSpecialEventPeriodCalendarReferenceBuilder
 	// Build builds the BACnetSpecialEventPeriod or returns an error if something is wrong
 	PartialBuild() (BACnetSpecialEventPeriodContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetSpecialEventPeriodBuilder) PartialMustBuild() BACnetSpecialEvent
 	return build
 }
 
-func (b *_BACnetSpecialEventPeriodBuilder) AsBACnetSpecialEventPeriodCalendarEntry() interface {
-	BACnetSpecialEventPeriodCalendarEntryBuilder
-	Done() BACnetSpecialEventPeriodBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetSpecialEventPeriodCalendarEntryBuilder
-		Done() BACnetSpecialEventPeriodBuilder
-	}); ok {
+func (b *_BACnetSpecialEventPeriodBuilder) AsBACnetSpecialEventPeriodCalendarEntry() BACnetSpecialEventPeriodCalendarEntryBuilder {
+	if cb, ok := b.childBuilder.(BACnetSpecialEventPeriodCalendarEntryBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetSpecialEventPeriodCalendarEntryBuilder().(*_BACnetSpecialEventPeriodCalendarEntryBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetSpecialEventPeriodBuilder) AsBACnetSpecialEventPeriodCalendarEnt
 	return cb
 }
 
-func (b *_BACnetSpecialEventPeriodBuilder) AsBACnetSpecialEventPeriodCalendarReference() interface {
-	BACnetSpecialEventPeriodCalendarReferenceBuilder
-	Done() BACnetSpecialEventPeriodBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetSpecialEventPeriodCalendarReferenceBuilder
-		Done() BACnetSpecialEventPeriodBuilder
-	}); ok {
+func (b *_BACnetSpecialEventPeriodBuilder) AsBACnetSpecialEventPeriodCalendarReference() BACnetSpecialEventPeriodCalendarReferenceBuilder {
+	if cb, ok := b.childBuilder.(BACnetSpecialEventPeriodCalendarReferenceBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetSpecialEventPeriodCalendarReferenceBuilder().(*_BACnetSpecialEventPeriodCalendarReferenceBuilder)
@@ -438,7 +420,7 @@ func (m *_BACnetSpecialEventPeriod) deepCopy() *_BACnetSpecialEventPeriod {
 	}
 	_BACnetSpecialEventPeriodCopy := &_BACnetSpecialEventPeriod{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetSpecialEventPeriodCopy
 }

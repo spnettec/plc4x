@@ -477,11 +477,11 @@ func (m *_BACnetPropertyAccessResult) deepCopy() *_BACnetPropertyAccessResult {
 		return nil
 	}
 	_BACnetPropertyAccessResultCopy := &_BACnetPropertyAccessResult{
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.PropertyArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.DeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.AccessResult.DeepCopy().(BACnetPropertyAccessResultAccessResult),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.PropertyArrayIndex),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.DeviceIdentifier),
+		utils.DeepCopy[BACnetPropertyAccessResultAccessResult](m.AccessResult),
 	}
 	return _BACnetPropertyAccessResultCopy
 }

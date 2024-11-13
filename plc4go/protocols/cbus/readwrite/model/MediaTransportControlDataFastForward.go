@@ -95,6 +95,8 @@ type MediaTransportControlDataFastForwardBuilder interface {
 	WithMandatoryFields(operation byte) MediaTransportControlDataFastForwardBuilder
 	// WithOperation adds Operation (property field)
 	WithOperation(byte) MediaTransportControlDataFastForwardBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataFastForward or returns an error if something is wrong
 	Build() (MediaTransportControlDataFastForward, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (MediaTransportControlDataFastForwardBuilder) = (*_MediaTransportControlDa
 
 func (b *_MediaTransportControlDataFastForwardBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataFastForward
 }
 
 func (b *_MediaTransportControlDataFastForwardBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataFastForwardBuilder {
@@ -144,8 +147,10 @@ func (b *_MediaTransportControlDataFastForwardBuilder) MustBuild() MediaTranspor
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataFastForwardBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -467,7 +472,7 @@ func (m *_MediaTransportControlDataFastForward) deepCopy() *_MediaTransportContr
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.Operation,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataFastForwardCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataFastForwardCopy
 }
 

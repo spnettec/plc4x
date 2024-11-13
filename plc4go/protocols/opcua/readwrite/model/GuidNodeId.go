@@ -307,7 +307,7 @@ func (m *_GuidNodeId) deepCopy() *_GuidNodeId {
 	}
 	_GuidNodeIdCopy := &_GuidNodeId{
 		m.NamespaceIndex,
-		m.Identifier.DeepCopy().(GuidValue),
+		utils.DeepCopy[GuidValue](m.Identifier),
 	}
 	return _GuidNodeIdCopy
 }

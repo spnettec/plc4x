@@ -96,6 +96,8 @@ type RedundantServerDataTypeBuilder interface {
 	WithServiceLevel(uint8) RedundantServerDataTypeBuilder
 	// WithServerState adds ServerState (property field)
 	WithServerState(ServerState) RedundantServerDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RedundantServerDataType or returns an error if something is wrong
 	Build() (RedundantServerDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (RedundantServerDataTypeBuilder) = (*_RedundantServerDataTypeBuilder)(nil)
 
 func (b *_RedundantServerDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RedundantServerDataType
 }
 
 func (b *_RedundantServerDataTypeBuilder) WithMandatoryFields(serverId PascalString, serviceLevel uint8, serverState ServerState) RedundantServerDataTypeBuilder {
@@ -174,8 +177,10 @@ func (b *_RedundantServerDataTypeBuilder) MustBuild() RedundantServerDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RedundantServerDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -364,11 +369,11 @@ func (m *_RedundantServerDataType) deepCopy() *_RedundantServerDataType {
 	}
 	_RedundantServerDataTypeCopy := &_RedundantServerDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ServerId.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.ServerId),
 		m.ServiceLevel,
 		m.ServerState,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RedundantServerDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RedundantServerDataTypeCopy
 }
 

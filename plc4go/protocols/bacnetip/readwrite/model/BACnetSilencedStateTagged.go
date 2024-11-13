@@ -393,7 +393,7 @@ func (m *_BACnetSilencedStateTagged) deepCopy() *_BACnetSilencedStateTagged {
 		return nil
 	}
 	_BACnetSilencedStateTaggedCopy := &_BACnetSilencedStateTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

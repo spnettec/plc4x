@@ -84,6 +84,8 @@ type BACnetPropertyStatesEscalatorFaultBuilder interface {
 	WithEscalatorFault(BACnetEscalatorFaultTagged) BACnetPropertyStatesEscalatorFaultBuilder
 	// WithEscalatorFaultBuilder adds EscalatorFault (property field) which is build by the builder
 	WithEscalatorFaultBuilder(func(BACnetEscalatorFaultTaggedBuilder) BACnetEscalatorFaultTaggedBuilder) BACnetPropertyStatesEscalatorFaultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesEscalatorFault or returns an error if something is wrong
 	Build() (BACnetPropertyStatesEscalatorFault, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesEscalatorFaultBuilder) = (*_BACnetPropertyStatesEscal
 
 func (b *_BACnetPropertyStatesEscalatorFaultBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesEscalatorFault
 }
 
 func (b *_BACnetPropertyStatesEscalatorFaultBuilder) WithMandatoryFields(escalatorFault BACnetEscalatorFaultTagged) BACnetPropertyStatesEscalatorFaultBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesEscalatorFaultBuilder) MustBuild() BACnetPropertyS
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesEscalatorFaultBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesEscalatorFault) deepCopy() *_BACnetPropertyStatesE
 	}
 	_BACnetPropertyStatesEscalatorFaultCopy := &_BACnetPropertyStatesEscalatorFault{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.EscalatorFault.DeepCopy().(BACnetEscalatorFaultTagged),
+		utils.DeepCopy[BACnetEscalatorFaultTagged](m.EscalatorFault),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesEscalatorFaultCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesEscalatorFaultCopy
 }
 

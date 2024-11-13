@@ -71,6 +71,8 @@ type BACnetApplicationTagNullBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetApplicationTagNullBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetApplicationTagBuilder
 	// Build builds the BACnetApplicationTagNull or returns an error if something is wrong
 	Build() (BACnetApplicationTagNull, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetApplicationTagNullBuilder) = (*_BACnetApplicationTagNullBuilder)(ni
 
 func (b *_BACnetApplicationTagNullBuilder) setParent(contract BACnetApplicationTagContract) {
 	b.BACnetApplicationTagContract = contract
+	contract.(*_BACnetApplicationTag)._SubType = b._BACnetApplicationTagNull
 }
 
 func (b *_BACnetApplicationTagNullBuilder) WithMandatoryFields() BACnetApplicationTagNullBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetApplicationTagNullBuilder) MustBuild() BACnetApplicationTagNull 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetApplicationTagNullBuilder) Done() BACnetApplicationTagBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetApplicationTagBuilder().(*_BACnetApplicationTagBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_BACnetApplicationTagNull) deepCopy() *_BACnetApplicationTagNull {
 	_BACnetApplicationTagNullCopy := &_BACnetApplicationTagNull{
 		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
 	}
-	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	_BACnetApplicationTagNullCopy.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
 	return _BACnetApplicationTagNullCopy
 }
 

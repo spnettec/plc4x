@@ -89,6 +89,8 @@ type BACnetConstructedDataValueSourceArrayBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueSourceArrayBuilder
 	// WithVtClassesSupported adds VtClassesSupported (property field)
 	WithVtClassesSupported(...BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataValueSourceArray or returns an error if something is wrong
 	Build() (BACnetConstructedDataValueSourceArray, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataValueSourceArrayBuilder) = (*_BACnetConstructedDataV
 
 func (b *_BACnetConstructedDataValueSourceArrayBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataValueSourceArray
 }
 
 func (b *_BACnetConstructedDataValueSourceArrayBuilder) WithMandatoryFields(vtClassesSupported []BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataValueSourceArrayBuilder) MustBuild() BACnetConstr
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataValueSourceArrayBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -379,10 +384,10 @@ func (m *_BACnetConstructedDataValueSourceArray) deepCopy() *_BACnetConstructedD
 	}
 	_BACnetConstructedDataValueSourceArrayCopy := &_BACnetConstructedDataValueSourceArray{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetValueSource, BACnetValueSource](m.VtClassesSupported),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataValueSourceArrayCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataValueSourceArrayCopy
 }
 

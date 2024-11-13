@@ -92,6 +92,8 @@ type CBusPointToMultiPointCommandNormalBuilder interface {
 	WithSalData(SALData) CBusPointToMultiPointCommandNormalBuilder
 	// WithSalDataBuilder adds SalData (property field) which is build by the builder
 	WithSalDataBuilder(func(SALDataBuilder) SALDataBuilder) CBusPointToMultiPointCommandNormalBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CBusPointToMultiPointCommandBuilder
 	// Build builds the CBusPointToMultiPointCommandNormal or returns an error if something is wrong
 	Build() (CBusPointToMultiPointCommandNormal, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,6 +117,7 @@ var _ (CBusPointToMultiPointCommandNormalBuilder) = (*_CBusPointToMultiPointComm
 
 func (b *_CBusPointToMultiPointCommandNormalBuilder) setParent(contract CBusPointToMultiPointCommandContract) {
 	b.CBusPointToMultiPointCommandContract = contract
+	contract.(*_CBusPointToMultiPointCommand)._SubType = b._CBusPointToMultiPointCommandNormal
 }
 
 func (b *_CBusPointToMultiPointCommandNormalBuilder) WithMandatoryFields(application ApplicationIdContainer, salData SALData) CBusPointToMultiPointCommandNormalBuilder {
@@ -165,8 +168,10 @@ func (b *_CBusPointToMultiPointCommandNormalBuilder) MustBuild() CBusPointToMult
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CBusPointToMultiPointCommandNormalBuilder) Done() CBusPointToMultiPointCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCBusPointToMultiPointCommandBuilder().(*_CBusPointToMultiPointCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -348,10 +353,10 @@ func (m *_CBusPointToMultiPointCommandNormal) deepCopy() *_CBusPointToMultiPoint
 	_CBusPointToMultiPointCommandNormalCopy := &_CBusPointToMultiPointCommandNormal{
 		m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand).deepCopy(),
 		m.Application,
-		m.SalData.DeepCopy().(SALData),
+		utils.DeepCopy[SALData](m.SalData),
 		m.reservedField0,
 	}
-	m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = m
+	_CBusPointToMultiPointCommandNormalCopy.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = m
 	return _CBusPointToMultiPointCommandNormalCopy
 }
 

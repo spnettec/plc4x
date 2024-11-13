@@ -330,8 +330,8 @@ func (m *_BACnetAddressBinding) deepCopy() *_BACnetAddressBinding {
 		return nil
 	}
 	_BACnetAddressBindingCopy := &_BACnetAddressBinding{
-		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
-		m.DeviceAddress.DeepCopy().(BACnetAddress),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.DeviceIdentifier),
+		utils.DeepCopy[BACnetAddress](m.DeviceAddress),
 	}
 	return _BACnetAddressBindingCopy
 }

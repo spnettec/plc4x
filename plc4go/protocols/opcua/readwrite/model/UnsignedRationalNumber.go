@@ -85,6 +85,8 @@ type UnsignedRationalNumberBuilder interface {
 	WithNumerator(uint32) UnsignedRationalNumberBuilder
 	// WithDenominator adds Denominator (property field)
 	WithDenominator(uint32) UnsignedRationalNumberBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the UnsignedRationalNumber or returns an error if something is wrong
 	Build() (UnsignedRationalNumber, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (UnsignedRationalNumberBuilder) = (*_UnsignedRationalNumberBuilder)(nil)
 
 func (b *_UnsignedRationalNumberBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._UnsignedRationalNumber
 }
 
 func (b *_UnsignedRationalNumberBuilder) WithMandatoryFields(numerator uint32, denominator uint32) UnsignedRationalNumberBuilder {
@@ -139,8 +142,10 @@ func (b *_UnsignedRationalNumberBuilder) MustBuild() UnsignedRationalNumber {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_UnsignedRationalNumberBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_UnsignedRationalNumber) deepCopy() *_UnsignedRationalNumber {
 		m.Numerator,
 		m.Denominator,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_UnsignedRationalNumberCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UnsignedRationalNumberCopy
 }
 

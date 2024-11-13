@@ -71,6 +71,8 @@ type EipDisconnectRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() EipDisconnectRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EipPacketBuilder
 	// Build builds the EipDisconnectRequest or returns an error if something is wrong
 	Build() (EipDisconnectRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (EipDisconnectRequestBuilder) = (*_EipDisconnectRequestBuilder)(nil)
 
 func (b *_EipDisconnectRequestBuilder) setParent(contract EipPacketContract) {
 	b.EipPacketContract = contract
+	contract.(*_EipPacket)._SubType = b._EipDisconnectRequest
 }
 
 func (b *_EipDisconnectRequestBuilder) WithMandatoryFields() EipDisconnectRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_EipDisconnectRequestBuilder) MustBuild() EipDisconnectRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EipDisconnectRequestBuilder) Done() EipPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEipPacketBuilder().(*_EipPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -253,7 +258,7 @@ func (m *_EipDisconnectRequest) deepCopy() *_EipDisconnectRequest {
 	_EipDisconnectRequestCopy := &_EipDisconnectRequest{
 		m.EipPacketContract.(*_EipPacket).deepCopy(),
 	}
-	m.EipPacketContract.(*_EipPacket)._SubType = m
+	_EipDisconnectRequestCopy.EipPacketContract.(*_EipPacket)._SubType = m
 	return _EipDisconnectRequestCopy
 }
 

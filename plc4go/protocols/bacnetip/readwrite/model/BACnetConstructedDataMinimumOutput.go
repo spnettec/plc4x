@@ -86,6 +86,8 @@ type BACnetConstructedDataMinimumOutputBuilder interface {
 	WithMinimumOutput(BACnetApplicationTagReal) BACnetConstructedDataMinimumOutputBuilder
 	// WithMinimumOutputBuilder adds MinimumOutput (property field) which is build by the builder
 	WithMinimumOutputBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMinimumOutputBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMinimumOutput or returns an error if something is wrong
 	Build() (BACnetConstructedDataMinimumOutput, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMinimumOutputBuilder) = (*_BACnetConstructedDataMini
 
 func (b *_BACnetConstructedDataMinimumOutputBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMinimumOutput
 }
 
 func (b *_BACnetConstructedDataMinimumOutputBuilder) WithMandatoryFields(minimumOutput BACnetApplicationTagReal) BACnetConstructedDataMinimumOutputBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMinimumOutputBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMinimumOutputBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataMinimumOutput) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataMinimumOutputCopy := &_BACnetConstructedDataMinimumOutput{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MinimumOutput.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.MinimumOutput),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMinimumOutputCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMinimumOutputCopy
 }
 

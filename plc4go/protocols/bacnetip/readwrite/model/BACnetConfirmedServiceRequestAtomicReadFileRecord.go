@@ -95,6 +95,8 @@ type BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder interface {
 	WithRequestRecordCount(BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder
 	// WithRequestRecordCountBuilder adds RequestRecordCount (property field) which is build by the builder
 	WithRequestRecordCountBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
 	// Build builds the BACnetConfirmedServiceRequestAtomicReadFileRecord or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestAtomicReadFileRecord, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) = (*_BACnetConf
 
 func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) setParent(contract BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract) {
 	b.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract = contract
+	contract.(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)._SubType = b._BACnetConfirmedServiceRequestAtomicReadFileRecord
 }
 
 func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) WithMandatoryFields(fileStartRecord BACnetApplicationTagSignedInteger, requestRecordCount BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder {
@@ -187,8 +190,10 @@ func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestAtomicReadFileRecordBuilder) Done() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder().(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -357,10 +362,10 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecord) deepCopy() *_BACnet
 	}
 	_BACnetConfirmedServiceRequestAtomicReadFileRecordCopy := &_BACnetConfirmedServiceRequestAtomicReadFileRecord{
 		m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract.(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord).deepCopy(),
-		m.FileStartRecord.DeepCopy().(BACnetApplicationTagSignedInteger),
-		m.RequestRecordCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.FileStartRecord),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.RequestRecordCount),
 	}
-	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract.(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)._SubType = m
+	_BACnetConfirmedServiceRequestAtomicReadFileRecordCopy.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract.(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)._SubType = m
 	return _BACnetConfirmedServiceRequestAtomicReadFileRecordCopy
 }
 

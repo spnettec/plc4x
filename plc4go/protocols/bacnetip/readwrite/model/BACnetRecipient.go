@@ -101,15 +101,9 @@ type BACnetRecipientBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRecipientBuilder
 	// AsBACnetRecipientDevice converts this build to a subType of BACnetRecipient. It is always possible to return to current builder using Done()
-	AsBACnetRecipientDevice() interface {
-		BACnetRecipientDeviceBuilder
-		Done() BACnetRecipientBuilder
-	}
+	AsBACnetRecipientDevice() BACnetRecipientDeviceBuilder
 	// AsBACnetRecipientAddress converts this build to a subType of BACnetRecipient. It is always possible to return to current builder using Done()
-	AsBACnetRecipientAddress() interface {
-		BACnetRecipientAddressBuilder
-		Done() BACnetRecipientBuilder
-	}
+	AsBACnetRecipientAddress() BACnetRecipientAddressBuilder
 	// Build builds the BACnetRecipient or returns an error if something is wrong
 	PartialBuild() (BACnetRecipientContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetRecipientBuilder) PartialMustBuild() BACnetRecipientContract {
 	return build
 }
 
-func (b *_BACnetRecipientBuilder) AsBACnetRecipientDevice() interface {
-	BACnetRecipientDeviceBuilder
-	Done() BACnetRecipientBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetRecipientDeviceBuilder
-		Done() BACnetRecipientBuilder
-	}); ok {
+func (b *_BACnetRecipientBuilder) AsBACnetRecipientDevice() BACnetRecipientDeviceBuilder {
+	if cb, ok := b.childBuilder.(BACnetRecipientDeviceBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetRecipientDeviceBuilder().(*_BACnetRecipientDeviceBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetRecipientBuilder) AsBACnetRecipientDevice() interface {
 	return cb
 }
 
-func (b *_BACnetRecipientBuilder) AsBACnetRecipientAddress() interface {
-	BACnetRecipientAddressBuilder
-	Done() BACnetRecipientBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetRecipientAddressBuilder
-		Done() BACnetRecipientBuilder
-	}); ok {
+func (b *_BACnetRecipientBuilder) AsBACnetRecipientAddress() BACnetRecipientAddressBuilder {
+	if cb, ok := b.childBuilder.(BACnetRecipientAddressBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetRecipientAddressBuilder().(*_BACnetRecipientAddressBuilder)
@@ -433,7 +415,7 @@ func (m *_BACnetRecipient) deepCopy() *_BACnetRecipient {
 	}
 	_BACnetRecipientCopy := &_BACnetRecipient{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetRecipientCopy
 }

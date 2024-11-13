@@ -129,6 +129,8 @@ type APDUComplexAckBuilder interface {
 	WithOptionalSegmentServiceChoice(BACnetConfirmedServiceChoice) APDUComplexAckBuilder
 	// WithSegment adds Segment (property field)
 	WithSegment(...byte) APDUComplexAckBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() APDUBuilder
 	// Build builds the APDUComplexAck or returns an error if something is wrong
 	Build() (APDUComplexAck, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,6 +154,7 @@ var _ (APDUComplexAckBuilder) = (*_APDUComplexAckBuilder)(nil)
 
 func (b *_APDUComplexAckBuilder) setParent(contract APDUContract) {
 	b.APDUContract = contract
+	contract.(*_APDU)._SubType = b._APDUComplexAck
 }
 
 func (b *_APDUComplexAckBuilder) WithMandatoryFields(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, segment []byte) APDUComplexAckBuilder {
@@ -226,8 +229,10 @@ func (b *_APDUComplexAckBuilder) MustBuild() APDUComplexAck {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_APDUComplexAckBuilder) Done() APDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAPDUBuilder().(*_APDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -608,12 +613,12 @@ func (m *_APDUComplexAck) deepCopy() *_APDUComplexAck {
 		m.OriginalInvokeId,
 		utils.CopyPtr[uint8](m.SequenceNumber),
 		utils.CopyPtr[uint8](m.ProposedWindowSize),
-		m.ServiceAck.DeepCopy().(BACnetServiceAck),
+		utils.DeepCopy[BACnetServiceAck](m.ServiceAck),
 		utils.CopyPtr[BACnetConfirmedServiceChoice](m.SegmentServiceChoice),
 		utils.DeepCopySlice[byte, byte](m.Segment),
 		m.reservedField0,
 	}
-	m.APDUContract.(*_APDU)._SubType = m
+	_APDUComplexAckCopy.APDUContract.(*_APDU)._SubType = m
 	return _APDUComplexAckCopy
 }
 

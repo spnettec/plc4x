@@ -89,6 +89,8 @@ type BACnetConstructedDataElevatorGroupGroupMembersBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataElevatorGroupGroupMembersBuilder
 	// WithGroupMembers adds GroupMembers (property field)
 	WithGroupMembers(...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataElevatorGroupGroupMembersBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataElevatorGroupGroupMembers or returns an error if something is wrong
 	Build() (BACnetConstructedDataElevatorGroupGroupMembers, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataElevatorGroupGroupMembersBuilder) = (*_BACnetConstru
 
 func (b *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataElevatorGroupGroupMembers
 }
 
 func (b *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) WithMandatoryFields(groupMembers []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataElevatorGroupGroupMembersBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -375,10 +380,10 @@ func (m *_BACnetConstructedDataElevatorGroupGroupMembers) deepCopy() *_BACnetCon
 	}
 	_BACnetConstructedDataElevatorGroupGroupMembersCopy := &_BACnetConstructedDataElevatorGroupGroupMembers{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagObjectIdentifier, BACnetApplicationTagObjectIdentifier](m.GroupMembers),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataElevatorGroupGroupMembersCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataElevatorGroupGroupMembersCopy
 }
 

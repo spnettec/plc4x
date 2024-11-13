@@ -86,6 +86,8 @@ type BACnetConstructedDataPassbackTimeoutBuilder interface {
 	WithPassbackTimeout(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPassbackTimeoutBuilder
 	// WithPassbackTimeoutBuilder adds PassbackTimeout (property field) which is build by the builder
 	WithPassbackTimeoutBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPassbackTimeoutBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPassbackTimeout or returns an error if something is wrong
 	Build() (BACnetConstructedDataPassbackTimeout, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPassbackTimeoutBuilder) = (*_BACnetConstructedDataPa
 
 func (b *_BACnetConstructedDataPassbackTimeoutBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPassbackTimeout
 }
 
 func (b *_BACnetConstructedDataPassbackTimeoutBuilder) WithMandatoryFields(passbackTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPassbackTimeoutBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPassbackTimeoutBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPassbackTimeoutBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataPassbackTimeout) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataPassbackTimeoutCopy := &_BACnetConstructedDataPassbackTimeout{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PassbackTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.PassbackTimeout),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPassbackTimeoutCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPassbackTimeoutCopy
 }
 

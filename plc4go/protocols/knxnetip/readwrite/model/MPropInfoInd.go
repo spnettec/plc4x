@@ -71,6 +71,8 @@ type MPropInfoIndBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() MPropInfoIndBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the MPropInfoInd or returns an error if something is wrong
 	Build() (MPropInfoInd, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (MPropInfoIndBuilder) = (*_MPropInfoIndBuilder)(nil)
 
 func (b *_MPropInfoIndBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._MPropInfoInd
 }
 
 func (b *_MPropInfoIndBuilder) WithMandatoryFields() MPropInfoIndBuilder {
@@ -115,8 +118,10 @@ func (b *_MPropInfoIndBuilder) MustBuild() MPropInfoInd {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MPropInfoIndBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_MPropInfoInd) deepCopy() *_MPropInfoInd {
 	_MPropInfoIndCopy := &_MPropInfoInd{
 		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_MPropInfoIndCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _MPropInfoIndCopy
 }
 

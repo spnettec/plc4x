@@ -86,6 +86,8 @@ type BACnetConstructedDataBackupAndRestoreStateBuilder interface {
 	WithBackupAndRestoreState(BACnetBackupStateTagged) BACnetConstructedDataBackupAndRestoreStateBuilder
 	// WithBackupAndRestoreStateBuilder adds BackupAndRestoreState (property field) which is build by the builder
 	WithBackupAndRestoreStateBuilder(func(BACnetBackupStateTaggedBuilder) BACnetBackupStateTaggedBuilder) BACnetConstructedDataBackupAndRestoreStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBackupAndRestoreState or returns an error if something is wrong
 	Build() (BACnetConstructedDataBackupAndRestoreState, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBackupAndRestoreStateBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBackupAndRestoreState
 }
 
 func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) WithMandatoryFields(backupAndRestoreState BACnetBackupStateTagged) BACnetConstructedDataBackupAndRestoreStateBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataBackupAndRestoreStateCopy := &_BACnetConstructedDataBackupAndRestoreState{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.BackupAndRestoreState.DeepCopy().(BACnetBackupStateTagged),
+		utils.DeepCopy[BACnetBackupStateTagged](m.BackupAndRestoreState),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBackupAndRestoreStateCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBackupAndRestoreStateCopy
 }
 

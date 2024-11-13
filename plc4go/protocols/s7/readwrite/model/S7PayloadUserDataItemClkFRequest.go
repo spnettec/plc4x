@@ -71,6 +71,8 @@ type S7PayloadUserDataItemClkFRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7PayloadUserDataItemClkFRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadUserDataItemClkFRequest or returns an error if something is wrong
 	Build() (S7PayloadUserDataItemClkFRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (S7PayloadUserDataItemClkFRequestBuilder) = (*_S7PayloadUserDataItemClkFRe
 
 func (b *_S7PayloadUserDataItemClkFRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemClkFRequest
 }
 
 func (b *_S7PayloadUserDataItemClkFRequestBuilder) WithMandatoryFields() S7PayloadUserDataItemClkFRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_S7PayloadUserDataItemClkFRequestBuilder) MustBuild() S7PayloadUserData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataItemClkFRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -253,7 +258,7 @@ func (m *_S7PayloadUserDataItemClkFRequest) deepCopy() *_S7PayloadUserDataItemCl
 	_S7PayloadUserDataItemClkFRequestCopy := &_S7PayloadUserDataItemClkFRequest{
 		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadUserDataItemClkFRequestCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemClkFRequestCopy
 }
 

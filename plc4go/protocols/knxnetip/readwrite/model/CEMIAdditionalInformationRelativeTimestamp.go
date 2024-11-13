@@ -87,6 +87,8 @@ type CEMIAdditionalInformationRelativeTimestampBuilder interface {
 	WithRelativeTimestamp(RelativeTimestamp) CEMIAdditionalInformationRelativeTimestampBuilder
 	// WithRelativeTimestampBuilder adds RelativeTimestamp (property field) which is build by the builder
 	WithRelativeTimestampBuilder(func(RelativeTimestampBuilder) RelativeTimestampBuilder) CEMIAdditionalInformationRelativeTimestampBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIAdditionalInformationBuilder
 	// Build builds the CEMIAdditionalInformationRelativeTimestamp or returns an error if something is wrong
 	Build() (CEMIAdditionalInformationRelativeTimestamp, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (CEMIAdditionalInformationRelativeTimestampBuilder) = (*_CEMIAdditionalInf
 
 func (b *_CEMIAdditionalInformationRelativeTimestampBuilder) setParent(contract CEMIAdditionalInformationContract) {
 	b.CEMIAdditionalInformationContract = contract
+	contract.(*_CEMIAdditionalInformation)._SubType = b._CEMIAdditionalInformationRelativeTimestamp
 }
 
 func (b *_CEMIAdditionalInformationRelativeTimestampBuilder) WithMandatoryFields(relativeTimestamp RelativeTimestamp) CEMIAdditionalInformationRelativeTimestampBuilder {
@@ -155,8 +158,10 @@ func (b *_CEMIAdditionalInformationRelativeTimestampBuilder) MustBuild() CEMIAdd
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CEMIAdditionalInformationRelativeTimestampBuilder) Done() CEMIAdditionalInformationBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIAdditionalInformationBuilder().(*_CEMIAdditionalInformationBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -338,9 +343,9 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) deepCopy() *_CEMIAdditiona
 	}
 	_CEMIAdditionalInformationRelativeTimestampCopy := &_CEMIAdditionalInformationRelativeTimestamp{
 		m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).deepCopy(),
-		m.RelativeTimestamp.DeepCopy().(RelativeTimestamp),
+		utils.DeepCopy[RelativeTimestamp](m.RelativeTimestamp),
 	}
-	m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = m
+	_CEMIAdditionalInformationRelativeTimestampCopy.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = m
 	return _CEMIAdditionalInformationRelativeTimestampCopy
 }
 

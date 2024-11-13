@@ -147,6 +147,8 @@ type PubSubKeyPushTargetDataTypeBuilder interface {
 	WithPushTargetProperties(...KeyValuePair) PubSubKeyPushTargetDataTypeBuilder
 	// WithSecurityGroups adds SecurityGroups (property field)
 	WithSecurityGroups(...PascalString) PubSubKeyPushTargetDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PubSubKeyPushTargetDataType or returns an error if something is wrong
 	Build() (PubSubKeyPushTargetDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -170,6 +172,7 @@ var _ (PubSubKeyPushTargetDataTypeBuilder) = (*_PubSubKeyPushTargetDataTypeBuild
 
 func (b *_PubSubKeyPushTargetDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PubSubKeyPushTargetDataType
 }
 
 func (b *_PubSubKeyPushTargetDataTypeBuilder) WithMandatoryFields(applicationUri PascalString, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType UserTokenPolicy, requestedKeyCount uint16, retryInterval float64, pushTargetProperties []KeyValuePair, securityGroups []PascalString) PubSubKeyPushTargetDataTypeBuilder {
@@ -312,8 +315,10 @@ func (b *_PubSubKeyPushTargetDataTypeBuilder) MustBuild() PubSubKeyPushTargetDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PubSubKeyPushTargetDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -664,17 +669,17 @@ func (m *_PubSubKeyPushTargetDataType) deepCopy() *_PubSubKeyPushTargetDataType 
 	}
 	_PubSubKeyPushTargetDataTypeCopy := &_PubSubKeyPushTargetDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ApplicationUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.ApplicationUri),
 		utils.DeepCopySlice[PascalString, PascalString](m.PushTargetFolder),
-		m.EndpointUrl.DeepCopy().(PascalString),
-		m.SecurityPolicyUri.DeepCopy().(PascalString),
-		m.UserTokenType.DeepCopy().(UserTokenPolicy),
+		utils.DeepCopy[PascalString](m.EndpointUrl),
+		utils.DeepCopy[PascalString](m.SecurityPolicyUri),
+		utils.DeepCopy[UserTokenPolicy](m.UserTokenType),
 		m.RequestedKeyCount,
 		m.RetryInterval,
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.PushTargetProperties),
 		utils.DeepCopySlice[PascalString, PascalString](m.SecurityGroups),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PubSubKeyPushTargetDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PubSubKeyPushTargetDataTypeCopy
 }
 

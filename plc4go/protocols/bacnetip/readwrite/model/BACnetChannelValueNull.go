@@ -84,6 +84,8 @@ type BACnetChannelValueNullBuilder interface {
 	WithNullValue(BACnetApplicationTagNull) BACnetChannelValueNullBuilder
 	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
 	WithNullValueBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetChannelValueNullBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueNull or returns an error if something is wrong
 	Build() (BACnetChannelValueNull, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueNullBuilder) = (*_BACnetChannelValueNullBuilder)(nil)
 
 func (b *_BACnetChannelValueNullBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueNull
 }
 
 func (b *_BACnetChannelValueNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetChannelValueNullBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueNullBuilder) MustBuild() BACnetChannelValueNull {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueNullBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueNull) deepCopy() *_BACnetChannelValueNull {
 	}
 	_BACnetChannelValueNullCopy := &_BACnetChannelValueNull{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+		utils.DeepCopy[BACnetApplicationTagNull](m.NullValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueNullCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueNullCopy
 }
 

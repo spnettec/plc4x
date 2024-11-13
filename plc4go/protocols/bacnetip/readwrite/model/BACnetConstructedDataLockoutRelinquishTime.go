@@ -86,6 +86,8 @@ type BACnetConstructedDataLockoutRelinquishTimeBuilder interface {
 	WithLockoutRelinquishTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLockoutRelinquishTimeBuilder
 	// WithLockoutRelinquishTimeBuilder adds LockoutRelinquishTime (property field) which is build by the builder
 	WithLockoutRelinquishTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLockoutRelinquishTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLockoutRelinquishTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataLockoutRelinquishTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLockoutRelinquishTimeBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLockoutRelinquishTime
 }
 
 func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) WithMandatoryFields(lockoutRelinquishTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLockoutRelinquishTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLockoutRelinquishTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataLockoutRelinquishTimeCopy := &_BACnetConstructedDataLockoutRelinquishTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LockoutRelinquishTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.LockoutRelinquishTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLockoutRelinquishTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLockoutRelinquishTimeCopy
 }
 

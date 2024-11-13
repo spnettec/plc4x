@@ -92,6 +92,8 @@ type BACnetConfirmedServiceRequestReinitializeDeviceBuilder interface {
 	WithOptionalPassword(BACnetContextTagCharacterString) BACnetConfirmedServiceRequestReinitializeDeviceBuilder
 	// WithOptionalPasswordBuilder adds Password (property field) which is build by the builder
 	WithOptionalPasswordBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestReinitializeDevice or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestReinitializeDevice, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,6 +117,7 @@ var _ (BACnetConfirmedServiceRequestReinitializeDeviceBuilder) = (*_BACnetConfir
 
 func (b *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestReinitializeDevice
 }
 
 func (b *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) WithMandatoryFields(reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) BACnetConfirmedServiceRequestReinitializeDeviceBuilder {
@@ -178,8 +181,10 @@ func (b *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) MustBuild() BA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -358,10 +363,10 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) deepCopy() *_BACnetCo
 	}
 	_BACnetConfirmedServiceRequestReinitializeDeviceCopy := &_BACnetConfirmedServiceRequestReinitializeDevice{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.ReinitializedStateOfDevice.DeepCopy().(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged),
-		m.Password.DeepCopy().(BACnetContextTagCharacterString),
+		utils.DeepCopy[BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged](m.ReinitializedStateOfDevice),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.Password),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestReinitializeDeviceCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestReinitializeDeviceCopy
 }
 

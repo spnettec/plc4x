@@ -90,6 +90,8 @@ type DeleteAtTimeDetailsBuilder interface {
 	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) DeleteAtTimeDetailsBuilder
 	// WithReqTimes adds ReqTimes (property field)
 	WithReqTimes(...int64) DeleteAtTimeDetailsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DeleteAtTimeDetails or returns an error if something is wrong
 	Build() (DeleteAtTimeDetails, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (DeleteAtTimeDetailsBuilder) = (*_DeleteAtTimeDetailsBuilder)(nil)
 
 func (b *_DeleteAtTimeDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DeleteAtTimeDetails
 }
 
 func (b *_DeleteAtTimeDetailsBuilder) WithMandatoryFields(nodeId NodeId, reqTimes []int64) DeleteAtTimeDetailsBuilder {
@@ -163,8 +166,10 @@ func (b *_DeleteAtTimeDetailsBuilder) MustBuild() DeleteAtTimeDetails {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeleteAtTimeDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -351,10 +356,10 @@ func (m *_DeleteAtTimeDetails) deepCopy() *_DeleteAtTimeDetails {
 	}
 	_DeleteAtTimeDetailsCopy := &_DeleteAtTimeDetails{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NodeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.NodeId),
 		utils.DeepCopySlice[int64, int64](m.ReqTimes),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DeleteAtTimeDetailsCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteAtTimeDetailsCopy
 }
 

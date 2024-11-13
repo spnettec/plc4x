@@ -79,6 +79,8 @@ type COTPParameterDisconnectAdditionalInformationBuilder interface {
 	WithMandatoryFields(data []byte) COTPParameterDisconnectAdditionalInformationBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) COTPParameterDisconnectAdditionalInformationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() COTPParameterBuilder
 	// Build builds the COTPParameterDisconnectAdditionalInformation or returns an error if something is wrong
 	Build() (COTPParameterDisconnectAdditionalInformation, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (COTPParameterDisconnectAdditionalInformationBuilder) = (*_COTPParameterDi
 
 func (b *_COTPParameterDisconnectAdditionalInformationBuilder) setParent(contract COTPParameterContract) {
 	b.COTPParameterContract = contract
+	contract.(*_COTPParameter)._SubType = b._COTPParameterDisconnectAdditionalInformation
 }
 
 func (b *_COTPParameterDisconnectAdditionalInformationBuilder) WithMandatoryFields(data []byte) COTPParameterDisconnectAdditionalInformationBuilder {
@@ -128,8 +131,10 @@ func (b *_COTPParameterDisconnectAdditionalInformationBuilder) MustBuild() COTPP
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_COTPParameterDisconnectAdditionalInformationBuilder) Done() COTPParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCOTPParameterBuilder().(*_COTPParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -289,7 +294,7 @@ func (m *_COTPParameterDisconnectAdditionalInformation) deepCopy() *_COTPParamet
 		m.COTPParameterContract.(*_COTPParameter).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	_COTPParameterDisconnectAdditionalInformationCopy.COTPParameterContract.(*_COTPParameter)._SubType = m
 	return _COTPParameterDisconnectAdditionalInformationCopy
 }
 

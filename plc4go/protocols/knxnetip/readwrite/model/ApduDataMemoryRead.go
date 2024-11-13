@@ -85,6 +85,8 @@ type ApduDataMemoryReadBuilder interface {
 	WithNumBytes(uint8) ApduDataMemoryReadBuilder
 	// WithAddress adds Address (property field)
 	WithAddress(uint16) ApduDataMemoryReadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataMemoryRead or returns an error if something is wrong
 	Build() (ApduDataMemoryRead, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (ApduDataMemoryReadBuilder) = (*_ApduDataMemoryReadBuilder)(nil)
 
 func (b *_ApduDataMemoryReadBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataMemoryRead
 }
 
 func (b *_ApduDataMemoryReadBuilder) WithMandatoryFields(numBytes uint8, address uint16) ApduDataMemoryReadBuilder {
@@ -139,8 +142,10 @@ func (b *_ApduDataMemoryReadBuilder) MustBuild() ApduDataMemoryRead {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataMemoryReadBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_ApduDataMemoryRead) deepCopy() *_ApduDataMemoryRead {
 		m.NumBytes,
 		m.Address,
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataMemoryReadCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataMemoryReadCopy
 }
 

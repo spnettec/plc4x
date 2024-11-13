@@ -147,6 +147,8 @@ type APDUConfirmedRequestBuilder interface {
 	WithOptionalSegmentServiceChoice(BACnetConfirmedServiceChoice) APDUConfirmedRequestBuilder
 	// WithSegment adds Segment (property field)
 	WithSegment(...byte) APDUConfirmedRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() APDUBuilder
 	// Build builds the APDUConfirmedRequest or returns an error if something is wrong
 	Build() (APDUConfirmedRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -170,6 +172,7 @@ var _ (APDUConfirmedRequestBuilder) = (*_APDUConfirmedRequestBuilder)(nil)
 
 func (b *_APDUConfirmedRequestBuilder) setParent(contract APDUContract) {
 	b.APDUContract = contract
+	contract.(*_APDU)._SubType = b._APDUConfirmedRequest
 }
 
 func (b *_APDUConfirmedRequestBuilder) WithMandatoryFields(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted MaxSegmentsAccepted, maxApduLengthAccepted MaxApduLengthAccepted, invokeId uint8, segment []byte) APDUConfirmedRequestBuilder {
@@ -259,8 +262,10 @@ func (b *_APDUConfirmedRequestBuilder) MustBuild() APDUConfirmedRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_APDUConfirmedRequestBuilder) Done() APDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewAPDUBuilder().(*_APDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -695,12 +700,12 @@ func (m *_APDUConfirmedRequest) deepCopy() *_APDUConfirmedRequest {
 		m.InvokeId,
 		utils.CopyPtr[uint8](m.SequenceNumber),
 		utils.CopyPtr[uint8](m.ProposedWindowSize),
-		m.ServiceRequest.DeepCopy().(BACnetConfirmedServiceRequest),
+		utils.DeepCopy[BACnetConfirmedServiceRequest](m.ServiceRequest),
 		utils.CopyPtr[BACnetConfirmedServiceChoice](m.SegmentServiceChoice),
 		utils.DeepCopySlice[byte, byte](m.Segment),
 		m.reservedField0,
 	}
-	m.APDUContract.(*_APDU)._SubType = m
+	_APDUConfirmedRequestCopy.APDUContract.(*_APDU)._SubType = m
 	return _APDUConfirmedRequestCopy
 }
 

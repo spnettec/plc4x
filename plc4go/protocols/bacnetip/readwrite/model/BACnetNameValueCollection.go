@@ -374,9 +374,9 @@ func (m *_BACnetNameValueCollection) deepCopy() *_BACnetNameValueCollection {
 		return nil
 	}
 	_BACnetNameValueCollectionCopy := &_BACnetNameValueCollection{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetNameValue, BACnetNameValue](m.Members),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetNameValueCollectionCopy

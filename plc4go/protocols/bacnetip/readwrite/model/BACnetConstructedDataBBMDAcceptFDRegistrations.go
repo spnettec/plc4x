@@ -86,6 +86,8 @@ type BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder interface {
 	WithBbmdAcceptFDRegistrations(BACnetApplicationTagBoolean) BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder
 	// WithBbmdAcceptFDRegistrationsBuilder adds BbmdAcceptFDRegistrations (property field) which is build by the builder
 	WithBbmdAcceptFDRegistrationsBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBBMDAcceptFDRegistrations or returns an error if something is wrong
 	Build() (BACnetConstructedDataBBMDAcceptFDRegistrations, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) = (*_BACnetConstru
 
 func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBBMDAcceptFDRegistrations
 }
 
 func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) WithMandatoryFields(bbmdAcceptFDRegistrations BACnetApplicationTagBoolean) BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) deepCopy() *_BACnetCon
 	}
 	_BACnetConstructedDataBBMDAcceptFDRegistrationsCopy := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.BbmdAcceptFDRegistrations.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.BbmdAcceptFDRegistrations),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBBMDAcceptFDRegistrationsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBBMDAcceptFDRegistrationsCopy
 }
 

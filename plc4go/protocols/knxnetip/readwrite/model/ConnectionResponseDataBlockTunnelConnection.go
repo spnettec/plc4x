@@ -84,6 +84,8 @@ type ConnectionResponseDataBlockTunnelConnectionBuilder interface {
 	WithKnxAddress(KnxAddress) ConnectionResponseDataBlockTunnelConnectionBuilder
 	// WithKnxAddressBuilder adds KnxAddress (property field) which is build by the builder
 	WithKnxAddressBuilder(func(KnxAddressBuilder) KnxAddressBuilder) ConnectionResponseDataBlockTunnelConnectionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ConnectionResponseDataBlockBuilder
 	// Build builds the ConnectionResponseDataBlockTunnelConnection or returns an error if something is wrong
 	Build() (ConnectionResponseDataBlockTunnelConnection, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (ConnectionResponseDataBlockTunnelConnectionBuilder) = (*_ConnectionRespon
 
 func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) setParent(contract ConnectionResponseDataBlockContract) {
 	b.ConnectionResponseDataBlockContract = contract
+	contract.(*_ConnectionResponseDataBlock)._SubType = b._ConnectionResponseDataBlockTunnelConnection
 }
 
 func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) WithMandatoryFields(knxAddress KnxAddress) ConnectionResponseDataBlockTunnelConnectionBuilder {
@@ -152,8 +155,10 @@ func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) MustBuild() Connec
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ConnectionResponseDataBlockTunnelConnectionBuilder) Done() ConnectionResponseDataBlockBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewConnectionResponseDataBlockBuilder().(*_ConnectionResponseDataBlockBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -309,9 +314,9 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) deepCopy() *_ConnectionRe
 	}
 	_ConnectionResponseDataBlockTunnelConnectionCopy := &_ConnectionResponseDataBlockTunnelConnection{
 		m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock).deepCopy(),
-		m.KnxAddress.DeepCopy().(KnxAddress),
+		utils.DeepCopy[KnxAddress](m.KnxAddress),
 	}
-	m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = m
+	_ConnectionResponseDataBlockTunnelConnectionCopy.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = m
 	return _ConnectionResponseDataBlockTunnelConnectionCopy
 }
 

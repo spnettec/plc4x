@@ -97,6 +97,8 @@ type ChannelSecurityTokenBuilder interface {
 	WithCreatedAt(int64) ChannelSecurityTokenBuilder
 	// WithRevisedLifetime adds RevisedLifetime (property field)
 	WithRevisedLifetime(uint32) ChannelSecurityTokenBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ChannelSecurityToken or returns an error if something is wrong
 	Build() (ChannelSecurityToken, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (ChannelSecurityTokenBuilder) = (*_ChannelSecurityTokenBuilder)(nil)
 
 func (b *_ChannelSecurityTokenBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ChannelSecurityToken
 }
 
 func (b *_ChannelSecurityTokenBuilder) WithMandatoryFields(channelId uint32, tokenId uint32, createdAt int64, revisedLifetime uint32) ChannelSecurityTokenBuilder {
@@ -161,8 +164,10 @@ func (b *_ChannelSecurityTokenBuilder) MustBuild() ChannelSecurityToken {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ChannelSecurityTokenBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -373,7 +378,7 @@ func (m *_ChannelSecurityToken) deepCopy() *_ChannelSecurityToken {
 		m.CreatedAt,
 		m.RevisedLifetime,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ChannelSecurityTokenCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ChannelSecurityTokenCopy
 }
 

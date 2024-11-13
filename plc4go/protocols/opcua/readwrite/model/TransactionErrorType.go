@@ -106,6 +106,8 @@ type TransactionErrorTypeBuilder interface {
 	WithMessage(LocalizedText) TransactionErrorTypeBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) TransactionErrorTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the TransactionErrorType or returns an error if something is wrong
 	Build() (TransactionErrorType, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (TransactionErrorTypeBuilder) = (*_TransactionErrorTypeBuilder)(nil)
 
 func (b *_TransactionErrorTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._TransactionErrorType
 }
 
 func (b *_TransactionErrorTypeBuilder) WithMandatoryFields(targetId NodeId, error StatusCode, message LocalizedText) TransactionErrorTypeBuilder {
@@ -222,8 +225,10 @@ func (b *_TransactionErrorTypeBuilder) MustBuild() TransactionErrorType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TransactionErrorTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,11 +417,11 @@ func (m *_TransactionErrorType) deepCopy() *_TransactionErrorType {
 	}
 	_TransactionErrorTypeCopy := &_TransactionErrorType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.TargetId.DeepCopy().(NodeId),
-		m.Error.DeepCopy().(StatusCode),
-		m.Message.DeepCopy().(LocalizedText),
+		utils.DeepCopy[NodeId](m.TargetId),
+		utils.DeepCopy[StatusCode](m.Error),
+		utils.DeepCopy[LocalizedText](m.Message),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_TransactionErrorTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TransactionErrorTypeCopy
 }
 

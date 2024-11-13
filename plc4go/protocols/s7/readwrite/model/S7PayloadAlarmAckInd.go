@@ -84,6 +84,8 @@ type S7PayloadAlarmAckIndBuilder interface {
 	WithAlarmMessage(AlarmMessageAckPushType) S7PayloadAlarmAckIndBuilder
 	// WithAlarmMessageBuilder adds AlarmMessage (property field) which is build by the builder
 	WithAlarmMessageBuilder(func(AlarmMessageAckPushTypeBuilder) AlarmMessageAckPushTypeBuilder) S7PayloadAlarmAckIndBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadAlarmAckInd or returns an error if something is wrong
 	Build() (S7PayloadAlarmAckInd, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (S7PayloadAlarmAckIndBuilder) = (*_S7PayloadAlarmAckIndBuilder)(nil)
 
 func (b *_S7PayloadAlarmAckIndBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadAlarmAckInd
 }
 
 func (b *_S7PayloadAlarmAckIndBuilder) WithMandatoryFields(alarmMessage AlarmMessageAckPushType) S7PayloadAlarmAckIndBuilder {
@@ -152,8 +155,10 @@ func (b *_S7PayloadAlarmAckIndBuilder) MustBuild() S7PayloadAlarmAckInd {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadAlarmAckIndBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -316,9 +321,9 @@ func (m *_S7PayloadAlarmAckInd) deepCopy() *_S7PayloadAlarmAckInd {
 	}
 	_S7PayloadAlarmAckIndCopy := &_S7PayloadAlarmAckInd{
 		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
-		m.AlarmMessage.DeepCopy().(AlarmMessageAckPushType),
+		utils.DeepCopy[AlarmMessageAckPushType](m.AlarmMessage),
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadAlarmAckIndCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadAlarmAckIndCopy
 }
 

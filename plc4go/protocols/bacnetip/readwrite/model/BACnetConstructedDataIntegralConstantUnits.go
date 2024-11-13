@@ -86,6 +86,8 @@ type BACnetConstructedDataIntegralConstantUnitsBuilder interface {
 	WithUnits(BACnetEngineeringUnitsTagged) BACnetConstructedDataIntegralConstantUnitsBuilder
 	// WithUnitsBuilder adds Units (property field) which is build by the builder
 	WithUnitsBuilder(func(BACnetEngineeringUnitsTaggedBuilder) BACnetEngineeringUnitsTaggedBuilder) BACnetConstructedDataIntegralConstantUnitsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIntegralConstantUnits or returns an error if something is wrong
 	Build() (BACnetConstructedDataIntegralConstantUnits, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIntegralConstantUnitsBuilder) = (*_BACnetConstructed
 
 func (b *_BACnetConstructedDataIntegralConstantUnitsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIntegralConstantUnits
 }
 
 func (b *_BACnetConstructedDataIntegralConstantUnitsBuilder) WithMandatoryFields(units BACnetEngineeringUnitsTagged) BACnetConstructedDataIntegralConstantUnitsBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIntegralConstantUnitsBuilder) MustBuild() BACnetC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIntegralConstantUnitsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataIntegralConstantUnits) deepCopy() *_BACnetConstru
 	}
 	_BACnetConstructedDataIntegralConstantUnitsCopy := &_BACnetConstructedDataIntegralConstantUnits{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Units.DeepCopy().(BACnetEngineeringUnitsTagged),
+		utils.DeepCopy[BACnetEngineeringUnitsTagged](m.Units),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIntegralConstantUnitsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIntegralConstantUnitsCopy
 }
 

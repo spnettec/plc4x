@@ -95,6 +95,8 @@ type BrokerConnectionTransportDataTypeBuilder interface {
 	WithAuthenticationProfileUri(PascalString) BrokerConnectionTransportDataTypeBuilder
 	// WithAuthenticationProfileUriBuilder adds AuthenticationProfileUri (property field) which is build by the builder
 	WithAuthenticationProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerConnectionTransportDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BrokerConnectionTransportDataType or returns an error if something is wrong
 	Build() (BrokerConnectionTransportDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (BrokerConnectionTransportDataTypeBuilder) = (*_BrokerConnectionTransportD
 
 func (b *_BrokerConnectionTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BrokerConnectionTransportDataType
 }
 
 func (b *_BrokerConnectionTransportDataTypeBuilder) WithMandatoryFields(resourceUri PascalString, authenticationProfileUri PascalString) BrokerConnectionTransportDataTypeBuilder {
@@ -187,8 +190,10 @@ func (b *_BrokerConnectionTransportDataTypeBuilder) MustBuild() BrokerConnection
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BrokerConnectionTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_BrokerConnectionTransportDataType) deepCopy() *_BrokerConnectionTransp
 	}
 	_BrokerConnectionTransportDataTypeCopy := &_BrokerConnectionTransportDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResourceUri.DeepCopy().(PascalString),
-		m.AuthenticationProfileUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.ResourceUri),
+		utils.DeepCopy[PascalString](m.AuthenticationProfileUri),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BrokerConnectionTransportDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrokerConnectionTransportDataTypeCopy
 }
 

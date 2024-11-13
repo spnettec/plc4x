@@ -101,6 +101,8 @@ type BACnetServiceAckAtomicReadFileRecordBuilder interface {
 	WithReturnedRecordCountBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckAtomicReadFileRecordBuilder
 	// WithFileRecordData adds FileRecordData (property field)
 	WithFileRecordData(...BACnetApplicationTagOctetString) BACnetServiceAckAtomicReadFileRecordBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
 	// Build builds the BACnetServiceAckAtomicReadFileRecord or returns an error if something is wrong
 	Build() (BACnetServiceAckAtomicReadFileRecord, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (BACnetServiceAckAtomicReadFileRecordBuilder) = (*_BACnetServiceAckAtomicR
 
 func (b *_BACnetServiceAckAtomicReadFileRecordBuilder) setParent(contract BACnetServiceAckAtomicReadFileStreamOrRecordContract) {
 	b.BACnetServiceAckAtomicReadFileStreamOrRecordContract = contract
+	contract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = b._BACnetServiceAckAtomicReadFileRecord
 }
 
 func (b *_BACnetServiceAckAtomicReadFileRecordBuilder) WithMandatoryFields(fileStartRecord BACnetApplicationTagSignedInteger, returnedRecordCount BACnetApplicationTagUnsignedInteger, fileRecordData []BACnetApplicationTagOctetString) BACnetServiceAckAtomicReadFileRecordBuilder {
@@ -198,8 +201,10 @@ func (b *_BACnetServiceAckAtomicReadFileRecordBuilder) MustBuild() BACnetService
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckAtomicReadFileRecordBuilder) Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckAtomicReadFileStreamOrRecordBuilder().(*_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -391,11 +396,11 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) deepCopy() *_BACnetServiceAckAto
 	}
 	_BACnetServiceAckAtomicReadFileRecordCopy := &_BACnetServiceAckAtomicReadFileRecord{
 		m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord).deepCopy(),
-		m.FileStartRecord.DeepCopy().(BACnetApplicationTagSignedInteger),
-		m.ReturnedRecordCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.FileStartRecord),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ReturnedRecordCount),
 		utils.DeepCopySlice[BACnetApplicationTagOctetString, BACnetApplicationTagOctetString](m.FileRecordData),
 	}
-	m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = m
+	_BACnetServiceAckAtomicReadFileRecordCopy.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = m
 	return _BACnetServiceAckAtomicReadFileRecordCopy
 }
 

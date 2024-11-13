@@ -115,6 +115,8 @@ type HistoryReadRequestBuilder interface {
 	WithReleaseContinuationPoints(bool) HistoryReadRequestBuilder
 	// WithNodesToRead adds NodesToRead (property field)
 	WithNodesToRead(...HistoryReadValueId) HistoryReadRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the HistoryReadRequest or returns an error if something is wrong
 	Build() (HistoryReadRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -138,6 +140,7 @@ var _ (HistoryReadRequestBuilder) = (*_HistoryReadRequestBuilder)(nil)
 
 func (b *_HistoryReadRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._HistoryReadRequest
 }
 
 func (b *_HistoryReadRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, nodesToRead []HistoryReadValueId) HistoryReadRequestBuilder {
@@ -222,8 +225,10 @@ func (b *_HistoryReadRequestBuilder) MustBuild() HistoryReadRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_HistoryReadRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -479,14 +484,14 @@ func (m *_HistoryReadRequest) deepCopy() *_HistoryReadRequest {
 	}
 	_HistoryReadRequestCopy := &_HistoryReadRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
-		m.HistoryReadDetails.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
+		utils.DeepCopy[ExtensionObject](m.HistoryReadDetails),
 		m.TimestampsToReturn,
 		m.ReleaseContinuationPoints,
 		utils.DeepCopySlice[HistoryReadValueId, HistoryReadValueId](m.NodesToRead),
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_HistoryReadRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryReadRequestCopy
 }
 

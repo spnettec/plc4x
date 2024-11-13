@@ -145,110 +145,47 @@ type AmsPacketBuilder interface {
 	// WithInvokeId adds InvokeId (property field)
 	WithInvokeId(uint32) AmsPacketBuilder
 	// AsAdsInvalidRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsInvalidRequest() interface {
-		AdsInvalidRequestBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsInvalidRequest() AdsInvalidRequestBuilder
 	// AsAdsInvalidResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsInvalidResponse() interface {
-		AdsInvalidResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsInvalidResponse() AdsInvalidResponseBuilder
 	// AsAdsReadDeviceInfoRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsReadDeviceInfoRequest() interface {
-		AdsReadDeviceInfoRequestBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsReadDeviceInfoRequest() AdsReadDeviceInfoRequestBuilder
 	// AsAdsReadDeviceInfoResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsReadDeviceInfoResponse() interface {
-		AdsReadDeviceInfoResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsReadDeviceInfoResponse() AdsReadDeviceInfoResponseBuilder
 	// AsAdsReadRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsReadRequest() interface {
-		AdsReadRequestBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsReadRequest() AdsReadRequestBuilder
 	// AsAdsReadResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsReadResponse() interface {
-		AdsReadResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsReadResponse() AdsReadResponseBuilder
 	// AsAdsWriteRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsWriteRequest() interface {
-		AdsWriteRequestBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsWriteRequest() AdsWriteRequestBuilder
 	// AsAdsWriteResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsWriteResponse() interface {
-		AdsWriteResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsWriteResponse() AdsWriteResponseBuilder
 	// AsAdsReadStateRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsReadStateRequest() interface {
-		AdsReadStateRequestBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsReadStateRequest() AdsReadStateRequestBuilder
 	// AsAdsReadStateResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsReadStateResponse() interface {
-		AdsReadStateResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsReadStateResponse() AdsReadStateResponseBuilder
 	// AsAdsWriteControlRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsWriteControlRequest() interface {
-		AdsWriteControlRequestBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsWriteControlRequest() AdsWriteControlRequestBuilder
 	// AsAdsWriteControlResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsWriteControlResponse() interface {
-		AdsWriteControlResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsWriteControlResponse() AdsWriteControlResponseBuilder
 	// AsAdsAddDeviceNotificationRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsAddDeviceNotificationRequest() interface {
-		AdsAddDeviceNotificationRequestBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsAddDeviceNotificationRequest() AdsAddDeviceNotificationRequestBuilder
 	// AsAdsAddDeviceNotificationResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsAddDeviceNotificationResponse() interface {
-		AdsAddDeviceNotificationResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsAddDeviceNotificationResponse() AdsAddDeviceNotificationResponseBuilder
 	// AsAdsDeleteDeviceNotificationRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsDeleteDeviceNotificationRequest() interface {
-		AdsDeleteDeviceNotificationRequestBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsDeleteDeviceNotificationRequest() AdsDeleteDeviceNotificationRequestBuilder
 	// AsAdsDeleteDeviceNotificationResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsDeleteDeviceNotificationResponse() interface {
-		AdsDeleteDeviceNotificationResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsDeleteDeviceNotificationResponse() AdsDeleteDeviceNotificationResponseBuilder
 	// AsAdsDeviceNotificationRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsDeviceNotificationRequest() interface {
-		AdsDeviceNotificationRequestBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsDeviceNotificationRequest() AdsDeviceNotificationRequestBuilder
 	// AsAdsDeviceNotificationResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsDeviceNotificationResponse() interface {
-		AdsDeviceNotificationResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsDeviceNotificationResponse() AdsDeviceNotificationResponseBuilder
 	// AsAdsReadWriteRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsReadWriteRequest() interface {
-		AdsReadWriteRequestBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsReadWriteRequest() AdsReadWriteRequestBuilder
 	// AsAdsReadWriteResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsAdsReadWriteResponse() interface {
-		AdsReadWriteResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsAdsReadWriteResponse() AdsReadWriteResponseBuilder
 	// AsErrorResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
-	AsErrorResponse() interface {
-		ErrorResponseBuilder
-		Done() AmsPacketBuilder
-	}
+	AsErrorResponse() ErrorResponseBuilder
 	// Build builds the AmsPacket or returns an error if something is wrong
 	PartialBuild() (AmsPacketContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -367,14 +304,8 @@ func (b *_AmsPacketBuilder) PartialMustBuild() AmsPacketContract {
 	return build
 }
 
-func (b *_AmsPacketBuilder) AsAdsInvalidRequest() interface {
-	AdsInvalidRequestBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsInvalidRequestBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsInvalidRequest() AdsInvalidRequestBuilder {
+	if cb, ok := b.childBuilder.(AdsInvalidRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAdsInvalidRequestBuilder().(*_AdsInvalidRequestBuilder)
@@ -383,14 +314,8 @@ func (b *_AmsPacketBuilder) AsAdsInvalidRequest() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsInvalidResponse() interface {
-	AdsInvalidResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsInvalidResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsInvalidResponse() AdsInvalidResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsInvalidResponseBuilder); ok {
 		return cb
 	}
 	cb := NewAdsInvalidResponseBuilder().(*_AdsInvalidResponseBuilder)
@@ -399,14 +324,8 @@ func (b *_AmsPacketBuilder) AsAdsInvalidResponse() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsReadDeviceInfoRequest() interface {
-	AdsReadDeviceInfoRequestBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsReadDeviceInfoRequestBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsReadDeviceInfoRequest() AdsReadDeviceInfoRequestBuilder {
+	if cb, ok := b.childBuilder.(AdsReadDeviceInfoRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAdsReadDeviceInfoRequestBuilder().(*_AdsReadDeviceInfoRequestBuilder)
@@ -415,14 +334,8 @@ func (b *_AmsPacketBuilder) AsAdsReadDeviceInfoRequest() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsReadDeviceInfoResponse() interface {
-	AdsReadDeviceInfoResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsReadDeviceInfoResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsReadDeviceInfoResponse() AdsReadDeviceInfoResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsReadDeviceInfoResponseBuilder); ok {
 		return cb
 	}
 	cb := NewAdsReadDeviceInfoResponseBuilder().(*_AdsReadDeviceInfoResponseBuilder)
@@ -431,14 +344,8 @@ func (b *_AmsPacketBuilder) AsAdsReadDeviceInfoResponse() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsReadRequest() interface {
-	AdsReadRequestBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsReadRequestBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsReadRequest() AdsReadRequestBuilder {
+	if cb, ok := b.childBuilder.(AdsReadRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAdsReadRequestBuilder().(*_AdsReadRequestBuilder)
@@ -447,14 +354,8 @@ func (b *_AmsPacketBuilder) AsAdsReadRequest() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsReadResponse() interface {
-	AdsReadResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsReadResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsReadResponse() AdsReadResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsReadResponseBuilder); ok {
 		return cb
 	}
 	cb := NewAdsReadResponseBuilder().(*_AdsReadResponseBuilder)
@@ -463,14 +364,8 @@ func (b *_AmsPacketBuilder) AsAdsReadResponse() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsWriteRequest() interface {
-	AdsWriteRequestBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsWriteRequestBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsWriteRequest() AdsWriteRequestBuilder {
+	if cb, ok := b.childBuilder.(AdsWriteRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAdsWriteRequestBuilder().(*_AdsWriteRequestBuilder)
@@ -479,14 +374,8 @@ func (b *_AmsPacketBuilder) AsAdsWriteRequest() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsWriteResponse() interface {
-	AdsWriteResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsWriteResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsWriteResponse() AdsWriteResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsWriteResponseBuilder); ok {
 		return cb
 	}
 	cb := NewAdsWriteResponseBuilder().(*_AdsWriteResponseBuilder)
@@ -495,14 +384,8 @@ func (b *_AmsPacketBuilder) AsAdsWriteResponse() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsReadStateRequest() interface {
-	AdsReadStateRequestBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsReadStateRequestBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsReadStateRequest() AdsReadStateRequestBuilder {
+	if cb, ok := b.childBuilder.(AdsReadStateRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAdsReadStateRequestBuilder().(*_AdsReadStateRequestBuilder)
@@ -511,14 +394,8 @@ func (b *_AmsPacketBuilder) AsAdsReadStateRequest() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsReadStateResponse() interface {
-	AdsReadStateResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsReadStateResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsReadStateResponse() AdsReadStateResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsReadStateResponseBuilder); ok {
 		return cb
 	}
 	cb := NewAdsReadStateResponseBuilder().(*_AdsReadStateResponseBuilder)
@@ -527,14 +404,8 @@ func (b *_AmsPacketBuilder) AsAdsReadStateResponse() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsWriteControlRequest() interface {
-	AdsWriteControlRequestBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsWriteControlRequestBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsWriteControlRequest() AdsWriteControlRequestBuilder {
+	if cb, ok := b.childBuilder.(AdsWriteControlRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAdsWriteControlRequestBuilder().(*_AdsWriteControlRequestBuilder)
@@ -543,14 +414,8 @@ func (b *_AmsPacketBuilder) AsAdsWriteControlRequest() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsWriteControlResponse() interface {
-	AdsWriteControlResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsWriteControlResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsWriteControlResponse() AdsWriteControlResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsWriteControlResponseBuilder); ok {
 		return cb
 	}
 	cb := NewAdsWriteControlResponseBuilder().(*_AdsWriteControlResponseBuilder)
@@ -559,14 +424,8 @@ func (b *_AmsPacketBuilder) AsAdsWriteControlResponse() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsAddDeviceNotificationRequest() interface {
-	AdsAddDeviceNotificationRequestBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsAddDeviceNotificationRequestBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsAddDeviceNotificationRequest() AdsAddDeviceNotificationRequestBuilder {
+	if cb, ok := b.childBuilder.(AdsAddDeviceNotificationRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAdsAddDeviceNotificationRequestBuilder().(*_AdsAddDeviceNotificationRequestBuilder)
@@ -575,14 +434,8 @@ func (b *_AmsPacketBuilder) AsAdsAddDeviceNotificationRequest() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsAddDeviceNotificationResponse() interface {
-	AdsAddDeviceNotificationResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsAddDeviceNotificationResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsAddDeviceNotificationResponse() AdsAddDeviceNotificationResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsAddDeviceNotificationResponseBuilder); ok {
 		return cb
 	}
 	cb := NewAdsAddDeviceNotificationResponseBuilder().(*_AdsAddDeviceNotificationResponseBuilder)
@@ -591,14 +444,8 @@ func (b *_AmsPacketBuilder) AsAdsAddDeviceNotificationResponse() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsDeleteDeviceNotificationRequest() interface {
-	AdsDeleteDeviceNotificationRequestBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDeleteDeviceNotificationRequestBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsDeleteDeviceNotificationRequest() AdsDeleteDeviceNotificationRequestBuilder {
+	if cb, ok := b.childBuilder.(AdsDeleteDeviceNotificationRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDeleteDeviceNotificationRequestBuilder().(*_AdsDeleteDeviceNotificationRequestBuilder)
@@ -607,14 +454,8 @@ func (b *_AmsPacketBuilder) AsAdsDeleteDeviceNotificationRequest() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsDeleteDeviceNotificationResponse() interface {
-	AdsDeleteDeviceNotificationResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDeleteDeviceNotificationResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsDeleteDeviceNotificationResponse() AdsDeleteDeviceNotificationResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsDeleteDeviceNotificationResponseBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDeleteDeviceNotificationResponseBuilder().(*_AdsDeleteDeviceNotificationResponseBuilder)
@@ -623,14 +464,8 @@ func (b *_AmsPacketBuilder) AsAdsDeleteDeviceNotificationResponse() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsDeviceNotificationRequest() interface {
-	AdsDeviceNotificationRequestBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDeviceNotificationRequestBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsDeviceNotificationRequest() AdsDeviceNotificationRequestBuilder {
+	if cb, ok := b.childBuilder.(AdsDeviceNotificationRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDeviceNotificationRequestBuilder().(*_AdsDeviceNotificationRequestBuilder)
@@ -639,14 +474,8 @@ func (b *_AmsPacketBuilder) AsAdsDeviceNotificationRequest() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsDeviceNotificationResponse() interface {
-	AdsDeviceNotificationResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsDeviceNotificationResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsDeviceNotificationResponse() AdsDeviceNotificationResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsDeviceNotificationResponseBuilder); ok {
 		return cb
 	}
 	cb := NewAdsDeviceNotificationResponseBuilder().(*_AdsDeviceNotificationResponseBuilder)
@@ -655,14 +484,8 @@ func (b *_AmsPacketBuilder) AsAdsDeviceNotificationResponse() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsReadWriteRequest() interface {
-	AdsReadWriteRequestBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsReadWriteRequestBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsReadWriteRequest() AdsReadWriteRequestBuilder {
+	if cb, ok := b.childBuilder.(AdsReadWriteRequestBuilder); ok {
 		return cb
 	}
 	cb := NewAdsReadWriteRequestBuilder().(*_AdsReadWriteRequestBuilder)
@@ -671,14 +494,8 @@ func (b *_AmsPacketBuilder) AsAdsReadWriteRequest() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsAdsReadWriteResponse() interface {
-	AdsReadWriteResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsReadWriteResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsAdsReadWriteResponse() AdsReadWriteResponseBuilder {
+	if cb, ok := b.childBuilder.(AdsReadWriteResponseBuilder); ok {
 		return cb
 	}
 	cb := NewAdsReadWriteResponseBuilder().(*_AdsReadWriteResponseBuilder)
@@ -687,14 +504,8 @@ func (b *_AmsPacketBuilder) AsAdsReadWriteResponse() interface {
 	return cb
 }
 
-func (b *_AmsPacketBuilder) AsErrorResponse() interface {
-	ErrorResponseBuilder
-	Done() AmsPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ErrorResponseBuilder
-		Done() AmsPacketBuilder
-	}); ok {
+func (b *_AmsPacketBuilder) AsErrorResponse() ErrorResponseBuilder {
+	if cb, ok := b.childBuilder.(ErrorResponseBuilder); ok {
 		return cb
 	}
 	cb := NewErrorResponseBuilder().(*_ErrorResponseBuilder)
@@ -1251,9 +1062,9 @@ func (m *_AmsPacket) deepCopy() *_AmsPacket {
 	}
 	_AmsPacketCopy := &_AmsPacket{
 		nil, // will be set by child
-		m.TargetAmsNetId.DeepCopy().(AmsNetId),
+		utils.DeepCopy[AmsNetId](m.TargetAmsNetId),
 		m.TargetAmsPort,
-		m.SourceAmsNetId.DeepCopy().(AmsNetId),
+		utils.DeepCopy[AmsNetId](m.SourceAmsNetId),
 		m.SourceAmsPort,
 		m.ErrorCode,
 		m.InvokeId,

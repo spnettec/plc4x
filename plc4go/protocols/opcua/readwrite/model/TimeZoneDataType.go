@@ -87,6 +87,8 @@ type TimeZoneDataTypeBuilder interface {
 	WithOffset(int16) TimeZoneDataTypeBuilder
 	// WithDaylightSavingInOffset adds DaylightSavingInOffset (property field)
 	WithDaylightSavingInOffset(bool) TimeZoneDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the TimeZoneDataType or returns an error if something is wrong
 	Build() (TimeZoneDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (TimeZoneDataTypeBuilder) = (*_TimeZoneDataTypeBuilder)(nil)
 
 func (b *_TimeZoneDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._TimeZoneDataType
 }
 
 func (b *_TimeZoneDataTypeBuilder) WithMandatoryFields(offset int16, daylightSavingInOffset bool) TimeZoneDataTypeBuilder {
@@ -141,8 +144,10 @@ func (b *_TimeZoneDataTypeBuilder) MustBuild() TimeZoneDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TimeZoneDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -331,7 +336,7 @@ func (m *_TimeZoneDataType) deepCopy() *_TimeZoneDataType {
 		m.DaylightSavingInOffset,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_TimeZoneDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TimeZoneDataTypeCopy
 }
 

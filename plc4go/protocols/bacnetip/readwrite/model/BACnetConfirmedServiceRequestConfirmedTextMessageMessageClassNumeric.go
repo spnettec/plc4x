@@ -84,6 +84,8 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
 	WithNumericValue(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
 	// WithNumericValueBuilder adds NumericValue (property field) which is build by the builder
 	WithNumericValueBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
 	// Build builds the BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuild
 
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) setParent(contract BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract) {
 	b.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = contract
+	contract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = b._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
 }
 
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) WithMandatoryFields(numericValue BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBu
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder) Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder().(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 	}
 	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric{
 		m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).deepCopy(),
-		m.NumericValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.NumericValue),
 	}
-	m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = m
+	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericCopy.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = m
 	return _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericCopy
 }
 

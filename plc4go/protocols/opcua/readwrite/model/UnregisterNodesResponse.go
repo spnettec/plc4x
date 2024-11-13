@@ -84,6 +84,8 @@ type UnregisterNodesResponseBuilder interface {
 	WithResponseHeader(ResponseHeader) UnregisterNodesResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
 	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) UnregisterNodesResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the UnregisterNodesResponse or returns an error if something is wrong
 	Build() (UnregisterNodesResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (UnregisterNodesResponseBuilder) = (*_UnregisterNodesResponseBuilder)(nil)
 
 func (b *_UnregisterNodesResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._UnregisterNodesResponse
 }
 
 func (b *_UnregisterNodesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader) UnregisterNodesResponseBuilder {
@@ -152,8 +155,10 @@ func (b *_UnregisterNodesResponseBuilder) MustBuild() UnregisterNodesResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_UnregisterNodesResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_UnregisterNodesResponse) deepCopy() *_UnregisterNodesResponse {
 	}
 	_UnregisterNodesResponseCopy := &_UnregisterNodesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_UnregisterNodesResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UnregisterNodesResponseCopy
 }
 

@@ -87,35 +87,17 @@ type ErrorReportingSystemCategoryTypeBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ErrorReportingSystemCategoryTypeBuilder
 	// AsErrorReportingSystemCategoryTypeInputUnits converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
-	AsErrorReportingSystemCategoryTypeInputUnits() interface {
-		ErrorReportingSystemCategoryTypeInputUnitsBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}
+	AsErrorReportingSystemCategoryTypeInputUnits() ErrorReportingSystemCategoryTypeInputUnitsBuilder
 	// AsErrorReportingSystemCategoryTypeSupportUnits converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
-	AsErrorReportingSystemCategoryTypeSupportUnits() interface {
-		ErrorReportingSystemCategoryTypeSupportUnitsBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}
+	AsErrorReportingSystemCategoryTypeSupportUnits() ErrorReportingSystemCategoryTypeSupportUnitsBuilder
 	// AsErrorReportingSystemCategoryTypeBuildingManagementSystems converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
-	AsErrorReportingSystemCategoryTypeBuildingManagementSystems() interface {
-		ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}
+	AsErrorReportingSystemCategoryTypeBuildingManagementSystems() ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
 	// AsErrorReportingSystemCategoryTypeOutputUnits converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
-	AsErrorReportingSystemCategoryTypeOutputUnits() interface {
-		ErrorReportingSystemCategoryTypeOutputUnitsBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}
+	AsErrorReportingSystemCategoryTypeOutputUnits() ErrorReportingSystemCategoryTypeOutputUnitsBuilder
 	// AsErrorReportingSystemCategoryTypeClimateControllers converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
-	AsErrorReportingSystemCategoryTypeClimateControllers() interface {
-		ErrorReportingSystemCategoryTypeClimateControllersBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}
+	AsErrorReportingSystemCategoryTypeClimateControllers() ErrorReportingSystemCategoryTypeClimateControllersBuilder
 	// AsErrorReportingSystemCategoryTypeReserved converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
-	AsErrorReportingSystemCategoryTypeReserved() interface {
-		ErrorReportingSystemCategoryTypeReservedBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}
+	AsErrorReportingSystemCategoryTypeReserved() ErrorReportingSystemCategoryTypeReservedBuilder
 	// Build builds the ErrorReportingSystemCategoryType or returns an error if something is wrong
 	PartialBuild() (ErrorReportingSystemCategoryTypeContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -166,14 +148,8 @@ func (b *_ErrorReportingSystemCategoryTypeBuilder) PartialMustBuild() ErrorRepor
 	return build
 }
 
-func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeInputUnits() interface {
-	ErrorReportingSystemCategoryTypeInputUnitsBuilder
-	Done() ErrorReportingSystemCategoryTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ErrorReportingSystemCategoryTypeInputUnitsBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}); ok {
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeInputUnits() ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	if cb, ok := b.childBuilder.(ErrorReportingSystemCategoryTypeInputUnitsBuilder); ok {
 		return cb
 	}
 	cb := NewErrorReportingSystemCategoryTypeInputUnitsBuilder().(*_ErrorReportingSystemCategoryTypeInputUnitsBuilder)
@@ -182,14 +158,8 @@ func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategor
 	return cb
 }
 
-func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeSupportUnits() interface {
-	ErrorReportingSystemCategoryTypeSupportUnitsBuilder
-	Done() ErrorReportingSystemCategoryTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ErrorReportingSystemCategoryTypeSupportUnitsBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}); ok {
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeSupportUnits() ErrorReportingSystemCategoryTypeSupportUnitsBuilder {
+	if cb, ok := b.childBuilder.(ErrorReportingSystemCategoryTypeSupportUnitsBuilder); ok {
 		return cb
 	}
 	cb := NewErrorReportingSystemCategoryTypeSupportUnitsBuilder().(*_ErrorReportingSystemCategoryTypeSupportUnitsBuilder)
@@ -198,14 +168,8 @@ func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategor
 	return cb
 }
 
-func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeBuildingManagementSystems() interface {
-	ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
-	Done() ErrorReportingSystemCategoryTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}); ok {
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeBuildingManagementSystems() ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder {
+	if cb, ok := b.childBuilder.(ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder); ok {
 		return cb
 	}
 	cb := NewErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder().(*_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder)
@@ -214,14 +178,8 @@ func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategor
 	return cb
 }
 
-func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeOutputUnits() interface {
-	ErrorReportingSystemCategoryTypeOutputUnitsBuilder
-	Done() ErrorReportingSystemCategoryTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ErrorReportingSystemCategoryTypeOutputUnitsBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}); ok {
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeOutputUnits() ErrorReportingSystemCategoryTypeOutputUnitsBuilder {
+	if cb, ok := b.childBuilder.(ErrorReportingSystemCategoryTypeOutputUnitsBuilder); ok {
 		return cb
 	}
 	cb := NewErrorReportingSystemCategoryTypeOutputUnitsBuilder().(*_ErrorReportingSystemCategoryTypeOutputUnitsBuilder)
@@ -230,14 +188,8 @@ func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategor
 	return cb
 }
 
-func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeClimateControllers() interface {
-	ErrorReportingSystemCategoryTypeClimateControllersBuilder
-	Done() ErrorReportingSystemCategoryTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ErrorReportingSystemCategoryTypeClimateControllersBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}); ok {
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeClimateControllers() ErrorReportingSystemCategoryTypeClimateControllersBuilder {
+	if cb, ok := b.childBuilder.(ErrorReportingSystemCategoryTypeClimateControllersBuilder); ok {
 		return cb
 	}
 	cb := NewErrorReportingSystemCategoryTypeClimateControllersBuilder().(*_ErrorReportingSystemCategoryTypeClimateControllersBuilder)
@@ -246,14 +198,8 @@ func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategor
 	return cb
 }
 
-func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeReserved() interface {
-	ErrorReportingSystemCategoryTypeReservedBuilder
-	Done() ErrorReportingSystemCategoryTypeBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ErrorReportingSystemCategoryTypeReservedBuilder
-		Done() ErrorReportingSystemCategoryTypeBuilder
-	}); ok {
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeReserved() ErrorReportingSystemCategoryTypeReservedBuilder {
+	if cb, ok := b.childBuilder.(ErrorReportingSystemCategoryTypeReservedBuilder); ok {
 		return cb
 	}
 	cb := NewErrorReportingSystemCategoryTypeReservedBuilder().(*_ErrorReportingSystemCategoryTypeReservedBuilder)

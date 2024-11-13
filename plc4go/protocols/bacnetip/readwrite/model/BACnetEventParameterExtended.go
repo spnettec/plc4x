@@ -128,6 +128,8 @@ type BACnetEventParameterExtendedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterExtendedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterExtendedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterBuilder
 	// Build builds the BACnetEventParameterExtended or returns an error if something is wrong
 	Build() (BACnetEventParameterExtended, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,6 +153,7 @@ var _ (BACnetEventParameterExtendedBuilder) = (*_BACnetEventParameterExtendedBui
 
 func (b *_BACnetEventParameterExtendedBuilder) setParent(contract BACnetEventParameterContract) {
 	b.BACnetEventParameterContract = contract
+	contract.(*_BACnetEventParameter)._SubType = b._BACnetEventParameterExtended
 }
 
 func (b *_BACnetEventParameterExtendedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetEventParameterExtendedParameters, closingTag BACnetClosingTag) BACnetEventParameterExtendedBuilder {
@@ -292,8 +295,10 @@ func (b *_BACnetEventParameterExtendedBuilder) MustBuild() BACnetEventParameterE
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterExtendedBuilder) Done() BACnetEventParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -512,13 +517,13 @@ func (m *_BACnetEventParameterExtended) deepCopy() *_BACnetEventParameterExtende
 	}
 	_BACnetEventParameterExtendedCopy := &_BACnetEventParameterExtended{
 		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
-		m.ExtendedEventType.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Parameters.DeepCopy().(BACnetEventParameterExtendedParameters),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetVendorIdTagged](m.VendorId),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ExtendedEventType),
+		utils.DeepCopy[BACnetEventParameterExtendedParameters](m.Parameters),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	_BACnetEventParameterExtendedCopy.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
 	return _BACnetEventParameterExtendedCopy
 }
 

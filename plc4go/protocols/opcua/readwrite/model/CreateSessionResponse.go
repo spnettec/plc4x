@@ -163,6 +163,8 @@ type CreateSessionResponseBuilder interface {
 	WithServerSignatureBuilder(func(SignatureDataBuilder) SignatureDataBuilder) CreateSessionResponseBuilder
 	// WithMaxRequestMessageSize adds MaxRequestMessageSize (property field)
 	WithMaxRequestMessageSize(uint32) CreateSessionResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CreateSessionResponse or returns an error if something is wrong
 	Build() (CreateSessionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -186,6 +188,7 @@ var _ (CreateSessionResponseBuilder) = (*_CreateSessionResponseBuilder)(nil)
 
 func (b *_CreateSessionResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CreateSessionResponse
 }
 
 func (b *_CreateSessionResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, sessionId NodeId, authenticationToken NodeId, revisedSessionTimeout float64, serverNonce PascalByteString, serverCertificate PascalByteString, serverEndpoints []EndpointDescription, serverSoftwareCertificates []SignedSoftwareCertificate, serverSignature SignatureData, maxRequestMessageSize uint32) CreateSessionResponseBuilder {
@@ -371,8 +374,10 @@ func (b *_CreateSessionResponseBuilder) MustBuild() CreateSessionResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CreateSessionResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -720,18 +725,18 @@ func (m *_CreateSessionResponse) deepCopy() *_CreateSessionResponse {
 	}
 	_CreateSessionResponseCopy := &_CreateSessionResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
-		m.SessionId.DeepCopy().(NodeId),
-		m.AuthenticationToken.DeepCopy().(NodeId),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
+		utils.DeepCopy[NodeId](m.SessionId),
+		utils.DeepCopy[NodeId](m.AuthenticationToken),
 		m.RevisedSessionTimeout,
-		m.ServerNonce.DeepCopy().(PascalByteString),
-		m.ServerCertificate.DeepCopy().(PascalByteString),
+		utils.DeepCopy[PascalByteString](m.ServerNonce),
+		utils.DeepCopy[PascalByteString](m.ServerCertificate),
 		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.ServerEndpoints),
 		utils.DeepCopySlice[SignedSoftwareCertificate, SignedSoftwareCertificate](m.ServerSoftwareCertificates),
-		m.ServerSignature.DeepCopy().(SignatureData),
+		utils.DeepCopy[SignatureData](m.ServerSignature),
 		m.MaxRequestMessageSize,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CreateSessionResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CreateSessionResponseCopy
 }
 

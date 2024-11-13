@@ -101,6 +101,8 @@ type RegisterServer2RequestBuilder interface {
 	WithServerBuilder(func(RegisteredServerBuilder) RegisteredServerBuilder) RegisterServer2RequestBuilder
 	// WithDiscoveryConfiguration adds DiscoveryConfiguration (property field)
 	WithDiscoveryConfiguration(...ExtensionObject) RegisterServer2RequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RegisterServer2Request or returns an error if something is wrong
 	Build() (RegisterServer2Request, error)
 	// MustBuild does the same as Build but panics on error
@@ -124,6 +126,7 @@ var _ (RegisterServer2RequestBuilder) = (*_RegisterServer2RequestBuilder)(nil)
 
 func (b *_RegisterServer2RequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RegisterServer2Request
 }
 
 func (b *_RegisterServer2RequestBuilder) WithMandatoryFields(requestHeader RequestHeader, server RegisteredServer, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder {
@@ -198,8 +201,10 @@ func (b *_RegisterServer2RequestBuilder) MustBuild() RegisterServer2Request {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RegisterServer2RequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -408,11 +413,11 @@ func (m *_RegisterServer2Request) deepCopy() *_RegisterServer2Request {
 	}
 	_RegisterServer2RequestCopy := &_RegisterServer2Request{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
-		m.Server.DeepCopy().(RegisteredServer),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
+		utils.DeepCopy[RegisteredServer](m.Server),
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DiscoveryConfiguration),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RegisterServer2RequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RegisterServer2RequestCopy
 }
 

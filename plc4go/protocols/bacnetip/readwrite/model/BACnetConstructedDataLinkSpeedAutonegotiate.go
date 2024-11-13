@@ -86,6 +86,8 @@ type BACnetConstructedDataLinkSpeedAutonegotiateBuilder interface {
 	WithLinkSpeedAutonegotiate(BACnetApplicationTagBoolean) BACnetConstructedDataLinkSpeedAutonegotiateBuilder
 	// WithLinkSpeedAutonegotiateBuilder adds LinkSpeedAutonegotiate (property field) which is build by the builder
 	WithLinkSpeedAutonegotiateBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLinkSpeedAutonegotiate or returns an error if something is wrong
 	Build() (BACnetConstructedDataLinkSpeedAutonegotiate, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLinkSpeedAutonegotiateBuilder) = (*_BACnetConstructe
 
 func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLinkSpeedAutonegotiate
 }
 
 func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) WithMandatoryFields(linkSpeedAutonegotiate BACnetApplicationTagBoolean) BACnetConstructedDataLinkSpeedAutonegotiateBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) deepCopy() *_BACnetConstr
 	}
 	_BACnetConstructedDataLinkSpeedAutonegotiateCopy := &_BACnetConstructedDataLinkSpeedAutonegotiate{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LinkSpeedAutonegotiate.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.LinkSpeedAutonegotiate),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLinkSpeedAutonegotiateCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLinkSpeedAutonegotiateCopy
 }
 

@@ -75,6 +75,8 @@ type ApduDataGroupValueReadBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataGroupValueReadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataGroupValueRead or returns an error if something is wrong
 	Build() (ApduDataGroupValueRead, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,6 +100,7 @@ var _ (ApduDataGroupValueReadBuilder) = (*_ApduDataGroupValueReadBuilder)(nil)
 
 func (b *_ApduDataGroupValueReadBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataGroupValueRead
 }
 
 func (b *_ApduDataGroupValueReadBuilder) WithMandatoryFields() ApduDataGroupValueReadBuilder {
@@ -119,8 +122,10 @@ func (b *_ApduDataGroupValueReadBuilder) MustBuild() ApduDataGroupValueRead {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataGroupValueReadBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -263,7 +268,7 @@ func (m *_ApduDataGroupValueRead) deepCopy() *_ApduDataGroupValueRead {
 		m.ApduDataContract.(*_ApduData).deepCopy(),
 		m.reservedField0,
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataGroupValueReadCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataGroupValueReadCopy
 }
 

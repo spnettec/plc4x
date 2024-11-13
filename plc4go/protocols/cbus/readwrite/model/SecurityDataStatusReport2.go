@@ -79,6 +79,8 @@ type SecurityDataStatusReport2Builder interface {
 	WithMandatoryFields(zoneStatus []ZoneStatus) SecurityDataStatusReport2Builder
 	// WithZoneStatus adds ZoneStatus (property field)
 	WithZoneStatus(...ZoneStatus) SecurityDataStatusReport2Builder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataStatusReport2 or returns an error if something is wrong
 	Build() (SecurityDataStatusReport2, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (SecurityDataStatusReport2Builder) = (*_SecurityDataStatusReport2Builder)(
 
 func (b *_SecurityDataStatusReport2Builder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataStatusReport2
 }
 
 func (b *_SecurityDataStatusReport2Builder) WithMandatoryFields(zoneStatus []ZoneStatus) SecurityDataStatusReport2Builder {
@@ -128,8 +131,10 @@ func (b *_SecurityDataStatusReport2Builder) MustBuild() SecurityDataStatusReport
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataStatusReport2Builder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -289,7 +294,7 @@ func (m *_SecurityDataStatusReport2) deepCopy() *_SecurityDataStatusReport2 {
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		utils.DeepCopySlice[ZoneStatus, ZoneStatus](m.ZoneStatus),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataStatusReport2Copy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataStatusReport2Copy
 }
 

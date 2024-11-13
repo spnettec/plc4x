@@ -375,9 +375,9 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) deepC
 		return nil
 	}
 	_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationCopy := &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry](m.ListOfCovSubscriptionSpecificationEntry),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationCopy

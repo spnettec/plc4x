@@ -672,15 +672,15 @@ func (m *_BACnetActionCommand) deepCopy() *_BACnetActionCommand {
 		return nil
 	}
 	_BACnetActionCommandCopy := &_BACnetActionCommand{
-		m.DeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.PropertyValue.DeepCopy().(BACnetConstructedData),
-		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.PostDelay.DeepCopy().(BACnetContextTagBoolean),
-		m.QuitOnFailure.DeepCopy().(BACnetContextTagBoolean),
-		m.WriteSuccessful.DeepCopy().(BACnetContextTagBoolean),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.DeviceIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ArrayIndex),
+		utils.DeepCopy[BACnetConstructedData](m.PropertyValue),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Priority),
+		utils.DeepCopy[BACnetContextTagBoolean](m.PostDelay),
+		utils.DeepCopy[BACnetContextTagBoolean](m.QuitOnFailure),
+		utils.DeepCopy[BACnetContextTagBoolean](m.WriteSuccessful),
 	}
 	return _BACnetActionCommandCopy
 }

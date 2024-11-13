@@ -86,6 +86,8 @@ type BACnetConstructedDataPriorityArrayBuilder interface {
 	WithPriorityArray(BACnetPriorityArray) BACnetConstructedDataPriorityArrayBuilder
 	// WithPriorityArrayBuilder adds PriorityArray (property field) which is build by the builder
 	WithPriorityArrayBuilder(func(BACnetPriorityArrayBuilder) BACnetPriorityArrayBuilder) BACnetConstructedDataPriorityArrayBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPriorityArray or returns an error if something is wrong
 	Build() (BACnetConstructedDataPriorityArray, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPriorityArrayBuilder) = (*_BACnetConstructedDataPrio
 
 func (b *_BACnetConstructedDataPriorityArrayBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPriorityArray
 }
 
 func (b *_BACnetConstructedDataPriorityArrayBuilder) WithMandatoryFields(priorityArray BACnetPriorityArray) BACnetConstructedDataPriorityArrayBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPriorityArrayBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPriorityArrayBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataPriorityArray) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataPriorityArrayCopy := &_BACnetConstructedDataPriorityArray{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PriorityArray.DeepCopy().(BACnetPriorityArray),
+		utils.DeepCopy[BACnetPriorityArray](m.PriorityArray),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPriorityArrayCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPriorityArrayCopy
 }
 

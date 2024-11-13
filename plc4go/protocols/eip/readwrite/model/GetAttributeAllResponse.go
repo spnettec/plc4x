@@ -95,6 +95,8 @@ type GetAttributeAllResponseBuilder interface {
 	WithOptionalAttributes(CIPAttributes) GetAttributeAllResponseBuilder
 	// WithOptionalAttributesBuilder adds Attributes (property field) which is build by the builder
 	WithOptionalAttributesBuilder(func(CIPAttributesBuilder) CIPAttributesBuilder) GetAttributeAllResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the GetAttributeAllResponse or returns an error if something is wrong
 	Build() (GetAttributeAllResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (GetAttributeAllResponseBuilder) = (*_GetAttributeAllResponseBuilder)(nil)
 
 func (b *_GetAttributeAllResponseBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._GetAttributeAllResponse
 }
 
 func (b *_GetAttributeAllResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) GetAttributeAllResponseBuilder {
@@ -167,8 +170,10 @@ func (b *_GetAttributeAllResponseBuilder) MustBuild() GetAttributeAllResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_GetAttributeAllResponseBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -386,10 +391,10 @@ func (m *_GetAttributeAllResponse) deepCopy() *_GetAttributeAllResponse {
 		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.Status,
 		m.ExtStatus,
-		m.Attributes.DeepCopy().(CIPAttributes),
+		utils.DeepCopy[CIPAttributes](m.Attributes),
 		m.reservedField0,
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_GetAttributeAllResponseCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _GetAttributeAllResponseCopy
 }
 

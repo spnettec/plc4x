@@ -90,6 +90,8 @@ type RolePermissionTypeBuilder interface {
 	WithRoleIdBuilder(func(NodeIdBuilder) NodeIdBuilder) RolePermissionTypeBuilder
 	// WithPermissions adds Permissions (property field)
 	WithPermissions(PermissionType) RolePermissionTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RolePermissionType or returns an error if something is wrong
 	Build() (RolePermissionType, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (RolePermissionTypeBuilder) = (*_RolePermissionTypeBuilder)(nil)
 
 func (b *_RolePermissionTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RolePermissionType
 }
 
 func (b *_RolePermissionTypeBuilder) WithMandatoryFields(roleId NodeId, permissions PermissionType) RolePermissionTypeBuilder {
@@ -163,8 +166,10 @@ func (b *_RolePermissionTypeBuilder) MustBuild() RolePermissionType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RolePermissionTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -336,10 +341,10 @@ func (m *_RolePermissionType) deepCopy() *_RolePermissionType {
 	}
 	_RolePermissionTypeCopy := &_RolePermissionType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RoleId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.RoleId),
 		m.Permissions,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RolePermissionTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RolePermissionTypeCopy
 }
 

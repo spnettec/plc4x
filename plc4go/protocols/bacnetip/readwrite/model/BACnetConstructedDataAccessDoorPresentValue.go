@@ -86,6 +86,8 @@ type BACnetConstructedDataAccessDoorPresentValueBuilder interface {
 	WithPresentValue(BACnetDoorValueTagged) BACnetConstructedDataAccessDoorPresentValueBuilder
 	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
 	WithPresentValueBuilder(func(BACnetDoorValueTaggedBuilder) BACnetDoorValueTaggedBuilder) BACnetConstructedDataAccessDoorPresentValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAccessDoorPresentValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataAccessDoorPresentValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAccessDoorPresentValueBuilder) = (*_BACnetConstructe
 
 func (b *_BACnetConstructedDataAccessDoorPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAccessDoorPresentValue
 }
 
 func (b *_BACnetConstructedDataAccessDoorPresentValueBuilder) WithMandatoryFields(presentValue BACnetDoorValueTagged) BACnetConstructedDataAccessDoorPresentValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAccessDoorPresentValueBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAccessDoorPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataAccessDoorPresentValue) deepCopy() *_BACnetConstr
 	}
 	_BACnetConstructedDataAccessDoorPresentValueCopy := &_BACnetConstructedDataAccessDoorPresentValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PresentValue.DeepCopy().(BACnetDoorValueTagged),
+		utils.DeepCopy[BACnetDoorValueTagged](m.PresentValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAccessDoorPresentValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAccessDoorPresentValueCopy
 }
 

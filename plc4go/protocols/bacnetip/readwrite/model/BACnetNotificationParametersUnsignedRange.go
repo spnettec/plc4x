@@ -128,6 +128,8 @@ type BACnetNotificationParametersUnsignedRangeBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersUnsignedRangeBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersUnsignedRangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersBuilder
 	// Build builds the BACnetNotificationParametersUnsignedRange or returns an error if something is wrong
 	Build() (BACnetNotificationParametersUnsignedRange, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,6 +153,7 @@ var _ (BACnetNotificationParametersUnsignedRangeBuilder) = (*_BACnetNotification
 
 func (b *_BACnetNotificationParametersUnsignedRangeBuilder) setParent(contract BACnetNotificationParametersContract) {
 	b.BACnetNotificationParametersContract = contract
+	contract.(*_BACnetNotificationParameters)._SubType = b._BACnetNotificationParametersUnsignedRange
 }
 
 func (b *_BACnetNotificationParametersUnsignedRangeBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, sequenceNumber BACnetContextTagUnsignedInteger, statusFlags BACnetStatusFlagsTagged, exceededLimit BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag) BACnetNotificationParametersUnsignedRangeBuilder {
@@ -292,8 +295,10 @@ func (b *_BACnetNotificationParametersUnsignedRangeBuilder) MustBuild() BACnetNo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersUnsignedRangeBuilder) Done() BACnetNotificationParametersBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -512,13 +517,13 @@ func (m *_BACnetNotificationParametersUnsignedRange) deepCopy() *_BACnetNotifica
 	}
 	_BACnetNotificationParametersUnsignedRangeCopy := &_BACnetNotificationParametersUnsignedRange{
 		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.SequenceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
-		m.ExceededLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.SequenceNumber),
+		utils.DeepCopy[BACnetStatusFlagsTagged](m.StatusFlags),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ExceededLimit),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	_BACnetNotificationParametersUnsignedRangeCopy.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
 	return _BACnetNotificationParametersUnsignedRangeCopy
 }
 

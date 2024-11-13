@@ -330,8 +330,8 @@ func (m *_BACnetAuthenticationPolicyListEntry) deepCopy() *_BACnetAuthentication
 		return nil
 	}
 	_BACnetAuthenticationPolicyListEntryCopy := &_BACnetAuthenticationPolicyListEntry{
-		m.CredentialDataInput.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
-		m.Index.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetDeviceObjectReferenceEnclosed](m.CredentialDataInput),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Index),
 	}
 	return _BACnetAuthenticationPolicyListEntryCopy
 }

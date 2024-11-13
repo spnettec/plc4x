@@ -90,6 +90,8 @@ type TransferResultBuilder interface {
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) TransferResultBuilder
 	// WithAvailableSequenceNumbers adds AvailableSequenceNumbers (property field)
 	WithAvailableSequenceNumbers(...uint32) TransferResultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the TransferResult or returns an error if something is wrong
 	Build() (TransferResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (TransferResultBuilder) = (*_TransferResultBuilder)(nil)
 
 func (b *_TransferResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._TransferResult
 }
 
 func (b *_TransferResultBuilder) WithMandatoryFields(statusCode StatusCode, availableSequenceNumbers []uint32) TransferResultBuilder {
@@ -163,8 +166,10 @@ func (b *_TransferResultBuilder) MustBuild() TransferResult {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TransferResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -351,10 +356,10 @@ func (m *_TransferResult) deepCopy() *_TransferResult {
 	}
 	_TransferResultCopy := &_TransferResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.StatusCode.DeepCopy().(StatusCode),
+		utils.DeepCopy[StatusCode](m.StatusCode),
 		utils.DeepCopySlice[uint32, uint32](m.AvailableSequenceNumbers),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_TransferResultCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TransferResultCopy
 }
 

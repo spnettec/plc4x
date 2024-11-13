@@ -79,6 +79,8 @@ type BACnetConstructedDataMultiStateInputFaultValuesBuilder interface {
 	WithMandatoryFields(faultValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder
 	// WithFaultValues adds FaultValues (property field)
 	WithFaultValues(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMultiStateInputFaultValues or returns an error if something is wrong
 	Build() (BACnetConstructedDataMultiStateInputFaultValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (BACnetConstructedDataMultiStateInputFaultValuesBuilder) = (*_BACnetConstr
 
 func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMultiStateInputFaultValues
 }
 
 func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder {
@@ -128,8 +131,10 @@ func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) MustBuild() BA
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -295,7 +300,7 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) deepCopy() *_BACnetCo
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.FaultValues),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMultiStateInputFaultValuesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMultiStateInputFaultValuesCopy
 }
 

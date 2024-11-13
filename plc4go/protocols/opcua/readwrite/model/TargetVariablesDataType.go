@@ -79,6 +79,8 @@ type TargetVariablesDataTypeBuilder interface {
 	WithMandatoryFields(targetVariables []FieldTargetDataType) TargetVariablesDataTypeBuilder
 	// WithTargetVariables adds TargetVariables (property field)
 	WithTargetVariables(...FieldTargetDataType) TargetVariablesDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the TargetVariablesDataType or returns an error if something is wrong
 	Build() (TargetVariablesDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (TargetVariablesDataTypeBuilder) = (*_TargetVariablesDataTypeBuilder)(nil)
 
 func (b *_TargetVariablesDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._TargetVariablesDataType
 }
 
 func (b *_TargetVariablesDataTypeBuilder) WithMandatoryFields(targetVariables []FieldTargetDataType) TargetVariablesDataTypeBuilder {
@@ -128,8 +131,10 @@ func (b *_TargetVariablesDataTypeBuilder) MustBuild() TargetVariablesDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TargetVariablesDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -306,7 +311,7 @@ func (m *_TargetVariablesDataType) deepCopy() *_TargetVariablesDataType {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		utils.DeepCopySlice[FieldTargetDataType, FieldTargetDataType](m.TargetVariables),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_TargetVariablesDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _TargetVariablesDataTypeCopy
 }
 

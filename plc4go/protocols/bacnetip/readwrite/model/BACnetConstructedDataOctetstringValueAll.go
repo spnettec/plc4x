@@ -71,6 +71,8 @@ type BACnetConstructedDataOctetstringValueAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataOctetstringValueAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataOctetstringValueAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataOctetstringValueAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataOctetstringValueAllBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataOctetstringValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataOctetstringValueAll
 }
 
 func (b *_BACnetConstructedDataOctetstringValueAllBuilder) WithMandatoryFields() BACnetConstructedDataOctetstringValueAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataOctetstringValueAllBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataOctetstringValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataOctetstringValueAll) deepCopy() *_BACnetConstruct
 	_BACnetConstructedDataOctetstringValueAllCopy := &_BACnetConstructedDataOctetstringValueAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataOctetstringValueAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataOctetstringValueAllCopy
 }
 

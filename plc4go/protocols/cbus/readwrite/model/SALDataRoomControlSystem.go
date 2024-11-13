@@ -71,6 +71,8 @@ type SALDataRoomControlSystemBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SALDataRoomControlSystemBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataRoomControlSystem or returns an error if something is wrong
 	Build() (SALDataRoomControlSystem, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SALDataRoomControlSystemBuilder) = (*_SALDataRoomControlSystemBuilder)(ni
 
 func (b *_SALDataRoomControlSystemBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataRoomControlSystem
 }
 
 func (b *_SALDataRoomControlSystemBuilder) WithMandatoryFields() SALDataRoomControlSystemBuilder {
@@ -115,8 +118,10 @@ func (b *_SALDataRoomControlSystemBuilder) MustBuild() SALDataRoomControlSystem 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataRoomControlSystemBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -250,7 +255,7 @@ func (m *_SALDataRoomControlSystem) deepCopy() *_SALDataRoomControlSystem {
 	_SALDataRoomControlSystemCopy := &_SALDataRoomControlSystem{
 		m.SALDataContract.(*_SALData).deepCopy(),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataRoomControlSystemCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataRoomControlSystemCopy
 }
 

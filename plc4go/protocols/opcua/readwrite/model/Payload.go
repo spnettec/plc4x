@@ -104,15 +104,9 @@ type PayloadBuilder interface {
 	// WithSequenceHeaderBuilder adds SequenceHeader (property field) which is build by the builder
 	WithSequenceHeaderBuilder(func(SequenceHeaderBuilder) SequenceHeaderBuilder) PayloadBuilder
 	// AsExtensiblePayload converts this build to a subType of Payload. It is always possible to return to current builder using Done()
-	AsExtensiblePayload() interface {
-		ExtensiblePayloadBuilder
-		Done() PayloadBuilder
-	}
+	AsExtensiblePayload() ExtensiblePayloadBuilder
 	// AsBinaryPayload converts this build to a subType of Payload. It is always possible to return to current builder using Done()
-	AsBinaryPayload() interface {
-		BinaryPayloadBuilder
-		Done() PayloadBuilder
-	}
+	AsBinaryPayload() BinaryPayloadBuilder
 	// Build builds the Payload or returns an error if something is wrong
 	PartialBuild() (PayloadContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -187,14 +181,8 @@ func (b *_PayloadBuilder) PartialMustBuild() PayloadContract {
 	return build
 }
 
-func (b *_PayloadBuilder) AsExtensiblePayload() interface {
-	ExtensiblePayloadBuilder
-	Done() PayloadBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ExtensiblePayloadBuilder
-		Done() PayloadBuilder
-	}); ok {
+func (b *_PayloadBuilder) AsExtensiblePayload() ExtensiblePayloadBuilder {
+	if cb, ok := b.childBuilder.(ExtensiblePayloadBuilder); ok {
 		return cb
 	}
 	cb := NewExtensiblePayloadBuilder().(*_ExtensiblePayloadBuilder)
@@ -203,14 +191,8 @@ func (b *_PayloadBuilder) AsExtensiblePayload() interface {
 	return cb
 }
 
-func (b *_PayloadBuilder) AsBinaryPayload() interface {
-	BinaryPayloadBuilder
-	Done() PayloadBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BinaryPayloadBuilder
-		Done() PayloadBuilder
-	}); ok {
+func (b *_PayloadBuilder) AsBinaryPayload() BinaryPayloadBuilder {
+	if cb, ok := b.childBuilder.(BinaryPayloadBuilder); ok {
 		return cb
 	}
 	cb := NewBinaryPayloadBuilder().(*_BinaryPayloadBuilder)
@@ -423,7 +405,7 @@ func (m *_Payload) deepCopy() *_Payload {
 	}
 	_PayloadCopy := &_Payload{
 		nil, // will be set by child
-		m.SequenceHeader.DeepCopy().(SequenceHeader),
+		utils.DeepCopy[SequenceHeader](m.SequenceHeader),
 		m.ByteCount,
 	}
 	return _PayloadCopy

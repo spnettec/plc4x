@@ -333,7 +333,7 @@ func (m *_BACnetFileAccessMethodTagged) deepCopy() *_BACnetFileAccessMethodTagge
 		return nil
 	}
 	_BACnetFileAccessMethodTaggedCopy := &_BACnetFileAccessMethodTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

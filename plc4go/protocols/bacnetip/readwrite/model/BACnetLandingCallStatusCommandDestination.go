@@ -84,6 +84,8 @@ type BACnetLandingCallStatusCommandDestinationBuilder interface {
 	WithDestination(BACnetContextTagUnsignedInteger) BACnetLandingCallStatusCommandDestinationBuilder
 	// WithDestinationBuilder adds Destination (property field) which is build by the builder
 	WithDestinationBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLandingCallStatusCommandDestinationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLandingCallStatusCommandBuilder
 	// Build builds the BACnetLandingCallStatusCommandDestination or returns an error if something is wrong
 	Build() (BACnetLandingCallStatusCommandDestination, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLandingCallStatusCommandDestinationBuilder) = (*_BACnetLandingCallS
 
 func (b *_BACnetLandingCallStatusCommandDestinationBuilder) setParent(contract BACnetLandingCallStatusCommandContract) {
 	b.BACnetLandingCallStatusCommandContract = contract
+	contract.(*_BACnetLandingCallStatusCommand)._SubType = b._BACnetLandingCallStatusCommandDestination
 }
 
 func (b *_BACnetLandingCallStatusCommandDestinationBuilder) WithMandatoryFields(destination BACnetContextTagUnsignedInteger) BACnetLandingCallStatusCommandDestinationBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLandingCallStatusCommandDestinationBuilder) MustBuild() BACnetLa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLandingCallStatusCommandDestinationBuilder) Done() BACnetLandingCallStatusCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLandingCallStatusCommandBuilder().(*_BACnetLandingCallStatusCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLandingCallStatusCommandDestination) deepCopy() *_BACnetLandingC
 	}
 	_BACnetLandingCallStatusCommandDestinationCopy := &_BACnetLandingCallStatusCommandDestination{
 		m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).deepCopy(),
-		m.Destination.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Destination),
 	}
-	m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = m
+	_BACnetLandingCallStatusCommandDestinationCopy.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = m
 	return _BACnetLandingCallStatusCommandDestinationCopy
 }
 

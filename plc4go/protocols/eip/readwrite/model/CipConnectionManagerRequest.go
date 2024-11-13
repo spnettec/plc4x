@@ -208,6 +208,8 @@ type CipConnectionManagerRequestBuilder interface {
 	WithConnectionPathSize(uint8) CipConnectionManagerRequestBuilder
 	// WithConnectionPaths adds ConnectionPaths (property field)
 	WithConnectionPaths(...PathSegment) CipConnectionManagerRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the CipConnectionManagerRequest or returns an error if something is wrong
 	Build() (CipConnectionManagerRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -231,6 +233,7 @@ var _ (CipConnectionManagerRequestBuilder) = (*_CipConnectionManagerRequestBuild
 
 func (b *_CipConnectionManagerRequestBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._CipConnectionManagerRequest
 }
 
 func (b *_CipConnectionManagerRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment) CipConnectionManagerRequestBuilder {
@@ -437,8 +440,10 @@ func (b *_CipConnectionManagerRequestBuilder) MustBuild() CipConnectionManagerRe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipConnectionManagerRequestBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -920,8 +925,8 @@ func (m *_CipConnectionManagerRequest) deepCopy() *_CipConnectionManagerRequest 
 	}
 	_CipConnectionManagerRequestCopy := &_CipConnectionManagerRequest{
 		m.CipServiceContract.(*_CipService).deepCopy(),
-		m.ClassSegment.DeepCopy().(PathSegment),
-		m.InstanceSegment.DeepCopy().(PathSegment),
+		utils.DeepCopy[PathSegment](m.ClassSegment),
+		utils.DeepCopy[PathSegment](m.InstanceSegment),
 		m.Priority,
 		m.TickTime,
 		m.TimeoutTicks,
@@ -932,15 +937,15 @@ func (m *_CipConnectionManagerRequest) deepCopy() *_CipConnectionManagerRequest 
 		m.OriginatorSerialNumber,
 		m.TimeoutMultiplier,
 		m.OtRpi,
-		m.OtConnectionParameters.DeepCopy().(NetworkConnectionParameters),
+		utils.DeepCopy[NetworkConnectionParameters](m.OtConnectionParameters),
 		m.ToRpi,
-		m.ToConnectionParameters.DeepCopy().(NetworkConnectionParameters),
-		m.TransportType.DeepCopy().(TransportType),
+		utils.DeepCopy[NetworkConnectionParameters](m.ToConnectionParameters),
+		utils.DeepCopy[TransportType](m.TransportType),
 		m.ConnectionPathSize,
 		utils.DeepCopySlice[PathSegment, PathSegment](m.ConnectionPaths),
 		m.reservedField0,
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_CipConnectionManagerRequestCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _CipConnectionManagerRequestCopy
 }
 

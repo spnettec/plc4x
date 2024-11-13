@@ -129,6 +129,8 @@ type EndpointConfigurationBuilder interface {
 	WithChannelLifetime(int32) EndpointConfigurationBuilder
 	// WithSecurityTokenLifetime adds SecurityTokenLifetime (property field)
 	WithSecurityTokenLifetime(int32) EndpointConfigurationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the EndpointConfiguration or returns an error if something is wrong
 	Build() (EndpointConfiguration, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,6 +154,7 @@ var _ (EndpointConfigurationBuilder) = (*_EndpointConfigurationBuilder)(nil)
 
 func (b *_EndpointConfigurationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._EndpointConfiguration
 }
 
 func (b *_EndpointConfigurationBuilder) WithMandatoryFields(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) EndpointConfigurationBuilder {
@@ -218,8 +221,10 @@ func (b *_EndpointConfigurationBuilder) MustBuild() EndpointConfiguration {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EndpointConfigurationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -534,7 +539,7 @@ func (m *_EndpointConfiguration) deepCopy() *_EndpointConfiguration {
 		m.SecurityTokenLifetime,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_EndpointConfigurationCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EndpointConfigurationCopy
 }
 

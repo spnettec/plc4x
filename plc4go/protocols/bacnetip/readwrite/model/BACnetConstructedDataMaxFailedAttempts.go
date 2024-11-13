@@ -86,6 +86,8 @@ type BACnetConstructedDataMaxFailedAttemptsBuilder interface {
 	WithMaxFailedAttempts(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxFailedAttemptsBuilder
 	// WithMaxFailedAttemptsBuilder adds MaxFailedAttempts (property field) which is build by the builder
 	WithMaxFailedAttemptsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxFailedAttemptsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMaxFailedAttempts or returns an error if something is wrong
 	Build() (BACnetConstructedDataMaxFailedAttempts, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMaxFailedAttemptsBuilder) = (*_BACnetConstructedData
 
 func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMaxFailedAttempts
 }
 
 func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) WithMandatoryFields(maxFailedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxFailedAttemptsBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) MustBuild() BACnetConst
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) deepCopy() *_BACnetConstructed
 	}
 	_BACnetConstructedDataMaxFailedAttemptsCopy := &_BACnetConstructedDataMaxFailedAttempts{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MaxFailedAttempts.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.MaxFailedAttempts),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMaxFailedAttemptsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMaxFailedAttemptsCopy
 }
 

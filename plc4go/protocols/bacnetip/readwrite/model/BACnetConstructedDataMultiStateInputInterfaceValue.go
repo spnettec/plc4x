@@ -86,6 +86,8 @@ type BACnetConstructedDataMultiStateInputInterfaceValueBuilder interface {
 	WithInterfaceValue(BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
 	// WithInterfaceValueBuilder adds InterfaceValue (property field) which is build by the builder
 	WithInterfaceValueBuilder(func(BACnetOptionalBinaryPVBuilder) BACnetOptionalBinaryPVBuilder) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMultiStateInputInterfaceValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataMultiStateInputInterfaceValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMultiStateInputInterfaceValueBuilder) = (*_BACnetCon
 
 func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMultiStateInputInterfaceValue
 }
 
 func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) MustBuild()
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) deepCopy() *_BACne
 	}
 	_BACnetConstructedDataMultiStateInputInterfaceValueCopy := &_BACnetConstructedDataMultiStateInputInterfaceValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.InterfaceValue.DeepCopy().(BACnetOptionalBinaryPV),
+		utils.DeepCopy[BACnetOptionalBinaryPV](m.InterfaceValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMultiStateInputInterfaceValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMultiStateInputInterfaceValueCopy
 }
 

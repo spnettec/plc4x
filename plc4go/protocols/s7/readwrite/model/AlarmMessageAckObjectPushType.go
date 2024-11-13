@@ -471,8 +471,8 @@ func (m *_AlarmMessageAckObjectPushType) deepCopy() *_AlarmMessageAckObjectPushT
 		m.SyntaxId,
 		m.NumberOfValues,
 		m.EventId,
-		m.AckStateGoing.DeepCopy().(State),
-		m.AckStateComing.DeepCopy().(State),
+		utils.DeepCopy[State](m.AckStateGoing),
+		utils.DeepCopy[State](m.AckStateComing),
 	}
 	return _AlarmMessageAckObjectPushTypeCopy
 }

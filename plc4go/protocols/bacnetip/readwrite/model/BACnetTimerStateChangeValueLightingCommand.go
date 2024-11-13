@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueLightingCommandBuilder interface {
 	WithLigthingCommandValue(BACnetLightingCommandEnclosed) BACnetTimerStateChangeValueLightingCommandBuilder
 	// WithLigthingCommandValueBuilder adds LigthingCommandValue (property field) which is build by the builder
 	WithLigthingCommandValueBuilder(func(BACnetLightingCommandEnclosedBuilder) BACnetLightingCommandEnclosedBuilder) BACnetTimerStateChangeValueLightingCommandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueLightingCommand or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueLightingCommand, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueLightingCommandBuilder) = (*_BACnetTimerStateC
 
 func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueLightingCommand
 }
 
 func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) WithMandatoryFields(ligthingCommandValue BACnetLightingCommandEnclosed) BACnetTimerStateChangeValueLightingCommandBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) MustBuild() BACnetT
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) deepCopy() *_BACnetTimerSt
 	}
 	_BACnetTimerStateChangeValueLightingCommandCopy := &_BACnetTimerStateChangeValueLightingCommand{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.LigthingCommandValue.DeepCopy().(BACnetLightingCommandEnclosed),
+		utils.DeepCopy[BACnetLightingCommandEnclosed](m.LigthingCommandValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueLightingCommandCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueLightingCommandCopy
 }
 

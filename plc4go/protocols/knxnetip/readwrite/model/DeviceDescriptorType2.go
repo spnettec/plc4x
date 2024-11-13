@@ -600,10 +600,10 @@ func (m *_DeviceDescriptorType2) deepCopy() *_DeviceDescriptorType2 {
 		m.ReadSupported,
 		m.WriteSupported,
 		m.LogicalTagBase,
-		m.ChannelInfo1.DeepCopy().(ChannelInformation),
-		m.ChannelInfo2.DeepCopy().(ChannelInformation),
-		m.ChannelInfo3.DeepCopy().(ChannelInformation),
-		m.ChannelInfo4.DeepCopy().(ChannelInformation),
+		utils.DeepCopy[ChannelInformation](m.ChannelInfo1),
+		utils.DeepCopy[ChannelInformation](m.ChannelInfo2),
+		utils.DeepCopy[ChannelInformation](m.ChannelInfo3),
+		utils.DeepCopy[ChannelInformation](m.ChannelInfo4),
 	}
 	return _DeviceDescriptorType2Copy
 }

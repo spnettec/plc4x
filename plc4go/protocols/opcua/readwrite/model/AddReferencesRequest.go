@@ -90,6 +90,8 @@ type AddReferencesRequestBuilder interface {
 	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) AddReferencesRequestBuilder
 	// WithReferencesToAdd adds ReferencesToAdd (property field)
 	WithReferencesToAdd(...AddReferencesItem) AddReferencesRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the AddReferencesRequest or returns an error if something is wrong
 	Build() (AddReferencesRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (AddReferencesRequestBuilder) = (*_AddReferencesRequestBuilder)(nil)
 
 func (b *_AddReferencesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._AddReferencesRequest
 }
 
 func (b *_AddReferencesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, referencesToAdd []AddReferencesItem) AddReferencesRequestBuilder {
@@ -163,8 +166,10 @@ func (b *_AddReferencesRequestBuilder) MustBuild() AddReferencesRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_AddReferencesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_AddReferencesRequest) deepCopy() *_AddReferencesRequest {
 	}
 	_AddReferencesRequestCopy := &_AddReferencesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		utils.DeepCopySlice[AddReferencesItem, AddReferencesItem](m.ReferencesToAdd),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_AddReferencesRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AddReferencesRequestCopy
 }
 

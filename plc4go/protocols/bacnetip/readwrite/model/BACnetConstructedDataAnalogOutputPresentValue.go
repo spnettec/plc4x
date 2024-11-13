@@ -86,6 +86,8 @@ type BACnetConstructedDataAnalogOutputPresentValueBuilder interface {
 	WithPresentValue(BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputPresentValueBuilder
 	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
 	WithPresentValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogOutputPresentValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAnalogOutputPresentValue or returns an error if something is wrong
 	Build() (BACnetConstructedDataAnalogOutputPresentValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAnalogOutputPresentValueBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAnalogOutputPresentValue
 }
 
 func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputPresentValueBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAnalogOutputPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataAnalogOutputPresentValue) deepCopy() *_BACnetCons
 	}
 	_BACnetConstructedDataAnalogOutputPresentValueCopy := &_BACnetConstructedDataAnalogOutputPresentValue{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.PresentValue.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.PresentValue),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAnalogOutputPresentValueCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAnalogOutputPresentValueCopy
 }
 

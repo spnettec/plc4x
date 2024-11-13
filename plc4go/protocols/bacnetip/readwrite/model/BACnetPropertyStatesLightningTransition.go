@@ -84,6 +84,8 @@ type BACnetPropertyStatesLightningTransitionBuilder interface {
 	WithLightningTransition(BACnetLightingTransitionTagged) BACnetPropertyStatesLightningTransitionBuilder
 	// WithLightningTransitionBuilder adds LightningTransition (property field) which is build by the builder
 	WithLightningTransitionBuilder(func(BACnetLightingTransitionTaggedBuilder) BACnetLightingTransitionTaggedBuilder) BACnetPropertyStatesLightningTransitionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesLightningTransition or returns an error if something is wrong
 	Build() (BACnetPropertyStatesLightningTransition, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesLightningTransitionBuilder) = (*_BACnetPropertyStates
 
 func (b *_BACnetPropertyStatesLightningTransitionBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesLightningTransition
 }
 
 func (b *_BACnetPropertyStatesLightningTransitionBuilder) WithMandatoryFields(lightningTransition BACnetLightingTransitionTagged) BACnetPropertyStatesLightningTransitionBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesLightningTransitionBuilder) MustBuild() BACnetProp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesLightningTransitionBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesLightningTransition) deepCopy() *_BACnetPropertySt
 	}
 	_BACnetPropertyStatesLightningTransitionCopy := &_BACnetPropertyStatesLightningTransition{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.LightningTransition.DeepCopy().(BACnetLightingTransitionTagged),
+		utils.DeepCopy[BACnetLightingTransitionTagged](m.LightningTransition),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesLightningTransitionCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesLightningTransitionCopy
 }
 

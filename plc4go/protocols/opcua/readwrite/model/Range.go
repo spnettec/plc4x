@@ -85,6 +85,8 @@ type RangeBuilder interface {
 	WithLow(float64) RangeBuilder
 	// WithHigh adds High (property field)
 	WithHigh(float64) RangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the Range or returns an error if something is wrong
 	Build() (Range, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (RangeBuilder) = (*_RangeBuilder)(nil)
 
 func (b *_RangeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._Range
 }
 
 func (b *_RangeBuilder) WithMandatoryFields(low float64, high float64) RangeBuilder {
@@ -139,8 +142,10 @@ func (b *_RangeBuilder) MustBuild() Range {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RangeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_Range) deepCopy() *_Range {
 		m.Low,
 		m.High,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RangeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RangeCopy
 }
 

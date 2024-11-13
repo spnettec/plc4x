@@ -173,6 +173,8 @@ type VariableAttributesBuilder interface {
 	WithMinimumSamplingInterval(float64) VariableAttributesBuilder
 	// WithHistorizing adds Historizing (property field)
 	WithHistorizing(bool) VariableAttributesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the VariableAttributes or returns an error if something is wrong
 	Build() (VariableAttributes, error)
 	// MustBuild does the same as Build but panics on error
@@ -196,6 +198,7 @@ var _ (VariableAttributesBuilder) = (*_VariableAttributesBuilder)(nil)
 
 func (b *_VariableAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._VariableAttributes
 }
 
 func (b *_VariableAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, value Variant, dataType NodeId, valueRank int32, arrayDimensions []uint32, accessLevel uint8, userAccessLevel uint8, minimumSamplingInterval float64, historizing bool) VariableAttributesBuilder {
@@ -358,8 +361,10 @@ func (b *_VariableAttributesBuilder) MustBuild() VariableAttributes {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariableAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -747,12 +752,12 @@ func (m *_VariableAttributes) deepCopy() *_VariableAttributes {
 	_VariableAttributesCopy := &_VariableAttributes{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedAttributes,
-		m.DisplayName.DeepCopy().(LocalizedText),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.DisplayName),
+		utils.DeepCopy[LocalizedText](m.Description),
 		m.WriteMask,
 		m.UserWriteMask,
-		m.Value.DeepCopy().(Variant),
-		m.DataType.DeepCopy().(NodeId),
+		utils.DeepCopy[Variant](m.Value),
+		utils.DeepCopy[NodeId](m.DataType),
 		m.ValueRank,
 		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
 		m.AccessLevel,
@@ -761,7 +766,7 @@ func (m *_VariableAttributes) deepCopy() *_VariableAttributes {
 		m.Historizing,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_VariableAttributesCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _VariableAttributesCopy
 }
 

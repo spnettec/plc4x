@@ -86,6 +86,8 @@ type BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder interface {
 	WithIpDhcpLeaseTimeRemaining(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
 	// WithIpDhcpLeaseTimeRemainingBuilder adds IpDhcpLeaseTimeRemaining (property field) which is build by the builder
 	WithIpDhcpLeaseTimeRemainingBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIPDHCPLeaseTimeRemaining or returns an error if something is wrong
 	Build() (BACnetConstructedDataIPDHCPLeaseTimeRemaining, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) = (*_BACnetConstruc
 
 func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIPDHCPLeaseTimeRemaining
 }
 
 func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) WithMandatoryFields(ipDhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) MustBuild() BACn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) deepCopy() *_BACnetCons
 	}
 	_BACnetConstructedDataIPDHCPLeaseTimeRemainingCopy := &_BACnetConstructedDataIPDHCPLeaseTimeRemaining{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.IpDhcpLeaseTimeRemaining.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.IpDhcpLeaseTimeRemaining),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIPDHCPLeaseTimeRemainingCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIPDHCPLeaseTimeRemainingCopy
 }
 

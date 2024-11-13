@@ -84,6 +84,8 @@ type BACnetChannelValueBooleanBuilder interface {
 	WithBooleanValue(BACnetApplicationTagBoolean) BACnetChannelValueBooleanBuilder
 	// WithBooleanValueBuilder adds BooleanValue (property field) which is build by the builder
 	WithBooleanValueBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetChannelValueBooleanBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueBoolean or returns an error if something is wrong
 	Build() (BACnetChannelValueBoolean, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueBooleanBuilder) = (*_BACnetChannelValueBooleanBuilder)(
 
 func (b *_BACnetChannelValueBooleanBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueBoolean
 }
 
 func (b *_BACnetChannelValueBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetChannelValueBooleanBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueBooleanBuilder) MustBuild() BACnetChannelValueBoolea
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueBooleanBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueBoolean) deepCopy() *_BACnetChannelValueBoolean {
 	}
 	_BACnetChannelValueBooleanCopy := &_BACnetChannelValueBoolean{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.BooleanValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueBooleanCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueBooleanCopy
 }
 

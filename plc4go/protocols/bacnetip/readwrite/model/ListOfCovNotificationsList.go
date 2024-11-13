@@ -374,9 +374,9 @@ func (m *_ListOfCovNotificationsList) deepCopy() *_ListOfCovNotificationsList {
 		return nil
 	}
 	_ListOfCovNotificationsListCopy := &_ListOfCovNotificationsList{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[ListOfCovNotifications, ListOfCovNotifications](m.Specifications),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _ListOfCovNotificationsListCopy

@@ -85,6 +85,8 @@ type FirmataCommandProtocolVersionBuilder interface {
 	WithMajorVersion(uint8) FirmataCommandProtocolVersionBuilder
 	// WithMinorVersion adds MinorVersion (property field)
 	WithMinorVersion(uint8) FirmataCommandProtocolVersionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() FirmataCommandBuilder
 	// Build builds the FirmataCommandProtocolVersion or returns an error if something is wrong
 	Build() (FirmataCommandProtocolVersion, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (FirmataCommandProtocolVersionBuilder) = (*_FirmataCommandProtocolVersionB
 
 func (b *_FirmataCommandProtocolVersionBuilder) setParent(contract FirmataCommandContract) {
 	b.FirmataCommandContract = contract
+	contract.(*_FirmataCommand)._SubType = b._FirmataCommandProtocolVersion
 }
 
 func (b *_FirmataCommandProtocolVersionBuilder) WithMandatoryFields(majorVersion uint8, minorVersion uint8) FirmataCommandProtocolVersionBuilder {
@@ -139,8 +142,10 @@ func (b *_FirmataCommandProtocolVersionBuilder) MustBuild() FirmataCommandProtoc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FirmataCommandProtocolVersionBuilder) Done() FirmataCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewFirmataCommandBuilder().(*_FirmataCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -315,7 +320,7 @@ func (m *_FirmataCommandProtocolVersion) deepCopy() *_FirmataCommandProtocolVers
 		m.MajorVersion,
 		m.MinorVersion,
 	}
-	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	_FirmataCommandProtocolVersionCopy.FirmataCommandContract.(*_FirmataCommand)._SubType = m
 	return _FirmataCommandProtocolVersionCopy
 }
 

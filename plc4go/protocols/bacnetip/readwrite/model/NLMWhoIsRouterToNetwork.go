@@ -79,6 +79,8 @@ type NLMWhoIsRouterToNetworkBuilder interface {
 	WithMandatoryFields() NLMWhoIsRouterToNetworkBuilder
 	// WithDestinationNetworkAddress adds DestinationNetworkAddress (property field)
 	WithOptionalDestinationNetworkAddress(uint16) NLMWhoIsRouterToNetworkBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMWhoIsRouterToNetwork or returns an error if something is wrong
 	Build() (NLMWhoIsRouterToNetwork, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (NLMWhoIsRouterToNetworkBuilder) = (*_NLMWhoIsRouterToNetworkBuilder)(nil)
 
 func (b *_NLMWhoIsRouterToNetworkBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMWhoIsRouterToNetwork
 }
 
 func (b *_NLMWhoIsRouterToNetworkBuilder) WithMandatoryFields() NLMWhoIsRouterToNetworkBuilder {
@@ -128,8 +131,10 @@ func (b *_NLMWhoIsRouterToNetworkBuilder) MustBuild() NLMWhoIsRouterToNetwork {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMWhoIsRouterToNetworkBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -289,7 +294,7 @@ func (m *_NLMWhoIsRouterToNetwork) deepCopy() *_NLMWhoIsRouterToNetwork {
 		m.NLMContract.(*_NLM).deepCopy(),
 		utils.CopyPtr[uint16](m.DestinationNetworkAddress),
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMWhoIsRouterToNetworkCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMWhoIsRouterToNetworkCopy
 }
 

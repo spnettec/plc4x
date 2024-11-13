@@ -84,6 +84,8 @@ type BACnetChannelValueOctetStringBuilder interface {
 	WithOctetStringValue(BACnetApplicationTagOctetString) BACnetChannelValueOctetStringBuilder
 	// WithOctetStringValueBuilder adds OctetStringValue (property field) which is build by the builder
 	WithOctetStringValueBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetChannelValueOctetStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueOctetString or returns an error if something is wrong
 	Build() (BACnetChannelValueOctetString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueOctetStringBuilder) = (*_BACnetChannelValueOctetStringB
 
 func (b *_BACnetChannelValueOctetStringBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueOctetString
 }
 
 func (b *_BACnetChannelValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetChannelValueOctetStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueOctetStringBuilder) MustBuild() BACnetChannelValueOc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueOctetStringBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueOctetString) deepCopy() *_BACnetChannelValueOctetStr
 	}
 	_BACnetChannelValueOctetStringCopy := &_BACnetChannelValueOctetString{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.OctetStringValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueOctetStringCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueOctetStringCopy
 }
 

@@ -79,6 +79,8 @@ type IdentifyReplyCommandManufacturerBuilder interface {
 	WithMandatoryFields(manufacturerName string) IdentifyReplyCommandManufacturerBuilder
 	// WithManufacturerName adds ManufacturerName (property field)
 	WithManufacturerName(string) IdentifyReplyCommandManufacturerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() IdentifyReplyCommandBuilder
 	// Build builds the IdentifyReplyCommandManufacturer or returns an error if something is wrong
 	Build() (IdentifyReplyCommandManufacturer, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (IdentifyReplyCommandManufacturerBuilder) = (*_IdentifyReplyCommandManufac
 
 func (b *_IdentifyReplyCommandManufacturerBuilder) setParent(contract IdentifyReplyCommandContract) {
 	b.IdentifyReplyCommandContract = contract
+	contract.(*_IdentifyReplyCommand)._SubType = b._IdentifyReplyCommandManufacturer
 }
 
 func (b *_IdentifyReplyCommandManufacturerBuilder) WithMandatoryFields(manufacturerName string) IdentifyReplyCommandManufacturerBuilder {
@@ -128,8 +131,10 @@ func (b *_IdentifyReplyCommandManufacturerBuilder) MustBuild() IdentifyReplyComm
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_IdentifyReplyCommandManufacturerBuilder) Done() IdentifyReplyCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewIdentifyReplyCommandBuilder().(*_IdentifyReplyCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_IdentifyReplyCommandManufacturer) deepCopy() *_IdentifyReplyCommandMan
 		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		m.ManufacturerName,
 	}
-	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	_IdentifyReplyCommandManufacturerCopy.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
 	return _IdentifyReplyCommandManufacturerCopy
 }
 

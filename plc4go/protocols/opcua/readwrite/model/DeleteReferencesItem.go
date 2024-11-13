@@ -121,6 +121,8 @@ type DeleteReferencesItemBuilder interface {
 	WithTargetNodeIdBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) DeleteReferencesItemBuilder
 	// WithDeleteBidirectional adds DeleteBidirectional (property field)
 	WithDeleteBidirectional(bool) DeleteReferencesItemBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DeleteReferencesItem or returns an error if something is wrong
 	Build() (DeleteReferencesItem, error)
 	// MustBuild does the same as Build but panics on error
@@ -144,6 +146,7 @@ var _ (DeleteReferencesItemBuilder) = (*_DeleteReferencesItemBuilder)(nil)
 
 func (b *_DeleteReferencesItemBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DeleteReferencesItem
 }
 
 func (b *_DeleteReferencesItemBuilder) WithMandatoryFields(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetNodeId ExpandedNodeId, deleteBidirectional bool) DeleteReferencesItemBuilder {
@@ -247,8 +250,10 @@ func (b *_DeleteReferencesItemBuilder) MustBuild() DeleteReferencesItem {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeleteReferencesItemBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -497,15 +502,15 @@ func (m *_DeleteReferencesItem) deepCopy() *_DeleteReferencesItem {
 	}
 	_DeleteReferencesItemCopy := &_DeleteReferencesItem{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.SourceNodeId.DeepCopy().(NodeId),
-		m.ReferenceTypeId.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.SourceNodeId),
+		utils.DeepCopy[NodeId](m.ReferenceTypeId),
 		m.IsForward,
-		m.TargetNodeId.DeepCopy().(ExpandedNodeId),
+		utils.DeepCopy[ExpandedNodeId](m.TargetNodeId),
 		m.DeleteBidirectional,
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DeleteReferencesItemCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteReferencesItemCopy
 }
 

@@ -85,6 +85,8 @@ type ModbusPDUWriteMultipleCoilsResponseBuilder interface {
 	WithStartingAddress(uint16) ModbusPDUWriteMultipleCoilsResponseBuilder
 	// WithQuantity adds Quantity (property field)
 	WithQuantity(uint16) ModbusPDUWriteMultipleCoilsResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUWriteMultipleCoilsResponse or returns an error if something is wrong
 	Build() (ModbusPDUWriteMultipleCoilsResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (ModbusPDUWriteMultipleCoilsResponseBuilder) = (*_ModbusPDUWriteMultipleCo
 
 func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUWriteMultipleCoilsResponse
 }
 
 func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUWriteMultipleCoilsResponseBuilder {
@@ -139,8 +142,10 @@ func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) MustBuild() ModbusPDUWrite
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUWriteMultipleCoilsResponseBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -323,7 +328,7 @@ func (m *_ModbusPDUWriteMultipleCoilsResponse) deepCopy() *_ModbusPDUWriteMultip
 		m.StartingAddress,
 		m.Quantity,
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUWriteMultipleCoilsResponseCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUWriteMultipleCoilsResponseCopy
 }
 

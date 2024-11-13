@@ -84,6 +84,8 @@ type BACnetPriorityValueOctetStringBuilder interface {
 	WithOctetStringValue(BACnetApplicationTagOctetString) BACnetPriorityValueOctetStringBuilder
 	// WithOctetStringValueBuilder adds OctetStringValue (property field) which is build by the builder
 	WithOctetStringValueBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetPriorityValueOctetStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPriorityValueBuilder
 	// Build builds the BACnetPriorityValueOctetString or returns an error if something is wrong
 	Build() (BACnetPriorityValueOctetString, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPriorityValueOctetStringBuilder) = (*_BACnetPriorityValueOctetStrin
 
 func (b *_BACnetPriorityValueOctetStringBuilder) setParent(contract BACnetPriorityValueContract) {
 	b.BACnetPriorityValueContract = contract
+	contract.(*_BACnetPriorityValue)._SubType = b._BACnetPriorityValueOctetString
 }
 
 func (b *_BACnetPriorityValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetPriorityValueOctetStringBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPriorityValueOctetStringBuilder) MustBuild() BACnetPriorityValue
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPriorityValueOctetStringBuilder) Done() BACnetPriorityValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPriorityValueOctetString) deepCopy() *_BACnetPriorityValueOctetS
 	}
 	_BACnetPriorityValueOctetStringCopy := &_BACnetPriorityValueOctetString{
 		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
-		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.OctetStringValue),
 	}
-	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	_BACnetPriorityValueOctetStringCopy.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
 	return _BACnetPriorityValueOctetStringCopy
 }
 

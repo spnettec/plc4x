@@ -86,6 +86,8 @@ type BACnetConstructedDataAccessDoorRelinquishDefaultBuilder interface {
 	WithRelinquishDefault(BACnetDoorValueTagged) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
 	// WithRelinquishDefaultBuilder adds RelinquishDefault (property field) which is build by the builder
 	WithRelinquishDefaultBuilder(func(BACnetDoorValueTaggedBuilder) BACnetDoorValueTaggedBuilder) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAccessDoorRelinquishDefault or returns an error if something is wrong
 	Build() (BACnetConstructedDataAccessDoorRelinquishDefault, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) = (*_BACnetConst
 
 func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAccessDoorRelinquishDefault
 }
 
 func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetDoorValueTagged) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) MustBuild() B
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) deepCopy() *_BACnetC
 	}
 	_BACnetConstructedDataAccessDoorRelinquishDefaultCopy := &_BACnetConstructedDataAccessDoorRelinquishDefault{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.RelinquishDefault.DeepCopy().(BACnetDoorValueTagged),
+		utils.DeepCopy[BACnetDoorValueTagged](m.RelinquishDefault),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAccessDoorRelinquishDefaultCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAccessDoorRelinquishDefaultCopy
 }
 

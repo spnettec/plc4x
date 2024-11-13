@@ -71,6 +71,8 @@ type NotificationDataBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() NotificationDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the NotificationData or returns an error if something is wrong
 	Build() (NotificationData, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (NotificationDataBuilder) = (*_NotificationDataBuilder)(nil)
 
 func (b *_NotificationDataBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._NotificationData
 }
 
 func (b *_NotificationDataBuilder) WithMandatoryFields() NotificationDataBuilder {
@@ -115,8 +118,10 @@ func (b *_NotificationDataBuilder) MustBuild() NotificationData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NotificationDataBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_NotificationData) deepCopy() *_NotificationData {
 	_NotificationDataCopy := &_NotificationData{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_NotificationDataCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _NotificationDataCopy
 }
 

@@ -84,6 +84,8 @@ type SALDataErrorReportingBuilder interface {
 	WithErrorReportingData(ErrorReportingData) SALDataErrorReportingBuilder
 	// WithErrorReportingDataBuilder adds ErrorReportingData (property field) which is build by the builder
 	WithErrorReportingDataBuilder(func(ErrorReportingDataBuilder) ErrorReportingDataBuilder) SALDataErrorReportingBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SALDataBuilder
 	// Build builds the SALDataErrorReporting or returns an error if something is wrong
 	Build() (SALDataErrorReporting, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (SALDataErrorReportingBuilder) = (*_SALDataErrorReportingBuilder)(nil)
 
 func (b *_SALDataErrorReportingBuilder) setParent(contract SALDataContract) {
 	b.SALDataContract = contract
+	contract.(*_SALData)._SubType = b._SALDataErrorReporting
 }
 
 func (b *_SALDataErrorReportingBuilder) WithMandatoryFields(errorReportingData ErrorReportingData) SALDataErrorReportingBuilder {
@@ -152,8 +155,10 @@ func (b *_SALDataErrorReportingBuilder) MustBuild() SALDataErrorReporting {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SALDataErrorReportingBuilder) Done() SALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSALDataBuilder().(*_SALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -308,9 +313,9 @@ func (m *_SALDataErrorReporting) deepCopy() *_SALDataErrorReporting {
 	}
 	_SALDataErrorReportingCopy := &_SALDataErrorReporting{
 		m.SALDataContract.(*_SALData).deepCopy(),
-		m.ErrorReportingData.DeepCopy().(ErrorReportingData),
+		utils.DeepCopy[ErrorReportingData](m.ErrorReportingData),
 	}
-	m.SALDataContract.(*_SALData)._SubType = m
+	_SALDataErrorReportingCopy.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataErrorReportingCopy
 }
 

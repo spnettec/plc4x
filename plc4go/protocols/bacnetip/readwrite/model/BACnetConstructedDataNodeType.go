@@ -86,6 +86,8 @@ type BACnetConstructedDataNodeTypeBuilder interface {
 	WithNodeType(BACnetNodeTypeTagged) BACnetConstructedDataNodeTypeBuilder
 	// WithNodeTypeBuilder adds NodeType (property field) which is build by the builder
 	WithNodeTypeBuilder(func(BACnetNodeTypeTaggedBuilder) BACnetNodeTypeTaggedBuilder) BACnetConstructedDataNodeTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataNodeType or returns an error if something is wrong
 	Build() (BACnetConstructedDataNodeType, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataNodeTypeBuilder) = (*_BACnetConstructedDataNodeTypeB
 
 func (b *_BACnetConstructedDataNodeTypeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataNodeType
 }
 
 func (b *_BACnetConstructedDataNodeTypeBuilder) WithMandatoryFields(nodeType BACnetNodeTypeTagged) BACnetConstructedDataNodeTypeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataNodeTypeBuilder) MustBuild() BACnetConstructedDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataNodeTypeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataNodeType) deepCopy() *_BACnetConstructedDataNodeT
 	}
 	_BACnetConstructedDataNodeTypeCopy := &_BACnetConstructedDataNodeType{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NodeType.DeepCopy().(BACnetNodeTypeTagged),
+		utils.DeepCopy[BACnetNodeTypeTagged](m.NodeType),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataNodeTypeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataNodeTypeCopy
 }
 

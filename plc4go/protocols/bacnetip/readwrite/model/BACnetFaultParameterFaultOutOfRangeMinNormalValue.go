@@ -126,25 +126,13 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder interface {
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
 	// AsBACnetFaultParameterFaultOutOfRangeMinNormalValueReal converts this build to a subType of BACnetFaultParameterFaultOutOfRangeMinNormalValue. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultOutOfRangeMinNormalValueReal() interface {
-		BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
-		Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-	}
+	AsBACnetFaultParameterFaultOutOfRangeMinNormalValueReal() BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
 	// AsBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned converts this build to a subType of BACnetFaultParameterFaultOutOfRangeMinNormalValue. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned() interface {
-		BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder
-		Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-	}
+	AsBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned() BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder
 	// AsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble converts this build to a subType of BACnetFaultParameterFaultOutOfRangeMinNormalValue. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble() interface {
-		BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder
-		Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-	}
+	AsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble() BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder
 	// AsBACnetFaultParameterFaultOutOfRangeMinNormalValueInteger converts this build to a subType of BACnetFaultParameterFaultOutOfRangeMinNormalValue. It is always possible to return to current builder using Done()
-	AsBACnetFaultParameterFaultOutOfRangeMinNormalValueInteger() interface {
-		BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder
-		Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-	}
+	AsBACnetFaultParameterFaultOutOfRangeMinNormalValueInteger() BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder
 	// Build builds the BACnetFaultParameterFaultOutOfRangeMinNormalValue or returns an error if something is wrong
 	PartialBuild() (BACnetFaultParameterFaultOutOfRangeMinNormalValueContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -267,14 +255,8 @@ func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) PartialMustB
 	return build
 }
 
-func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaultParameterFaultOutOfRangeMinNormalValueReal() interface {
-	BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
-	Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
-		Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaultParameterFaultOutOfRangeMinNormalValueReal() BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder().(*_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder)
@@ -283,14 +265,8 @@ func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaul
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned() interface {
-	BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder
-	Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder
-		Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned() BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder().(*_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder)
@@ -299,14 +275,8 @@ func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaul
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble() interface {
-	BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder
-	Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder
-		Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble() BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder().(*_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilder)
@@ -315,14 +285,8 @@ func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaul
 	return cb
 }
 
-func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaultParameterFaultOutOfRangeMinNormalValueInteger() interface {
-	BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder
-	Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder
-		Done() BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
-	}); ok {
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) AsBACnetFaultParameterFaultOutOfRangeMinNormalValueInteger() BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder {
+	if cb, ok := b.childBuilder.(BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder().(*_BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerBuilder)
@@ -606,9 +570,9 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) deepCopy() *_BACnet
 	}
 	_BACnetFaultParameterFaultOutOfRangeMinNormalValueCopy := &_BACnetFaultParameterFaultOutOfRangeMinNormalValue{
 		nil, // will be set by child
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetFaultParameterFaultOutOfRangeMinNormalValueCopy

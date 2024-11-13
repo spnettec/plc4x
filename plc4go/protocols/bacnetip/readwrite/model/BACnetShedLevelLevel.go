@@ -84,6 +84,8 @@ type BACnetShedLevelLevelBuilder interface {
 	WithLevel(BACnetContextTagUnsignedInteger) BACnetShedLevelLevelBuilder
 	// WithLevelBuilder adds Level (property field) which is build by the builder
 	WithLevelBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetShedLevelLevelBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetShedLevelBuilder
 	// Build builds the BACnetShedLevelLevel or returns an error if something is wrong
 	Build() (BACnetShedLevelLevel, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetShedLevelLevelBuilder) = (*_BACnetShedLevelLevelBuilder)(nil)
 
 func (b *_BACnetShedLevelLevelBuilder) setParent(contract BACnetShedLevelContract) {
 	b.BACnetShedLevelContract = contract
+	contract.(*_BACnetShedLevel)._SubType = b._BACnetShedLevelLevel
 }
 
 func (b *_BACnetShedLevelLevelBuilder) WithMandatoryFields(level BACnetContextTagUnsignedInteger) BACnetShedLevelLevelBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetShedLevelLevelBuilder) MustBuild() BACnetShedLevelLevel {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetShedLevelLevelBuilder) Done() BACnetShedLevelBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetShedLevelBuilder().(*_BACnetShedLevelBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetShedLevelLevel) deepCopy() *_BACnetShedLevelLevel {
 	}
 	_BACnetShedLevelLevelCopy := &_BACnetShedLevelLevel{
 		m.BACnetShedLevelContract.(*_BACnetShedLevel).deepCopy(),
-		m.Level.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Level),
 	}
-	m.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = m
+	_BACnetShedLevelLevelCopy.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = m
 	return _BACnetShedLevelLevelCopy
 }
 

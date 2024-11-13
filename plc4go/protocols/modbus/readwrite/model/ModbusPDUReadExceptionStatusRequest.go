@@ -71,6 +71,8 @@ type ModbusPDUReadExceptionStatusRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ModbusPDUReadExceptionStatusRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ModbusPDUBuilder
 	// Build builds the ModbusPDUReadExceptionStatusRequest or returns an error if something is wrong
 	Build() (ModbusPDUReadExceptionStatusRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ModbusPDUReadExceptionStatusRequestBuilder) = (*_ModbusPDUReadExceptionSt
 
 func (b *_ModbusPDUReadExceptionStatusRequestBuilder) setParent(contract ModbusPDUContract) {
 	b.ModbusPDUContract = contract
+	contract.(*_ModbusPDU)._SubType = b._ModbusPDUReadExceptionStatusRequest
 }
 
 func (b *_ModbusPDUReadExceptionStatusRequestBuilder) WithMandatoryFields() ModbusPDUReadExceptionStatusRequestBuilder {
@@ -115,8 +118,10 @@ func (b *_ModbusPDUReadExceptionStatusRequestBuilder) MustBuild() ModbusPDUReadE
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ModbusPDUReadExceptionStatusRequestBuilder) Done() ModbusPDUBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewModbusPDUBuilder().(*_ModbusPDUBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -253,7 +258,7 @@ func (m *_ModbusPDUReadExceptionStatusRequest) deepCopy() *_ModbusPDUReadExcepti
 	_ModbusPDUReadExceptionStatusRequestCopy := &_ModbusPDUReadExceptionStatusRequest{
 		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 	}
-	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	_ModbusPDUReadExceptionStatusRequestCopy.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUReadExceptionStatusRequestCopy
 }
 

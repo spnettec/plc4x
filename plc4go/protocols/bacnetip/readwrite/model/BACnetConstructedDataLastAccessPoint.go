@@ -86,6 +86,8 @@ type BACnetConstructedDataLastAccessPointBuilder interface {
 	WithLastAccessPoint(BACnetDeviceObjectReference) BACnetConstructedDataLastAccessPointBuilder
 	// WithLastAccessPointBuilder adds LastAccessPoint (property field) which is build by the builder
 	WithLastAccessPointBuilder(func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataLastAccessPointBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLastAccessPoint or returns an error if something is wrong
 	Build() (BACnetConstructedDataLastAccessPoint, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataLastAccessPointBuilder) = (*_BACnetConstructedDataLa
 
 func (b *_BACnetConstructedDataLastAccessPointBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLastAccessPoint
 }
 
 func (b *_BACnetConstructedDataLastAccessPointBuilder) WithMandatoryFields(lastAccessPoint BACnetDeviceObjectReference) BACnetConstructedDataLastAccessPointBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataLastAccessPointBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLastAccessPointBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataLastAccessPoint) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataLastAccessPointCopy := &_BACnetConstructedDataLastAccessPoint{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.LastAccessPoint.DeepCopy().(BACnetDeviceObjectReference),
+		utils.DeepCopy[BACnetDeviceObjectReference](m.LastAccessPoint),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLastAccessPointCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLastAccessPointCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetPropertyStatesNetworkPortCommandBuilder interface {
 	WithNetworkPortCommand(BACnetNetworkPortCommandTagged) BACnetPropertyStatesNetworkPortCommandBuilder
 	// WithNetworkPortCommandBuilder adds NetworkPortCommand (property field) which is build by the builder
 	WithNetworkPortCommandBuilder(func(BACnetNetworkPortCommandTaggedBuilder) BACnetNetworkPortCommandTaggedBuilder) BACnetPropertyStatesNetworkPortCommandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesNetworkPortCommand or returns an error if something is wrong
 	Build() (BACnetPropertyStatesNetworkPortCommand, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesNetworkPortCommandBuilder) = (*_BACnetPropertyStatesN
 
 func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesNetworkPortCommand
 }
 
 func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) WithMandatoryFields(networkPortCommand BACnetNetworkPortCommandTagged) BACnetPropertyStatesNetworkPortCommandBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) MustBuild() BACnetPrope
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesNetworkPortCommandBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) deepCopy() *_BACnetPropertySta
 	}
 	_BACnetPropertyStatesNetworkPortCommandCopy := &_BACnetPropertyStatesNetworkPortCommand{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.NetworkPortCommand.DeepCopy().(BACnetNetworkPortCommandTagged),
+		utils.DeepCopy[BACnetNetworkPortCommandTagged](m.NetworkPortCommand),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesNetworkPortCommandCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesNetworkPortCommandCopy
 }
 

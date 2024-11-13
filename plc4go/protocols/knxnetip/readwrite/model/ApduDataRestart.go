@@ -71,6 +71,8 @@ type ApduDataRestartBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataRestartBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataBuilder
 	// Build builds the ApduDataRestart or returns an error if something is wrong
 	Build() (ApduDataRestart, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataRestartBuilder) = (*_ApduDataRestartBuilder)(nil)
 
 func (b *_ApduDataRestartBuilder) setParent(contract ApduDataContract) {
 	b.ApduDataContract = contract
+	contract.(*_ApduData)._SubType = b._ApduDataRestart
 }
 
 func (b *_ApduDataRestartBuilder) WithMandatoryFields() ApduDataRestartBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataRestartBuilder) MustBuild() ApduDataRestart {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataRestartBuilder) Done() ApduDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataBuilder().(*_ApduDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataRestart) deepCopy() *_ApduDataRestart {
 	_ApduDataRestartCopy := &_ApduDataRestart{
 		m.ApduDataContract.(*_ApduData).deepCopy(),
 	}
-	m.ApduDataContract.(*_ApduData)._SubType = m
+	_ApduDataRestartCopy.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataRestartCopy
 }
 

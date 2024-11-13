@@ -85,6 +85,8 @@ type VariantNodeIdBuilder interface {
 	WithOptionalArrayLength(int32) VariantNodeIdBuilder
 	// WithValue adds Value (property field)
 	WithValue(...NodeId) VariantNodeIdBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantNodeId or returns an error if something is wrong
 	Build() (VariantNodeId, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantNodeIdBuilder) = (*_VariantNodeIdBuilder)(nil)
 
 func (b *_VariantNodeIdBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantNodeId
 }
 
 func (b *_VariantNodeIdBuilder) WithMandatoryFields(value []NodeId) VariantNodeIdBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantNodeIdBuilder) MustBuild() VariantNodeId {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantNodeIdBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -325,7 +330,7 @@ func (m *_VariantNodeId) deepCopy() *_VariantNodeId {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[NodeId, NodeId](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantNodeIdCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantNodeIdCopy
 }
 

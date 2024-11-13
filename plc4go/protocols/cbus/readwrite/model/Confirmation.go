@@ -387,8 +387,8 @@ func (m *_Confirmation) deepCopy() *_Confirmation {
 		return nil
 	}
 	_ConfirmationCopy := &_Confirmation{
-		m.Alpha.DeepCopy().(Alpha),
-		m.SecondAlpha.DeepCopy().(Alpha),
+		utils.DeepCopy[Alpha](m.Alpha),
+		utils.DeepCopy[Alpha](m.SecondAlpha),
 		m.ConfirmationType,
 	}
 	return _ConfirmationCopy

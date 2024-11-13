@@ -20,6 +20,7 @@
 package utils
 
 import (
+	"reflect"
 	"time"
 )
 
@@ -63,6 +64,10 @@ func CopyPtr[T any](t *T) *T {
 
 // DeepCopy copies things implementing Copyable
 func DeepCopy[T Copyable](copyable Copyable) T {
+	if IsNil(copyable) {
+		var zero T
+		return zero
+	}
 	return copyable.DeepCopy().(T)
 }
 
@@ -86,4 +91,18 @@ func DeepCopySliceWithConverter[I any, O any](in []I, converter func(I) O) (out 
 		out[i] = converter(v)
 	}
 	return
+}
+
+// IsNil when nil checks aren't enough
+func IsNil(v interface{}) bool {
+	if v == nil {
+		return true
+	}
+	valueOf := reflect.ValueOf(v)
+	switch valueOf.Kind() {
+	case reflect.Ptr, reflect.Interface, reflect.Slice, reflect.Map, reflect.Func, reflect.Chan:
+		return valueOf.IsNil()
+	default:
+		return false
+	}
 }

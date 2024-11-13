@@ -103,6 +103,8 @@ type ApduDataExtPropertyValueResponseBuilder interface {
 	WithIndex(uint16) ApduDataExtPropertyValueResponseBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) ApduDataExtPropertyValueResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtPropertyValueResponse or returns an error if something is wrong
 	Build() (ApduDataExtPropertyValueResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -126,6 +128,7 @@ var _ (ApduDataExtPropertyValueResponseBuilder) = (*_ApduDataExtPropertyValueRes
 
 func (b *_ApduDataExtPropertyValueResponseBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtPropertyValueResponse
 }
 
 func (b *_ApduDataExtPropertyValueResponseBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) ApduDataExtPropertyValueResponseBuilder {
@@ -172,8 +175,10 @@ func (b *_ApduDataExtPropertyValueResponseBuilder) MustBuild() ApduDataExtProper
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtPropertyValueResponseBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,7 +409,7 @@ func (m *_ApduDataExtPropertyValueResponse) deepCopy() *_ApduDataExtPropertyValu
 		m.Index,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtPropertyValueResponseCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtPropertyValueResponseCopy
 }
 

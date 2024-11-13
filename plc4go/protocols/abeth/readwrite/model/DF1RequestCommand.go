@@ -89,10 +89,7 @@ type DF1RequestCommandBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() DF1RequestCommandBuilder
 	// AsDF1RequestProtectedTypedLogicalRead converts this build to a subType of DF1RequestCommand. It is always possible to return to current builder using Done()
-	AsDF1RequestProtectedTypedLogicalRead() interface {
-		DF1RequestProtectedTypedLogicalReadBuilder
-		Done() DF1RequestCommandBuilder
-	}
+	AsDF1RequestProtectedTypedLogicalRead() DF1RequestProtectedTypedLogicalReadBuilder
 	// Build builds the DF1RequestCommand or returns an error if something is wrong
 	PartialBuild() (DF1RequestCommandContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -143,14 +140,8 @@ func (b *_DF1RequestCommandBuilder) PartialMustBuild() DF1RequestCommandContract
 	return build
 }
 
-func (b *_DF1RequestCommandBuilder) AsDF1RequestProtectedTypedLogicalRead() interface {
-	DF1RequestProtectedTypedLogicalReadBuilder
-	Done() DF1RequestCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		DF1RequestProtectedTypedLogicalReadBuilder
-		Done() DF1RequestCommandBuilder
-	}); ok {
+func (b *_DF1RequestCommandBuilder) AsDF1RequestProtectedTypedLogicalRead() DF1RequestProtectedTypedLogicalReadBuilder {
+	if cb, ok := b.childBuilder.(DF1RequestProtectedTypedLogicalReadBuilder); ok {
 		return cb
 	}
 	cb := NewDF1RequestProtectedTypedLogicalReadBuilder().(*_DF1RequestProtectedTypedLogicalReadBuilder)

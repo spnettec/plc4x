@@ -313,7 +313,7 @@ func (m *_NetworkRoute) deepCopy() *_NetworkRoute {
 		return nil
 	}
 	_NetworkRouteCopy := &_NetworkRoute{
-		m.NetworkPCI.DeepCopy().(NetworkProtocolControlInformation),
+		utils.DeepCopy[NetworkProtocolControlInformation](m.NetworkPCI),
 		utils.DeepCopySlice[BridgeAddress, BridgeAddress](m.AdditionalBridgeAddresses),
 	}
 	return _NetworkRouteCopy

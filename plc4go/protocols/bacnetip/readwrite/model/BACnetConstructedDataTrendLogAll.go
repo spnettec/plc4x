@@ -71,6 +71,8 @@ type BACnetConstructedDataTrendLogAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataTrendLogAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTrendLogAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataTrendLogAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataTrendLogAllBuilder) = (*_BACnetConstructedDataTrendL
 
 func (b *_BACnetConstructedDataTrendLogAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTrendLogAll
 }
 
 func (b *_BACnetConstructedDataTrendLogAllBuilder) WithMandatoryFields() BACnetConstructedDataTrendLogAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataTrendLogAllBuilder) MustBuild() BACnetConstructed
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTrendLogAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataTrendLogAll) deepCopy() *_BACnetConstructedDataTr
 	_BACnetConstructedDataTrendLogAllCopy := &_BACnetConstructedDataTrendLogAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTrendLogAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTrendLogAllCopy
 }
 

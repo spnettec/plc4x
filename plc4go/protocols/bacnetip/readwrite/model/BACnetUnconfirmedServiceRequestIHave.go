@@ -106,6 +106,8 @@ type BACnetUnconfirmedServiceRequestIHaveBuilder interface {
 	WithObjectName(BACnetApplicationTagCharacterString) BACnetUnconfirmedServiceRequestIHaveBuilder
 	// WithObjectNameBuilder adds ObjectName (property field) which is build by the builder
 	WithObjectNameBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetUnconfirmedServiceRequestIHaveBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetUnconfirmedServiceRequestBuilder
 	// Build builds the BACnetUnconfirmedServiceRequestIHave or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceRequestIHave, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (BACnetUnconfirmedServiceRequestIHaveBuilder) = (*_BACnetUnconfirmedServic
 
 func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
 	b.BACnetUnconfirmedServiceRequestContract = contract
+	contract.(*_BACnetUnconfirmedServiceRequest)._SubType = b._BACnetUnconfirmedServiceRequestIHave
 }
 
 func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) WithMandatoryFields(deviceIdentifier BACnetApplicationTagObjectIdentifier, objectIdentifier BACnetApplicationTagObjectIdentifier, objectName BACnetApplicationTagCharacterString) BACnetUnconfirmedServiceRequestIHaveBuilder {
@@ -222,8 +225,10 @@ func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) MustBuild() BACnetUnconfi
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetUnconfirmedServiceRequestIHaveBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetUnconfirmedServiceRequestBuilder().(*_BACnetUnconfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,11 +417,11 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) deepCopy() *_BACnetUnconfirmedSe
 	}
 	_BACnetUnconfirmedServiceRequestIHaveCopy := &_BACnetUnconfirmedServiceRequestIHave{
 		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
-		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
-		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
-		m.ObjectName.DeepCopy().(BACnetApplicationTagCharacterString),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.DeviceIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagCharacterString](m.ObjectName),
 	}
-	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	_BACnetUnconfirmedServiceRequestIHaveCopy.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
 	return _BACnetUnconfirmedServiceRequestIHaveCopy
 }
 

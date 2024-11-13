@@ -90,6 +90,8 @@ type MdnsDiscoveryConfigurationBuilder interface {
 	WithMdnsServerNameBuilder(func(PascalStringBuilder) PascalStringBuilder) MdnsDiscoveryConfigurationBuilder
 	// WithServerCapabilities adds ServerCapabilities (property field)
 	WithServerCapabilities(...PascalString) MdnsDiscoveryConfigurationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the MdnsDiscoveryConfiguration or returns an error if something is wrong
 	Build() (MdnsDiscoveryConfiguration, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (MdnsDiscoveryConfigurationBuilder) = (*_MdnsDiscoveryConfigurationBuilder
 
 func (b *_MdnsDiscoveryConfigurationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._MdnsDiscoveryConfiguration
 }
 
 func (b *_MdnsDiscoveryConfigurationBuilder) WithMandatoryFields(mdnsServerName PascalString, serverCapabilities []PascalString) MdnsDiscoveryConfigurationBuilder {
@@ -163,8 +166,10 @@ func (b *_MdnsDiscoveryConfigurationBuilder) MustBuild() MdnsDiscoveryConfigurat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MdnsDiscoveryConfigurationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_MdnsDiscoveryConfiguration) deepCopy() *_MdnsDiscoveryConfiguration {
 	}
 	_MdnsDiscoveryConfigurationCopy := &_MdnsDiscoveryConfiguration{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.MdnsServerName.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.MdnsServerName),
 		utils.DeepCopySlice[PascalString, PascalString](m.ServerCapabilities),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_MdnsDiscoveryConfigurationCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _MdnsDiscoveryConfigurationCopy
 }
 

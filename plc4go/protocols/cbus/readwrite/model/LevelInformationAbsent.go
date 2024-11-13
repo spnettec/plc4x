@@ -75,6 +75,8 @@ type LevelInformationAbsentBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() LevelInformationAbsentBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LevelInformationBuilder
 	// Build builds the LevelInformationAbsent or returns an error if something is wrong
 	Build() (LevelInformationAbsent, error)
 	// MustBuild does the same as Build but panics on error
@@ -98,6 +100,7 @@ var _ (LevelInformationAbsentBuilder) = (*_LevelInformationAbsentBuilder)(nil)
 
 func (b *_LevelInformationAbsentBuilder) setParent(contract LevelInformationContract) {
 	b.LevelInformationContract = contract
+	contract.(*_LevelInformation)._SubType = b._LevelInformationAbsent
 }
 
 func (b *_LevelInformationAbsentBuilder) WithMandatoryFields() LevelInformationAbsentBuilder {
@@ -119,8 +122,10 @@ func (b *_LevelInformationAbsentBuilder) MustBuild() LevelInformationAbsent {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LevelInformationAbsentBuilder) Done() LevelInformationBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLevelInformationBuilder().(*_LevelInformationBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -259,7 +264,7 @@ func (m *_LevelInformationAbsent) deepCopy() *_LevelInformationAbsent {
 		m.LevelInformationContract.(*_LevelInformation).deepCopy(),
 		m.reservedField0,
 	}
-	m.LevelInformationContract.(*_LevelInformation)._SubType = m
+	_LevelInformationAbsentCopy.LevelInformationContract.(*_LevelInformation)._SubType = m
 	return _LevelInformationAbsentCopy
 }
 

@@ -89,6 +89,8 @@ type BACnetConstructedDataKeySetsBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataKeySetsBuilder
 	// WithKeySets adds KeySets (property field)
 	WithKeySets(...BACnetSecurityKeySet) BACnetConstructedDataKeySetsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataKeySets or returns an error if something is wrong
 	Build() (BACnetConstructedDataKeySets, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataKeySetsBuilder) = (*_BACnetConstructedDataKeySetsBui
 
 func (b *_BACnetConstructedDataKeySetsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataKeySets
 }
 
 func (b *_BACnetConstructedDataKeySetsBuilder) WithMandatoryFields(keySets []BACnetSecurityKeySet) BACnetConstructedDataKeySetsBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataKeySetsBuilder) MustBuild() BACnetConstructedData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataKeySetsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -379,10 +384,10 @@ func (m *_BACnetConstructedDataKeySets) deepCopy() *_BACnetConstructedDataKeySet
 	}
 	_BACnetConstructedDataKeySetsCopy := &_BACnetConstructedDataKeySets{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetSecurityKeySet, BACnetSecurityKeySet](m.KeySets),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataKeySetsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataKeySetsCopy
 }
 

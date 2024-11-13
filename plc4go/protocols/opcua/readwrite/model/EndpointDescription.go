@@ -146,6 +146,8 @@ type EndpointDescriptionBuilder interface {
 	WithTransportProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) EndpointDescriptionBuilder
 	// WithSecurityLevel adds SecurityLevel (property field)
 	WithSecurityLevel(uint8) EndpointDescriptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the EndpointDescription or returns an error if something is wrong
 	Build() (EndpointDescription, error)
 	// MustBuild does the same as Build but panics on error
@@ -169,6 +171,7 @@ var _ (EndpointDescriptionBuilder) = (*_EndpointDescriptionBuilder)(nil)
 
 func (b *_EndpointDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._EndpointDescription
 }
 
 func (b *_EndpointDescriptionBuilder) WithMandatoryFields(endpointUrl PascalString, server ApplicationDescription, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, userIdentityTokens []UserTokenPolicy, transportProfileUri PascalString, securityLevel uint8) EndpointDescriptionBuilder {
@@ -325,8 +328,10 @@ func (b *_EndpointDescriptionBuilder) MustBuild() EndpointDescription {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EndpointDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -620,16 +625,16 @@ func (m *_EndpointDescription) deepCopy() *_EndpointDescription {
 	}
 	_EndpointDescriptionCopy := &_EndpointDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.EndpointUrl.DeepCopy().(PascalString),
-		m.Server.DeepCopy().(ApplicationDescription),
-		m.ServerCertificate.DeepCopy().(PascalByteString),
+		utils.DeepCopy[PascalString](m.EndpointUrl),
+		utils.DeepCopy[ApplicationDescription](m.Server),
+		utils.DeepCopy[PascalByteString](m.ServerCertificate),
 		m.SecurityMode,
-		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.SecurityPolicyUri),
 		utils.DeepCopySlice[UserTokenPolicy, UserTokenPolicy](m.UserIdentityTokens),
-		m.TransportProfileUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.TransportProfileUri),
 		m.SecurityLevel,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_EndpointDescriptionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EndpointDescriptionCopy
 }
 

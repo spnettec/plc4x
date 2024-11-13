@@ -446,10 +446,10 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) deepC
 		return nil
 	}
 	_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterCopy := &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.MinPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.MaxPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.MinPriority),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.MaxPriority),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterCopy

@@ -96,6 +96,8 @@ type CallResponseBuilder interface {
 	WithResults(...CallMethodResult) CallResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) CallResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CallResponse or returns an error if something is wrong
 	Build() (CallResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,7 @@ var _ (CallResponseBuilder) = (*_CallResponseBuilder)(nil)
 
 func (b *_CallResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CallResponse
 }
 
 func (b *_CallResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []CallMethodResult, diagnosticInfos []DiagnosticInfo) CallResponseBuilder {
@@ -174,8 +177,10 @@ func (b *_CallResponseBuilder) MustBuild() CallResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CallResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,11 +409,11 @@ func (m *_CallResponse) deepCopy() *_CallResponse {
 	}
 	_CallResponseCopy := &_CallResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
 		utils.DeepCopySlice[CallMethodResult, CallMethodResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CallResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CallResponseCopy
 }
 

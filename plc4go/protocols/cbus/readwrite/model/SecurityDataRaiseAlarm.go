@@ -71,6 +71,8 @@ type SecurityDataRaiseAlarmBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataRaiseAlarmBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataRaiseAlarm or returns an error if something is wrong
 	Build() (SecurityDataRaiseAlarm, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataRaiseAlarmBuilder) = (*_SecurityDataRaiseAlarmBuilder)(nil)
 
 func (b *_SecurityDataRaiseAlarmBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataRaiseAlarm
 }
 
 func (b *_SecurityDataRaiseAlarmBuilder) WithMandatoryFields() SecurityDataRaiseAlarmBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataRaiseAlarmBuilder) MustBuild() SecurityDataRaiseAlarm {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataRaiseAlarmBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataRaiseAlarm) deepCopy() *_SecurityDataRaiseAlarm {
 	_SecurityDataRaiseAlarmCopy := &_SecurityDataRaiseAlarm{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataRaiseAlarmCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataRaiseAlarmCopy
 }
 

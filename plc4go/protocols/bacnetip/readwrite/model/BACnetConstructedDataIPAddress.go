@@ -86,6 +86,8 @@ type BACnetConstructedDataIPAddressBuilder interface {
 	WithIpAddress(BACnetApplicationTagOctetString) BACnetConstructedDataIPAddressBuilder
 	// WithIpAddressBuilder adds IpAddress (property field) which is build by the builder
 	WithIpAddressBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPAddressBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIPAddress or returns an error if something is wrong
 	Build() (BACnetConstructedDataIPAddress, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIPAddressBuilder) = (*_BACnetConstructedDataIPAddres
 
 func (b *_BACnetConstructedDataIPAddressBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIPAddress
 }
 
 func (b *_BACnetConstructedDataIPAddressBuilder) WithMandatoryFields(ipAddress BACnetApplicationTagOctetString) BACnetConstructedDataIPAddressBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIPAddressBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIPAddressBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataIPAddress) deepCopy() *_BACnetConstructedDataIPAd
 	}
 	_BACnetConstructedDataIPAddressCopy := &_BACnetConstructedDataIPAddress{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.IpAddress.DeepCopy().(BACnetApplicationTagOctetString),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.IpAddress),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIPAddressCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIPAddressCopy
 }
 

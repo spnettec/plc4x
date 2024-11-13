@@ -114,6 +114,8 @@ type BACnetConfirmedServiceRequestLifeSafetyOperationBuilder interface {
 	WithOptionalObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
 	// WithOptionalObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
 	WithOptionalObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestLifeSafetyOperation or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestLifeSafetyOperation, error)
 	// MustBuild does the same as Build but panics on error
@@ -137,6 +139,7 @@ var _ (BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) = (*_BACnetConfi
 
 func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestLifeSafetyOperation
 }
 
 func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithMandatoryFields(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
@@ -248,8 +251,10 @@ func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) MustBuild() B
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -462,12 +467,12 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) deepCopy() *_BACnetC
 	}
 	_BACnetConfirmedServiceRequestLifeSafetyOperationCopy := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.RequestingProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.RequestingSource.DeepCopy().(BACnetContextTagCharacterString),
-		m.Request.DeepCopy().(BACnetLifeSafetyOperationTagged),
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.RequestingProcessIdentifier),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.RequestingSource),
+		utils.DeepCopy[BACnetLifeSafetyOperationTagged](m.Request),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestLifeSafetyOperationCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestLifeSafetyOperationCopy
 }
 

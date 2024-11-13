@@ -71,6 +71,8 @@ type BACnetConstructedDataAccessDoorAllBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConstructedDataAccessDoorAllBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataAccessDoorAll or returns an error if something is wrong
 	Build() (BACnetConstructedDataAccessDoorAll, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (BACnetConstructedDataAccessDoorAllBuilder) = (*_BACnetConstructedDataAcce
 
 func (b *_BACnetConstructedDataAccessDoorAllBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataAccessDoorAll
 }
 
 func (b *_BACnetConstructedDataAccessDoorAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessDoorAllBuilder {
@@ -115,8 +118,10 @@ func (b *_BACnetConstructedDataAccessDoorAllBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataAccessDoorAllBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -254,7 +259,7 @@ func (m *_BACnetConstructedDataAccessDoorAll) deepCopy() *_BACnetConstructedData
 	_BACnetConstructedDataAccessDoorAllCopy := &_BACnetConstructedDataAccessDoorAll{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataAccessDoorAllCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAccessDoorAllCopy
 }
 

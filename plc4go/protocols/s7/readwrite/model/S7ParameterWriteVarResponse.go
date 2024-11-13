@@ -79,6 +79,8 @@ type S7ParameterWriteVarResponseBuilder interface {
 	WithMandatoryFields(numItems uint8) S7ParameterWriteVarResponseBuilder
 	// WithNumItems adds NumItems (property field)
 	WithNumItems(uint8) S7ParameterWriteVarResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7ParameterBuilder
 	// Build builds the S7ParameterWriteVarResponse or returns an error if something is wrong
 	Build() (S7ParameterWriteVarResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (S7ParameterWriteVarResponseBuilder) = (*_S7ParameterWriteVarResponseBuild
 
 func (b *_S7ParameterWriteVarResponseBuilder) setParent(contract S7ParameterContract) {
 	b.S7ParameterContract = contract
+	contract.(*_S7Parameter)._SubType = b._S7ParameterWriteVarResponse
 }
 
 func (b *_S7ParameterWriteVarResponseBuilder) WithMandatoryFields(numItems uint8) S7ParameterWriteVarResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_S7ParameterWriteVarResponseBuilder) MustBuild() S7ParameterWriteVarRes
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7ParameterWriteVarResponseBuilder) Done() S7ParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7ParameterBuilder().(*_S7ParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -290,7 +295,7 @@ func (m *_S7ParameterWriteVarResponse) deepCopy() *_S7ParameterWriteVarResponse 
 		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
 		m.NumItems,
 	}
-	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	_S7ParameterWriteVarResponseCopy.S7ParameterContract.(*_S7Parameter)._SubType = m
 	return _S7ParameterWriteVarResponseCopy
 }
 

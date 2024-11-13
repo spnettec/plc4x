@@ -122,6 +122,8 @@ type CreateSubscriptionRequestBuilder interface {
 	WithPublishingEnabled(bool) CreateSubscriptionRequestBuilder
 	// WithPriority adds Priority (property field)
 	WithPriority(uint8) CreateSubscriptionRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the CreateSubscriptionRequest or returns an error if something is wrong
 	Build() (CreateSubscriptionRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -145,6 +147,7 @@ var _ (CreateSubscriptionRequestBuilder) = (*_CreateSubscriptionRequestBuilder)(
 
 func (b *_CreateSubscriptionRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._CreateSubscriptionRequest
 }
 
 func (b *_CreateSubscriptionRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) CreateSubscriptionRequestBuilder {
@@ -220,8 +223,10 @@ func (b *_CreateSubscriptionRequestBuilder) MustBuild() CreateSubscriptionReques
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CreateSubscriptionRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -491,7 +496,7 @@ func (m *_CreateSubscriptionRequest) deepCopy() *_CreateSubscriptionRequest {
 	}
 	_CreateSubscriptionRequestCopy := &_CreateSubscriptionRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		m.RequestedPublishingInterval,
 		m.RequestedLifetimeCount,
 		m.RequestedMaxKeepAliveCount,
@@ -500,7 +505,7 @@ func (m *_CreateSubscriptionRequest) deepCopy() *_CreateSubscriptionRequest {
 		m.Priority,
 		m.reservedField0,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_CreateSubscriptionRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CreateSubscriptionRequestCopy
 }
 

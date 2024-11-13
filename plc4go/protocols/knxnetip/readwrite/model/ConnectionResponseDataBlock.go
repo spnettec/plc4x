@@ -89,15 +89,9 @@ type ConnectionResponseDataBlockBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ConnectionResponseDataBlockBuilder
 	// AsConnectionResponseDataBlockDeviceManagement converts this build to a subType of ConnectionResponseDataBlock. It is always possible to return to current builder using Done()
-	AsConnectionResponseDataBlockDeviceManagement() interface {
-		ConnectionResponseDataBlockDeviceManagementBuilder
-		Done() ConnectionResponseDataBlockBuilder
-	}
+	AsConnectionResponseDataBlockDeviceManagement() ConnectionResponseDataBlockDeviceManagementBuilder
 	// AsConnectionResponseDataBlockTunnelConnection converts this build to a subType of ConnectionResponseDataBlock. It is always possible to return to current builder using Done()
-	AsConnectionResponseDataBlockTunnelConnection() interface {
-		ConnectionResponseDataBlockTunnelConnectionBuilder
-		Done() ConnectionResponseDataBlockBuilder
-	}
+	AsConnectionResponseDataBlockTunnelConnection() ConnectionResponseDataBlockTunnelConnectionBuilder
 	// Build builds the ConnectionResponseDataBlock or returns an error if something is wrong
 	PartialBuild() (ConnectionResponseDataBlockContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -148,14 +142,8 @@ func (b *_ConnectionResponseDataBlockBuilder) PartialMustBuild() ConnectionRespo
 	return build
 }
 
-func (b *_ConnectionResponseDataBlockBuilder) AsConnectionResponseDataBlockDeviceManagement() interface {
-	ConnectionResponseDataBlockDeviceManagementBuilder
-	Done() ConnectionResponseDataBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConnectionResponseDataBlockDeviceManagementBuilder
-		Done() ConnectionResponseDataBlockBuilder
-	}); ok {
+func (b *_ConnectionResponseDataBlockBuilder) AsConnectionResponseDataBlockDeviceManagement() ConnectionResponseDataBlockDeviceManagementBuilder {
+	if cb, ok := b.childBuilder.(ConnectionResponseDataBlockDeviceManagementBuilder); ok {
 		return cb
 	}
 	cb := NewConnectionResponseDataBlockDeviceManagementBuilder().(*_ConnectionResponseDataBlockDeviceManagementBuilder)
@@ -164,14 +152,8 @@ func (b *_ConnectionResponseDataBlockBuilder) AsConnectionResponseDataBlockDevic
 	return cb
 }
 
-func (b *_ConnectionResponseDataBlockBuilder) AsConnectionResponseDataBlockTunnelConnection() interface {
-	ConnectionResponseDataBlockTunnelConnectionBuilder
-	Done() ConnectionResponseDataBlockBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ConnectionResponseDataBlockTunnelConnectionBuilder
-		Done() ConnectionResponseDataBlockBuilder
-	}); ok {
+func (b *_ConnectionResponseDataBlockBuilder) AsConnectionResponseDataBlockTunnelConnection() ConnectionResponseDataBlockTunnelConnectionBuilder {
+	if cb, ok := b.childBuilder.(ConnectionResponseDataBlockTunnelConnectionBuilder); ok {
 		return cb
 	}
 	cb := NewConnectionResponseDataBlockTunnelConnectionBuilder().(*_ConnectionResponseDataBlockTunnelConnectionBuilder)

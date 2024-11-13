@@ -71,6 +71,8 @@ type ReaderGroupMessageDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ReaderGroupMessageDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ReaderGroupMessageDataType or returns an error if something is wrong
 	Build() (ReaderGroupMessageDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ReaderGroupMessageDataTypeBuilder) = (*_ReaderGroupMessageDataTypeBuilder
 
 func (b *_ReaderGroupMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ReaderGroupMessageDataType
 }
 
 func (b *_ReaderGroupMessageDataTypeBuilder) WithMandatoryFields() ReaderGroupMessageDataTypeBuilder {
@@ -115,8 +118,10 @@ func (b *_ReaderGroupMessageDataTypeBuilder) MustBuild() ReaderGroupMessageDataT
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReaderGroupMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ReaderGroupMessageDataType) deepCopy() *_ReaderGroupMessageDataType {
 	_ReaderGroupMessageDataTypeCopy := &_ReaderGroupMessageDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ReaderGroupMessageDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReaderGroupMessageDataTypeCopy
 }
 

@@ -95,6 +95,8 @@ type RepublishResponseBuilder interface {
 	WithNotificationMessage(NotificationMessage) RepublishResponseBuilder
 	// WithNotificationMessageBuilder adds NotificationMessage (property field) which is build by the builder
 	WithNotificationMessageBuilder(func(NotificationMessageBuilder) NotificationMessageBuilder) RepublishResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the RepublishResponse or returns an error if something is wrong
 	Build() (RepublishResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (RepublishResponseBuilder) = (*_RepublishResponseBuilder)(nil)
 
 func (b *_RepublishResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._RepublishResponse
 }
 
 func (b *_RepublishResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, notificationMessage NotificationMessage) RepublishResponseBuilder {
@@ -187,8 +190,10 @@ func (b *_RepublishResponseBuilder) MustBuild() RepublishResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_RepublishResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_RepublishResponse) deepCopy() *_RepublishResponse {
 	}
 	_RepublishResponseCopy := &_RepublishResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ResponseHeader),
-		m.NotificationMessage.DeepCopy().(NotificationMessage),
+		utils.DeepCopy[ResponseHeader](m.ResponseHeader),
+		utils.DeepCopy[NotificationMessage](m.NotificationMessage),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_RepublishResponseCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RepublishResponseCopy
 }
 

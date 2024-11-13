@@ -84,6 +84,8 @@ type BACnetPropertyStatesStateBuilder interface {
 	WithState(BACnetEventStateTagged) BACnetPropertyStatesStateBuilder
 	// WithStateBuilder adds State (property field) which is build by the builder
 	WithStateBuilder(func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetPropertyStatesStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesState or returns an error if something is wrong
 	Build() (BACnetPropertyStatesState, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesStateBuilder) = (*_BACnetPropertyStatesStateBuilder)(
 
 func (b *_BACnetPropertyStatesStateBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesState
 }
 
 func (b *_BACnetPropertyStatesStateBuilder) WithMandatoryFields(state BACnetEventStateTagged) BACnetPropertyStatesStateBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesStateBuilder) MustBuild() BACnetPropertyStatesStat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesStateBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesState) deepCopy() *_BACnetPropertyStatesState {
 	}
 	_BACnetPropertyStatesStateCopy := &_BACnetPropertyStatesState{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.State.DeepCopy().(BACnetEventStateTagged),
+		utils.DeepCopy[BACnetEventStateTagged](m.State),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesStateCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesStateCopy
 }
 

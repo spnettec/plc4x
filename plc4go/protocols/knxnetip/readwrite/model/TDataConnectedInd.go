@@ -71,6 +71,8 @@ type TDataConnectedIndBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() TDataConnectedIndBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the TDataConnectedInd or returns an error if something is wrong
 	Build() (TDataConnectedInd, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (TDataConnectedIndBuilder) = (*_TDataConnectedIndBuilder)(nil)
 
 func (b *_TDataConnectedIndBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._TDataConnectedInd
 }
 
 func (b *_TDataConnectedIndBuilder) WithMandatoryFields() TDataConnectedIndBuilder {
@@ -115,8 +118,10 @@ func (b *_TDataConnectedIndBuilder) MustBuild() TDataConnectedInd {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TDataConnectedIndBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_TDataConnectedInd) deepCopy() *_TDataConnectedInd {
 	_TDataConnectedIndCopy := &_TDataConnectedInd{
 		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_TDataConnectedIndCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _TDataConnectedIndCopy
 }
 

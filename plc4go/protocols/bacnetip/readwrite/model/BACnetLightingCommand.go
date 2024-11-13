@@ -519,12 +519,12 @@ func (m *_BACnetLightingCommand) deepCopy() *_BACnetLightingCommand {
 		return nil
 	}
 	_BACnetLightingCommandCopy := &_BACnetLightingCommand{
-		m.LightningOperation.DeepCopy().(BACnetLightingOperationTagged),
-		m.TargetLevel.DeepCopy().(BACnetContextTagReal),
-		m.RampRate.DeepCopy().(BACnetContextTagReal),
-		m.StepIncrement.DeepCopy().(BACnetContextTagReal),
-		m.FadeTime.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetLightingOperationTagged](m.LightningOperation),
+		utils.DeepCopy[BACnetContextTagReal](m.TargetLevel),
+		utils.DeepCopy[BACnetContextTagReal](m.RampRate),
+		utils.DeepCopy[BACnetContextTagReal](m.StepIncrement),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.FadeTime),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Priority),
 	}
 	return _BACnetLightingCommandCopy
 }

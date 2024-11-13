@@ -86,6 +86,8 @@ type BACnetConstructedDataIntegerValueDeadbandBuilder interface {
 	WithDeadband(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueDeadbandBuilder
 	// WithDeadbandBuilder adds Deadband (property field) which is build by the builder
 	WithDeadbandBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntegerValueDeadbandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIntegerValueDeadband or returns an error if something is wrong
 	Build() (BACnetConstructedDataIntegerValueDeadband, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIntegerValueDeadbandBuilder) = (*_BACnetConstructedD
 
 func (b *_BACnetConstructedDataIntegerValueDeadbandBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIntegerValueDeadband
 }
 
 func (b *_BACnetConstructedDataIntegerValueDeadbandBuilder) WithMandatoryFields(deadband BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueDeadbandBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIntegerValueDeadbandBuilder) MustBuild() BACnetCo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIntegerValueDeadbandBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataIntegerValueDeadband) deepCopy() *_BACnetConstruc
 	}
 	_BACnetConstructedDataIntegerValueDeadbandCopy := &_BACnetConstructedDataIntegerValueDeadband{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Deadband.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.Deadband),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIntegerValueDeadbandCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIntegerValueDeadbandCopy
 }
 

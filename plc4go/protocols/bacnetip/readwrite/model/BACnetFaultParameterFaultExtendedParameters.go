@@ -375,9 +375,9 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) deepCopy() *_BACnetFaultP
 		return nil
 	}
 	_BACnetFaultParameterFaultExtendedParametersCopy := &_BACnetFaultParameterFaultExtendedParameters{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetFaultParameterFaultExtendedParametersEntry, BACnetFaultParameterFaultExtendedParametersEntry](m.Parameters),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetFaultParameterFaultExtendedParametersCopy

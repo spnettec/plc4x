@@ -79,6 +79,8 @@ type EndpointUrlListDataTypeBuilder interface {
 	WithMandatoryFields(endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder
 	// WithEndpointUrlList adds EndpointUrlList (property field)
 	WithEndpointUrlList(...PascalString) EndpointUrlListDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the EndpointUrlListDataType or returns an error if something is wrong
 	Build() (EndpointUrlListDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (EndpointUrlListDataTypeBuilder) = (*_EndpointUrlListDataTypeBuilder)(nil)
 
 func (b *_EndpointUrlListDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._EndpointUrlListDataType
 }
 
 func (b *_EndpointUrlListDataTypeBuilder) WithMandatoryFields(endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder {
@@ -128,8 +131,10 @@ func (b *_EndpointUrlListDataTypeBuilder) MustBuild() EndpointUrlListDataType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EndpointUrlListDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -306,7 +311,7 @@ func (m *_EndpointUrlListDataType) deepCopy() *_EndpointUrlListDataType {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		utils.DeepCopySlice[PascalString, PascalString](m.EndpointUrlList),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_EndpointUrlListDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EndpointUrlListDataTypeCopy
 }
 

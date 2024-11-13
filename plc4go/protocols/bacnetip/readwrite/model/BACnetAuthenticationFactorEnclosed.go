@@ -394,9 +394,9 @@ func (m *_BACnetAuthenticationFactorEnclosed) deepCopy() *_BACnetAuthenticationF
 		return nil
 	}
 	_BACnetAuthenticationFactorEnclosedCopy := &_BACnetAuthenticationFactorEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.AuthenticationFactor.DeepCopy().(BACnetAuthenticationFactor),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetAuthenticationFactor](m.AuthenticationFactor),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetAuthenticationFactorEnclosedCopy

@@ -413,8 +413,8 @@ func (m *_ExpandedNodeId) deepCopy() *_ExpandedNodeId {
 	_ExpandedNodeIdCopy := &_ExpandedNodeId{
 		m.NamespaceURISpecified,
 		m.ServerIndexSpecified,
-		m.NodeId.DeepCopy().(NodeIdTypeDefinition),
-		m.NamespaceURI.DeepCopy().(PascalString),
+		utils.DeepCopy[NodeIdTypeDefinition](m.NodeId),
+		utils.DeepCopy[PascalString](m.NamespaceURI),
 		utils.CopyPtr[uint32](m.ServerIndex),
 	}
 	return _ExpandedNodeIdCopy

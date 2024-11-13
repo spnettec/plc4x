@@ -71,6 +71,8 @@ type TriggerControlDataTriggerMaxBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() TriggerControlDataTriggerMaxBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() TriggerControlDataBuilder
 	// Build builds the TriggerControlDataTriggerMax or returns an error if something is wrong
 	Build() (TriggerControlDataTriggerMax, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (TriggerControlDataTriggerMaxBuilder) = (*_TriggerControlDataTriggerMaxBui
 
 func (b *_TriggerControlDataTriggerMaxBuilder) setParent(contract TriggerControlDataContract) {
 	b.TriggerControlDataContract = contract
+	contract.(*_TriggerControlData)._SubType = b._TriggerControlDataTriggerMax
 }
 
 func (b *_TriggerControlDataTriggerMaxBuilder) WithMandatoryFields() TriggerControlDataTriggerMaxBuilder {
@@ -115,8 +118,10 @@ func (b *_TriggerControlDataTriggerMaxBuilder) MustBuild() TriggerControlDataTri
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_TriggerControlDataTriggerMaxBuilder) Done() TriggerControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewTriggerControlDataBuilder().(*_TriggerControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_TriggerControlDataTriggerMax) deepCopy() *_TriggerControlDataTriggerMa
 	_TriggerControlDataTriggerMaxCopy := &_TriggerControlDataTriggerMax{
 		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
 	}
-	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	_TriggerControlDataTriggerMaxCopy.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
 	return _TriggerControlDataTriggerMaxCopy
 }
 

@@ -83,6 +83,8 @@ type MediaTransportControlDataNextPreviousSelectionBuilder interface {
 	WithMandatoryFields(operation byte) MediaTransportControlDataNextPreviousSelectionBuilder
 	// WithOperation adds Operation (property field)
 	WithOperation(byte) MediaTransportControlDataNextPreviousSelectionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataNextPreviousSelection or returns an error if something is wrong
 	Build() (MediaTransportControlDataNextPreviousSelection, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,6 +108,7 @@ var _ (MediaTransportControlDataNextPreviousSelectionBuilder) = (*_MediaTranspor
 
 func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataNextPreviousSelection
 }
 
 func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataNextPreviousSelectionBuilder {
@@ -132,8 +135,10 @@ func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) MustBuild() Med
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -336,7 +341,7 @@ func (m *_MediaTransportControlDataNextPreviousSelection) deepCopy() *_MediaTran
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.Operation,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataNextPreviousSelectionCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataNextPreviousSelectionCopy
 }
 

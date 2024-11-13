@@ -79,6 +79,8 @@ type ElementOperandBuilder interface {
 	WithMandatoryFields(index uint32) ElementOperandBuilder
 	// WithIndex adds Index (property field)
 	WithIndex(uint32) ElementOperandBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ElementOperand or returns an error if something is wrong
 	Build() (ElementOperand, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ElementOperandBuilder) = (*_ElementOperandBuilder)(nil)
 
 func (b *_ElementOperandBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ElementOperand
 }
 
 func (b *_ElementOperandBuilder) WithMandatoryFields(index uint32) ElementOperandBuilder {
@@ -128,8 +131,10 @@ func (b *_ElementOperandBuilder) MustBuild() ElementOperand {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ElementOperandBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -286,7 +291,7 @@ func (m *_ElementOperand) deepCopy() *_ElementOperand {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Index,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ElementOperandCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ElementOperandCopy
 }
 

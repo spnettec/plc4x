@@ -113,6 +113,8 @@ type NodeAttributesBuilder interface {
 	WithWriteMask(uint32) NodeAttributesBuilder
 	// WithUserWriteMask adds UserWriteMask (property field)
 	WithUserWriteMask(uint32) NodeAttributesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the NodeAttributes or returns an error if something is wrong
 	Build() (NodeAttributes, error)
 	// MustBuild does the same as Build but panics on error
@@ -136,6 +138,7 @@ var _ (NodeAttributesBuilder) = (*_NodeAttributesBuilder)(nil)
 
 func (b *_NodeAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._NodeAttributes
 }
 
 func (b *_NodeAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32) NodeAttributesBuilder {
@@ -220,8 +223,10 @@ func (b *_NodeAttributesBuilder) MustBuild() NodeAttributes {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NodeAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -445,12 +450,12 @@ func (m *_NodeAttributes) deepCopy() *_NodeAttributes {
 	_NodeAttributesCopy := &_NodeAttributes{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedAttributes,
-		m.DisplayName.DeepCopy().(LocalizedText),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[LocalizedText](m.DisplayName),
+		utils.DeepCopy[LocalizedText](m.Description),
 		m.WriteMask,
 		m.UserWriteMask,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_NodeAttributesCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _NodeAttributesCopy
 }
 

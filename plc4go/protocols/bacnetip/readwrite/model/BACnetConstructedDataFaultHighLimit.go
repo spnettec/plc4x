@@ -86,6 +86,8 @@ type BACnetConstructedDataFaultHighLimitBuilder interface {
 	WithFaultHighLimit(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFaultHighLimitBuilder
 	// WithFaultHighLimitBuilder adds FaultHighLimit (property field) which is build by the builder
 	WithFaultHighLimitBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFaultHighLimitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataFaultHighLimit or returns an error if something is wrong
 	Build() (BACnetConstructedDataFaultHighLimit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataFaultHighLimitBuilder) = (*_BACnetConstructedDataFau
 
 func (b *_BACnetConstructedDataFaultHighLimitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataFaultHighLimit
 }
 
 func (b *_BACnetConstructedDataFaultHighLimitBuilder) WithMandatoryFields(faultHighLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFaultHighLimitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataFaultHighLimitBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataFaultHighLimitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataFaultHighLimit) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataFaultHighLimitCopy := &_BACnetConstructedDataFaultHighLimit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.FaultHighLimit.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.FaultHighLimit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataFaultHighLimitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataFaultHighLimitCopy
 }
 

@@ -85,6 +85,8 @@ type HistoryModifiedEventBuilder interface {
 	WithEvents(...HistoryEventFieldList) HistoryModifiedEventBuilder
 	// WithModificationInfos adds ModificationInfos (property field)
 	WithModificationInfos(...ModificationInfo) HistoryModifiedEventBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the HistoryModifiedEvent or returns an error if something is wrong
 	Build() (HistoryModifiedEvent, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (HistoryModifiedEventBuilder) = (*_HistoryModifiedEventBuilder)(nil)
 
 func (b *_HistoryModifiedEventBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._HistoryModifiedEvent
 }
 
 func (b *_HistoryModifiedEventBuilder) WithMandatoryFields(events []HistoryEventFieldList, modificationInfos []ModificationInfo) HistoryModifiedEventBuilder {
@@ -139,8 +142,10 @@ func (b *_HistoryModifiedEventBuilder) MustBuild() HistoryModifiedEvent {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_HistoryModifiedEventBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -355,7 +360,7 @@ func (m *_HistoryModifiedEvent) deepCopy() *_HistoryModifiedEvent {
 		utils.DeepCopySlice[HistoryEventFieldList, HistoryEventFieldList](m.Events),
 		utils.DeepCopySlice[ModificationInfo, ModificationInfo](m.ModificationInfos),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_HistoryModifiedEventCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryModifiedEventCopy
 }
 

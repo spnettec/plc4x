@@ -87,6 +87,8 @@ type S7PayloadUserDataItemClkSetRequestBuilder interface {
 	WithTimeStamp(DateAndTime) S7PayloadUserDataItemClkSetRequestBuilder
 	// WithTimeStampBuilder adds TimeStamp (property field) which is build by the builder
 	WithTimeStampBuilder(func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadUserDataItemClkSetRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadUserDataItemClkSetRequest or returns an error if something is wrong
 	Build() (S7PayloadUserDataItemClkSetRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,7 @@ var _ (S7PayloadUserDataItemClkSetRequestBuilder) = (*_S7PayloadUserDataItemClkS
 
 func (b *_S7PayloadUserDataItemClkSetRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemClkSetRequest
 }
 
 func (b *_S7PayloadUserDataItemClkSetRequestBuilder) WithMandatoryFields(timeStamp DateAndTime) S7PayloadUserDataItemClkSetRequestBuilder {
@@ -155,8 +158,10 @@ func (b *_S7PayloadUserDataItemClkSetRequestBuilder) MustBuild() S7PayloadUserDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataItemClkSetRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -345,11 +350,11 @@ func (m *_S7PayloadUserDataItemClkSetRequest) deepCopy() *_S7PayloadUserDataItem
 	}
 	_S7PayloadUserDataItemClkSetRequestCopy := &_S7PayloadUserDataItemClkSetRequest{
 		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
-		m.TimeStamp.DeepCopy().(DateAndTime),
+		utils.DeepCopy[DateAndTime](m.TimeStamp),
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadUserDataItemClkSetRequestCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemClkSetRequestCopy
 }
 

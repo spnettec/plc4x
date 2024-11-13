@@ -84,6 +84,8 @@ type BACnetSpecialEventPeriodCalendarReferenceBuilder interface {
 	WithCalendarReference(BACnetContextTagObjectIdentifier) BACnetSpecialEventPeriodCalendarReferenceBuilder
 	// WithCalendarReferenceBuilder adds CalendarReference (property field) which is build by the builder
 	WithCalendarReferenceBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetSpecialEventPeriodCalendarReferenceBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetSpecialEventPeriodBuilder
 	// Build builds the BACnetSpecialEventPeriodCalendarReference or returns an error if something is wrong
 	Build() (BACnetSpecialEventPeriodCalendarReference, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetSpecialEventPeriodCalendarReferenceBuilder) = (*_BACnetSpecialEvent
 
 func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) setParent(contract BACnetSpecialEventPeriodContract) {
 	b.BACnetSpecialEventPeriodContract = contract
+	contract.(*_BACnetSpecialEventPeriod)._SubType = b._BACnetSpecialEventPeriodCalendarReference
 }
 
 func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) WithMandatoryFields(calendarReference BACnetContextTagObjectIdentifier) BACnetSpecialEventPeriodCalendarReferenceBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) MustBuild() BACnetSp
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetSpecialEventPeriodCalendarReferenceBuilder) Done() BACnetSpecialEventPeriodBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetSpecialEventPeriodBuilder().(*_BACnetSpecialEventPeriodBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) deepCopy() *_BACnetSpecialE
 	}
 	_BACnetSpecialEventPeriodCalendarReferenceCopy := &_BACnetSpecialEventPeriodCalendarReference{
 		m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod).deepCopy(),
-		m.CalendarReference.DeepCopy().(BACnetContextTagObjectIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.CalendarReference),
 	}
-	m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = m
+	_BACnetSpecialEventPeriodCalendarReferenceCopy.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = m
 	return _BACnetSpecialEventPeriodCalendarReferenceCopy
 }
 

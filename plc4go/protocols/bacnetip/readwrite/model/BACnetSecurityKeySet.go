@@ -432,10 +432,10 @@ func (m *_BACnetSecurityKeySet) deepCopy() *_BACnetSecurityKeySet {
 		return nil
 	}
 	_BACnetSecurityKeySetCopy := &_BACnetSecurityKeySet{
-		m.KeyRevision.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ActivationTime.DeepCopy().(BACnetDateTimeEnclosed),
-		m.ExpirationTime.DeepCopy().(BACnetDateTimeEnclosed),
-		m.KeyIds.DeepCopy().(BACnetSecurityKeySetKeyIds),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.KeyRevision),
+		utils.DeepCopy[BACnetDateTimeEnclosed](m.ActivationTime),
+		utils.DeepCopy[BACnetDateTimeEnclosed](m.ExpirationTime),
+		utils.DeepCopy[BACnetSecurityKeySetKeyIds](m.KeyIds),
 	}
 	return _BACnetSecurityKeySetCopy
 }

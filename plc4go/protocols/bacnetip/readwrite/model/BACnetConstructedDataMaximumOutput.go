@@ -86,6 +86,8 @@ type BACnetConstructedDataMaximumOutputBuilder interface {
 	WithMaximumOutput(BACnetApplicationTagReal) BACnetConstructedDataMaximumOutputBuilder
 	// WithMaximumOutputBuilder adds MaximumOutput (property field) which is build by the builder
 	WithMaximumOutputBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMaximumOutputBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataMaximumOutput or returns an error if something is wrong
 	Build() (BACnetConstructedDataMaximumOutput, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataMaximumOutputBuilder) = (*_BACnetConstructedDataMaxi
 
 func (b *_BACnetConstructedDataMaximumOutputBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataMaximumOutput
 }
 
 func (b *_BACnetConstructedDataMaximumOutputBuilder) WithMandatoryFields(maximumOutput BACnetApplicationTagReal) BACnetConstructedDataMaximumOutputBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataMaximumOutputBuilder) MustBuild() BACnetConstruct
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataMaximumOutputBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataMaximumOutput) deepCopy() *_BACnetConstructedData
 	}
 	_BACnetConstructedDataMaximumOutputCopy := &_BACnetConstructedDataMaximumOutput{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.MaximumOutput.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.MaximumOutput),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataMaximumOutputCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataMaximumOutputCopy
 }
 

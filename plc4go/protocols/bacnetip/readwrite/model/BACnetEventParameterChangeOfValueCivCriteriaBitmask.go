@@ -84,6 +84,8 @@ type BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder interface {
 	WithBitmask(BACnetContextTagBitString) BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
 	// WithBitmaskBuilder adds Bitmask (property field) which is build by the builder
 	WithBitmaskBuilder(func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
 	// Build builds the BACnetEventParameterChangeOfValueCivCriteriaBitmask or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) = (*_BACnetEv
 
 func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) setParent(contract BACnetEventParameterChangeOfValueCivCriteriaContract) {
 	b.BACnetEventParameterChangeOfValueCivCriteriaContract = contract
+	contract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = b._BACnetEventParameterChangeOfValueCivCriteriaBitmask
 }
 
 func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) WithMandatoryFields(bitmask BACnetContextTagBitString) BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) MustBuild(
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder) Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterChangeOfValueCivCriteriaBuilder().(*_BACnetEventParameterChangeOfValueCivCriteriaBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) deepCopy() *_BACn
 	}
 	_BACnetEventParameterChangeOfValueCivCriteriaBitmaskCopy := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
 		m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).deepCopy(),
-		m.Bitmask.DeepCopy().(BACnetContextTagBitString),
+		utils.DeepCopy[BACnetContextTagBitString](m.Bitmask),
 	}
-	m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = m
+	_BACnetEventParameterChangeOfValueCivCriteriaBitmaskCopy.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = m
 	return _BACnetEventParameterChangeOfValueCivCriteriaBitmaskCopy
 }
 

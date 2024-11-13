@@ -374,9 +374,9 @@ func (m *_BACnetSecurityKeySetKeyIds) deepCopy() *_BACnetSecurityKeySetKeyIds {
 		return nil
 	}
 	_BACnetSecurityKeySetKeyIdsCopy := &_BACnetSecurityKeySetKeyIds{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetKeyIdentifier, BACnetKeyIdentifier](m.KeyIds),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetSecurityKeySetKeyIdsCopy

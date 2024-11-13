@@ -84,6 +84,8 @@ type BACnetValueSourceObjectBuilder interface {
 	WithObject(BACnetDeviceObjectReferenceEnclosed) BACnetValueSourceObjectBuilder
 	// WithObjectBuilder adds Object (property field) which is build by the builder
 	WithObjectBuilder(func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetValueSourceObjectBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetValueSourceBuilder
 	// Build builds the BACnetValueSourceObject or returns an error if something is wrong
 	Build() (BACnetValueSourceObject, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetValueSourceObjectBuilder) = (*_BACnetValueSourceObjectBuilder)(nil)
 
 func (b *_BACnetValueSourceObjectBuilder) setParent(contract BACnetValueSourceContract) {
 	b.BACnetValueSourceContract = contract
+	contract.(*_BACnetValueSource)._SubType = b._BACnetValueSourceObject
 }
 
 func (b *_BACnetValueSourceObjectBuilder) WithMandatoryFields(object BACnetDeviceObjectReferenceEnclosed) BACnetValueSourceObjectBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetValueSourceObjectBuilder) MustBuild() BACnetValueSourceObject {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetValueSourceObjectBuilder) Done() BACnetValueSourceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetValueSourceBuilder().(*_BACnetValueSourceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetValueSourceObject) deepCopy() *_BACnetValueSourceObject {
 	}
 	_BACnetValueSourceObjectCopy := &_BACnetValueSourceObject{
 		m.BACnetValueSourceContract.(*_BACnetValueSource).deepCopy(),
-		m.Object.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+		utils.DeepCopy[BACnetDeviceObjectReferenceEnclosed](m.Object),
 	}
-	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	_BACnetValueSourceObjectCopy.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
 	return _BACnetValueSourceObjectCopy
 }
 

@@ -106,6 +106,8 @@ type BACnetServiceAckVTDataBuilder interface {
 	WithVtDataFlag(BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder
 	// WithVtDataFlagBuilder adds VtDataFlag (property field) which is build by the builder
 	WithVtDataFlagBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTDataBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckVTData or returns an error if something is wrong
 	Build() (BACnetServiceAckVTData, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,7 @@ var _ (BACnetServiceAckVTDataBuilder) = (*_BACnetServiceAckVTDataBuilder)(nil)
 
 func (b *_BACnetServiceAckVTDataBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckVTData
 }
 
 func (b *_BACnetServiceAckVTDataBuilder) WithMandatoryFields(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder {
@@ -222,8 +225,10 @@ func (b *_BACnetServiceAckVTDataBuilder) MustBuild() BACnetServiceAckVTData {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckVTDataBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -412,11 +417,11 @@ func (m *_BACnetServiceAckVTData) deepCopy() *_BACnetServiceAckVTData {
 	}
 	_BACnetServiceAckVTDataCopy := &_BACnetServiceAckVTData{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
-		m.VtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.VtNewData.DeepCopy().(BACnetApplicationTagOctetString),
-		m.VtDataFlag.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.VtSessionIdentifier),
+		utils.DeepCopy[BACnetApplicationTagOctetString](m.VtNewData),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.VtDataFlag),
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckVTDataCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckVTDataCopy
 }
 

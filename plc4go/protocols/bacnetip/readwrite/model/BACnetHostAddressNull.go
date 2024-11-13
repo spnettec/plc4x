@@ -84,6 +84,8 @@ type BACnetHostAddressNullBuilder interface {
 	WithNone(BACnetContextTagNull) BACnetHostAddressNullBuilder
 	// WithNoneBuilder adds None (property field) which is build by the builder
 	WithNoneBuilder(func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetHostAddressNullBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetHostAddressBuilder
 	// Build builds the BACnetHostAddressNull or returns an error if something is wrong
 	Build() (BACnetHostAddressNull, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetHostAddressNullBuilder) = (*_BACnetHostAddressNullBuilder)(nil)
 
 func (b *_BACnetHostAddressNullBuilder) setParent(contract BACnetHostAddressContract) {
 	b.BACnetHostAddressContract = contract
+	contract.(*_BACnetHostAddress)._SubType = b._BACnetHostAddressNull
 }
 
 func (b *_BACnetHostAddressNullBuilder) WithMandatoryFields(none BACnetContextTagNull) BACnetHostAddressNullBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetHostAddressNullBuilder) MustBuild() BACnetHostAddressNull {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetHostAddressNullBuilder) Done() BACnetHostAddressBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetHostAddressBuilder().(*_BACnetHostAddressBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetHostAddressNull) deepCopy() *_BACnetHostAddressNull {
 	}
 	_BACnetHostAddressNullCopy := &_BACnetHostAddressNull{
 		m.BACnetHostAddressContract.(*_BACnetHostAddress).deepCopy(),
-		m.None.DeepCopy().(BACnetContextTagNull),
+		utils.DeepCopy[BACnetContextTagNull](m.None),
 	}
-	m.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m
+	_BACnetHostAddressNullCopy.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m
 	return _BACnetHostAddressNullCopy
 }
 

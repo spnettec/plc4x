@@ -85,6 +85,8 @@ type EventFieldListBuilder interface {
 	WithClientHandle(uint32) EventFieldListBuilder
 	// WithEventFields adds EventFields (property field)
 	WithEventFields(...Variant) EventFieldListBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the EventFieldList or returns an error if something is wrong
 	Build() (EventFieldList, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (EventFieldListBuilder) = (*_EventFieldListBuilder)(nil)
 
 func (b *_EventFieldListBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._EventFieldList
 }
 
 func (b *_EventFieldListBuilder) WithMandatoryFields(clientHandle uint32, eventFields []Variant) EventFieldListBuilder {
@@ -139,8 +142,10 @@ func (b *_EventFieldListBuilder) MustBuild() EventFieldList {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EventFieldListBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -335,7 +340,7 @@ func (m *_EventFieldList) deepCopy() *_EventFieldList {
 		m.ClientHandle,
 		utils.DeepCopySlice[Variant, Variant](m.EventFields),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_EventFieldListCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EventFieldListCopy
 }
 

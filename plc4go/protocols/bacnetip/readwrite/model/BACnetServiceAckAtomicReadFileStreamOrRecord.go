@@ -121,15 +121,9 @@ type BACnetServiceAckAtomicReadFileStreamOrRecordBuilder interface {
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
 	// AsBACnetServiceAckAtomicReadFileStream converts this build to a subType of BACnetServiceAckAtomicReadFileStreamOrRecord. It is always possible to return to current builder using Done()
-	AsBACnetServiceAckAtomicReadFileStream() interface {
-		BACnetServiceAckAtomicReadFileStreamBuilder
-		Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
-	}
+	AsBACnetServiceAckAtomicReadFileStream() BACnetServiceAckAtomicReadFileStreamBuilder
 	// AsBACnetServiceAckAtomicReadFileRecord converts this build to a subType of BACnetServiceAckAtomicReadFileStreamOrRecord. It is always possible to return to current builder using Done()
-	AsBACnetServiceAckAtomicReadFileRecord() interface {
-		BACnetServiceAckAtomicReadFileRecordBuilder
-		Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
-	}
+	AsBACnetServiceAckAtomicReadFileRecord() BACnetServiceAckAtomicReadFileRecordBuilder
 	// Build builds the BACnetServiceAckAtomicReadFileStreamOrRecord or returns an error if something is wrong
 	PartialBuild() (BACnetServiceAckAtomicReadFileStreamOrRecordContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -252,14 +246,8 @@ func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) PartialMustBuild(
 	return build
 }
 
-func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) AsBACnetServiceAckAtomicReadFileStream() interface {
-	BACnetServiceAckAtomicReadFileStreamBuilder
-	Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetServiceAckAtomicReadFileStreamBuilder
-		Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
-	}); ok {
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) AsBACnetServiceAckAtomicReadFileStream() BACnetServiceAckAtomicReadFileStreamBuilder {
+	if cb, ok := b.childBuilder.(BACnetServiceAckAtomicReadFileStreamBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetServiceAckAtomicReadFileStreamBuilder().(*_BACnetServiceAckAtomicReadFileStreamBuilder)
@@ -268,14 +256,8 @@ func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) AsBACnetServiceAc
 	return cb
 }
 
-func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) AsBACnetServiceAckAtomicReadFileRecord() interface {
-	BACnetServiceAckAtomicReadFileRecordBuilder
-	Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetServiceAckAtomicReadFileRecordBuilder
-		Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
-	}); ok {
+func (b *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder) AsBACnetServiceAckAtomicReadFileRecord() BACnetServiceAckAtomicReadFileRecordBuilder {
+	if cb, ok := b.childBuilder.(BACnetServiceAckAtomicReadFileRecordBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetServiceAckAtomicReadFileRecordBuilder().(*_BACnetServiceAckAtomicReadFileRecordBuilder)
@@ -536,9 +518,9 @@ func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) deepCopy() *_BACnetServi
 	}
 	_BACnetServiceAckAtomicReadFileStreamOrRecordCopy := &_BACnetServiceAckAtomicReadFileStreamOrRecord{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
 	return _BACnetServiceAckAtomicReadFileStreamOrRecordCopy
 }

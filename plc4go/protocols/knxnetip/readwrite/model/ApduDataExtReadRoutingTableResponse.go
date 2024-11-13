@@ -71,6 +71,8 @@ type ApduDataExtReadRoutingTableResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtReadRoutingTableResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtReadRoutingTableResponse or returns an error if something is wrong
 	Build() (ApduDataExtReadRoutingTableResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataExtReadRoutingTableResponseBuilder) = (*_ApduDataExtReadRoutingTa
 
 func (b *_ApduDataExtReadRoutingTableResponseBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtReadRoutingTableResponse
 }
 
 func (b *_ApduDataExtReadRoutingTableResponseBuilder) WithMandatoryFields() ApduDataExtReadRoutingTableResponseBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataExtReadRoutingTableResponseBuilder) MustBuild() ApduDataExtRea
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtReadRoutingTableResponseBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataExtReadRoutingTableResponse) deepCopy() *_ApduDataExtReadRouti
 	_ApduDataExtReadRoutingTableResponseCopy := &_ApduDataExtReadRoutingTableResponse{
 		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtReadRoutingTableResponseCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtReadRoutingTableResponseCopy
 }
 

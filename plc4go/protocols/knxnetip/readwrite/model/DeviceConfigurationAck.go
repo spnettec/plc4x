@@ -86,6 +86,8 @@ type DeviceConfigurationAckBuilder interface {
 	WithDeviceConfigurationAckDataBlock(DeviceConfigurationAckDataBlock) DeviceConfigurationAckBuilder
 	// WithDeviceConfigurationAckDataBlockBuilder adds DeviceConfigurationAckDataBlock (property field) which is build by the builder
 	WithDeviceConfigurationAckDataBlockBuilder(func(DeviceConfigurationAckDataBlockBuilder) DeviceConfigurationAckDataBlockBuilder) DeviceConfigurationAckBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the DeviceConfigurationAck or returns an error if something is wrong
 	Build() (DeviceConfigurationAck, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (DeviceConfigurationAckBuilder) = (*_DeviceConfigurationAckBuilder)(nil)
 
 func (b *_DeviceConfigurationAckBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._DeviceConfigurationAck
 }
 
 func (b *_DeviceConfigurationAckBuilder) WithMandatoryFields(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) DeviceConfigurationAckBuilder {
@@ -154,8 +157,10 @@ func (b *_DeviceConfigurationAckBuilder) MustBuild() DeviceConfigurationAck {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeviceConfigurationAckBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -310,9 +315,9 @@ func (m *_DeviceConfigurationAck) deepCopy() *_DeviceConfigurationAck {
 	}
 	_DeviceConfigurationAckCopy := &_DeviceConfigurationAck{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
-		m.DeviceConfigurationAckDataBlock.DeepCopy().(DeviceConfigurationAckDataBlock),
+		utils.DeepCopy[DeviceConfigurationAckDataBlock](m.DeviceConfigurationAckDataBlock),
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_DeviceConfigurationAckCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _DeviceConfigurationAckCopy
 }
 

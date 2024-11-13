@@ -102,6 +102,8 @@ type LightingDataLabelBuilder interface {
 	WithOptionalLanguage(Language) LightingDataLabelBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) LightingDataLabelBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() LightingDataBuilder
 	// Build builds the LightingDataLabel or returns an error if something is wrong
 	Build() (LightingDataLabel, error)
 	// MustBuild does the same as Build but panics on error
@@ -125,6 +127,7 @@ var _ (LightingDataLabelBuilder) = (*_LightingDataLabelBuilder)(nil)
 
 func (b *_LightingDataLabelBuilder) setParent(contract LightingDataContract) {
 	b.LightingDataContract = contract
+	contract.(*_LightingData)._SubType = b._LightingDataLabel
 }
 
 func (b *_LightingDataLabelBuilder) WithMandatoryFields(group byte, labelOptions LightingLabelOptions, data []byte) LightingDataLabelBuilder {
@@ -185,8 +188,10 @@ func (b *_LightingDataLabelBuilder) MustBuild() LightingDataLabel {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_LightingDataLabelBuilder) Done() LightingDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewLightingDataBuilder().(*_LightingDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -394,11 +399,11 @@ func (m *_LightingDataLabel) deepCopy() *_LightingDataLabel {
 	_LightingDataLabelCopy := &_LightingDataLabel{
 		m.LightingDataContract.(*_LightingData).deepCopy(),
 		m.Group,
-		m.LabelOptions.DeepCopy().(LightingLabelOptions),
+		utils.DeepCopy[LightingLabelOptions](m.LabelOptions),
 		utils.CopyPtr[Language](m.Language),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.LightingDataContract.(*_LightingData)._SubType = m
+	_LightingDataLabelCopy.LightingDataContract.(*_LightingData)._SubType = m
 	return _LightingDataLabelCopy
 }
 

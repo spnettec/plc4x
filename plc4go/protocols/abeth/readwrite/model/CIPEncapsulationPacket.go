@@ -113,25 +113,13 @@ type CIPEncapsulationPacketBuilder interface {
 	// WithOptions adds Options (property field)
 	WithOptions(uint32) CIPEncapsulationPacketBuilder
 	// AsCIPEncapsulationConnectionRequest converts this build to a subType of CIPEncapsulationPacket. It is always possible to return to current builder using Done()
-	AsCIPEncapsulationConnectionRequest() interface {
-		CIPEncapsulationConnectionRequestBuilder
-		Done() CIPEncapsulationPacketBuilder
-	}
+	AsCIPEncapsulationConnectionRequest() CIPEncapsulationConnectionRequestBuilder
 	// AsCIPEncapsulationConnectionResponse converts this build to a subType of CIPEncapsulationPacket. It is always possible to return to current builder using Done()
-	AsCIPEncapsulationConnectionResponse() interface {
-		CIPEncapsulationConnectionResponseBuilder
-		Done() CIPEncapsulationPacketBuilder
-	}
+	AsCIPEncapsulationConnectionResponse() CIPEncapsulationConnectionResponseBuilder
 	// AsCIPEncapsulationReadRequest converts this build to a subType of CIPEncapsulationPacket. It is always possible to return to current builder using Done()
-	AsCIPEncapsulationReadRequest() interface {
-		CIPEncapsulationReadRequestBuilder
-		Done() CIPEncapsulationPacketBuilder
-	}
+	AsCIPEncapsulationReadRequest() CIPEncapsulationReadRequestBuilder
 	// AsCIPEncapsulationReadResponse converts this build to a subType of CIPEncapsulationPacket. It is always possible to return to current builder using Done()
-	AsCIPEncapsulationReadResponse() interface {
-		CIPEncapsulationReadResponseBuilder
-		Done() CIPEncapsulationPacketBuilder
-	}
+	AsCIPEncapsulationReadResponse() CIPEncapsulationReadResponseBuilder
 	// Build builds the CIPEncapsulationPacket or returns an error if something is wrong
 	PartialBuild() (CIPEncapsulationPacketContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -202,14 +190,8 @@ func (b *_CIPEncapsulationPacketBuilder) PartialMustBuild() CIPEncapsulationPack
 	return build
 }
 
-func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationConnectionRequest() interface {
-	CIPEncapsulationConnectionRequestBuilder
-	Done() CIPEncapsulationPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CIPEncapsulationConnectionRequestBuilder
-		Done() CIPEncapsulationPacketBuilder
-	}); ok {
+func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationConnectionRequest() CIPEncapsulationConnectionRequestBuilder {
+	if cb, ok := b.childBuilder.(CIPEncapsulationConnectionRequestBuilder); ok {
 		return cb
 	}
 	cb := NewCIPEncapsulationConnectionRequestBuilder().(*_CIPEncapsulationConnectionRequestBuilder)
@@ -218,14 +200,8 @@ func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationConnectionRequest() i
 	return cb
 }
 
-func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationConnectionResponse() interface {
-	CIPEncapsulationConnectionResponseBuilder
-	Done() CIPEncapsulationPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CIPEncapsulationConnectionResponseBuilder
-		Done() CIPEncapsulationPacketBuilder
-	}); ok {
+func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationConnectionResponse() CIPEncapsulationConnectionResponseBuilder {
+	if cb, ok := b.childBuilder.(CIPEncapsulationConnectionResponseBuilder); ok {
 		return cb
 	}
 	cb := NewCIPEncapsulationConnectionResponseBuilder().(*_CIPEncapsulationConnectionResponseBuilder)
@@ -234,14 +210,8 @@ func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationConnectionResponse() 
 	return cb
 }
 
-func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationReadRequest() interface {
-	CIPEncapsulationReadRequestBuilder
-	Done() CIPEncapsulationPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CIPEncapsulationReadRequestBuilder
-		Done() CIPEncapsulationPacketBuilder
-	}); ok {
+func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationReadRequest() CIPEncapsulationReadRequestBuilder {
+	if cb, ok := b.childBuilder.(CIPEncapsulationReadRequestBuilder); ok {
 		return cb
 	}
 	cb := NewCIPEncapsulationReadRequestBuilder().(*_CIPEncapsulationReadRequestBuilder)
@@ -250,14 +220,8 @@ func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationReadRequest() interfa
 	return cb
 }
 
-func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationReadResponse() interface {
-	CIPEncapsulationReadResponseBuilder
-	Done() CIPEncapsulationPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CIPEncapsulationReadResponseBuilder
-		Done() CIPEncapsulationPacketBuilder
-	}); ok {
+func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationReadResponse() CIPEncapsulationReadResponseBuilder {
+	if cb, ok := b.childBuilder.(CIPEncapsulationReadResponseBuilder); ok {
 		return cb
 	}
 	cb := NewCIPEncapsulationReadResponseBuilder().(*_CIPEncapsulationReadResponseBuilder)

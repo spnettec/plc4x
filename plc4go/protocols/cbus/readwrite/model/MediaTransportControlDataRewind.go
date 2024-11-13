@@ -95,6 +95,8 @@ type MediaTransportControlDataRewindBuilder interface {
 	WithMandatoryFields(operation byte) MediaTransportControlDataRewindBuilder
 	// WithOperation adds Operation (property field)
 	WithOperation(byte) MediaTransportControlDataRewindBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataRewind or returns an error if something is wrong
 	Build() (MediaTransportControlDataRewind, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (MediaTransportControlDataRewindBuilder) = (*_MediaTransportControlDataRew
 
 func (b *_MediaTransportControlDataRewindBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataRewind
 }
 
 func (b *_MediaTransportControlDataRewindBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataRewindBuilder {
@@ -144,8 +147,10 @@ func (b *_MediaTransportControlDataRewindBuilder) MustBuild() MediaTransportCont
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataRewindBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -467,7 +472,7 @@ func (m *_MediaTransportControlDataRewind) deepCopy() *_MediaTransportControlDat
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.Operation,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataRewindCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataRewindCopy
 }
 

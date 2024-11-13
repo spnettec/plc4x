@@ -84,6 +84,8 @@ type BACnetTimerStateChangeValueObjectidentifierBuilder interface {
 	WithObjectidentifierValue(BACnetApplicationTagObjectIdentifier) BACnetTimerStateChangeValueObjectidentifierBuilder
 	// WithObjectidentifierValueBuilder adds ObjectidentifierValue (property field) which is build by the builder
 	WithObjectidentifierValueBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetTimerStateChangeValueObjectidentifierBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimerStateChangeValueBuilder
 	// Build builds the BACnetTimerStateChangeValueObjectidentifier or returns an error if something is wrong
 	Build() (BACnetTimerStateChangeValueObjectidentifier, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimerStateChangeValueObjectidentifierBuilder) = (*_BACnetTimerState
 
 func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
 	b.BACnetTimerStateChangeValueContract = contract
+	contract.(*_BACnetTimerStateChangeValue)._SubType = b._BACnetTimerStateChangeValueObjectidentifier
 }
 
 func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetTimerStateChangeValueObjectidentifierBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) MustBuild() BACnet
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimerStateChangeValueObjectidentifierBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetTimerStateChangeValueObjectidentifier) deepCopy() *_BACnetTimerS
 	}
 	_BACnetTimerStateChangeValueObjectidentifierCopy := &_BACnetTimerStateChangeValueObjectidentifier{
 		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
-		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectidentifierValue),
 	}
-	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	_BACnetTimerStateChangeValueObjectidentifierCopy.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
 	return _BACnetTimerStateChangeValueObjectidentifierCopy
 }
 

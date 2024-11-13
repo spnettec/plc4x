@@ -333,7 +333,7 @@ func (m *_BACnetSecurityLevelTagged) deepCopy() *_BACnetSecurityLevelTagged {
 		return nil
 	}
 	_BACnetSecurityLevelTaggedCopy := &_BACnetSecurityLevelTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

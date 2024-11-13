@@ -333,7 +333,7 @@ func (m *_BACnetDoorSecuredStatusTagged) deepCopy() *_BACnetDoorSecuredStatusTag
 		return nil
 	}
 	_BACnetDoorSecuredStatusTaggedCopy := &_BACnetDoorSecuredStatusTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

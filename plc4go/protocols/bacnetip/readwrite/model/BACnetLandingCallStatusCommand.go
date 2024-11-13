@@ -101,15 +101,9 @@ type BACnetLandingCallStatusCommandBuilder interface {
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLandingCallStatusCommandBuilder
 	// AsBACnetLandingCallStatusCommandDirection converts this build to a subType of BACnetLandingCallStatusCommand. It is always possible to return to current builder using Done()
-	AsBACnetLandingCallStatusCommandDirection() interface {
-		BACnetLandingCallStatusCommandDirectionBuilder
-		Done() BACnetLandingCallStatusCommandBuilder
-	}
+	AsBACnetLandingCallStatusCommandDirection() BACnetLandingCallStatusCommandDirectionBuilder
 	// AsBACnetLandingCallStatusCommandDestination converts this build to a subType of BACnetLandingCallStatusCommand. It is always possible to return to current builder using Done()
-	AsBACnetLandingCallStatusCommandDestination() interface {
-		BACnetLandingCallStatusCommandDestinationBuilder
-		Done() BACnetLandingCallStatusCommandBuilder
-	}
+	AsBACnetLandingCallStatusCommandDestination() BACnetLandingCallStatusCommandDestinationBuilder
 	// Build builds the BACnetLandingCallStatusCommand or returns an error if something is wrong
 	PartialBuild() (BACnetLandingCallStatusCommandContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -184,14 +178,8 @@ func (b *_BACnetLandingCallStatusCommandBuilder) PartialMustBuild() BACnetLandin
 	return build
 }
 
-func (b *_BACnetLandingCallStatusCommandBuilder) AsBACnetLandingCallStatusCommandDirection() interface {
-	BACnetLandingCallStatusCommandDirectionBuilder
-	Done() BACnetLandingCallStatusCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLandingCallStatusCommandDirectionBuilder
-		Done() BACnetLandingCallStatusCommandBuilder
-	}); ok {
+func (b *_BACnetLandingCallStatusCommandBuilder) AsBACnetLandingCallStatusCommandDirection() BACnetLandingCallStatusCommandDirectionBuilder {
+	if cb, ok := b.childBuilder.(BACnetLandingCallStatusCommandDirectionBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLandingCallStatusCommandDirectionBuilder().(*_BACnetLandingCallStatusCommandDirectionBuilder)
@@ -200,14 +188,8 @@ func (b *_BACnetLandingCallStatusCommandBuilder) AsBACnetLandingCallStatusComman
 	return cb
 }
 
-func (b *_BACnetLandingCallStatusCommandBuilder) AsBACnetLandingCallStatusCommandDestination() interface {
-	BACnetLandingCallStatusCommandDestinationBuilder
-	Done() BACnetLandingCallStatusCommandBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		BACnetLandingCallStatusCommandDestinationBuilder
-		Done() BACnetLandingCallStatusCommandBuilder
-	}); ok {
+func (b *_BACnetLandingCallStatusCommandBuilder) AsBACnetLandingCallStatusCommandDestination() BACnetLandingCallStatusCommandDestinationBuilder {
+	if cb, ok := b.childBuilder.(BACnetLandingCallStatusCommandDestinationBuilder); ok {
 		return cb
 	}
 	cb := NewBACnetLandingCallStatusCommandDestinationBuilder().(*_BACnetLandingCallStatusCommandDestinationBuilder)
@@ -433,7 +415,7 @@ func (m *_BACnetLandingCallStatusCommand) deepCopy() *_BACnetLandingCallStatusCo
 	}
 	_BACnetLandingCallStatusCommandCopy := &_BACnetLandingCallStatusCommand{
 		nil, // will be set by child
-		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.PeekedTagHeader),
 	}
 	return _BACnetLandingCallStatusCommandCopy
 }

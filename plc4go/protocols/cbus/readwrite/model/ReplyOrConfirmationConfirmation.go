@@ -92,6 +92,8 @@ type ReplyOrConfirmationConfirmationBuilder interface {
 	WithOptionalEmbeddedReply(ReplyOrConfirmation) ReplyOrConfirmationConfirmationBuilder
 	// WithOptionalEmbeddedReplyBuilder adds EmbeddedReply (property field) which is build by the builder
 	WithOptionalEmbeddedReplyBuilder(func(ReplyOrConfirmationBuilder) ReplyOrConfirmationBuilder) ReplyOrConfirmationConfirmationBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ReplyOrConfirmationBuilder
 	// Build builds the ReplyOrConfirmationConfirmation or returns an error if something is wrong
 	Build() (ReplyOrConfirmationConfirmation, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,6 +117,7 @@ var _ (ReplyOrConfirmationConfirmationBuilder) = (*_ReplyOrConfirmationConfirmat
 
 func (b *_ReplyOrConfirmationConfirmationBuilder) setParent(contract ReplyOrConfirmationContract) {
 	b.ReplyOrConfirmationContract = contract
+	contract.(*_ReplyOrConfirmation)._SubType = b._ReplyOrConfirmationConfirmation
 }
 
 func (b *_ReplyOrConfirmationConfirmationBuilder) WithMandatoryFields(confirmation Confirmation) ReplyOrConfirmationConfirmationBuilder {
@@ -178,8 +181,10 @@ func (b *_ReplyOrConfirmationConfirmationBuilder) MustBuild() ReplyOrConfirmatio
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReplyOrConfirmationConfirmationBuilder) Done() ReplyOrConfirmationBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewReplyOrConfirmationBuilder().(*_ReplyOrConfirmationBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -353,10 +358,10 @@ func (m *_ReplyOrConfirmationConfirmation) deepCopy() *_ReplyOrConfirmationConfi
 	}
 	_ReplyOrConfirmationConfirmationCopy := &_ReplyOrConfirmationConfirmation{
 		m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).deepCopy(),
-		m.Confirmation.DeepCopy().(Confirmation),
-		m.EmbeddedReply.DeepCopy().(ReplyOrConfirmation),
+		utils.DeepCopy[Confirmation](m.Confirmation),
+		utils.DeepCopy[ReplyOrConfirmation](m.EmbeddedReply),
 	}
-	m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = m
+	_ReplyOrConfirmationConfirmationCopy.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = m
 	return _ReplyOrConfirmationConfirmationCopy
 }
 

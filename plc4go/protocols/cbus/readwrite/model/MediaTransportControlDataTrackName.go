@@ -79,6 +79,8 @@ type MediaTransportControlDataTrackNameBuilder interface {
 	WithMandatoryFields(trackName string) MediaTransportControlDataTrackNameBuilder
 	// WithTrackName adds TrackName (property field)
 	WithTrackName(string) MediaTransportControlDataTrackNameBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataTrackName or returns an error if something is wrong
 	Build() (MediaTransportControlDataTrackName, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (MediaTransportControlDataTrackNameBuilder) = (*_MediaTransportControlData
 
 func (b *_MediaTransportControlDataTrackNameBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataTrackName
 }
 
 func (b *_MediaTransportControlDataTrackNameBuilder) WithMandatoryFields(trackName string) MediaTransportControlDataTrackNameBuilder {
@@ -128,8 +131,10 @@ func (b *_MediaTransportControlDataTrackNameBuilder) MustBuild() MediaTransportC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataTrackNameBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -282,7 +287,7 @@ func (m *_MediaTransportControlDataTrackName) deepCopy() *_MediaTransportControl
 		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.TrackName,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataTrackNameCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataTrackNameCopy
 }
 

@@ -90,6 +90,8 @@ type DeleteReferencesRequestBuilder interface {
 	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteReferencesRequestBuilder
 	// WithReferencesToDelete adds ReferencesToDelete (property field)
 	WithReferencesToDelete(...DeleteReferencesItem) DeleteReferencesRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the DeleteReferencesRequest or returns an error if something is wrong
 	Build() (DeleteReferencesRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (DeleteReferencesRequestBuilder) = (*_DeleteReferencesRequestBuilder)(nil)
 
 func (b *_DeleteReferencesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._DeleteReferencesRequest
 }
 
 func (b *_DeleteReferencesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, referencesToDelete []DeleteReferencesItem) DeleteReferencesRequestBuilder {
@@ -163,8 +166,10 @@ func (b *_DeleteReferencesRequestBuilder) MustBuild() DeleteReferencesRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_DeleteReferencesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -356,10 +361,10 @@ func (m *_DeleteReferencesRequest) deepCopy() *_DeleteReferencesRequest {
 	}
 	_DeleteReferencesRequestCopy := &_DeleteReferencesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopy[RequestHeader](m.RequestHeader),
 		utils.DeepCopySlice[DeleteReferencesItem, DeleteReferencesItem](m.ReferencesToDelete),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_DeleteReferencesRequestCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteReferencesRequestCopy
 }
 

@@ -86,6 +86,8 @@ type FirmataCommandSysexBuilder interface {
 	WithCommand(SysexCommand) FirmataCommandSysexBuilder
 	// WithCommandBuilder adds Command (property field) which is build by the builder
 	WithCommandBuilder(func(SysexCommandBuilder) SysexCommandBuilder) FirmataCommandSysexBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() FirmataCommandBuilder
 	// Build builds the FirmataCommandSysex or returns an error if something is wrong
 	Build() (FirmataCommandSysex, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (FirmataCommandSysexBuilder) = (*_FirmataCommandSysexBuilder)(nil)
 
 func (b *_FirmataCommandSysexBuilder) setParent(contract FirmataCommandContract) {
 	b.FirmataCommandContract = contract
+	contract.(*_FirmataCommand)._SubType = b._FirmataCommandSysex
 }
 
 func (b *_FirmataCommandSysexBuilder) WithMandatoryFields(command SysexCommand) FirmataCommandSysexBuilder {
@@ -154,8 +157,10 @@ func (b *_FirmataCommandSysexBuilder) MustBuild() FirmataCommandSysex {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_FirmataCommandSysexBuilder) Done() FirmataCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewFirmataCommandBuilder().(*_FirmataCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -323,10 +328,10 @@ func (m *_FirmataCommandSysex) deepCopy() *_FirmataCommandSysex {
 	}
 	_FirmataCommandSysexCopy := &_FirmataCommandSysex{
 		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
-		m.Command.DeepCopy().(SysexCommand),
+		utils.DeepCopy[SysexCommand](m.Command),
 		m.reservedField0,
 	}
-	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	_FirmataCommandSysexCopy.FirmataCommandContract.(*_FirmataCommand)._SubType = m
 	return _FirmataCommandSysexCopy
 }
 

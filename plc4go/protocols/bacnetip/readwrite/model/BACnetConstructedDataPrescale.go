@@ -86,6 +86,8 @@ type BACnetConstructedDataPrescaleBuilder interface {
 	WithPrescale(BACnetPrescale) BACnetConstructedDataPrescaleBuilder
 	// WithPrescaleBuilder adds Prescale (property field) which is build by the builder
 	WithPrescaleBuilder(func(BACnetPrescaleBuilder) BACnetPrescaleBuilder) BACnetConstructedDataPrescaleBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPrescale or returns an error if something is wrong
 	Build() (BACnetConstructedDataPrescale, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPrescaleBuilder) = (*_BACnetConstructedDataPrescaleB
 
 func (b *_BACnetConstructedDataPrescaleBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPrescale
 }
 
 func (b *_BACnetConstructedDataPrescaleBuilder) WithMandatoryFields(prescale BACnetPrescale) BACnetConstructedDataPrescaleBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPrescaleBuilder) MustBuild() BACnetConstructedDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPrescaleBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataPrescale) deepCopy() *_BACnetConstructedDataPresc
 	}
 	_BACnetConstructedDataPrescaleCopy := &_BACnetConstructedDataPrescale{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Prescale.DeepCopy().(BACnetPrescale),
+		utils.DeepCopy[BACnetPrescale](m.Prescale),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPrescaleCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPrescaleCopy
 }
 

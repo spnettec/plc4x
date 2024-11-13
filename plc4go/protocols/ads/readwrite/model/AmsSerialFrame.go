@@ -446,7 +446,7 @@ func (m *_AmsSerialFrame) deepCopy() *_AmsSerialFrame {
 		m.ReceiverAddress,
 		m.FragmentNumber,
 		m.Length,
-		m.Userdata.DeepCopy().(AmsPacket),
+		utils.DeepCopy[AmsPacket](m.Userdata),
 		m.Crc,
 	}
 	return _AmsSerialFrameCopy

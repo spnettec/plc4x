@@ -71,6 +71,8 @@ type MResetIndBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() MResetIndBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CEMIBuilder
 	// Build builds the MResetInd or returns an error if something is wrong
 	Build() (MResetInd, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (MResetIndBuilder) = (*_MResetIndBuilder)(nil)
 
 func (b *_MResetIndBuilder) setParent(contract CEMIContract) {
 	b.CEMIContract = contract
+	contract.(*_CEMI)._SubType = b._MResetInd
 }
 
 func (b *_MResetIndBuilder) WithMandatoryFields() MResetIndBuilder {
@@ -115,8 +118,10 @@ func (b *_MResetIndBuilder) MustBuild() MResetInd {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MResetIndBuilder) Done() CEMIBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCEMIBuilder().(*_CEMIBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_MResetInd) deepCopy() *_MResetInd {
 	_MResetIndCopy := &_MResetInd{
 		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
-	m.CEMIContract.(*_CEMI)._SubType = m
+	_MResetIndCopy.CEMIContract.(*_CEMI)._SubType = m
 	return _MResetIndCopy
 }
 

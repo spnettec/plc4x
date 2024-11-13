@@ -113,70 +113,31 @@ type EipPacketBuilder interface {
 	// WithOptions adds Options (property field)
 	WithOptions(uint32) EipPacketBuilder
 	// AsNullCommandRequest converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsNullCommandRequest() interface {
-		NullCommandRequestBuilder
-		Done() EipPacketBuilder
-	}
+	AsNullCommandRequest() NullCommandRequestBuilder
 	// AsNullCommandResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsNullCommandResponse() interface {
-		NullCommandResponseBuilder
-		Done() EipPacketBuilder
-	}
+	AsNullCommandResponse() NullCommandResponseBuilder
 	// AsListServicesRequest converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsListServicesRequest() interface {
-		ListServicesRequestBuilder
-		Done() EipPacketBuilder
-	}
+	AsListServicesRequest() ListServicesRequestBuilder
 	// AsNullListServicesResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsNullListServicesResponse() interface {
-		NullListServicesResponseBuilder
-		Done() EipPacketBuilder
-	}
+	AsNullListServicesResponse() NullListServicesResponseBuilder
 	// AsListServicesResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsListServicesResponse() interface {
-		ListServicesResponseBuilder
-		Done() EipPacketBuilder
-	}
+	AsListServicesResponse() ListServicesResponseBuilder
 	// AsEipListIdentityRequest converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsEipListIdentityRequest() interface {
-		EipListIdentityRequestBuilder
-		Done() EipPacketBuilder
-	}
+	AsEipListIdentityRequest() EipListIdentityRequestBuilder
 	// AsEipListIdentityResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsEipListIdentityResponse() interface {
-		EipListIdentityResponseBuilder
-		Done() EipPacketBuilder
-	}
+	AsEipListIdentityResponse() EipListIdentityResponseBuilder
 	// AsEipConnectionRequest converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsEipConnectionRequest() interface {
-		EipConnectionRequestBuilder
-		Done() EipPacketBuilder
-	}
+	AsEipConnectionRequest() EipConnectionRequestBuilder
 	// AsNullEipConnectionResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsNullEipConnectionResponse() interface {
-		NullEipConnectionResponseBuilder
-		Done() EipPacketBuilder
-	}
+	AsNullEipConnectionResponse() NullEipConnectionResponseBuilder
 	// AsEipConnectionResponse converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsEipConnectionResponse() interface {
-		EipConnectionResponseBuilder
-		Done() EipPacketBuilder
-	}
+	AsEipConnectionResponse() EipConnectionResponseBuilder
 	// AsEipDisconnectRequest converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsEipDisconnectRequest() interface {
-		EipDisconnectRequestBuilder
-		Done() EipPacketBuilder
-	}
+	AsEipDisconnectRequest() EipDisconnectRequestBuilder
 	// AsCipRRData converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsCipRRData() interface {
-		CipRRDataBuilder
-		Done() EipPacketBuilder
-	}
+	AsCipRRData() CipRRDataBuilder
 	// AsSendUnitData converts this build to a subType of EipPacket. It is always possible to return to current builder using Done()
-	AsSendUnitData() interface {
-		SendUnitDataBuilder
-		Done() EipPacketBuilder
-	}
+	AsSendUnitData() SendUnitDataBuilder
 	// Build builds the EipPacket or returns an error if something is wrong
 	PartialBuild() (EipPacketContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -247,14 +208,8 @@ func (b *_EipPacketBuilder) PartialMustBuild() EipPacketContract {
 	return build
 }
 
-func (b *_EipPacketBuilder) AsNullCommandRequest() interface {
-	NullCommandRequestBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NullCommandRequestBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsNullCommandRequest() NullCommandRequestBuilder {
+	if cb, ok := b.childBuilder.(NullCommandRequestBuilder); ok {
 		return cb
 	}
 	cb := NewNullCommandRequestBuilder().(*_NullCommandRequestBuilder)
@@ -263,14 +218,8 @@ func (b *_EipPacketBuilder) AsNullCommandRequest() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsNullCommandResponse() interface {
-	NullCommandResponseBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NullCommandResponseBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsNullCommandResponse() NullCommandResponseBuilder {
+	if cb, ok := b.childBuilder.(NullCommandResponseBuilder); ok {
 		return cb
 	}
 	cb := NewNullCommandResponseBuilder().(*_NullCommandResponseBuilder)
@@ -279,14 +228,8 @@ func (b *_EipPacketBuilder) AsNullCommandResponse() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsListServicesRequest() interface {
-	ListServicesRequestBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ListServicesRequestBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsListServicesRequest() ListServicesRequestBuilder {
+	if cb, ok := b.childBuilder.(ListServicesRequestBuilder); ok {
 		return cb
 	}
 	cb := NewListServicesRequestBuilder().(*_ListServicesRequestBuilder)
@@ -295,14 +238,8 @@ func (b *_EipPacketBuilder) AsListServicesRequest() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsNullListServicesResponse() interface {
-	NullListServicesResponseBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NullListServicesResponseBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsNullListServicesResponse() NullListServicesResponseBuilder {
+	if cb, ok := b.childBuilder.(NullListServicesResponseBuilder); ok {
 		return cb
 	}
 	cb := NewNullListServicesResponseBuilder().(*_NullListServicesResponseBuilder)
@@ -311,14 +248,8 @@ func (b *_EipPacketBuilder) AsNullListServicesResponse() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsListServicesResponse() interface {
-	ListServicesResponseBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		ListServicesResponseBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsListServicesResponse() ListServicesResponseBuilder {
+	if cb, ok := b.childBuilder.(ListServicesResponseBuilder); ok {
 		return cb
 	}
 	cb := NewListServicesResponseBuilder().(*_ListServicesResponseBuilder)
@@ -327,14 +258,8 @@ func (b *_EipPacketBuilder) AsListServicesResponse() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsEipListIdentityRequest() interface {
-	EipListIdentityRequestBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		EipListIdentityRequestBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsEipListIdentityRequest() EipListIdentityRequestBuilder {
+	if cb, ok := b.childBuilder.(EipListIdentityRequestBuilder); ok {
 		return cb
 	}
 	cb := NewEipListIdentityRequestBuilder().(*_EipListIdentityRequestBuilder)
@@ -343,14 +268,8 @@ func (b *_EipPacketBuilder) AsEipListIdentityRequest() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsEipListIdentityResponse() interface {
-	EipListIdentityResponseBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		EipListIdentityResponseBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsEipListIdentityResponse() EipListIdentityResponseBuilder {
+	if cb, ok := b.childBuilder.(EipListIdentityResponseBuilder); ok {
 		return cb
 	}
 	cb := NewEipListIdentityResponseBuilder().(*_EipListIdentityResponseBuilder)
@@ -359,14 +278,8 @@ func (b *_EipPacketBuilder) AsEipListIdentityResponse() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsEipConnectionRequest() interface {
-	EipConnectionRequestBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		EipConnectionRequestBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsEipConnectionRequest() EipConnectionRequestBuilder {
+	if cb, ok := b.childBuilder.(EipConnectionRequestBuilder); ok {
 		return cb
 	}
 	cb := NewEipConnectionRequestBuilder().(*_EipConnectionRequestBuilder)
@@ -375,14 +288,8 @@ func (b *_EipPacketBuilder) AsEipConnectionRequest() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsNullEipConnectionResponse() interface {
-	NullEipConnectionResponseBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		NullEipConnectionResponseBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsNullEipConnectionResponse() NullEipConnectionResponseBuilder {
+	if cb, ok := b.childBuilder.(NullEipConnectionResponseBuilder); ok {
 		return cb
 	}
 	cb := NewNullEipConnectionResponseBuilder().(*_NullEipConnectionResponseBuilder)
@@ -391,14 +298,8 @@ func (b *_EipPacketBuilder) AsNullEipConnectionResponse() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsEipConnectionResponse() interface {
-	EipConnectionResponseBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		EipConnectionResponseBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsEipConnectionResponse() EipConnectionResponseBuilder {
+	if cb, ok := b.childBuilder.(EipConnectionResponseBuilder); ok {
 		return cb
 	}
 	cb := NewEipConnectionResponseBuilder().(*_EipConnectionResponseBuilder)
@@ -407,14 +308,8 @@ func (b *_EipPacketBuilder) AsEipConnectionResponse() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsEipDisconnectRequest() interface {
-	EipDisconnectRequestBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		EipDisconnectRequestBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsEipDisconnectRequest() EipDisconnectRequestBuilder {
+	if cb, ok := b.childBuilder.(EipDisconnectRequestBuilder); ok {
 		return cb
 	}
 	cb := NewEipDisconnectRequestBuilder().(*_EipDisconnectRequestBuilder)
@@ -423,14 +318,8 @@ func (b *_EipPacketBuilder) AsEipDisconnectRequest() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsCipRRData() interface {
-	CipRRDataBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CipRRDataBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsCipRRData() CipRRDataBuilder {
+	if cb, ok := b.childBuilder.(CipRRDataBuilder); ok {
 		return cb
 	}
 	cb := NewCipRRDataBuilder().(*_CipRRDataBuilder)
@@ -439,14 +328,8 @@ func (b *_EipPacketBuilder) AsCipRRData() interface {
 	return cb
 }
 
-func (b *_EipPacketBuilder) AsSendUnitData() interface {
-	SendUnitDataBuilder
-	Done() EipPacketBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		SendUnitDataBuilder
-		Done() EipPacketBuilder
-	}); ok {
+func (b *_EipPacketBuilder) AsSendUnitData() SendUnitDataBuilder {
+	if cb, ok := b.childBuilder.(SendUnitDataBuilder); ok {
 		return cb
 	}
 	cb := NewSendUnitDataBuilder().(*_SendUnitDataBuilder)

@@ -85,6 +85,8 @@ type VariantExpandedNodeIdBuilder interface {
 	WithOptionalArrayLength(int32) VariantExpandedNodeIdBuilder
 	// WithValue adds Value (property field)
 	WithValue(...ExpandedNodeId) VariantExpandedNodeIdBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantExpandedNodeId or returns an error if something is wrong
 	Build() (VariantExpandedNodeId, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantExpandedNodeIdBuilder) = (*_VariantExpandedNodeIdBuilder)(nil)
 
 func (b *_VariantExpandedNodeIdBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantExpandedNodeId
 }
 
 func (b *_VariantExpandedNodeIdBuilder) WithMandatoryFields(value []ExpandedNodeId) VariantExpandedNodeIdBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantExpandedNodeIdBuilder) MustBuild() VariantExpandedNodeId {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantExpandedNodeIdBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -325,7 +330,7 @@ func (m *_VariantExpandedNodeId) deepCopy() *_VariantExpandedNodeId {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[ExpandedNodeId, ExpandedNodeId](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantExpandedNodeIdCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantExpandedNodeIdCopy
 }
 

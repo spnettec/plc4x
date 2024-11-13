@@ -84,6 +84,8 @@ type BACnetLogDataLogDataEntryUnsignedValueBuilder interface {
 	WithUnsignedValue(BACnetContextTagUnsignedInteger) BACnetLogDataLogDataEntryUnsignedValueBuilder
 	// WithUnsignedValueBuilder adds UnsignedValue (property field) which is build by the builder
 	WithUnsignedValueBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLogDataLogDataEntryUnsignedValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogDataLogDataEntryBuilder
 	// Build builds the BACnetLogDataLogDataEntryUnsignedValue or returns an error if something is wrong
 	Build() (BACnetLogDataLogDataEntryUnsignedValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogDataLogDataEntryUnsignedValueBuilder) = (*_BACnetLogDataLogDataE
 
 func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
 	b.BACnetLogDataLogDataEntryContract = contract
+	contract.(*_BACnetLogDataLogDataEntry)._SubType = b._BACnetLogDataLogDataEntryUnsignedValue
 }
 
 func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) WithMandatoryFields(unsignedValue BACnetContextTagUnsignedInteger) BACnetLogDataLogDataEntryUnsignedValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) MustBuild() BACnetLogDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogDataLogDataEntryUnsignedValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogDataLogDataEntryBuilder().(*_BACnetLogDataLogDataEntryBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogDataLogDataEntryUnsignedValue) deepCopy() *_BACnetLogDataLogD
 	}
 	_BACnetLogDataLogDataEntryUnsignedValueCopy := &_BACnetLogDataLogDataEntryUnsignedValue{
 		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
-		m.UnsignedValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.UnsignedValue),
 	}
-	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	_BACnetLogDataLogDataEntryUnsignedValueCopy.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
 	return _BACnetLogDataLogDataEntryUnsignedValueCopy
 }
 

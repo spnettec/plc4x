@@ -114,6 +114,8 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageBuilder interface {
 	WithMessage(BACnetContextTagCharacterString) BACnetConfirmedServiceRequestConfirmedTextMessageBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestConfirmedTextMessage or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestConfirmedTextMessage, error)
 	// MustBuild does the same as Build but panics on error
@@ -137,6 +139,7 @@ var _ (BACnetConfirmedServiceRequestConfirmedTextMessageBuilder) = (*_BACnetConf
 
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
 	b.BACnetConfirmedServiceRequestContract = contract
+	contract.(*_BACnetConfirmedServiceRequest)._SubType = b._BACnetConfirmedServiceRequestConfirmedTextMessage
 }
 
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageBuilder) WithMandatoryFields(textMessageSourceDevice BACnetContextTagObjectIdentifier, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString) BACnetConfirmedServiceRequestConfirmedTextMessageBuilder {
@@ -248,8 +251,10 @@ func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConfirmedServiceRequestBuilder().(*_BACnetConfirmedServiceRequestBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -462,12 +467,12 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) deepCopy() *_BACnet
 	}
 	_BACnetConfirmedServiceRequestConfirmedTextMessageCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessage{
 		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
-		m.TextMessageSourceDevice.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.MessageClass.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass),
-		m.MessagePriority.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged),
-		m.Message.DeepCopy().(BACnetContextTagCharacterString),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.TextMessageSourceDevice),
+		utils.DeepCopy[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](m.MessageClass),
+		utils.DeepCopy[BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged](m.MessagePriority),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.Message),
 	}
-	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	_BACnetConfirmedServiceRequestConfirmedTextMessageCopy.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
 	return _BACnetConfirmedServiceRequestConfirmedTextMessageCopy
 }
 

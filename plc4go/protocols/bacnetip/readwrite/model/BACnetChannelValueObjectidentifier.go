@@ -84,6 +84,8 @@ type BACnetChannelValueObjectidentifierBuilder interface {
 	WithObjectidentifierValue(BACnetApplicationTagObjectIdentifier) BACnetChannelValueObjectidentifierBuilder
 	// WithObjectidentifierValueBuilder adds ObjectidentifierValue (property field) which is build by the builder
 	WithObjectidentifierValueBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetChannelValueObjectidentifierBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueObjectidentifier or returns an error if something is wrong
 	Build() (BACnetChannelValueObjectidentifier, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueObjectidentifierBuilder) = (*_BACnetChannelValueObjecti
 
 func (b *_BACnetChannelValueObjectidentifierBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueObjectidentifier
 }
 
 func (b *_BACnetChannelValueObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetChannelValueObjectidentifierBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueObjectidentifierBuilder) MustBuild() BACnetChannelVa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueObjectidentifierBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueObjectidentifier) deepCopy() *_BACnetChannelValueObj
 	}
 	_BACnetChannelValueObjectidentifierCopy := &_BACnetChannelValueObjectidentifier{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		utils.DeepCopy[BACnetApplicationTagObjectIdentifier](m.ObjectidentifierValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueObjectidentifierCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueObjectidentifierCopy
 }
 

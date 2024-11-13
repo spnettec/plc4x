@@ -532,10 +532,10 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) deepCopy() *
 		return nil
 	}
 	_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierCopy := &_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.RawObjectType.DeepCopy().(BACnetContextTagEnumerated),
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagEnumerated](m.RawObjectType),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetConfirmedServiceRequestCreateObjectObjectSpecifierCopy

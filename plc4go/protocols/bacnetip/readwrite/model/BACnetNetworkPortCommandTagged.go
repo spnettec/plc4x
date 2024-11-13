@@ -393,7 +393,7 @@ func (m *_BACnetNetworkPortCommandTagged) deepCopy() *_BACnetNetworkPortCommandT
 		return nil
 	}
 	_BACnetNetworkPortCommandTaggedCopy := &_BACnetNetworkPortCommandTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

@@ -85,6 +85,8 @@ type VariantExtensionObjectBuilder interface {
 	WithOptionalArrayLength(int32) VariantExtensionObjectBuilder
 	// WithValue adds Value (property field)
 	WithValue(...ExtensionObject) VariantExtensionObjectBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantExtensionObject or returns an error if something is wrong
 	Build() (VariantExtensionObject, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantExtensionObjectBuilder) = (*_VariantExtensionObjectBuilder)(nil)
 
 func (b *_VariantExtensionObjectBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantExtensionObject
 }
 
 func (b *_VariantExtensionObjectBuilder) WithMandatoryFields(value []ExtensionObject) VariantExtensionObjectBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantExtensionObjectBuilder) MustBuild() VariantExtensionObject {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantExtensionObjectBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -325,7 +330,7 @@ func (m *_VariantExtensionObject) deepCopy() *_VariantExtensionObject {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantExtensionObjectCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantExtensionObjectCopy
 }
 

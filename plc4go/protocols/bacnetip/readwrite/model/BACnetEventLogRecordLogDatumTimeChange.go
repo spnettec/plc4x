@@ -84,6 +84,8 @@ type BACnetEventLogRecordLogDatumTimeChangeBuilder interface {
 	WithTimeChange(BACnetContextTagReal) BACnetEventLogRecordLogDatumTimeChangeBuilder
 	// WithTimeChangeBuilder adds TimeChange (property field) which is build by the builder
 	WithTimeChangeBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventLogRecordLogDatumTimeChangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventLogRecordLogDatumBuilder
 	// Build builds the BACnetEventLogRecordLogDatumTimeChange or returns an error if something is wrong
 	Build() (BACnetEventLogRecordLogDatumTimeChange, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetEventLogRecordLogDatumTimeChangeBuilder) = (*_BACnetEventLogRecordL
 
 func (b *_BACnetEventLogRecordLogDatumTimeChangeBuilder) setParent(contract BACnetEventLogRecordLogDatumContract) {
 	b.BACnetEventLogRecordLogDatumContract = contract
+	contract.(*_BACnetEventLogRecordLogDatum)._SubType = b._BACnetEventLogRecordLogDatumTimeChange
 }
 
 func (b *_BACnetEventLogRecordLogDatumTimeChangeBuilder) WithMandatoryFields(timeChange BACnetContextTagReal) BACnetEventLogRecordLogDatumTimeChangeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetEventLogRecordLogDatumTimeChangeBuilder) MustBuild() BACnetEvent
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventLogRecordLogDatumTimeChangeBuilder) Done() BACnetEventLogRecordLogDatumBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventLogRecordLogDatumBuilder().(*_BACnetEventLogRecordLogDatumBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetEventLogRecordLogDatumTimeChange) deepCopy() *_BACnetEventLogRec
 	}
 	_BACnetEventLogRecordLogDatumTimeChangeCopy := &_BACnetEventLogRecordLogDatumTimeChange{
 		m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum).deepCopy(),
-		m.TimeChange.DeepCopy().(BACnetContextTagReal),
+		utils.DeepCopy[BACnetContextTagReal](m.TimeChange),
 	}
-	m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = m
+	_BACnetEventLogRecordLogDatumTimeChangeCopy.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = m
 	return _BACnetEventLogRecordLogDatumTimeChangeCopy
 }
 

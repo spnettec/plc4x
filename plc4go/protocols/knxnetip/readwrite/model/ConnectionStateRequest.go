@@ -94,6 +94,8 @@ type ConnectionStateRequestBuilder interface {
 	WithHpaiControlEndpoint(HPAIControlEndpoint) ConnectionStateRequestBuilder
 	// WithHpaiControlEndpointBuilder adds HpaiControlEndpoint (property field) which is build by the builder
 	WithHpaiControlEndpointBuilder(func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) ConnectionStateRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() KnxNetIpMessageBuilder
 	// Build builds the ConnectionStateRequest or returns an error if something is wrong
 	Build() (ConnectionStateRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,6 +119,7 @@ var _ (ConnectionStateRequestBuilder) = (*_ConnectionStateRequestBuilder)(nil)
 
 func (b *_ConnectionStateRequestBuilder) setParent(contract KnxNetIpMessageContract) {
 	b.KnxNetIpMessageContract = contract
+	contract.(*_KnxNetIpMessage)._SubType = b._ConnectionStateRequest
 }
 
 func (b *_ConnectionStateRequestBuilder) WithMandatoryFields(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) ConnectionStateRequestBuilder {
@@ -167,8 +170,10 @@ func (b *_ConnectionStateRequestBuilder) MustBuild() ConnectionStateRequest {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ConnectionStateRequestBuilder) Done() KnxNetIpMessageBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewKnxNetIpMessageBuilder().(*_KnxNetIpMessageBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -354,10 +359,10 @@ func (m *_ConnectionStateRequest) deepCopy() *_ConnectionStateRequest {
 	_ConnectionStateRequestCopy := &_ConnectionStateRequest{
 		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.CommunicationChannelId,
-		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+		utils.DeepCopy[HPAIControlEndpoint](m.HpaiControlEndpoint),
 		m.reservedField0,
 	}
-	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	_ConnectionStateRequestCopy.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _ConnectionStateRequestCopy
 }
 

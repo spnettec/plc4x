@@ -84,6 +84,8 @@ type BACnetChannelValueTimeBuilder interface {
 	WithTimeValue(BACnetApplicationTagTime) BACnetChannelValueTimeBuilder
 	// WithTimeValueBuilder adds TimeValue (property field) which is build by the builder
 	WithTimeValueBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetChannelValueTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueTime or returns an error if something is wrong
 	Build() (BACnetChannelValueTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueTimeBuilder) = (*_BACnetChannelValueTimeBuilder)(nil)
 
 func (b *_BACnetChannelValueTimeBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueTime
 }
 
 func (b *_BACnetChannelValueTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetChannelValueTimeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueTimeBuilder) MustBuild() BACnetChannelValueTime {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueTimeBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueTime) deepCopy() *_BACnetChannelValueTime {
 	}
 	_BACnetChannelValueTimeCopy := &_BACnetChannelValueTime{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+		utils.DeepCopy[BACnetApplicationTagTime](m.TimeValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueTimeCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueTimeCopy
 }
 

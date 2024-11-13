@@ -330,8 +330,8 @@ func (m *_BACnetNetworkSecurityPolicy) deepCopy() *_BACnetNetworkSecurityPolicy 
 		return nil
 	}
 	_BACnetNetworkSecurityPolicyCopy := &_BACnetNetworkSecurityPolicy{
-		m.PortId.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.SecurityLevel.DeepCopy().(BACnetSecurityPolicyTagged),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.PortId),
+		utils.DeepCopy[BACnetSecurityPolicyTagged](m.SecurityLevel),
 	}
 	return _BACnetNetworkSecurityPolicyCopy
 }

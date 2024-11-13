@@ -71,6 +71,8 @@ type SecurityDataDropTamperBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataDropTamperBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataDropTamper or returns an error if something is wrong
 	Build() (SecurityDataDropTamper, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataDropTamperBuilder) = (*_SecurityDataDropTamperBuilder)(nil)
 
 func (b *_SecurityDataDropTamperBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataDropTamper
 }
 
 func (b *_SecurityDataDropTamperBuilder) WithMandatoryFields() SecurityDataDropTamperBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataDropTamperBuilder) MustBuild() SecurityDataDropTamper {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataDropTamperBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataDropTamper) deepCopy() *_SecurityDataDropTamper {
 	_SecurityDataDropTamperCopy := &_SecurityDataDropTamper{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataDropTamperCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataDropTamperCopy
 }
 

@@ -128,6 +128,8 @@ type BACnetNotificationParametersChangeOfCharacterStringBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersChangeOfCharacterStringBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersBuilder
 	// Build builds the BACnetNotificationParametersChangeOfCharacterString or returns an error if something is wrong
 	Build() (BACnetNotificationParametersChangeOfCharacterString, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,6 +153,7 @@ var _ (BACnetNotificationParametersChangeOfCharacterStringBuilder) = (*_BACnetNo
 
 func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) setParent(contract BACnetNotificationParametersContract) {
 	b.BACnetNotificationParametersContract = contract
+	contract.(*_BACnetNotificationParameters)._SubType = b._BACnetNotificationParametersChangeOfCharacterString
 }
 
 func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, changedValue BACnetContextTagCharacterString, statusFlags BACnetStatusFlagsTagged, alarmValue BACnetContextTagCharacterString, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfCharacterStringBuilder {
@@ -292,8 +295,10 @@ func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) MustBuild(
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) Done() BACnetNotificationParametersBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersBuilder().(*_BACnetNotificationParametersBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -513,13 +518,13 @@ func (m *_BACnetNotificationParametersChangeOfCharacterString) deepCopy() *_BACn
 	}
 	_BACnetNotificationParametersChangeOfCharacterStringCopy := &_BACnetNotificationParametersChangeOfCharacterString{
 		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.ChangedValue.DeepCopy().(BACnetContextTagCharacterString),
-		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
-		m.AlarmValue.DeepCopy().(BACnetContextTagCharacterString),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.ChangedValue),
+		utils.DeepCopy[BACnetStatusFlagsTagged](m.StatusFlags),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.AlarmValue),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 	}
-	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	_BACnetNotificationParametersChangeOfCharacterStringCopy.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
 	return _BACnetNotificationParametersChangeOfCharacterStringCopy
 }
 

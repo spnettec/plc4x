@@ -86,6 +86,8 @@ type BACnetConstructedDataUnitsBuilder interface {
 	WithUnits(BACnetEngineeringUnitsTagged) BACnetConstructedDataUnitsBuilder
 	// WithUnitsBuilder adds Units (property field) which is build by the builder
 	WithUnitsBuilder(func(BACnetEngineeringUnitsTaggedBuilder) BACnetEngineeringUnitsTaggedBuilder) BACnetConstructedDataUnitsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataUnits or returns an error if something is wrong
 	Build() (BACnetConstructedDataUnits, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataUnitsBuilder) = (*_BACnetConstructedDataUnitsBuilder
 
 func (b *_BACnetConstructedDataUnitsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataUnits
 }
 
 func (b *_BACnetConstructedDataUnitsBuilder) WithMandatoryFields(units BACnetEngineeringUnitsTagged) BACnetConstructedDataUnitsBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataUnitsBuilder) MustBuild() BACnetConstructedDataUn
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataUnitsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataUnits) deepCopy() *_BACnetConstructedDataUnits {
 	}
 	_BACnetConstructedDataUnitsCopy := &_BACnetConstructedDataUnits{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Units.DeepCopy().(BACnetEngineeringUnitsTagged),
+		utils.DeepCopy[BACnetEngineeringUnitsTagged](m.Units),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataUnitsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataUnitsCopy
 }
 

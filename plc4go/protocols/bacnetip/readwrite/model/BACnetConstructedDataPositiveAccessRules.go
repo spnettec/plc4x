@@ -89,6 +89,8 @@ type BACnetConstructedDataPositiveAccessRulesBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveAccessRulesBuilder
 	// WithPositiveAccessRules adds PositiveAccessRules (property field)
 	WithPositiveAccessRules(...BACnetAccessRule) BACnetConstructedDataPositiveAccessRulesBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPositiveAccessRules or returns an error if something is wrong
 	Build() (BACnetConstructedDataPositiveAccessRules, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataPositiveAccessRulesBuilder) = (*_BACnetConstructedDa
 
 func (b *_BACnetConstructedDataPositiveAccessRulesBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPositiveAccessRules
 }
 
 func (b *_BACnetConstructedDataPositiveAccessRulesBuilder) WithMandatoryFields(positiveAccessRules []BACnetAccessRule) BACnetConstructedDataPositiveAccessRulesBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataPositiveAccessRulesBuilder) MustBuild() BACnetCon
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPositiveAccessRulesBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataPositiveAccessRules) deepCopy() *_BACnetConstruct
 	}
 	_BACnetConstructedDataPositiveAccessRulesCopy := &_BACnetConstructedDataPositiveAccessRules{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetAccessRule, BACnetAccessRule](m.PositiveAccessRules),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPositiveAccessRulesCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPositiveAccessRulesCopy
 }
 

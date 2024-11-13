@@ -95,6 +95,8 @@ type BACnetConstructedDataEventMessageTextsConfigBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataEventMessageTextsConfigBuilder
 	// WithEventMessageTextsConfig adds EventMessageTextsConfig (property field)
 	WithEventMessageTextsConfig(...BACnetOptionalCharacterString) BACnetConstructedDataEventMessageTextsConfigBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataEventMessageTextsConfig or returns an error if something is wrong
 	Build() (BACnetConstructedDataEventMessageTextsConfig, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (BACnetConstructedDataEventMessageTextsConfigBuilder) = (*_BACnetConstruct
 
 func (b *_BACnetConstructedDataEventMessageTextsConfigBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataEventMessageTextsConfig
 }
 
 func (b *_BACnetConstructedDataEventMessageTextsConfigBuilder) WithMandatoryFields(eventMessageTextsConfig []BACnetOptionalCharacterString) BACnetConstructedDataEventMessageTextsConfigBuilder {
@@ -162,8 +165,10 @@ func (b *_BACnetConstructedDataEventMessageTextsConfigBuilder) MustBuild() BACne
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataEventMessageTextsConfigBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -452,10 +457,10 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) deepCopy() *_BACnetConst
 	}
 	_BACnetConstructedDataEventMessageTextsConfigCopy := &_BACnetConstructedDataEventMessageTextsConfig{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetOptionalCharacterString, BACnetOptionalCharacterString](m.EventMessageTextsConfig),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataEventMessageTextsConfigCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEventMessageTextsConfigCopy
 }
 

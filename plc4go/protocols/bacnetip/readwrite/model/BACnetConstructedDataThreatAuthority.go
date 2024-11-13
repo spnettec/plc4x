@@ -86,6 +86,8 @@ type BACnetConstructedDataThreatAuthorityBuilder interface {
 	WithThreatAuthority(BACnetAccessThreatLevel) BACnetConstructedDataThreatAuthorityBuilder
 	// WithThreatAuthorityBuilder adds ThreatAuthority (property field) which is build by the builder
 	WithThreatAuthorityBuilder(func(BACnetAccessThreatLevelBuilder) BACnetAccessThreatLevelBuilder) BACnetConstructedDataThreatAuthorityBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataThreatAuthority or returns an error if something is wrong
 	Build() (BACnetConstructedDataThreatAuthority, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataThreatAuthorityBuilder) = (*_BACnetConstructedDataTh
 
 func (b *_BACnetConstructedDataThreatAuthorityBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataThreatAuthority
 }
 
 func (b *_BACnetConstructedDataThreatAuthorityBuilder) WithMandatoryFields(threatAuthority BACnetAccessThreatLevel) BACnetConstructedDataThreatAuthorityBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataThreatAuthorityBuilder) MustBuild() BACnetConstru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataThreatAuthorityBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataThreatAuthority) deepCopy() *_BACnetConstructedDa
 	}
 	_BACnetConstructedDataThreatAuthorityCopy := &_BACnetConstructedDataThreatAuthority{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ThreatAuthority.DeepCopy().(BACnetAccessThreatLevel),
+		utils.DeepCopy[BACnetAccessThreatLevel](m.ThreatAuthority),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataThreatAuthorityCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataThreatAuthorityCopy
 }
 

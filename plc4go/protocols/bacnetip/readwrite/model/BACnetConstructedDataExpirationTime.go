@@ -86,6 +86,8 @@ type BACnetConstructedDataExpirationTimeBuilder interface {
 	WithExpirationTime(BACnetDateTime) BACnetConstructedDataExpirationTimeBuilder
 	// WithExpirationTimeBuilder adds ExpirationTime (property field) which is build by the builder
 	WithExpirationTimeBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataExpirationTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataExpirationTime or returns an error if something is wrong
 	Build() (BACnetConstructedDataExpirationTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataExpirationTimeBuilder) = (*_BACnetConstructedDataExp
 
 func (b *_BACnetConstructedDataExpirationTimeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataExpirationTime
 }
 
 func (b *_BACnetConstructedDataExpirationTimeBuilder) WithMandatoryFields(expirationTime BACnetDateTime) BACnetConstructedDataExpirationTimeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataExpirationTimeBuilder) MustBuild() BACnetConstruc
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataExpirationTimeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataExpirationTime) deepCopy() *_BACnetConstructedDat
 	}
 	_BACnetConstructedDataExpirationTimeCopy := &_BACnetConstructedDataExpirationTime{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ExpirationTime.DeepCopy().(BACnetDateTime),
+		utils.DeepCopy[BACnetDateTime](m.ExpirationTime),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataExpirationTimeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataExpirationTimeCopy
 }
 

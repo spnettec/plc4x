@@ -71,6 +71,8 @@ type SecurityDataSystemDisarmedBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataSystemDisarmedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataSystemDisarmed or returns an error if something is wrong
 	Build() (SecurityDataSystemDisarmed, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataSystemDisarmedBuilder) = (*_SecurityDataSystemDisarmedBuilder
 
 func (b *_SecurityDataSystemDisarmedBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataSystemDisarmed
 }
 
 func (b *_SecurityDataSystemDisarmedBuilder) WithMandatoryFields() SecurityDataSystemDisarmedBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataSystemDisarmedBuilder) MustBuild() SecurityDataSystemDisar
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataSystemDisarmedBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataSystemDisarmed) deepCopy() *_SecurityDataSystemDisarmed {
 	_SecurityDataSystemDisarmedCopy := &_SecurityDataSystemDisarmed{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataSystemDisarmedCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataSystemDisarmedCopy
 }
 

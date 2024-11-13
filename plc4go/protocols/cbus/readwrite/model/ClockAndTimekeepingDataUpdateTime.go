@@ -105,6 +105,8 @@ type ClockAndTimekeepingDataUpdateTimeBuilder interface {
 	WithSecond(uint8) ClockAndTimekeepingDataUpdateTimeBuilder
 	// WithDaylightSaving adds DaylightSaving (property field)
 	WithDaylightSaving(byte) ClockAndTimekeepingDataUpdateTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ClockAndTimekeepingDataBuilder
 	// Build builds the ClockAndTimekeepingDataUpdateTime or returns an error if something is wrong
 	Build() (ClockAndTimekeepingDataUpdateTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +130,7 @@ var _ (ClockAndTimekeepingDataUpdateTimeBuilder) = (*_ClockAndTimekeepingDataUpd
 
 func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) setParent(contract ClockAndTimekeepingDataContract) {
 	b.ClockAndTimekeepingDataContract = contract
+	contract.(*_ClockAndTimekeepingData)._SubType = b._ClockAndTimekeepingDataUpdateTime
 }
 
 func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) WithMandatoryFields(hours uint8, minute uint8, second uint8, daylightSaving byte) ClockAndTimekeepingDataUpdateTimeBuilder {
@@ -169,8 +172,10 @@ func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) MustBuild() ClockAndTimekeep
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ClockAndTimekeepingDataUpdateTimeBuilder) Done() ClockAndTimekeepingDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewClockAndTimekeepingDataBuilder().(*_ClockAndTimekeepingDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -466,7 +471,7 @@ func (m *_ClockAndTimekeepingDataUpdateTime) deepCopy() *_ClockAndTimekeepingDat
 		m.Second,
 		m.DaylightSaving,
 	}
-	m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = m
+	_ClockAndTimekeepingDataUpdateTimeCopy.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = m
 	return _ClockAndTimekeepingDataUpdateTimeCopy
 }
 

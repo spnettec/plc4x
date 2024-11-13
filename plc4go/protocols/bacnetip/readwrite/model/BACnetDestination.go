@@ -585,13 +585,13 @@ func (m *_BACnetDestination) deepCopy() *_BACnetDestination {
 		return nil
 	}
 	_BACnetDestinationCopy := &_BACnetDestination{
-		m.ValidDays.DeepCopy().(BACnetDaysOfWeekTagged),
-		m.FromTime.DeepCopy().(BACnetApplicationTagTime),
-		m.ToTime.DeepCopy().(BACnetApplicationTagTime),
-		m.Recipient.DeepCopy().(BACnetRecipient),
-		m.ProcessIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
-		m.IssueConfirmedNotifications.DeepCopy().(BACnetApplicationTagBoolean),
-		m.Transitions.DeepCopy().(BACnetEventTransitionBitsTagged),
+		utils.DeepCopy[BACnetDaysOfWeekTagged](m.ValidDays),
+		utils.DeepCopy[BACnetApplicationTagTime](m.FromTime),
+		utils.DeepCopy[BACnetApplicationTagTime](m.ToTime),
+		utils.DeepCopy[BACnetRecipient](m.Recipient),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.ProcessIdentifier),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.IssueConfirmedNotifications),
+		utils.DeepCopy[BACnetEventTransitionBitsTagged](m.Transitions),
 	}
 	return _BACnetDestinationCopy
 }

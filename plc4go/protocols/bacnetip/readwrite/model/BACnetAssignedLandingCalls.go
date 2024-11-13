@@ -279,7 +279,7 @@ func (m *_BACnetAssignedLandingCalls) deepCopy() *_BACnetAssignedLandingCalls {
 		return nil
 	}
 	_BACnetAssignedLandingCallsCopy := &_BACnetAssignedLandingCalls{
-		m.LandingCalls.DeepCopy().(BACnetAssignedLandingCallsLandingCallsList),
+		utils.DeepCopy[BACnetAssignedLandingCallsLandingCallsList](m.LandingCalls),
 	}
 	return _BACnetAssignedLandingCallsCopy
 }

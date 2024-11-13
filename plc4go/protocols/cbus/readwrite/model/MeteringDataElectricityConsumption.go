@@ -79,6 +79,8 @@ type MeteringDataElectricityConsumptionBuilder interface {
 	WithMandatoryFields(kWhr uint32) MeteringDataElectricityConsumptionBuilder
 	// WithKWhr adds KWhr (property field)
 	WithKWhr(uint32) MeteringDataElectricityConsumptionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MeteringDataBuilder
 	// Build builds the MeteringDataElectricityConsumption or returns an error if something is wrong
 	Build() (MeteringDataElectricityConsumption, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (MeteringDataElectricityConsumptionBuilder) = (*_MeteringDataElectricityCo
 
 func (b *_MeteringDataElectricityConsumptionBuilder) setParent(contract MeteringDataContract) {
 	b.MeteringDataContract = contract
+	contract.(*_MeteringData)._SubType = b._MeteringDataElectricityConsumption
 }
 
 func (b *_MeteringDataElectricityConsumptionBuilder) WithMandatoryFields(kWhr uint32) MeteringDataElectricityConsumptionBuilder {
@@ -128,8 +131,10 @@ func (b *_MeteringDataElectricityConsumptionBuilder) MustBuild() MeteringDataEle
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MeteringDataElectricityConsumptionBuilder) Done() MeteringDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMeteringDataBuilder().(*_MeteringDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -282,7 +287,7 @@ func (m *_MeteringDataElectricityConsumption) deepCopy() *_MeteringDataElectrici
 		m.MeteringDataContract.(*_MeteringData).deepCopy(),
 		m.KWhr,
 	}
-	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	_MeteringDataElectricityConsumptionCopy.MeteringDataContract.(*_MeteringData)._SubType = m
 	return _MeteringDataElectricityConsumptionCopy
 }
 

@@ -71,6 +71,8 @@ type SecurityDataExitDelayStartedBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SecurityDataExitDelayStartedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SecurityDataBuilder
 	// Build builds the SecurityDataExitDelayStarted or returns an error if something is wrong
 	Build() (SecurityDataExitDelayStarted, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SecurityDataExitDelayStartedBuilder) = (*_SecurityDataExitDelayStartedBui
 
 func (b *_SecurityDataExitDelayStartedBuilder) setParent(contract SecurityDataContract) {
 	b.SecurityDataContract = contract
+	contract.(*_SecurityData)._SubType = b._SecurityDataExitDelayStarted
 }
 
 func (b *_SecurityDataExitDelayStartedBuilder) WithMandatoryFields() SecurityDataExitDelayStartedBuilder {
@@ -115,8 +118,10 @@ func (b *_SecurityDataExitDelayStartedBuilder) MustBuild() SecurityDataExitDelay
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SecurityDataExitDelayStartedBuilder) Done() SecurityDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSecurityDataBuilder().(*_SecurityDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_SecurityDataExitDelayStarted) deepCopy() *_SecurityDataExitDelayStarte
 	_SecurityDataExitDelayStartedCopy := &_SecurityDataExitDelayStarted{
 		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
-	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	_SecurityDataExitDelayStartedCopy.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataExitDelayStartedCopy
 }
 

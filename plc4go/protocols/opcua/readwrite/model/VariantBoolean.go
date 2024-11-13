@@ -85,6 +85,8 @@ type VariantBooleanBuilder interface {
 	WithOptionalArrayLength(int32) VariantBooleanBuilder
 	// WithValue adds Value (property field)
 	WithValue(...byte) VariantBooleanBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() VariantBuilder
 	// Build builds the VariantBoolean or returns an error if something is wrong
 	Build() (VariantBoolean, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (VariantBooleanBuilder) = (*_VariantBooleanBuilder)(nil)
 
 func (b *_VariantBooleanBuilder) setParent(contract VariantContract) {
 	b.VariantContract = contract
+	contract.(*_Variant)._SubType = b._VariantBoolean
 }
 
 func (b *_VariantBooleanBuilder) WithMandatoryFields(value []byte) VariantBooleanBuilder {
@@ -139,8 +142,10 @@ func (b *_VariantBooleanBuilder) MustBuild() VariantBoolean {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_VariantBooleanBuilder) Done() VariantBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewVariantBuilder().(*_VariantBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -320,7 +325,7 @@ func (m *_VariantBoolean) deepCopy() *_VariantBoolean {
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[byte, byte](m.Value),
 	}
-	m.VariantContract.(*_Variant)._SubType = m
+	_VariantBooleanCopy.VariantContract.(*_Variant)._SubType = m
 	return _VariantBooleanCopy
 }
 

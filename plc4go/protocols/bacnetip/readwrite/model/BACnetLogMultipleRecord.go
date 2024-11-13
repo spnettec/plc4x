@@ -330,8 +330,8 @@ func (m *_BACnetLogMultipleRecord) deepCopy() *_BACnetLogMultipleRecord {
 		return nil
 	}
 	_BACnetLogMultipleRecordCopy := &_BACnetLogMultipleRecord{
-		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
-		m.LogData.DeepCopy().(BACnetLogData),
+		utils.DeepCopy[BACnetDateTimeEnclosed](m.Timestamp),
+		utils.DeepCopy[BACnetLogData](m.LogData),
 	}
 	return _BACnetLogMultipleRecordCopy
 }

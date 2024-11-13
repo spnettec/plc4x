@@ -393,7 +393,7 @@ func (m *_ErrorCodeTagged) deepCopy() *_ErrorCodeTagged {
 		return nil
 	}
 	_ErrorCodeTaggedCopy := &_ErrorCodeTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.ProprietaryValue,
 		m.TagNumber,

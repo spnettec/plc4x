@@ -95,6 +95,8 @@ type SemanticChangeStructureDataTypeBuilder interface {
 	WithAffectedType(NodeId) SemanticChangeStructureDataTypeBuilder
 	// WithAffectedTypeBuilder adds AffectedType (property field) which is build by the builder
 	WithAffectedTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) SemanticChangeStructureDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the SemanticChangeStructureDataType or returns an error if something is wrong
 	Build() (SemanticChangeStructureDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -118,6 +120,7 @@ var _ (SemanticChangeStructureDataTypeBuilder) = (*_SemanticChangeStructureDataT
 
 func (b *_SemanticChangeStructureDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._SemanticChangeStructureDataType
 }
 
 func (b *_SemanticChangeStructureDataTypeBuilder) WithMandatoryFields(affected NodeId, affectedType NodeId) SemanticChangeStructureDataTypeBuilder {
@@ -187,8 +190,10 @@ func (b *_SemanticChangeStructureDataTypeBuilder) MustBuild() SemanticChangeStru
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SemanticChangeStructureDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -360,10 +365,10 @@ func (m *_SemanticChangeStructureDataType) deepCopy() *_SemanticChangeStructureD
 	}
 	_SemanticChangeStructureDataTypeCopy := &_SemanticChangeStructureDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Affected.DeepCopy().(NodeId),
-		m.AffectedType.DeepCopy().(NodeId),
+		utils.DeepCopy[NodeId](m.Affected),
+		utils.DeepCopy[NodeId](m.AffectedType),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_SemanticChangeStructureDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SemanticChangeStructureDataTypeCopy
 }
 

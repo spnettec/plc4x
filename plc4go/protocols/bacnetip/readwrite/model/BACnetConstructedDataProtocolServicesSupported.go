@@ -86,6 +86,8 @@ type BACnetConstructedDataProtocolServicesSupportedBuilder interface {
 	WithProtocolServicesSupported(BACnetServicesSupportedTagged) BACnetConstructedDataProtocolServicesSupportedBuilder
 	// WithProtocolServicesSupportedBuilder adds ProtocolServicesSupported (property field) which is build by the builder
 	WithProtocolServicesSupportedBuilder(func(BACnetServicesSupportedTaggedBuilder) BACnetServicesSupportedTaggedBuilder) BACnetConstructedDataProtocolServicesSupportedBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataProtocolServicesSupported or returns an error if something is wrong
 	Build() (BACnetConstructedDataProtocolServicesSupported, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataProtocolServicesSupportedBuilder) = (*_BACnetConstru
 
 func (b *_BACnetConstructedDataProtocolServicesSupportedBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataProtocolServicesSupported
 }
 
 func (b *_BACnetConstructedDataProtocolServicesSupportedBuilder) WithMandatoryFields(protocolServicesSupported BACnetServicesSupportedTagged) BACnetConstructedDataProtocolServicesSupportedBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataProtocolServicesSupportedBuilder) MustBuild() BAC
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataProtocolServicesSupportedBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) deepCopy() *_BACnetCon
 	}
 	_BACnetConstructedDataProtocolServicesSupportedCopy := &_BACnetConstructedDataProtocolServicesSupported{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ProtocolServicesSupported.DeepCopy().(BACnetServicesSupportedTagged),
+		utils.DeepCopy[BACnetServicesSupportedTagged](m.ProtocolServicesSupported),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataProtocolServicesSupportedCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataProtocolServicesSupportedCopy
 }
 

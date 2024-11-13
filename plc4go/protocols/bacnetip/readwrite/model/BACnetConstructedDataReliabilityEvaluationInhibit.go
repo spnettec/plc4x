@@ -86,6 +86,8 @@ type BACnetConstructedDataReliabilityEvaluationInhibitBuilder interface {
 	WithReliabilityEvaluationInhibit(BACnetApplicationTagBoolean) BACnetConstructedDataReliabilityEvaluationInhibitBuilder
 	// WithReliabilityEvaluationInhibitBuilder adds ReliabilityEvaluationInhibit (property field) which is build by the builder
 	WithReliabilityEvaluationInhibitBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataReliabilityEvaluationInhibitBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataReliabilityEvaluationInhibit or returns an error if something is wrong
 	Build() (BACnetConstructedDataReliabilityEvaluationInhibit, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataReliabilityEvaluationInhibitBuilder) = (*_BACnetCons
 
 func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataReliabilityEvaluationInhibit
 }
 
 func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) WithMandatoryFields(reliabilityEvaluationInhibit BACnetApplicationTagBoolean) BACnetConstructedDataReliabilityEvaluationInhibitBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) MustBuild() 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataReliabilityEvaluationInhibitBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) deepCopy() *_BACnet
 	}
 	_BACnetConstructedDataReliabilityEvaluationInhibitCopy := &_BACnetConstructedDataReliabilityEvaluationInhibit{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.ReliabilityEvaluationInhibit.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.ReliabilityEvaluationInhibit),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataReliabilityEvaluationInhibitCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataReliabilityEvaluationInhibitCopy
 }
 

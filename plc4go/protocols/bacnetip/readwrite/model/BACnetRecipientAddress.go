@@ -84,6 +84,8 @@ type BACnetRecipientAddressBuilder interface {
 	WithAddressValue(BACnetAddressEnclosed) BACnetRecipientAddressBuilder
 	// WithAddressValueBuilder adds AddressValue (property field) which is build by the builder
 	WithAddressValueBuilder(func(BACnetAddressEnclosedBuilder) BACnetAddressEnclosedBuilder) BACnetRecipientAddressBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetRecipientBuilder
 	// Build builds the BACnetRecipientAddress or returns an error if something is wrong
 	Build() (BACnetRecipientAddress, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetRecipientAddressBuilder) = (*_BACnetRecipientAddressBuilder)(nil)
 
 func (b *_BACnetRecipientAddressBuilder) setParent(contract BACnetRecipientContract) {
 	b.BACnetRecipientContract = contract
+	contract.(*_BACnetRecipient)._SubType = b._BACnetRecipientAddress
 }
 
 func (b *_BACnetRecipientAddressBuilder) WithMandatoryFields(addressValue BACnetAddressEnclosed) BACnetRecipientAddressBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetRecipientAddressBuilder) MustBuild() BACnetRecipientAddress {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetRecipientAddressBuilder) Done() BACnetRecipientBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetRecipientBuilder().(*_BACnetRecipientBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetRecipientAddress) deepCopy() *_BACnetRecipientAddress {
 	}
 	_BACnetRecipientAddressCopy := &_BACnetRecipientAddress{
 		m.BACnetRecipientContract.(*_BACnetRecipient).deepCopy(),
-		m.AddressValue.DeepCopy().(BACnetAddressEnclosed),
+		utils.DeepCopy[BACnetAddressEnclosed](m.AddressValue),
 	}
-	m.BACnetRecipientContract.(*_BACnetRecipient)._SubType = m
+	_BACnetRecipientAddressCopy.BACnetRecipientContract.(*_BACnetRecipient)._SubType = m
 	return _BACnetRecipientAddressCopy
 }
 

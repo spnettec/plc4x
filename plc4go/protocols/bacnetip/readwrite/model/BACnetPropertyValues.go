@@ -378,9 +378,9 @@ func (m *_BACnetPropertyValues) deepCopy() *_BACnetPropertyValues {
 		return nil
 	}
 	_BACnetPropertyValuesCopy := &_BACnetPropertyValues{
-		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.InnerOpeningTag),
 		utils.DeepCopySlice[BACnetPropertyValue, BACnetPropertyValue](m.Data),
-		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.InnerClosingTag),
 		m.TagNumber,
 		m.ObjectTypeArgument,
 	}

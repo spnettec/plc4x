@@ -84,6 +84,8 @@ type CBusCommandPointToMultiPointBuilder interface {
 	WithCommand(CBusPointToMultiPointCommand) CBusCommandPointToMultiPointBuilder
 	// WithCommandBuilder adds Command (property field) which is build by the builder
 	WithCommandBuilder(func(CBusPointToMultiPointCommandBuilder) CBusPointToMultiPointCommandBuilder) CBusCommandPointToMultiPointBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CBusCommandBuilder
 	// Build builds the CBusCommandPointToMultiPoint or returns an error if something is wrong
 	Build() (CBusCommandPointToMultiPoint, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (CBusCommandPointToMultiPointBuilder) = (*_CBusCommandPointToMultiPointBui
 
 func (b *_CBusCommandPointToMultiPointBuilder) setParent(contract CBusCommandContract) {
 	b.CBusCommandContract = contract
+	contract.(*_CBusCommand)._SubType = b._CBusCommandPointToMultiPoint
 }
 
 func (b *_CBusCommandPointToMultiPointBuilder) WithMandatoryFields(command CBusPointToMultiPointCommand) CBusCommandPointToMultiPointBuilder {
@@ -152,8 +155,10 @@ func (b *_CBusCommandPointToMultiPointBuilder) MustBuild() CBusCommandPointToMul
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CBusCommandPointToMultiPointBuilder) Done() CBusCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCBusCommandBuilder().(*_CBusCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_CBusCommandPointToMultiPoint) deepCopy() *_CBusCommandPointToMultiPoin
 	}
 	_CBusCommandPointToMultiPointCopy := &_CBusCommandPointToMultiPoint{
 		m.CBusCommandContract.(*_CBusCommand).deepCopy(),
-		m.Command.DeepCopy().(CBusPointToMultiPointCommand),
+		utils.DeepCopy[CBusPointToMultiPointCommand](m.Command),
 	}
-	m.CBusCommandContract.(*_CBusCommand)._SubType = m
+	_CBusCommandPointToMultiPointCopy.CBusCommandContract.(*_CBusCommand)._SubType = m
 	return _CBusCommandPointToMultiPointCopy
 }
 

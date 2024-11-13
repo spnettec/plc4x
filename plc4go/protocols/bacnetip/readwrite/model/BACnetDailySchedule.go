@@ -361,9 +361,9 @@ func (m *_BACnetDailySchedule) deepCopy() *_BACnetDailySchedule {
 		return nil
 	}
 	_BACnetDailyScheduleCopy := &_BACnetDailySchedule{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
 		utils.DeepCopySlice[BACnetTimeValue, BACnetTimeValue](m.DaySchedule),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
 	return _BACnetDailyScheduleCopy
 }

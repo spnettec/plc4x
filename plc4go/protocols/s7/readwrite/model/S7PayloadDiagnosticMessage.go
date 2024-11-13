@@ -120,6 +120,8 @@ type S7PayloadDiagnosticMessageBuilder interface {
 	WithTimeStamp(DateAndTime) S7PayloadDiagnosticMessageBuilder
 	// WithTimeStampBuilder adds TimeStamp (property field) which is build by the builder
 	WithTimeStampBuilder(func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadDiagnosticMessageBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadDiagnosticMessage or returns an error if something is wrong
 	Build() (S7PayloadDiagnosticMessage, error)
 	// MustBuild does the same as Build but panics on error
@@ -143,6 +145,7 @@ var _ (S7PayloadDiagnosticMessageBuilder) = (*_S7PayloadDiagnosticMessageBuilder
 
 func (b *_S7PayloadDiagnosticMessageBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadDiagnosticMessage
 }
 
 func (b *_S7PayloadDiagnosticMessageBuilder) WithMandatoryFields(eventId uint16, priorityClass uint8, obNumber uint8, datId uint16, info1 uint16, info2 uint32, timeStamp DateAndTime) S7PayloadDiagnosticMessageBuilder {
@@ -218,8 +221,10 @@ func (b *_S7PayloadDiagnosticMessageBuilder) MustBuild() S7PayloadDiagnosticMess
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadDiagnosticMessageBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -490,9 +495,9 @@ func (m *_S7PayloadDiagnosticMessage) deepCopy() *_S7PayloadDiagnosticMessage {
 		m.DatId,
 		m.Info1,
 		m.Info2,
-		m.TimeStamp.DeepCopy().(DateAndTime),
+		utils.DeepCopy[DateAndTime](m.TimeStamp),
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadDiagnosticMessageCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadDiagnosticMessageCopy
 }
 

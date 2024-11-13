@@ -89,6 +89,8 @@ type BACnetConstructedDataLinkSpeedsBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLinkSpeedsBuilder
 	// WithLinkSpeeds adds LinkSpeeds (property field)
 	WithLinkSpeeds(...BACnetApplicationTagReal) BACnetConstructedDataLinkSpeedsBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataLinkSpeeds or returns an error if something is wrong
 	Build() (BACnetConstructedDataLinkSpeeds, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,7 @@ var _ (BACnetConstructedDataLinkSpeedsBuilder) = (*_BACnetConstructedDataLinkSpe
 
 func (b *_BACnetConstructedDataLinkSpeedsBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataLinkSpeeds
 }
 
 func (b *_BACnetConstructedDataLinkSpeedsBuilder) WithMandatoryFields(linkSpeeds []BACnetApplicationTagReal) BACnetConstructedDataLinkSpeedsBuilder {
@@ -156,8 +159,10 @@ func (b *_BACnetConstructedDataLinkSpeedsBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataLinkSpeedsBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -374,10 +379,10 @@ func (m *_BACnetConstructedDataLinkSpeeds) deepCopy() *_BACnetConstructedDataLin
 	}
 	_BACnetConstructedDataLinkSpeedsCopy := &_BACnetConstructedDataLinkSpeeds{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopy[BACnetApplicationTagUnsignedInteger](m.NumberOfDataElements),
 		utils.DeepCopySlice[BACnetApplicationTagReal, BACnetApplicationTagReal](m.LinkSpeeds),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataLinkSpeedsCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataLinkSpeedsCopy
 }
 

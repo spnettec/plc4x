@@ -82,6 +82,8 @@ type BACnetServiceAckReadPropertyConditionalBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckReadPropertyConditionalBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetServiceAckReadPropertyConditionalBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckReadPropertyConditional or returns an error if something is wrong
 	Build() (BACnetServiceAckReadPropertyConditional, error)
 	// MustBuild does the same as Build but panics on error
@@ -105,6 +107,7 @@ var _ (BACnetServiceAckReadPropertyConditionalBuilder) = (*_BACnetServiceAckRead
 
 func (b *_BACnetServiceAckReadPropertyConditionalBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckReadPropertyConditional
 }
 
 func (b *_BACnetServiceAckReadPropertyConditionalBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckReadPropertyConditionalBuilder {
@@ -131,8 +134,10 @@ func (b *_BACnetServiceAckReadPropertyConditionalBuilder) MustBuild() BACnetServ
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckReadPropertyConditionalBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -302,7 +307,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) deepCopy() *_BACnetServiceAck
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
 		m.ServiceAckPayloadLength,
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckReadPropertyConditionalCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckReadPropertyConditionalCopy
 }
 

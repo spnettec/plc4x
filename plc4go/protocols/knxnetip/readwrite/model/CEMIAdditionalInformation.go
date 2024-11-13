@@ -89,15 +89,9 @@ type CEMIAdditionalInformationBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CEMIAdditionalInformationBuilder
 	// AsCEMIAdditionalInformationBusmonitorInfo converts this build to a subType of CEMIAdditionalInformation. It is always possible to return to current builder using Done()
-	AsCEMIAdditionalInformationBusmonitorInfo() interface {
-		CEMIAdditionalInformationBusmonitorInfoBuilder
-		Done() CEMIAdditionalInformationBuilder
-	}
+	AsCEMIAdditionalInformationBusmonitorInfo() CEMIAdditionalInformationBusmonitorInfoBuilder
 	// AsCEMIAdditionalInformationRelativeTimestamp converts this build to a subType of CEMIAdditionalInformation. It is always possible to return to current builder using Done()
-	AsCEMIAdditionalInformationRelativeTimestamp() interface {
-		CEMIAdditionalInformationRelativeTimestampBuilder
-		Done() CEMIAdditionalInformationBuilder
-	}
+	AsCEMIAdditionalInformationRelativeTimestamp() CEMIAdditionalInformationRelativeTimestampBuilder
 	// Build builds the CEMIAdditionalInformation or returns an error if something is wrong
 	PartialBuild() (CEMIAdditionalInformationContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -148,14 +142,8 @@ func (b *_CEMIAdditionalInformationBuilder) PartialMustBuild() CEMIAdditionalInf
 	return build
 }
 
-func (b *_CEMIAdditionalInformationBuilder) AsCEMIAdditionalInformationBusmonitorInfo() interface {
-	CEMIAdditionalInformationBusmonitorInfoBuilder
-	Done() CEMIAdditionalInformationBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CEMIAdditionalInformationBusmonitorInfoBuilder
-		Done() CEMIAdditionalInformationBuilder
-	}); ok {
+func (b *_CEMIAdditionalInformationBuilder) AsCEMIAdditionalInformationBusmonitorInfo() CEMIAdditionalInformationBusmonitorInfoBuilder {
+	if cb, ok := b.childBuilder.(CEMIAdditionalInformationBusmonitorInfoBuilder); ok {
 		return cb
 	}
 	cb := NewCEMIAdditionalInformationBusmonitorInfoBuilder().(*_CEMIAdditionalInformationBusmonitorInfoBuilder)
@@ -164,14 +152,8 @@ func (b *_CEMIAdditionalInformationBuilder) AsCEMIAdditionalInformationBusmonito
 	return cb
 }
 
-func (b *_CEMIAdditionalInformationBuilder) AsCEMIAdditionalInformationRelativeTimestamp() interface {
-	CEMIAdditionalInformationRelativeTimestampBuilder
-	Done() CEMIAdditionalInformationBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		CEMIAdditionalInformationRelativeTimestampBuilder
-		Done() CEMIAdditionalInformationBuilder
-	}); ok {
+func (b *_CEMIAdditionalInformationBuilder) AsCEMIAdditionalInformationRelativeTimestamp() CEMIAdditionalInformationRelativeTimestampBuilder {
+	if cb, ok := b.childBuilder.(CEMIAdditionalInformationRelativeTimestampBuilder); ok {
 		return cb
 	}
 	cb := NewCEMIAdditionalInformationRelativeTimestampBuilder().(*_CEMIAdditionalInformationRelativeTimestampBuilder)

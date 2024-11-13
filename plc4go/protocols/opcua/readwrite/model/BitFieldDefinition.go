@@ -110,6 +110,8 @@ type BitFieldDefinitionBuilder interface {
 	WithStartingBitPosition(uint32) BitFieldDefinitionBuilder
 	// WithEndingBitPosition adds EndingBitPosition (property field)
 	WithEndingBitPosition(uint32) BitFieldDefinitionBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the BitFieldDefinition or returns an error if something is wrong
 	Build() (BitFieldDefinition, error)
 	// MustBuild does the same as Build but panics on error
@@ -133,6 +135,7 @@ var _ (BitFieldDefinitionBuilder) = (*_BitFieldDefinitionBuilder)(nil)
 
 func (b *_BitFieldDefinitionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._BitFieldDefinition
 }
 
 func (b *_BitFieldDefinitionBuilder) WithMandatoryFields(name PascalString, description LocalizedText, startingBitPosition uint32, endingBitPosition uint32) BitFieldDefinitionBuilder {
@@ -212,8 +215,10 @@ func (b *_BitFieldDefinitionBuilder) MustBuild() BitFieldDefinition {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BitFieldDefinitionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -445,14 +450,14 @@ func (m *_BitFieldDefinition) deepCopy() *_BitFieldDefinition {
 	}
 	_BitFieldDefinitionCopy := &_BitFieldDefinition{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
-		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopy[PascalString](m.Name),
+		utils.DeepCopy[LocalizedText](m.Description),
 		m.StartingBitPosition,
 		m.EndingBitPosition,
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_BitFieldDefinitionCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BitFieldDefinitionCopy
 }
 

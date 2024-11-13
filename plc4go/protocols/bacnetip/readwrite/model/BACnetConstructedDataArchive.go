@@ -86,6 +86,8 @@ type BACnetConstructedDataArchiveBuilder interface {
 	WithArchive(BACnetApplicationTagBoolean) BACnetConstructedDataArchiveBuilder
 	// WithArchiveBuilder adds Archive (property field) which is build by the builder
 	WithArchiveBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataArchiveBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataArchive or returns an error if something is wrong
 	Build() (BACnetConstructedDataArchive, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataArchiveBuilder) = (*_BACnetConstructedDataArchiveBui
 
 func (b *_BACnetConstructedDataArchiveBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataArchive
 }
 
 func (b *_BACnetConstructedDataArchiveBuilder) WithMandatoryFields(archive BACnetApplicationTagBoolean) BACnetConstructedDataArchiveBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataArchiveBuilder) MustBuild() BACnetConstructedData
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataArchiveBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataArchive) deepCopy() *_BACnetConstructedDataArchiv
 	}
 	_BACnetConstructedDataArchiveCopy := &_BACnetConstructedDataArchive{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Archive.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.Archive),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataArchiveCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataArchiveCopy
 }
 

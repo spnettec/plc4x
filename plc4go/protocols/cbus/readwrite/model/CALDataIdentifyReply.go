@@ -90,6 +90,8 @@ type CALDataIdentifyReplyBuilder interface {
 	WithIdentifyReplyCommand(IdentifyReplyCommand) CALDataIdentifyReplyBuilder
 	// WithIdentifyReplyCommandBuilder adds IdentifyReplyCommand (property field) which is build by the builder
 	WithIdentifyReplyCommandBuilder(func(IdentifyReplyCommandBuilder) IdentifyReplyCommandBuilder) CALDataIdentifyReplyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CALDataBuilder
 	// Build builds the CALDataIdentifyReply or returns an error if something is wrong
 	Build() (CALDataIdentifyReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (CALDataIdentifyReplyBuilder) = (*_CALDataIdentifyReplyBuilder)(nil)
 
 func (b *_CALDataIdentifyReplyBuilder) setParent(contract CALDataContract) {
 	b.CALDataContract = contract
+	contract.(*_CALData)._SubType = b._CALDataIdentifyReply
 }
 
 func (b *_CALDataIdentifyReplyBuilder) WithMandatoryFields(attribute Attribute, identifyReplyCommand IdentifyReplyCommand) CALDataIdentifyReplyBuilder {
@@ -163,8 +166,10 @@ func (b *_CALDataIdentifyReplyBuilder) MustBuild() CALDataIdentifyReply {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CALDataIdentifyReplyBuilder) Done() CALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCALDataBuilder().(*_CALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -333,9 +338,9 @@ func (m *_CALDataIdentifyReply) deepCopy() *_CALDataIdentifyReply {
 	_CALDataIdentifyReplyCopy := &_CALDataIdentifyReply{
 		m.CALDataContract.(*_CALData).deepCopy(),
 		m.Attribute,
-		m.IdentifyReplyCommand.DeepCopy().(IdentifyReplyCommand),
+		utils.DeepCopy[IdentifyReplyCommand](m.IdentifyReplyCommand),
 	}
-	m.CALDataContract.(*_CALData)._SubType = m
+	_CALDataIdentifyReplyCopy.CALDataContract.(*_CALData)._SubType = m
 	return _CALDataIdentifyReplyCopy
 }
 

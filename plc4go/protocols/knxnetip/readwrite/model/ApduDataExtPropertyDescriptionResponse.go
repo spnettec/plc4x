@@ -124,6 +124,8 @@ type ApduDataExtPropertyDescriptionResponseBuilder interface {
 	WithReadLevel(AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder
 	// WithWriteLevel adds WriteLevel (property field)
 	WithWriteLevel(AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtPropertyDescriptionResponse or returns an error if something is wrong
 	Build() (ApduDataExtPropertyDescriptionResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -147,6 +149,7 @@ var _ (ApduDataExtPropertyDescriptionResponseBuilder) = (*_ApduDataExtPropertyDe
 
 func (b *_ApduDataExtPropertyDescriptionResponseBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtPropertyDescriptionResponse
 }
 
 func (b *_ApduDataExtPropertyDescriptionResponseBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder {
@@ -208,8 +211,10 @@ func (b *_ApduDataExtPropertyDescriptionResponseBuilder) MustBuild() ApduDataExt
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtPropertyDescriptionResponseBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -520,7 +525,7 @@ func (m *_ApduDataExtPropertyDescriptionResponse) deepCopy() *_ApduDataExtProper
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtPropertyDescriptionResponseCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtPropertyDescriptionResponseCopy
 }
 

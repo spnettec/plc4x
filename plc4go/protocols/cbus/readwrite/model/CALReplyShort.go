@@ -71,6 +71,8 @@ type CALReplyShortBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CALReplyShortBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CALReplyBuilder
 	// Build builds the CALReplyShort or returns an error if something is wrong
 	Build() (CALReplyShort, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (CALReplyShortBuilder) = (*_CALReplyShortBuilder)(nil)
 
 func (b *_CALReplyShortBuilder) setParent(contract CALReplyContract) {
 	b.CALReplyContract = contract
+	contract.(*_CALReply)._SubType = b._CALReplyShort
 }
 
 func (b *_CALReplyShortBuilder) WithMandatoryFields() CALReplyShortBuilder {
@@ -115,8 +118,10 @@ func (b *_CALReplyShortBuilder) MustBuild() CALReplyShort {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CALReplyShortBuilder) Done() CALReplyBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCALReplyBuilder().(*_CALReplyBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -241,7 +246,7 @@ func (m *_CALReplyShort) deepCopy() *_CALReplyShort {
 	_CALReplyShortCopy := &_CALReplyShort{
 		m.CALReplyContract.(*_CALReply).deepCopy(),
 	}
-	m.CALReplyContract.(*_CALReply)._SubType = m
+	_CALReplyShortCopy.CALReplyContract.(*_CALReply)._SubType = m
 	return _CALReplyShortCopy
 }
 

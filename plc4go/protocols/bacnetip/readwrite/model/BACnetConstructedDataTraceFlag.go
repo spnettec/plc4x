@@ -86,6 +86,8 @@ type BACnetConstructedDataTraceFlagBuilder interface {
 	WithTraceFlag(BACnetApplicationTagBoolean) BACnetConstructedDataTraceFlagBuilder
 	// WithTraceFlagBuilder adds TraceFlag (property field) which is build by the builder
 	WithTraceFlagBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataTraceFlagBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTraceFlag or returns an error if something is wrong
 	Build() (BACnetConstructedDataTraceFlag, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTraceFlagBuilder) = (*_BACnetConstructedDataTraceFla
 
 func (b *_BACnetConstructedDataTraceFlagBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTraceFlag
 }
 
 func (b *_BACnetConstructedDataTraceFlagBuilder) WithMandatoryFields(traceFlag BACnetApplicationTagBoolean) BACnetConstructedDataTraceFlagBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTraceFlagBuilder) MustBuild() BACnetConstructedDa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTraceFlagBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataTraceFlag) deepCopy() *_BACnetConstructedDataTrac
 	}
 	_BACnetConstructedDataTraceFlagCopy := &_BACnetConstructedDataTraceFlag{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.TraceFlag.DeepCopy().(BACnetApplicationTagBoolean),
+		utils.DeepCopy[BACnetApplicationTagBoolean](m.TraceFlag),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTraceFlagCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTraceFlagCopy
 }
 

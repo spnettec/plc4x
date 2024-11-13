@@ -440,7 +440,7 @@ func (m *_AdsDiscovery) deepCopy() *_AdsDiscovery {
 	_AdsDiscoveryCopy := &_AdsDiscovery{
 		m.RequestId,
 		m.Operation,
-		m.AmsNetId.DeepCopy().(AmsNetId),
+		utils.DeepCopy[AmsNetId](m.AmsNetId),
 		m.PortNumber,
 		utils.DeepCopySlice[AdsDiscoveryBlock, AdsDiscoveryBlock](m.Blocks),
 	}

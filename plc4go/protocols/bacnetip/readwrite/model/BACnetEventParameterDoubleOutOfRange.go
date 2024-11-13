@@ -139,6 +139,8 @@ type BACnetEventParameterDoubleOutOfRangeBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterDoubleOutOfRangeBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterDoubleOutOfRangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterBuilder
 	// Build builds the BACnetEventParameterDoubleOutOfRange or returns an error if something is wrong
 	Build() (BACnetEventParameterDoubleOutOfRange, error)
 	// MustBuild does the same as Build but panics on error
@@ -162,6 +164,7 @@ var _ (BACnetEventParameterDoubleOutOfRangeBuilder) = (*_BACnetEventParameterDou
 
 func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) setParent(contract BACnetEventParameterContract) {
 	b.BACnetEventParameterContract = contract
+	contract.(*_BACnetEventParameter)._SubType = b._BACnetEventParameterDoubleOutOfRange
 }
 
 func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagDouble, highLimit BACnetContextTagDouble, deadband BACnetContextTagDouble, closingTag BACnetClosingTag) BACnetEventParameterDoubleOutOfRangeBuilder {
@@ -327,8 +330,10 @@ func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) MustBuild() BACnetEventPa
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterDoubleOutOfRangeBuilder) Done() BACnetEventParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -564,14 +569,14 @@ func (m *_BACnetEventParameterDoubleOutOfRange) deepCopy() *_BACnetEventParamete
 	}
 	_BACnetEventParameterDoubleOutOfRangeCopy := &_BACnetEventParameterDoubleOutOfRange{
 		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.LowLimit.DeepCopy().(BACnetContextTagDouble),
-		m.HighLimit.DeepCopy().(BACnetContextTagDouble),
-		m.Deadband.DeepCopy().(BACnetContextTagDouble),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeDelay),
+		utils.DeepCopy[BACnetContextTagDouble](m.LowLimit),
+		utils.DeepCopy[BACnetContextTagDouble](m.HighLimit),
+		utils.DeepCopy[BACnetContextTagDouble](m.Deadband),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	_BACnetEventParameterDoubleOutOfRangeCopy.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
 	return _BACnetEventParameterDoubleOutOfRangeCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetLogRecordLogDatumIntegerValueBuilder interface {
 	WithIntegerValue(BACnetContextTagSignedInteger) BACnetLogRecordLogDatumIntegerValueBuilder
 	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
 	WithIntegerValueBuilder(func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetLogRecordLogDatumIntegerValueBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetLogRecordLogDatumBuilder
 	// Build builds the BACnetLogRecordLogDatumIntegerValue or returns an error if something is wrong
 	Build() (BACnetLogRecordLogDatumIntegerValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetLogRecordLogDatumIntegerValueBuilder) = (*_BACnetLogRecordLogDatumI
 
 func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
 	b.BACnetLogRecordLogDatumContract = contract
+	contract.(*_BACnetLogRecordLogDatum)._SubType = b._BACnetLogRecordLogDatumIntegerValue
 }
 
 func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) WithMandatoryFields(integerValue BACnetContextTagSignedInteger) BACnetLogRecordLogDatumIntegerValueBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) MustBuild() BACnetLogRecor
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetLogRecordLogDatumBuilder().(*_BACnetLogRecordLogDatumBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetLogRecordLogDatumIntegerValue) deepCopy() *_BACnetLogRecordLogDa
 	}
 	_BACnetLogRecordLogDatumIntegerValueCopy := &_BACnetLogRecordLogDatumIntegerValue{
 		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
-		m.IntegerValue.DeepCopy().(BACnetContextTagSignedInteger),
+		utils.DeepCopy[BACnetContextTagSignedInteger](m.IntegerValue),
 	}
-	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	_BACnetLogRecordLogDatumIntegerValueCopy.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
 	return _BACnetLogRecordLogDatumIntegerValueCopy
 }
 

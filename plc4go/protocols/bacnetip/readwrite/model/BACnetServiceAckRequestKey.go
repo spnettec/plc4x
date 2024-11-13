@@ -82,6 +82,8 @@ type BACnetServiceAckRequestKeyBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckRequestKeyBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetServiceAckRequestKeyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckRequestKey or returns an error if something is wrong
 	Build() (BACnetServiceAckRequestKey, error)
 	// MustBuild does the same as Build but panics on error
@@ -105,6 +107,7 @@ var _ (BACnetServiceAckRequestKeyBuilder) = (*_BACnetServiceAckRequestKeyBuilder
 
 func (b *_BACnetServiceAckRequestKeyBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckRequestKey
 }
 
 func (b *_BACnetServiceAckRequestKeyBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckRequestKeyBuilder {
@@ -131,8 +134,10 @@ func (b *_BACnetServiceAckRequestKeyBuilder) MustBuild() BACnetServiceAckRequest
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckRequestKeyBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -302,7 +307,7 @@ func (m *_BACnetServiceAckRequestKey) deepCopy() *_BACnetServiceAckRequestKey {
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
 		m.ServiceAckPayloadLength,
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckRequestKeyCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckRequestKeyCopy
 }
 

@@ -71,6 +71,8 @@ type SysexCommandExtendedAnalogBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SysexCommandExtendedAnalogBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandExtendedAnalog or returns an error if something is wrong
 	Build() (SysexCommandExtendedAnalog, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SysexCommandExtendedAnalogBuilder) = (*_SysexCommandExtendedAnalogBuilder
 
 func (b *_SysexCommandExtendedAnalogBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandExtendedAnalog
 }
 
 func (b *_SysexCommandExtendedAnalogBuilder) WithMandatoryFields() SysexCommandExtendedAnalogBuilder {
@@ -115,8 +118,10 @@ func (b *_SysexCommandExtendedAnalogBuilder) MustBuild() SysexCommandExtendedAna
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandExtendedAnalogBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -249,7 +254,7 @@ func (m *_SysexCommandExtendedAnalog) deepCopy() *_SysexCommandExtendedAnalog {
 	_SysexCommandExtendedAnalogCopy := &_SysexCommandExtendedAnalog{
 		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandExtendedAnalogCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandExtendedAnalogCopy
 }
 

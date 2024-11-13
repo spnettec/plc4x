@@ -112,6 +112,8 @@ type EndpointTypeBuilder interface {
 	WithTransportProfileUri(PascalString) EndpointTypeBuilder
 	// WithTransportProfileUriBuilder adds TransportProfileUri (property field) which is build by the builder
 	WithTransportProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the EndpointType or returns an error if something is wrong
 	Build() (EndpointType, error)
 	// MustBuild does the same as Build but panics on error
@@ -135,6 +137,7 @@ var _ (EndpointTypeBuilder) = (*_EndpointTypeBuilder)(nil)
 
 func (b *_EndpointTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._EndpointType
 }
 
 func (b *_EndpointTypeBuilder) WithMandatoryFields(endpointUrl PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, transportProfileUri PascalString) EndpointTypeBuilder {
@@ -233,8 +236,10 @@ func (b *_EndpointTypeBuilder) MustBuild() EndpointType {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_EndpointTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -440,12 +445,12 @@ func (m *_EndpointType) deepCopy() *_EndpointType {
 	}
 	_EndpointTypeCopy := &_EndpointType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.EndpointUrl.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.EndpointUrl),
 		m.SecurityMode,
-		m.SecurityPolicyUri.DeepCopy().(PascalString),
-		m.TransportProfileUri.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.SecurityPolicyUri),
+		utils.DeepCopy[PascalString](m.TransportProfileUri),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_EndpointTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EndpointTypeCopy
 }
 

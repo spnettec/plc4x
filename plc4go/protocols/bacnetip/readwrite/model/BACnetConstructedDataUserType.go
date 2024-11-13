@@ -86,6 +86,8 @@ type BACnetConstructedDataUserTypeBuilder interface {
 	WithUserType(BACnetAccessUserTypeTagged) BACnetConstructedDataUserTypeBuilder
 	// WithUserTypeBuilder adds UserType (property field) which is build by the builder
 	WithUserTypeBuilder(func(BACnetAccessUserTypeTaggedBuilder) BACnetAccessUserTypeTaggedBuilder) BACnetConstructedDataUserTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataUserType or returns an error if something is wrong
 	Build() (BACnetConstructedDataUserType, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataUserTypeBuilder) = (*_BACnetConstructedDataUserTypeB
 
 func (b *_BACnetConstructedDataUserTypeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataUserType
 }
 
 func (b *_BACnetConstructedDataUserTypeBuilder) WithMandatoryFields(userType BACnetAccessUserTypeTagged) BACnetConstructedDataUserTypeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataUserTypeBuilder) MustBuild() BACnetConstructedDat
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataUserTypeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataUserType) deepCopy() *_BACnetConstructedDataUserT
 	}
 	_BACnetConstructedDataUserTypeCopy := &_BACnetConstructedDataUserType{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.UserType.DeepCopy().(BACnetAccessUserTypeTagged),
+		utils.DeepCopy[BACnetAccessUserTypeTagged](m.UserType),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataUserTypeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataUserTypeCopy
 }
 

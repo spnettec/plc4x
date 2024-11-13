@@ -90,6 +90,8 @@ type ParameterValueSerialNumberBuilder interface {
 	WithValueBuilder(func(SerialNumberBuilder) SerialNumberBuilder) ParameterValueSerialNumberBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) ParameterValueSerialNumberBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ParameterValueBuilder
 	// Build builds the ParameterValueSerialNumber or returns an error if something is wrong
 	Build() (ParameterValueSerialNumber, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,6 +115,7 @@ var _ (ParameterValueSerialNumberBuilder) = (*_ParameterValueSerialNumberBuilder
 
 func (b *_ParameterValueSerialNumberBuilder) setParent(contract ParameterValueContract) {
 	b.ParameterValueContract = contract
+	contract.(*_ParameterValue)._SubType = b._ParameterValueSerialNumber
 }
 
 func (b *_ParameterValueSerialNumberBuilder) WithMandatoryFields(value SerialNumber, data []byte) ParameterValueSerialNumberBuilder {
@@ -163,8 +166,10 @@ func (b *_ParameterValueSerialNumberBuilder) MustBuild() ParameterValueSerialNum
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ParameterValueSerialNumberBuilder) Done() ParameterValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewParameterValueBuilder().(*_ParameterValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,10 +348,10 @@ func (m *_ParameterValueSerialNumber) deepCopy() *_ParameterValueSerialNumber {
 	}
 	_ParameterValueSerialNumberCopy := &_ParameterValueSerialNumber{
 		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
-		m.Value.DeepCopy().(SerialNumber),
+		utils.DeepCopy[SerialNumber](m.Value),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
-	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	_ParameterValueSerialNumberCopy.ParameterValueContract.(*_ParameterValue)._SubType = m
 	return _ParameterValueSerialNumberCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetTimeStampDateTimeBuilder interface {
 	WithDateTimeValue(BACnetDateTimeEnclosed) BACnetTimeStampDateTimeBuilder
 	// WithDateTimeValueBuilder adds DateTimeValue (property field) which is build by the builder
 	WithDateTimeValueBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetTimeStampDateTimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetTimeStampBuilder
 	// Build builds the BACnetTimeStampDateTime or returns an error if something is wrong
 	Build() (BACnetTimeStampDateTime, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetTimeStampDateTimeBuilder) = (*_BACnetTimeStampDateTimeBuilder)(nil)
 
 func (b *_BACnetTimeStampDateTimeBuilder) setParent(contract BACnetTimeStampContract) {
 	b.BACnetTimeStampContract = contract
+	contract.(*_BACnetTimeStamp)._SubType = b._BACnetTimeStampDateTime
 }
 
 func (b *_BACnetTimeStampDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetTimeStampDateTimeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetTimeStampDateTimeBuilder) MustBuild() BACnetTimeStampDateTime {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetTimeStampDateTimeBuilder) Done() BACnetTimeStampBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetTimeStampBuilder().(*_BACnetTimeStampBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetTimeStampDateTime) deepCopy() *_BACnetTimeStampDateTime {
 	}
 	_BACnetTimeStampDateTimeCopy := &_BACnetTimeStampDateTime{
 		m.BACnetTimeStampContract.(*_BACnetTimeStamp).deepCopy(),
-		m.DateTimeValue.DeepCopy().(BACnetDateTimeEnclosed),
+		utils.DeepCopy[BACnetDateTimeEnclosed](m.DateTimeValue),
 	}
-	m.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
+	_BACnetTimeStampDateTimeCopy.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
 	return _BACnetTimeStampDateTimeCopy
 }
 

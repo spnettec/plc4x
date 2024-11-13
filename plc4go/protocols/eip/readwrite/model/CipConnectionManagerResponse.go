@@ -118,6 +118,8 @@ type CipConnectionManagerResponseBuilder interface {
 	WithOtApi(uint32) CipConnectionManagerResponseBuilder
 	// WithToApi adds ToApi (property field)
 	WithToApi(uint32) CipConnectionManagerResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CipServiceBuilder
 	// Build builds the CipConnectionManagerResponse or returns an error if something is wrong
 	Build() (CipConnectionManagerResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -141,6 +143,7 @@ var _ (CipConnectionManagerResponseBuilder) = (*_CipConnectionManagerResponseBui
 
 func (b *_CipConnectionManagerResponseBuilder) setParent(contract CipServiceContract) {
 	b.CipServiceContract = contract
+	contract.(*_CipService)._SubType = b._CipConnectionManagerResponse
 }
 
 func (b *_CipConnectionManagerResponseBuilder) WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) CipConnectionManagerResponseBuilder {
@@ -197,8 +200,10 @@ func (b *_CipConnectionManagerResponseBuilder) MustBuild() CipConnectionManagerR
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CipConnectionManagerResponseBuilder) Done() CipServiceBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCipServiceBuilder().(*_CipServiceBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -512,7 +517,7 @@ func (m *_CipConnectionManagerResponse) deepCopy() *_CipConnectionManagerRespons
 		m.reservedField0,
 		m.reservedField1,
 	}
-	m.CipServiceContract.(*_CipService)._SubType = m
+	_CipConnectionManagerResponseCopy.CipServiceContract.(*_CipService)._SubType = m
 	return _CipConnectionManagerResponseCopy
 }
 

@@ -71,6 +71,8 @@ type ApduDataExtDomainAddressSelectiveReadBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtDomainAddressSelectiveReadBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ApduDataExtBuilder
 	// Build builds the ApduDataExtDomainAddressSelectiveRead or returns an error if something is wrong
 	Build() (ApduDataExtDomainAddressSelectiveRead, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (ApduDataExtDomainAddressSelectiveReadBuilder) = (*_ApduDataExtDomainAddre
 
 func (b *_ApduDataExtDomainAddressSelectiveReadBuilder) setParent(contract ApduDataExtContract) {
 	b.ApduDataExtContract = contract
+	contract.(*_ApduDataExt)._SubType = b._ApduDataExtDomainAddressSelectiveRead
 }
 
 func (b *_ApduDataExtDomainAddressSelectiveReadBuilder) WithMandatoryFields() ApduDataExtDomainAddressSelectiveReadBuilder {
@@ -115,8 +118,10 @@ func (b *_ApduDataExtDomainAddressSelectiveReadBuilder) MustBuild() ApduDataExtD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ApduDataExtDomainAddressSelectiveReadBuilder) Done() ApduDataExtBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewApduDataExtBuilder().(*_ApduDataExtBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -245,7 +250,7 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) deepCopy() *_ApduDataExtDomainA
 	_ApduDataExtDomainAddressSelectiveReadCopy := &_ApduDataExtDomainAddressSelectiveRead{
 		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
-	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	_ApduDataExtDomainAddressSelectiveReadCopy.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtDomainAddressSelectiveReadCopy
 }
 

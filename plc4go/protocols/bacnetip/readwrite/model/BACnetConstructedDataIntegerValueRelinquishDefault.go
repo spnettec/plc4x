@@ -86,6 +86,8 @@ type BACnetConstructedDataIntegerValueRelinquishDefaultBuilder interface {
 	WithRelinquishDefault(BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueRelinquishDefaultBuilder
 	// WithRelinquishDefaultBuilder adds RelinquishDefault (property field) which is build by the builder
 	WithRelinquishDefaultBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueRelinquishDefaultBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataIntegerValueRelinquishDefault or returns an error if something is wrong
 	Build() (BACnetConstructedDataIntegerValueRelinquishDefault, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataIntegerValueRelinquishDefaultBuilder) = (*_BACnetCon
 
 func (b *_BACnetConstructedDataIntegerValueRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataIntegerValueRelinquishDefault
 }
 
 func (b *_BACnetConstructedDataIntegerValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueRelinquishDefaultBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataIntegerValueRelinquishDefaultBuilder) MustBuild()
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataIntegerValueRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -344,9 +349,9 @@ func (m *_BACnetConstructedDataIntegerValueRelinquishDefault) deepCopy() *_BACne
 	}
 	_BACnetConstructedDataIntegerValueRelinquishDefaultCopy := &_BACnetConstructedDataIntegerValueRelinquishDefault{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.RelinquishDefault.DeepCopy().(BACnetApplicationTagSignedInteger),
+		utils.DeepCopy[BACnetApplicationTagSignedInteger](m.RelinquishDefault),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataIntegerValueRelinquishDefaultCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataIntegerValueRelinquishDefaultCopy
 }
 

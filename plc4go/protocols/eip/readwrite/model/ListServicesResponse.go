@@ -79,6 +79,8 @@ type ListServicesResponseBuilder interface {
 	WithMandatoryFields(typeIds []TypeId) ListServicesResponseBuilder
 	// WithTypeIds adds TypeIds (property field)
 	WithTypeIds(...TypeId) ListServicesResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() EipPacketBuilder
 	// Build builds the ListServicesResponse or returns an error if something is wrong
 	Build() (ListServicesResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -102,6 +104,7 @@ var _ (ListServicesResponseBuilder) = (*_ListServicesResponseBuilder)(nil)
 
 func (b *_ListServicesResponseBuilder) setParent(contract EipPacketContract) {
 	b.EipPacketContract = contract
+	contract.(*_EipPacket)._SubType = b._ListServicesResponse
 }
 
 func (b *_ListServicesResponseBuilder) WithMandatoryFields(typeIds []TypeId) ListServicesResponseBuilder {
@@ -128,8 +131,10 @@ func (b *_ListServicesResponseBuilder) MustBuild() ListServicesResponse {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ListServicesResponseBuilder) Done() EipPacketBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewEipPacketBuilder().(*_EipPacketBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -314,7 +319,7 @@ func (m *_ListServicesResponse) deepCopy() *_ListServicesResponse {
 		m.EipPacketContract.(*_EipPacket).deepCopy(),
 		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
 	}
-	m.EipPacketContract.(*_EipPacket)._SubType = m
+	_ListServicesResponseCopy.EipPacketContract.(*_EipPacket)._SubType = m
 	return _ListServicesResponseCopy
 }
 

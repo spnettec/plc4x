@@ -330,8 +330,8 @@ func (m *_BACnetTimeValue) deepCopy() *_BACnetTimeValue {
 		return nil
 	}
 	_BACnetTimeValueCopy := &_BACnetTimeValue{
-		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
-		m.Value.DeepCopy().(BACnetConstructedDataElement),
+		utils.DeepCopy[BACnetApplicationTagTime](m.TimeValue),
+		utils.DeepCopy[BACnetConstructedDataElement](m.Value),
 	}
 	return _BACnetTimeValueCopy
 }

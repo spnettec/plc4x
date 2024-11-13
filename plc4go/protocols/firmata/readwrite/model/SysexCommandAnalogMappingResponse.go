@@ -71,6 +71,8 @@ type SysexCommandAnalogMappingResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() SysexCommandAnalogMappingResponseBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() SysexCommandBuilder
 	// Build builds the SysexCommandAnalogMappingResponse or returns an error if something is wrong
 	Build() (SysexCommandAnalogMappingResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,7 @@ var _ (SysexCommandAnalogMappingResponseBuilder) = (*_SysexCommandAnalogMappingR
 
 func (b *_SysexCommandAnalogMappingResponseBuilder) setParent(contract SysexCommandContract) {
 	b.SysexCommandContract = contract
+	contract.(*_SysexCommand)._SubType = b._SysexCommandAnalogMappingResponse
 }
 
 func (b *_SysexCommandAnalogMappingResponseBuilder) WithMandatoryFields() SysexCommandAnalogMappingResponseBuilder {
@@ -115,8 +118,10 @@ func (b *_SysexCommandAnalogMappingResponseBuilder) MustBuild() SysexCommandAnal
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_SysexCommandAnalogMappingResponseBuilder) Done() SysexCommandBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewSysexCommandBuilder().(*_SysexCommandBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -249,7 +254,7 @@ func (m *_SysexCommandAnalogMappingResponse) deepCopy() *_SysexCommandAnalogMapp
 	_SysexCommandAnalogMappingResponseCopy := &_SysexCommandAnalogMappingResponse{
 		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
-	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	_SysexCommandAnalogMappingResponseCopy.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandAnalogMappingResponseCopy
 }
 

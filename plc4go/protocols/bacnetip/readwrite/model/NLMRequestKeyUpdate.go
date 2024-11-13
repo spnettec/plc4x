@@ -115,6 +115,8 @@ type NLMRequestKeyUpdateBuilder interface {
 	WithSet2ExpirationTime(uint32) NLMRequestKeyUpdateBuilder
 	// WithDistributionKeyRevision adds DistributionKeyRevision (property field)
 	WithDistributionKeyRevision(byte) NLMRequestKeyUpdateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() NLMBuilder
 	// Build builds the NLMRequestKeyUpdate or returns an error if something is wrong
 	Build() (NLMRequestKeyUpdate, error)
 	// MustBuild does the same as Build but panics on error
@@ -138,6 +140,7 @@ var _ (NLMRequestKeyUpdateBuilder) = (*_NLMRequestKeyUpdateBuilder)(nil)
 
 func (b *_NLMRequestKeyUpdateBuilder) setParent(contract NLMContract) {
 	b.NLMContract = contract
+	contract.(*_NLM)._SubType = b._NLMRequestKeyUpdate
 }
 
 func (b *_NLMRequestKeyUpdateBuilder) WithMandatoryFields(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte) NLMRequestKeyUpdateBuilder {
@@ -194,8 +197,10 @@ func (b *_NLMRequestKeyUpdateBuilder) MustBuild() NLMRequestKeyUpdate {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_NLMRequestKeyUpdateBuilder) Done() NLMBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewNLMBuilder().(*_NLMBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -460,7 +465,7 @@ func (m *_NLMRequestKeyUpdate) deepCopy() *_NLMRequestKeyUpdate {
 		m.Set2ExpirationTime,
 		m.DistributionKeyRevision,
 	}
-	m.NLMContract.(*_NLM)._SubType = m
+	_NLMRequestKeyUpdateCopy.NLMContract.(*_NLM)._SubType = m
 	return _NLMRequestKeyUpdateCopy
 }
 

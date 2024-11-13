@@ -170,6 +170,8 @@ type ProgramDiagnostic2DataTypeBuilder interface {
 	WithLastMethodReturnStatus(StatusCode) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodReturnStatusBuilder adds LastMethodReturnStatus (property field) which is build by the builder
 	WithLastMethodReturnStatusBuilder(func(StatusCodeBuilder) StatusCodeBuilder) ProgramDiagnostic2DataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the ProgramDiagnostic2DataType or returns an error if something is wrong
 	Build() (ProgramDiagnostic2DataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -193,6 +195,7 @@ var _ (ProgramDiagnostic2DataTypeBuilder) = (*_ProgramDiagnostic2DataTypeBuilder
 
 func (b *_ProgramDiagnostic2DataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._ProgramDiagnostic2DataType
 }
 
 func (b *_ProgramDiagnostic2DataTypeBuilder) WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, lastMethodInputArguments []Argument, lastMethodOutputArguments []Argument, lastMethodInputValues []Variant, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder {
@@ -369,8 +372,10 @@ func (b *_ProgramDiagnostic2DataTypeBuilder) MustBuild() ProgramDiagnostic2DataT
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ProgramDiagnostic2DataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -792,20 +797,20 @@ func (m *_ProgramDiagnostic2DataType) deepCopy() *_ProgramDiagnostic2DataType {
 	}
 	_ProgramDiagnostic2DataTypeCopy := &_ProgramDiagnostic2DataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.CreateSessionId.DeepCopy().(NodeId),
-		m.CreateClientName.DeepCopy().(PascalString),
+		utils.DeepCopy[NodeId](m.CreateSessionId),
+		utils.DeepCopy[PascalString](m.CreateClientName),
 		m.InvocationCreationTime,
 		m.LastTransitionTime,
-		m.LastMethodCall.DeepCopy().(PascalString),
-		m.LastMethodSessionId.DeepCopy().(NodeId),
+		utils.DeepCopy[PascalString](m.LastMethodCall),
+		utils.DeepCopy[NodeId](m.LastMethodSessionId),
 		utils.DeepCopySlice[Argument, Argument](m.LastMethodInputArguments),
 		utils.DeepCopySlice[Argument, Argument](m.LastMethodOutputArguments),
 		utils.DeepCopySlice[Variant, Variant](m.LastMethodInputValues),
 		utils.DeepCopySlice[Variant, Variant](m.LastMethodOutputValues),
 		m.LastMethodCallTime,
-		m.LastMethodReturnStatus.DeepCopy().(StatusCode),
+		utils.DeepCopy[StatusCode](m.LastMethodReturnStatus),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_ProgramDiagnostic2DataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ProgramDiagnostic2DataTypeCopy
 }
 

@@ -84,6 +84,8 @@ type BACnetPropertyStatesTimerStateBuilder interface {
 	WithTimerState(BACnetTimerStateTagged) BACnetPropertyStatesTimerStateBuilder
 	// WithTimerStateBuilder adds TimerState (property field) which is build by the builder
 	WithTimerStateBuilder(func(BACnetTimerStateTaggedBuilder) BACnetTimerStateTaggedBuilder) BACnetPropertyStatesTimerStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetPropertyStatesBuilder
 	// Build builds the BACnetPropertyStatesTimerState or returns an error if something is wrong
 	Build() (BACnetPropertyStatesTimerState, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetPropertyStatesTimerStateBuilder) = (*_BACnetPropertyStatesTimerStat
 
 func (b *_BACnetPropertyStatesTimerStateBuilder) setParent(contract BACnetPropertyStatesContract) {
 	b.BACnetPropertyStatesContract = contract
+	contract.(*_BACnetPropertyStates)._SubType = b._BACnetPropertyStatesTimerState
 }
 
 func (b *_BACnetPropertyStatesTimerStateBuilder) WithMandatoryFields(timerState BACnetTimerStateTagged) BACnetPropertyStatesTimerStateBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetPropertyStatesTimerStateBuilder) MustBuild() BACnetPropertyState
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetPropertyStatesTimerStateBuilder) Done() BACnetPropertyStatesBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetPropertyStatesBuilder().(*_BACnetPropertyStatesBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetPropertyStatesTimerState) deepCopy() *_BACnetPropertyStatesTimer
 	}
 	_BACnetPropertyStatesTimerStateCopy := &_BACnetPropertyStatesTimerState{
 		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
-		m.TimerState.DeepCopy().(BACnetTimerStateTagged),
+		utils.DeepCopy[BACnetTimerStateTagged](m.TimerState),
 	}
-	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	_BACnetPropertyStatesTimerStateCopy.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
 	return _BACnetPropertyStatesTimerStateCopy
 }
 

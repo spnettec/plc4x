@@ -97,6 +97,8 @@ type S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder interface {
 	WithTimeFactor(uint8) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
 	// WithItem adds Item (property field)
 	WithItem(...CycServiceItemType) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() S7PayloadUserDataItemBuilder
 	// Build builds the S7PayloadUserDataItemCyclicServicesSubscribeRequest or returns an error if something is wrong
 	Build() (S7PayloadUserDataItemCyclicServicesSubscribeRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) = (*_S7Payloa
 
 func (b *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
 	b.S7PayloadUserDataItemContract = contract
+	contract.(*_S7PayloadUserDataItem)._SubType = b._S7PayloadUserDataItemCyclicServicesSubscribeRequest
 }
 
 func (b *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) WithMandatoryFields(itemsCount uint16, timeBase TimeBase, timeFactor uint8, item []CycServiceItemType) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder {
@@ -161,8 +164,10 @@ func (b *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) MustBuild(
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewS7PayloadUserDataItemBuilder().(*_S7PayloadUserDataItemBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -389,7 +394,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) deepCopy() *_S7Pa
 		m.TimeFactor,
 		utils.DeepCopySlice[CycServiceItemType, CycServiceItemType](m.Item),
 	}
-	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	_S7PayloadUserDataItemCyclicServicesSubscribeRequestCopy.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemCyclicServicesSubscribeRequestCopy
 }
 

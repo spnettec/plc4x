@@ -92,6 +92,8 @@ type ReplyEncodedReplyBuilder interface {
 	WithChksum(Checksum) ReplyEncodedReplyBuilder
 	// WithChksumBuilder adds Chksum (property field) which is build by the builder
 	WithChksumBuilder(func(ChecksumBuilder) ChecksumBuilder) ReplyEncodedReplyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ReplyBuilder
 	// Build builds the ReplyEncodedReply or returns an error if something is wrong
 	Build() (ReplyEncodedReply, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,6 +117,7 @@ var _ (ReplyEncodedReplyBuilder) = (*_ReplyEncodedReplyBuilder)(nil)
 
 func (b *_ReplyEncodedReplyBuilder) setParent(contract ReplyContract) {
 	b.ReplyContract = contract
+	contract.(*_Reply)._SubType = b._ReplyEncodedReply
 }
 
 func (b *_ReplyEncodedReplyBuilder) WithMandatoryFields(encodedReply EncodedReply, chksum Checksum) ReplyEncodedReplyBuilder {
@@ -184,8 +187,10 @@ func (b *_ReplyEncodedReplyBuilder) MustBuild() ReplyEncodedReply {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_ReplyEncodedReplyBuilder) Done() ReplyBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewReplyBuilder().(*_ReplyBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -404,10 +409,10 @@ func (m *_ReplyEncodedReply) deepCopy() *_ReplyEncodedReply {
 	}
 	_ReplyEncodedReplyCopy := &_ReplyEncodedReply{
 		m.ReplyContract.(*_Reply).deepCopy(),
-		m.EncodedReply.DeepCopy().(EncodedReply),
-		m.Chksum.DeepCopy().(Checksum),
+		utils.DeepCopy[EncodedReply](m.EncodedReply),
+		utils.DeepCopy[Checksum](m.Chksum),
 	}
-	m.ReplyContract.(*_Reply)._SubType = m
+	_ReplyEncodedReplyCopy.ReplyContract.(*_Reply)._SubType = m
 	return _ReplyEncodedReplyCopy
 }
 

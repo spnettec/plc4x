@@ -395,8 +395,8 @@ func (m *_LocalizedText) deepCopy() *_LocalizedText {
 	_LocalizedTextCopy := &_LocalizedText{
 		m.TextSpecified,
 		m.LocaleSpecified,
-		m.Locale.DeepCopy().(PascalString),
-		m.Text.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Locale),
+		utils.DeepCopy[PascalString](m.Text),
 		m.reservedField0,
 	}
 	return _LocalizedTextCopy

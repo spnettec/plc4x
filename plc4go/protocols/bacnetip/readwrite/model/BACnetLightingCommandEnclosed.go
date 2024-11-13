@@ -394,9 +394,9 @@ func (m *_BACnetLightingCommandEnclosed) deepCopy() *_BACnetLightingCommandEnclo
 		return nil
 	}
 	_BACnetLightingCommandEnclosedCopy := &_BACnetLightingCommandEnclosed{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.LightingCommand.DeepCopy().(BACnetLightingCommand),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetLightingCommand](m.LightingCommand),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _BACnetLightingCommandEnclosedCopy

@@ -330,8 +330,8 @@ func (m *_BACnetHostNPort) deepCopy() *_BACnetHostNPort {
 		return nil
 	}
 	_BACnetHostNPortCopy := &_BACnetHostNPort{
-		m.Host.DeepCopy().(BACnetHostAddressEnclosed),
-		m.Port.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetHostAddressEnclosed](m.Host),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Port),
 	}
 	return _BACnetHostNPortCopy
 }

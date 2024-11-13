@@ -86,6 +86,8 @@ type BACnetConstructedDataPowerBuilder interface {
 	WithPower(BACnetApplicationTagReal) BACnetConstructedDataPowerBuilder
 	// WithPowerBuilder adds Power (property field) which is build by the builder
 	WithPowerBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPowerBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataPower or returns an error if something is wrong
 	Build() (BACnetConstructedDataPower, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataPowerBuilder) = (*_BACnetConstructedDataPowerBuilder
 
 func (b *_BACnetConstructedDataPowerBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataPower
 }
 
 func (b *_BACnetConstructedDataPowerBuilder) WithMandatoryFields(power BACnetApplicationTagReal) BACnetConstructedDataPowerBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataPowerBuilder) MustBuild() BACnetConstructedDataPo
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataPowerBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataPower) deepCopy() *_BACnetConstructedDataPower {
 	}
 	_BACnetConstructedDataPowerCopy := &_BACnetConstructedDataPower{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.Power.DeepCopy().(BACnetApplicationTagReal),
+		utils.DeepCopy[BACnetApplicationTagReal](m.Power),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataPowerCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataPowerCopy
 }
 

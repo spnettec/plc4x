@@ -333,7 +333,7 @@ func (m *_BACnetWriteStatusTagged) deepCopy() *_BACnetWriteStatusTagged {
 		return nil
 	}
 	_BACnetWriteStatusTaggedCopy := &_BACnetWriteStatusTagged{
-		m.Header.DeepCopy().(BACnetTagHeader),
+		utils.DeepCopy[BACnetTagHeader](m.Header),
 		m.Value,
 		m.TagNumber,
 		m.TagClass,

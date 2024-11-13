@@ -139,6 +139,8 @@ type BACnetEventParameterChangeOfLifeSavetyBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfLifeSavetyBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetEventParameterBuilder
 	// Build builds the BACnetEventParameterChangeOfLifeSavety or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfLifeSavety, error)
 	// MustBuild does the same as Build but panics on error
@@ -162,6 +164,7 @@ var _ (BACnetEventParameterChangeOfLifeSavetyBuilder) = (*_BACnetEventParameterC
 
 func (b *_BACnetEventParameterChangeOfLifeSavetyBuilder) setParent(contract BACnetEventParameterContract) {
 	b.BACnetEventParameterContract = contract
+	contract.(*_BACnetEventParameter)._SubType = b._BACnetEventParameterChangeOfLifeSavety
 }
 
 func (b *_BACnetEventParameterChangeOfLifeSavetyBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfLifeSavetyAlarmValues BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, listOfAlarmValues BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, modePropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyBuilder {
@@ -327,8 +330,10 @@ func (b *_BACnetEventParameterChangeOfLifeSavetyBuilder) MustBuild() BACnetEvent
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetEventParameterChangeOfLifeSavetyBuilder) Done() BACnetEventParameterBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetEventParameterBuilder().(*_BACnetEventParameterBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -564,14 +569,14 @@ func (m *_BACnetEventParameterChangeOfLifeSavety) deepCopy() *_BACnetEventParame
 	}
 	_BACnetEventParameterChangeOfLifeSavetyCopy := &_BACnetEventParameterChangeOfLifeSavety{
 		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ListOfLifeSavetyAlarmValues.DeepCopy().(BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues),
-		m.ListOfAlarmValues.DeepCopy().(BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues),
-		m.ModePropertyReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.TimeDelay),
+		utils.DeepCopy[BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues](m.ListOfLifeSavetyAlarmValues),
+		utils.DeepCopy[BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues](m.ListOfAlarmValues),
+		utils.DeepCopy[BACnetDeviceObjectPropertyReferenceEnclosed](m.ModePropertyReference),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 	}
-	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	_BACnetEventParameterChangeOfLifeSavetyCopy.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
 	return _BACnetEventParameterChangeOfLifeSavetyCopy
 }
 

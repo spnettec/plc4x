@@ -84,6 +84,8 @@ type BACnetChannelValueDoubleBuilder interface {
 	WithDoubleValue(BACnetApplicationTagDouble) BACnetChannelValueDoubleBuilder
 	// WithDoubleValueBuilder adds DoubleValue (property field) which is build by the builder
 	WithDoubleValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetChannelValueDoubleBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetChannelValueBuilder
 	// Build builds the BACnetChannelValueDouble or returns an error if something is wrong
 	Build() (BACnetChannelValueDouble, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetChannelValueDoubleBuilder) = (*_BACnetChannelValueDoubleBuilder)(ni
 
 func (b *_BACnetChannelValueDoubleBuilder) setParent(contract BACnetChannelValueContract) {
 	b.BACnetChannelValueContract = contract
+	contract.(*_BACnetChannelValue)._SubType = b._BACnetChannelValueDouble
 }
 
 func (b *_BACnetChannelValueDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetChannelValueDoubleBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetChannelValueDoubleBuilder) MustBuild() BACnetChannelValueDouble 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetChannelValueDoubleBuilder) Done() BACnetChannelValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -304,9 +309,9 @@ func (m *_BACnetChannelValueDouble) deepCopy() *_BACnetChannelValueDouble {
 	}
 	_BACnetChannelValueDoubleCopy := &_BACnetChannelValueDouble{
 		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
-		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+		utils.DeepCopy[BACnetApplicationTagDouble](m.DoubleValue),
 	}
-	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	_BACnetChannelValueDoubleCopy.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
 	return _BACnetChannelValueDoubleCopy
 }
 

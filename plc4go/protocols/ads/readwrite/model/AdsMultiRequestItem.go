@@ -87,20 +87,11 @@ type AdsMultiRequestItemBuilder interface {
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() AdsMultiRequestItemBuilder
 	// AsAdsMultiRequestItemRead converts this build to a subType of AdsMultiRequestItem. It is always possible to return to current builder using Done()
-	AsAdsMultiRequestItemRead() interface {
-		AdsMultiRequestItemReadBuilder
-		Done() AdsMultiRequestItemBuilder
-	}
+	AsAdsMultiRequestItemRead() AdsMultiRequestItemReadBuilder
 	// AsAdsMultiRequestItemWrite converts this build to a subType of AdsMultiRequestItem. It is always possible to return to current builder using Done()
-	AsAdsMultiRequestItemWrite() interface {
-		AdsMultiRequestItemWriteBuilder
-		Done() AdsMultiRequestItemBuilder
-	}
+	AsAdsMultiRequestItemWrite() AdsMultiRequestItemWriteBuilder
 	// AsAdsMultiRequestItemReadWrite converts this build to a subType of AdsMultiRequestItem. It is always possible to return to current builder using Done()
-	AsAdsMultiRequestItemReadWrite() interface {
-		AdsMultiRequestItemReadWriteBuilder
-		Done() AdsMultiRequestItemBuilder
-	}
+	AsAdsMultiRequestItemReadWrite() AdsMultiRequestItemReadWriteBuilder
 	// Build builds the AdsMultiRequestItem or returns an error if something is wrong
 	PartialBuild() (AdsMultiRequestItemContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -151,14 +142,8 @@ func (b *_AdsMultiRequestItemBuilder) PartialMustBuild() AdsMultiRequestItemCont
 	return build
 }
 
-func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemRead() interface {
-	AdsMultiRequestItemReadBuilder
-	Done() AdsMultiRequestItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsMultiRequestItemReadBuilder
-		Done() AdsMultiRequestItemBuilder
-	}); ok {
+func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemRead() AdsMultiRequestItemReadBuilder {
+	if cb, ok := b.childBuilder.(AdsMultiRequestItemReadBuilder); ok {
 		return cb
 	}
 	cb := NewAdsMultiRequestItemReadBuilder().(*_AdsMultiRequestItemReadBuilder)
@@ -167,14 +152,8 @@ func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemRead() interface {
 	return cb
 }
 
-func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemWrite() interface {
-	AdsMultiRequestItemWriteBuilder
-	Done() AdsMultiRequestItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsMultiRequestItemWriteBuilder
-		Done() AdsMultiRequestItemBuilder
-	}); ok {
+func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemWrite() AdsMultiRequestItemWriteBuilder {
+	if cb, ok := b.childBuilder.(AdsMultiRequestItemWriteBuilder); ok {
 		return cb
 	}
 	cb := NewAdsMultiRequestItemWriteBuilder().(*_AdsMultiRequestItemWriteBuilder)
@@ -183,14 +162,8 @@ func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemWrite() interface {
 	return cb
 }
 
-func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemReadWrite() interface {
-	AdsMultiRequestItemReadWriteBuilder
-	Done() AdsMultiRequestItemBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		AdsMultiRequestItemReadWriteBuilder
-		Done() AdsMultiRequestItemBuilder
-	}); ok {
+func (b *_AdsMultiRequestItemBuilder) AsAdsMultiRequestItemReadWrite() AdsMultiRequestItemReadWriteBuilder {
+	if cb, ok := b.childBuilder.(AdsMultiRequestItemReadWriteBuilder); ok {
 		return cb
 	}
 	cb := NewAdsMultiRequestItemReadWriteBuilder().(*_AdsMultiRequestItemReadWriteBuilder)

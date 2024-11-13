@@ -497,11 +497,11 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) deepCopy() *
 		return nil
 	}
 	_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionCopy := &_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription{
-		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
-		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.MonitoredPropertyReference.DeepCopy().(BACnetPropertyReferenceEnclosed),
-		m.ErrorType.DeepCopy().(ErrorEnclosed),
-		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		utils.DeepCopy[BACnetOpeningTag](m.OpeningTag),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.MonitoredObjectIdentifier),
+		utils.DeepCopy[BACnetPropertyReferenceEnclosed](m.MonitoredPropertyReference),
+		utils.DeepCopy[ErrorEnclosed](m.ErrorType),
+		utils.DeepCopy[BACnetClosingTag](m.ClosingTag),
 		m.TagNumber,
 	}
 	return _SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionCopy

@@ -97,6 +97,8 @@ type MediaTransportControlDataTotalTracksBuilder interface {
 	WithTotalTracksMLSB(byte) MediaTransportControlDataTotalTracksBuilder
 	// WithTotalTracksLSB adds TotalTracksLSB (property field)
 	WithTotalTracksLSB(byte) MediaTransportControlDataTotalTracksBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() MediaTransportControlDataBuilder
 	// Build builds the MediaTransportControlDataTotalTracks or returns an error if something is wrong
 	Build() (MediaTransportControlDataTotalTracks, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +122,7 @@ var _ (MediaTransportControlDataTotalTracksBuilder) = (*_MediaTransportControlDa
 
 func (b *_MediaTransportControlDataTotalTracksBuilder) setParent(contract MediaTransportControlDataContract) {
 	b.MediaTransportControlDataContract = contract
+	contract.(*_MediaTransportControlData)._SubType = b._MediaTransportControlDataTotalTracks
 }
 
 func (b *_MediaTransportControlDataTotalTracksBuilder) WithMandatoryFields(totalTracksMSB byte, totalTracksMMSB byte, totalTracksMLSB byte, totalTracksLSB byte) MediaTransportControlDataTotalTracksBuilder {
@@ -161,8 +164,10 @@ func (b *_MediaTransportControlDataTotalTracksBuilder) MustBuild() MediaTranspor
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_MediaTransportControlDataTotalTracksBuilder) Done() MediaTransportControlDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewMediaTransportControlDataBuilder().(*_MediaTransportControlDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -369,7 +374,7 @@ func (m *_MediaTransportControlDataTotalTracks) deepCopy() *_MediaTransportContr
 		m.TotalTracksMLSB,
 		m.TotalTracksLSB,
 	}
-	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	_MediaTransportControlDataTotalTracksCopy.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataTotalTracksCopy
 }
 

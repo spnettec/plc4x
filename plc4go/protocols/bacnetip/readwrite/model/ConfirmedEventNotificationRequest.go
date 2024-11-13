@@ -879,19 +879,19 @@ func (m *_ConfirmedEventNotificationRequest) deepCopy() *_ConfirmedEventNotifica
 		return nil
 	}
 	_ConfirmedEventNotificationRequestCopy := &_ConfirmedEventNotificationRequest{
-		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.EventObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.Timestamp.DeepCopy().(BACnetTimeStampEnclosed),
-		m.NotificationClass.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.EventType.DeepCopy().(BACnetEventTypeTagged),
-		m.MessageText.DeepCopy().(BACnetContextTagCharacterString),
-		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
-		m.AckRequired.DeepCopy().(BACnetContextTagBoolean),
-		m.FromState.DeepCopy().(BACnetEventStateTagged),
-		m.ToState.DeepCopy().(BACnetEventStateTagged),
-		m.EventValues.DeepCopy().(BACnetNotificationParameters),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ProcessIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.InitiatingDeviceIdentifier),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.EventObjectIdentifier),
+		utils.DeepCopy[BACnetTimeStampEnclosed](m.Timestamp),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.NotificationClass),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.Priority),
+		utils.DeepCopy[BACnetEventTypeTagged](m.EventType),
+		utils.DeepCopy[BACnetContextTagCharacterString](m.MessageText),
+		utils.DeepCopy[BACnetNotifyTypeTagged](m.NotifyType),
+		utils.DeepCopy[BACnetContextTagBoolean](m.AckRequired),
+		utils.DeepCopy[BACnetEventStateTagged](m.FromState),
+		utils.DeepCopy[BACnetEventStateTagged](m.ToState),
+		utils.DeepCopy[BACnetNotificationParameters](m.EventValues),
 	}
 	return _ConfirmedEventNotificationRequestCopy
 }

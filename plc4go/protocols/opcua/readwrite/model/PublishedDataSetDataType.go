@@ -118,6 +118,8 @@ type PublishedDataSetDataTypeBuilder interface {
 	WithDataSetSource(ExtensionObject) PublishedDataSetDataTypeBuilder
 	// WithDataSetSourceBuilder adds DataSetSource (property field) which is build by the builder
 	WithDataSetSourceBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) PublishedDataSetDataTypeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() ExtensionObjectDefinitionBuilder
 	// Build builds the PublishedDataSetDataType or returns an error if something is wrong
 	Build() (PublishedDataSetDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -141,6 +143,7 @@ var _ (PublishedDataSetDataTypeBuilder) = (*_PublishedDataSetDataTypeBuilder)(ni
 
 func (b *_PublishedDataSetDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
 	b.ExtensionObjectDefinitionContract = contract
+	contract.(*_ExtensionObjectDefinition)._SubType = b._PublishedDataSetDataType
 }
 
 func (b *_PublishedDataSetDataTypeBuilder) WithMandatoryFields(name PascalString, dataSetFolder []PascalString, dataSetMetaData DataSetMetaDataType, extensionFields []KeyValuePair, dataSetSource ExtensionObject) PublishedDataSetDataTypeBuilder {
@@ -244,8 +247,10 @@ func (b *_PublishedDataSetDataTypeBuilder) MustBuild() PublishedDataSetDataType 
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_PublishedDataSetDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewExtensionObjectDefinitionBuilder().(*_ExtensionObjectDefinitionBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -508,13 +513,13 @@ func (m *_PublishedDataSetDataType) deepCopy() *_PublishedDataSetDataType {
 	}
 	_PublishedDataSetDataTypeCopy := &_PublishedDataSetDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopy[PascalString](m.Name),
 		utils.DeepCopySlice[PascalString, PascalString](m.DataSetFolder),
-		m.DataSetMetaData.DeepCopy().(DataSetMetaDataType),
+		utils.DeepCopy[DataSetMetaDataType](m.DataSetMetaData),
 		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.ExtensionFields),
-		m.DataSetSource.DeepCopy().(ExtensionObject),
+		utils.DeepCopy[ExtensionObject](m.DataSetSource),
 	}
-	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	_PublishedDataSetDataTypeCopy.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _PublishedDataSetDataTypeCopy
 }
 

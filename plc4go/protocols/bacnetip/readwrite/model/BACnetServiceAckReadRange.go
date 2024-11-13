@@ -141,6 +141,8 @@ type BACnetServiceAckReadRangeBuilder interface {
 	WithOptionalFirstSequenceNumber(BACnetContextTagUnsignedInteger) BACnetServiceAckReadRangeBuilder
 	// WithOptionalFirstSequenceNumberBuilder adds FirstSequenceNumber (property field) which is build by the builder
 	WithOptionalFirstSequenceNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetServiceAckReadRangeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckReadRange or returns an error if something is wrong
 	Build() (BACnetServiceAckReadRange, error)
 	// MustBuild does the same as Build but panics on error
@@ -164,6 +166,7 @@ var _ (BACnetServiceAckReadRangeBuilder) = (*_BACnetServiceAckReadRangeBuilder)(
 
 func (b *_BACnetServiceAckReadRangeBuilder) setParent(contract BACnetServiceAckContract) {
 	b.BACnetServiceAckContract = contract
+	contract.(*_BACnetServiceAck)._SubType = b._BACnetServiceAckReadRange
 }
 
 func (b *_BACnetServiceAckReadRangeBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, resultFlags BACnetResultFlagsTagged, itemCount BACnetContextTagUnsignedInteger) BACnetServiceAckReadRangeBuilder {
@@ -335,8 +338,10 @@ func (b *_BACnetServiceAckReadRangeBuilder) MustBuild() BACnetServiceAckReadRang
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetServiceAckReadRangeBuilder) Done() BACnetServiceAckBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetServiceAckBuilder().(*_BACnetServiceAckBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -611,15 +616,15 @@ func (m *_BACnetServiceAckReadRange) deepCopy() *_BACnetServiceAckReadRange {
 	}
 	_BACnetServiceAckReadRangeCopy := &_BACnetServiceAckReadRange{
 		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
-		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
-		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
-		m.PropertyArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ResultFlags.DeepCopy().(BACnetResultFlagsTagged),
-		m.ItemCount.DeepCopy().(BACnetContextTagUnsignedInteger),
-		m.ItemData.DeepCopy().(BACnetConstructedData),
-		m.FirstSequenceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		utils.DeepCopy[BACnetContextTagObjectIdentifier](m.ObjectIdentifier),
+		utils.DeepCopy[BACnetPropertyIdentifierTagged](m.PropertyIdentifier),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.PropertyArrayIndex),
+		utils.DeepCopy[BACnetResultFlagsTagged](m.ResultFlags),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.ItemCount),
+		utils.DeepCopy[BACnetConstructedData](m.ItemData),
+		utils.DeepCopy[BACnetContextTagUnsignedInteger](m.FirstSequenceNumber),
 	}
-	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	_BACnetServiceAckReadRangeCopy.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
 	return _BACnetServiceAckReadRangeCopy
 }
 

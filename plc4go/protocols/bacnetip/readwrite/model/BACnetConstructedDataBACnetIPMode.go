@@ -86,6 +86,8 @@ type BACnetConstructedDataBACnetIPModeBuilder interface {
 	WithBacnetIpMode(BACnetIPModeTagged) BACnetConstructedDataBACnetIPModeBuilder
 	// WithBacnetIpModeBuilder adds BacnetIpMode (property field) which is build by the builder
 	WithBacnetIpModeBuilder(func(BACnetIPModeTaggedBuilder) BACnetIPModeTaggedBuilder) BACnetConstructedDataBACnetIPModeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataBACnetIPMode or returns an error if something is wrong
 	Build() (BACnetConstructedDataBACnetIPMode, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataBACnetIPModeBuilder) = (*_BACnetConstructedDataBACne
 
 func (b *_BACnetConstructedDataBACnetIPModeBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataBACnetIPMode
 }
 
 func (b *_BACnetConstructedDataBACnetIPModeBuilder) WithMandatoryFields(bacnetIpMode BACnetIPModeTagged) BACnetConstructedDataBACnetIPModeBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataBACnetIPModeBuilder) MustBuild() BACnetConstructe
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataBACnetIPModeBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataBACnetIPMode) deepCopy() *_BACnetConstructedDataB
 	}
 	_BACnetConstructedDataBACnetIPModeCopy := &_BACnetConstructedDataBACnetIPMode{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.BacnetIpMode.DeepCopy().(BACnetIPModeTagged),
+		utils.DeepCopy[BACnetIPModeTagged](m.BacnetIpMode),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataBACnetIPModeCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBACnetIPModeCopy
 }
 

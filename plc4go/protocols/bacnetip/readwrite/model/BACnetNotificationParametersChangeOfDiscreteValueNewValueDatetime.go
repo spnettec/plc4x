@@ -84,6 +84,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder in
 	WithDateTimeValue(BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
 	// WithDateTimeValueBuilder adds DateTimeValue (property field) which is build by the builder
 	WithDateTimeValueBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
 	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime or returns an error if something is wrong
 	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error)
 	// MustBuild does the same as Build but panics on error
@@ -107,6 +109,7 @@ var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder)
 
 func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) setParent(contract BACnetNotificationParametersChangeOfDiscreteValueNewValueContract) {
 	b.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = contract
+	contract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = b._BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
 }
 
 func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
@@ -152,8 +155,10 @@ func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuild
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -305,9 +310,9 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) dee
 	}
 	_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime{
 		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).deepCopy(),
-		m.DateTimeValue.DeepCopy().(BACnetDateTimeEnclosed),
+		utils.DeepCopy[BACnetDateTimeEnclosed](m.DateTimeValue),
 	}
-	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeCopy.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
 	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeCopy
 }
 

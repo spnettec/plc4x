@@ -85,6 +85,8 @@ type CALDataGetStatusBuilder interface {
 	WithParamNo(Parameter) CALDataGetStatusBuilder
 	// WithCount adds Count (property field)
 	WithCount(uint8) CALDataGetStatusBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() CALDataBuilder
 	// Build builds the CALDataGetStatus or returns an error if something is wrong
 	Build() (CALDataGetStatus, error)
 	// MustBuild does the same as Build but panics on error
@@ -108,6 +110,7 @@ var _ (CALDataGetStatusBuilder) = (*_CALDataGetStatusBuilder)(nil)
 
 func (b *_CALDataGetStatusBuilder) setParent(contract CALDataContract) {
 	b.CALDataContract = contract
+	contract.(*_CALData)._SubType = b._CALDataGetStatus
 }
 
 func (b *_CALDataGetStatusBuilder) WithMandatoryFields(paramNo Parameter, count uint8) CALDataGetStatusBuilder {
@@ -139,8 +142,10 @@ func (b *_CALDataGetStatusBuilder) MustBuild() CALDataGetStatus {
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_CALDataGetStatusBuilder) Done() CALDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewCALDataBuilder().(*_CALDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -311,7 +316,7 @@ func (m *_CALDataGetStatus) deepCopy() *_CALDataGetStatus {
 		m.ParamNo,
 		m.Count,
 	}
-	m.CALDataContract.(*_CALData)._SubType = m
+	_CALDataGetStatusCopy.CALDataContract.(*_CALData)._SubType = m
 	return _CALDataGetStatusCopy
 }
 

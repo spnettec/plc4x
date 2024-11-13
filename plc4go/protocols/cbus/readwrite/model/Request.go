@@ -126,40 +126,19 @@ type RequestBuilder interface {
 	// WithTerminationBuilder adds Termination (property field) which is build by the builder
 	WithTerminationBuilder(func(RequestTerminationBuilder) RequestTerminationBuilder) RequestBuilder
 	// AsRequestSmartConnectShortcut converts this build to a subType of Request. It is always possible to return to current builder using Done()
-	AsRequestSmartConnectShortcut() interface {
-		RequestSmartConnectShortcutBuilder
-		Done() RequestBuilder
-	}
+	AsRequestSmartConnectShortcut() RequestSmartConnectShortcutBuilder
 	// AsRequestReset converts this build to a subType of Request. It is always possible to return to current builder using Done()
-	AsRequestReset() interface {
-		RequestResetBuilder
-		Done() RequestBuilder
-	}
+	AsRequestReset() RequestResetBuilder
 	// AsRequestDirectCommandAccess converts this build to a subType of Request. It is always possible to return to current builder using Done()
-	AsRequestDirectCommandAccess() interface {
-		RequestDirectCommandAccessBuilder
-		Done() RequestBuilder
-	}
+	AsRequestDirectCommandAccess() RequestDirectCommandAccessBuilder
 	// AsRequestCommand converts this build to a subType of Request. It is always possible to return to current builder using Done()
-	AsRequestCommand() interface {
-		RequestCommandBuilder
-		Done() RequestBuilder
-	}
+	AsRequestCommand() RequestCommandBuilder
 	// AsRequestNull converts this build to a subType of Request. It is always possible to return to current builder using Done()
-	AsRequestNull() interface {
-		RequestNullBuilder
-		Done() RequestBuilder
-	}
+	AsRequestNull() RequestNullBuilder
 	// AsRequestEmpty converts this build to a subType of Request. It is always possible to return to current builder using Done()
-	AsRequestEmpty() interface {
-		RequestEmptyBuilder
-		Done() RequestBuilder
-	}
+	AsRequestEmpty() RequestEmptyBuilder
 	// AsRequestObsolete converts this build to a subType of Request. It is always possible to return to current builder using Done()
-	AsRequestObsolete() interface {
-		RequestObsoleteBuilder
-		Done() RequestBuilder
-	}
+	AsRequestObsolete() RequestObsoleteBuilder
 	// Build builds the Request or returns an error if something is wrong
 	PartialBuild() (RequestContract, error)
 	// MustBuild does the same as Build but panics on error
@@ -254,14 +233,8 @@ func (b *_RequestBuilder) PartialMustBuild() RequestContract {
 	return build
 }
 
-func (b *_RequestBuilder) AsRequestSmartConnectShortcut() interface {
-	RequestSmartConnectShortcutBuilder
-	Done() RequestBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		RequestSmartConnectShortcutBuilder
-		Done() RequestBuilder
-	}); ok {
+func (b *_RequestBuilder) AsRequestSmartConnectShortcut() RequestSmartConnectShortcutBuilder {
+	if cb, ok := b.childBuilder.(RequestSmartConnectShortcutBuilder); ok {
 		return cb
 	}
 	cb := NewRequestSmartConnectShortcutBuilder().(*_RequestSmartConnectShortcutBuilder)
@@ -270,14 +243,8 @@ func (b *_RequestBuilder) AsRequestSmartConnectShortcut() interface {
 	return cb
 }
 
-func (b *_RequestBuilder) AsRequestReset() interface {
-	RequestResetBuilder
-	Done() RequestBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		RequestResetBuilder
-		Done() RequestBuilder
-	}); ok {
+func (b *_RequestBuilder) AsRequestReset() RequestResetBuilder {
+	if cb, ok := b.childBuilder.(RequestResetBuilder); ok {
 		return cb
 	}
 	cb := NewRequestResetBuilder().(*_RequestResetBuilder)
@@ -286,14 +253,8 @@ func (b *_RequestBuilder) AsRequestReset() interface {
 	return cb
 }
 
-func (b *_RequestBuilder) AsRequestDirectCommandAccess() interface {
-	RequestDirectCommandAccessBuilder
-	Done() RequestBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		RequestDirectCommandAccessBuilder
-		Done() RequestBuilder
-	}); ok {
+func (b *_RequestBuilder) AsRequestDirectCommandAccess() RequestDirectCommandAccessBuilder {
+	if cb, ok := b.childBuilder.(RequestDirectCommandAccessBuilder); ok {
 		return cb
 	}
 	cb := NewRequestDirectCommandAccessBuilder().(*_RequestDirectCommandAccessBuilder)
@@ -302,14 +263,8 @@ func (b *_RequestBuilder) AsRequestDirectCommandAccess() interface {
 	return cb
 }
 
-func (b *_RequestBuilder) AsRequestCommand() interface {
-	RequestCommandBuilder
-	Done() RequestBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		RequestCommandBuilder
-		Done() RequestBuilder
-	}); ok {
+func (b *_RequestBuilder) AsRequestCommand() RequestCommandBuilder {
+	if cb, ok := b.childBuilder.(RequestCommandBuilder); ok {
 		return cb
 	}
 	cb := NewRequestCommandBuilder().(*_RequestCommandBuilder)
@@ -318,14 +273,8 @@ func (b *_RequestBuilder) AsRequestCommand() interface {
 	return cb
 }
 
-func (b *_RequestBuilder) AsRequestNull() interface {
-	RequestNullBuilder
-	Done() RequestBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		RequestNullBuilder
-		Done() RequestBuilder
-	}); ok {
+func (b *_RequestBuilder) AsRequestNull() RequestNullBuilder {
+	if cb, ok := b.childBuilder.(RequestNullBuilder); ok {
 		return cb
 	}
 	cb := NewRequestNullBuilder().(*_RequestNullBuilder)
@@ -334,14 +283,8 @@ func (b *_RequestBuilder) AsRequestNull() interface {
 	return cb
 }
 
-func (b *_RequestBuilder) AsRequestEmpty() interface {
-	RequestEmptyBuilder
-	Done() RequestBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		RequestEmptyBuilder
-		Done() RequestBuilder
-	}); ok {
+func (b *_RequestBuilder) AsRequestEmpty() RequestEmptyBuilder {
+	if cb, ok := b.childBuilder.(RequestEmptyBuilder); ok {
 		return cb
 	}
 	cb := NewRequestEmptyBuilder().(*_RequestEmptyBuilder)
@@ -350,14 +293,8 @@ func (b *_RequestBuilder) AsRequestEmpty() interface {
 	return cb
 }
 
-func (b *_RequestBuilder) AsRequestObsolete() interface {
-	RequestObsoleteBuilder
-	Done() RequestBuilder
-} {
-	if cb, ok := b.childBuilder.(interface {
-		RequestObsoleteBuilder
-		Done() RequestBuilder
-	}); ok {
+func (b *_RequestBuilder) AsRequestObsolete() RequestObsoleteBuilder {
+	if cb, ok := b.childBuilder.(RequestObsoleteBuilder); ok {
 		return cb
 	}
 	cb := NewRequestObsoleteBuilder().(*_RequestObsoleteBuilder)
@@ -688,7 +625,7 @@ func (m *_Request) deepCopy() *_Request {
 		utils.CopyPtr[RequestType](m.StartingCR),
 		utils.CopyPtr[RequestType](m.ResetMode),
 		m.SecondPeek,
-		m.Termination.DeepCopy().(RequestTermination),
+		utils.DeepCopy[RequestTermination](m.Termination),
 		m.CBusOptions,
 	}
 	return _RequestCopy

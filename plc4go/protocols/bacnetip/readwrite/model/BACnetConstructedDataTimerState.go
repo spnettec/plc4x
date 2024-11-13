@@ -86,6 +86,8 @@ type BACnetConstructedDataTimerStateBuilder interface {
 	WithTimerState(BACnetTimerStateTagged) BACnetConstructedDataTimerStateBuilder
 	// WithTimerStateBuilder adds TimerState (property field) which is build by the builder
 	WithTimerStateBuilder(func(BACnetTimerStateTaggedBuilder) BACnetTimerStateTaggedBuilder) BACnetConstructedDataTimerStateBuilder
+	// Done is used to finish work on this child and return (or create one if none) to the parent builder
+	Done() BACnetConstructedDataBuilder
 	// Build builds the BACnetConstructedDataTimerState or returns an error if something is wrong
 	Build() (BACnetConstructedDataTimerState, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,7 @@ var _ (BACnetConstructedDataTimerStateBuilder) = (*_BACnetConstructedDataTimerSt
 
 func (b *_BACnetConstructedDataTimerStateBuilder) setParent(contract BACnetConstructedDataContract) {
 	b.BACnetConstructedDataContract = contract
+	contract.(*_BACnetConstructedData)._SubType = b._BACnetConstructedDataTimerState
 }
 
 func (b *_BACnetConstructedDataTimerStateBuilder) WithMandatoryFields(timerState BACnetTimerStateTagged) BACnetConstructedDataTimerStateBuilder {
@@ -154,8 +157,10 @@ func (b *_BACnetConstructedDataTimerStateBuilder) MustBuild() BACnetConstructedD
 	return build
 }
 
-// Done is used to finish work on this child and return to the parent builder
 func (b *_BACnetConstructedDataTimerStateBuilder) Done() BACnetConstructedDataBuilder {
+	if b.parentBuilder == nil {
+		b.parentBuilder = NewBACnetConstructedDataBuilder().(*_BACnetConstructedDataBuilder)
+	}
 	return b.parentBuilder
 }
 
@@ -343,9 +348,9 @@ func (m *_BACnetConstructedDataTimerState) deepCopy() *_BACnetConstructedDataTim
 	}
 	_BACnetConstructedDataTimerStateCopy := &_BACnetConstructedDataTimerState{
 		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
-		m.TimerState.DeepCopy().(BACnetTimerStateTagged),
+		utils.DeepCopy[BACnetTimerStateTagged](m.TimerState),
 	}
-	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	_BACnetConstructedDataTimerStateCopy.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimerStateCopy
 }
 
