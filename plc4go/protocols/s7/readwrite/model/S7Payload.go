@@ -93,6 +93,8 @@ type S7PayloadBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() S7PayloadBuilder
+	// WithArgParameter sets a parser argument
+	WithArgParameter(S7Parameter) S7PayloadBuilder
 	// AsS7PayloadReadVarResponse converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
 	AsS7PayloadReadVarResponse() S7PayloadReadVarResponseBuilder
 	// AsS7PayloadWriteVarRequest converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
@@ -133,6 +135,11 @@ type _S7PayloadBuilder struct {
 var _ (S7PayloadBuilder) = (*_S7PayloadBuilder)(nil)
 
 func (b *_S7PayloadBuilder) WithMandatoryFields() S7PayloadBuilder {
+	return b
+}
+
+func (b *_S7PayloadBuilder) WithArgParameter(parameter S7Parameter) S7PayloadBuilder {
+	b.Parameter = parameter
 	return b
 }
 

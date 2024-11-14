@@ -85,6 +85,10 @@ type BACnetFaultTypeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultTypeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetFaultType) BACnetFaultTypeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetFaultTypeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetFaultTypeTaggedBuilder
 	// Build builds the BACnetFaultTypeTagged or returns an error if something is wrong
 	Build() (BACnetFaultTypeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetFaultTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(B
 
 func (b *_BACnetFaultTypeTaggedBuilder) WithValue(value BACnetFaultType) BACnetFaultTypeTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetFaultTypeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetFaultTypeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetFaultTypeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetFaultTypeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

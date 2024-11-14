@@ -125,6 +125,8 @@ type RequestBuilder interface {
 	WithTermination(RequestTermination) RequestBuilder
 	// WithTerminationBuilder adds Termination (property field) which is build by the builder
 	WithTerminationBuilder(func(RequestTerminationBuilder) RequestTerminationBuilder) RequestBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) RequestBuilder
 	// AsRequestSmartConnectShortcut converts this build to a subType of Request. It is always possible to return to current builder using Done()
 	AsRequestSmartConnectShortcut() RequestSmartConnectShortcutBuilder
 	// AsRequestReset converts this build to a subType of Request. It is always possible to return to current builder using Done()
@@ -209,6 +211,11 @@ func (b *_RequestBuilder) WithTerminationBuilder(builderSupplier func(RequestTer
 		}
 		b.err.Append(errors.Wrap(err, "RequestTerminationBuilder failed"))
 	}
+	return b
+}
+
+func (b *_RequestBuilder) WithArgCBusOptions(cBusOptions CBusOptions) RequestBuilder {
+	b.CBusOptions = cBusOptions
 	return b
 }
 

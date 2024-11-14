@@ -85,6 +85,10 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuild
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
 	// Build builds the BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 
 func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

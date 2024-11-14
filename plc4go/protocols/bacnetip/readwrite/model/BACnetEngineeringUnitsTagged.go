@@ -92,6 +92,10 @@ type BACnetEngineeringUnitsTaggedBuilder interface {
 	WithValue(BACnetEngineeringUnits) BACnetEngineeringUnitsTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetEngineeringUnitsTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetEngineeringUnitsTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetEngineeringUnitsTaggedBuilder
 	// Build builds the BACnetEngineeringUnitsTagged or returns an error if something is wrong
 	Build() (BACnetEngineeringUnitsTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetEngineeringUnitsTaggedBuilder) WithValue(value BACnetEngineering
 
 func (b *_BACnetEngineeringUnitsTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetEngineeringUnitsTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetEngineeringUnitsTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetEngineeringUnitsTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetEngineeringUnitsTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetEngineeringUnitsTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

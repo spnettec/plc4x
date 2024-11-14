@@ -92,6 +92,10 @@ type BACnetRestartReasonTaggedBuilder interface {
 	WithValue(BACnetRestartReason) BACnetRestartReasonTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetRestartReasonTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetRestartReasonTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetRestartReasonTaggedBuilder
 	// Build builds the BACnetRestartReasonTagged or returns an error if something is wrong
 	Build() (BACnetRestartReasonTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetRestartReasonTaggedBuilder) WithValue(value BACnetRestartReason)
 
 func (b *_BACnetRestartReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetRestartReasonTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetRestartReasonTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetRestartReasonTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetRestartReasonTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetRestartReasonTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

@@ -85,6 +85,10 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedB
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder
 	// Build builds the BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTa
 
 func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

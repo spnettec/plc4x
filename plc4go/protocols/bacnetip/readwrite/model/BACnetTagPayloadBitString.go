@@ -84,6 +84,8 @@ type BACnetTagPayloadBitStringBuilder interface {
 	WithData(...bool) BACnetTagPayloadBitStringBuilder
 	// WithUnused adds Unused (property field)
 	WithUnused(...bool) BACnetTagPayloadBitStringBuilder
+	// WithArgActualLength sets a parser argument
+	WithArgActualLength(uint32) BACnetTagPayloadBitStringBuilder
 	// Build builds the BACnetTagPayloadBitString or returns an error if something is wrong
 	Build() (BACnetTagPayloadBitString, error)
 	// MustBuild does the same as Build but panics on error
@@ -119,6 +121,11 @@ func (b *_BACnetTagPayloadBitStringBuilder) WithData(data ...bool) BACnetTagPayl
 
 func (b *_BACnetTagPayloadBitStringBuilder) WithUnused(unused ...bool) BACnetTagPayloadBitStringBuilder {
 	b.Unused = unused
+	return b
+}
+
+func (b *_BACnetTagPayloadBitStringBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadBitStringBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 

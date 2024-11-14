@@ -92,6 +92,10 @@ type BACnetVTClassTaggedBuilder interface {
 	WithValue(BACnetVTClass) BACnetVTClassTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetVTClassTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetVTClassTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetVTClassTaggedBuilder
 	// Build builds the BACnetVTClassTagged or returns an error if something is wrong
 	Build() (BACnetVTClassTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetVTClassTaggedBuilder) WithValue(value BACnetVTClass) BACnetVTCla
 
 func (b *_BACnetVTClassTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetVTClassTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetVTClassTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetVTClassTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetVTClassTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetVTClassTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

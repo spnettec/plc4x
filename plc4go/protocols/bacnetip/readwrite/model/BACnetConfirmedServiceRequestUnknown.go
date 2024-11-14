@@ -82,6 +82,8 @@ type BACnetConfirmedServiceRequestUnknownBuilder interface {
 	WithMandatoryFields(unknownBytes []byte) BACnetConfirmedServiceRequestUnknownBuilder
 	// WithUnknownBytes adds UnknownBytes (property field)
 	WithUnknownBytes(...byte) BACnetConfirmedServiceRequestUnknownBuilder
+	// WithArgServiceRequestPayloadLength sets a parser argument
+	WithArgServiceRequestPayloadLength(uint32) BACnetConfirmedServiceRequestUnknownBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestUnknown or returns an error if something is wrong
@@ -116,6 +118,11 @@ func (b *_BACnetConfirmedServiceRequestUnknownBuilder) WithMandatoryFields(unkno
 
 func (b *_BACnetConfirmedServiceRequestUnknownBuilder) WithUnknownBytes(unknownBytes ...byte) BACnetConfirmedServiceRequestUnknownBuilder {
 	b.UnknownBytes = unknownBytes
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestUnknownBuilder) WithArgServiceRequestPayloadLength(serviceRequestPayloadLength uint32) BACnetConfirmedServiceRequestUnknownBuilder {
+	b.ServiceRequestPayloadLength = serviceRequestPayloadLength
 	return b
 }
 

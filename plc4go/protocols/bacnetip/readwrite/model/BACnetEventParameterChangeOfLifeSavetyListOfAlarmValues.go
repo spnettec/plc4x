@@ -94,6 +94,8 @@ type BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder
 	// Build builds the BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithCl
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

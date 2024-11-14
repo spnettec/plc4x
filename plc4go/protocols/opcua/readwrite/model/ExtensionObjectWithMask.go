@@ -111,6 +111,8 @@ type ExtensionObjectWithMaskBuilder interface {
 	WithEncodingMask(ExtensionObjectEncodingMask) ExtensionObjectWithMaskBuilder
 	// WithEncodingMaskBuilder adds EncodingMask (property field) which is build by the builder
 	WithEncodingMaskBuilder(func(ExtensionObjectEncodingMaskBuilder) ExtensionObjectEncodingMaskBuilder) ExtensionObjectWithMaskBuilder
+	// WithArgExtensionId sets a parser argument
+	WithArgExtensionId(int32) ExtensionObjectWithMaskBuilder
 	// AsBinaryExtensionObjectWithMask converts this build to a subType of ExtensionObjectWithMask. It is always possible to return to current builder using Done()
 	AsBinaryExtensionObjectWithMask() BinaryExtensionObjectWithMaskBuilder
 	// AsNullExtensionObjectWithMask converts this build to a subType of ExtensionObjectWithMask. It is always possible to return to current builder using Done()
@@ -174,6 +176,11 @@ func (b *_ExtensionObjectWithMaskBuilder) WithEncodingMaskBuilder(builderSupplie
 		}
 		b.err.Append(errors.Wrap(err, "ExtensionObjectEncodingMaskBuilder failed"))
 	}
+	return b
+}
+
+func (b *_ExtensionObjectWithMaskBuilder) WithArgExtensionId(extensionId int32) ExtensionObjectWithMaskBuilder {
+	b.ExtensionId = extensionId
 	return b
 }
 

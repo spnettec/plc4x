@@ -91,6 +91,8 @@ type ParameterValueBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ParameterValueBuilder
+	// WithArgNumBytes sets a parser argument
+	WithArgNumBytes(uint8) ParameterValueBuilder
 	// AsParameterValueApplicationAddress1 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
 	AsParameterValueApplicationAddress1() ParameterValueApplicationAddress1Builder
 	// AsParameterValueApplicationAddress2 converts this build to a subType of ParameterValue. It is always possible to return to current builder using Done()
@@ -145,6 +147,11 @@ type _ParameterValueBuilder struct {
 var _ (ParameterValueBuilder) = (*_ParameterValueBuilder)(nil)
 
 func (b *_ParameterValueBuilder) WithMandatoryFields() ParameterValueBuilder {
+	return b
+}
+
+func (b *_ParameterValueBuilder) WithArgNumBytes(numBytes uint8) ParameterValueBuilder {
+	b.NumBytes = numBytes
 	return b
 }
 

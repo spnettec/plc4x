@@ -85,6 +85,10 @@ type NPDUNetworkPriorityTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) NPDUNetworkPriorityTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(NPDUNetworkPriority) NPDUNetworkPriorityTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) NPDUNetworkPriorityTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) NPDUNetworkPriorityTaggedBuilder
 	// Build builds the NPDUNetworkPriorityTagged or returns an error if something is wrong
 	Build() (NPDUNetworkPriorityTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_NPDUNetworkPriorityTaggedBuilder) WithHeaderBuilder(builderSupplier fu
 
 func (b *_NPDUNetworkPriorityTaggedBuilder) WithValue(value NPDUNetworkPriority) NPDUNetworkPriorityTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_NPDUNetworkPriorityTaggedBuilder) WithArgTagNumber(tagNumber uint8) NPDUNetworkPriorityTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_NPDUNetworkPriorityTaggedBuilder) WithArgTagClass(tagClass TagClass) NPDUNetworkPriorityTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

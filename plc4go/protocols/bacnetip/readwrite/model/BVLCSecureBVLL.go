@@ -84,6 +84,8 @@ type BVLCSecureBVLLBuilder interface {
 	WithMandatoryFields(securityWrapper []byte) BVLCSecureBVLLBuilder
 	// WithSecurityWrapper adds SecurityWrapper (property field)
 	WithSecurityWrapper(...byte) BVLCSecureBVLLBuilder
+	// WithArgBvlcPayloadLength sets a parser argument
+	WithArgBvlcPayloadLength(uint16) BVLCSecureBVLLBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCSecureBVLL or returns an error if something is wrong
@@ -118,6 +120,11 @@ func (b *_BVLCSecureBVLLBuilder) WithMandatoryFields(securityWrapper []byte) BVL
 
 func (b *_BVLCSecureBVLLBuilder) WithSecurityWrapper(securityWrapper ...byte) BVLCSecureBVLLBuilder {
 	b.SecurityWrapper = securityWrapper
+	return b
+}
+
+func (b *_BVLCSecureBVLLBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCSecureBVLLBuilder {
+	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 

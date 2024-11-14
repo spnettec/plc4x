@@ -89,6 +89,8 @@ type CIPEncapsulationReadResponseBuilder interface {
 	WithResponse(DF1ResponseMessage) CIPEncapsulationReadResponseBuilder
 	// WithResponseBuilder adds Response (property field) which is build by the builder
 	WithResponseBuilder(func(DF1ResponseMessageBuilder) DF1ResponseMessageBuilder) CIPEncapsulationReadResponseBuilder
+	// WithArgPacketLen sets a parser argument
+	WithArgPacketLen(uint16) CIPEncapsulationReadResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() CIPEncapsulationPacketBuilder
 	// Build builds the CIPEncapsulationReadResponse or returns an error if something is wrong
@@ -136,6 +138,11 @@ func (b *_CIPEncapsulationReadResponseBuilder) WithResponseBuilder(builderSuppli
 		}
 		b.err.Append(errors.Wrap(err, "DF1ResponseMessageBuilder failed"))
 	}
+	return b
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) WithArgPacketLen(packetLen uint16) CIPEncapsulationReadResponseBuilder {
+	b.PacketLen = packetLen
 	return b
 }
 

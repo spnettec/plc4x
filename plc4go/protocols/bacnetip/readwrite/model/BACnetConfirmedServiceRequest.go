@@ -95,6 +95,8 @@ type BACnetConfirmedServiceRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetConfirmedServiceRequestBuilder
+	// WithArgServiceRequestLength sets a parser argument
+	WithArgServiceRequestLength(uint32) BACnetConfirmedServiceRequestBuilder
 	// AsBACnetConfirmedServiceRequestAcknowledgeAlarm converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
 	AsBACnetConfirmedServiceRequestAcknowledgeAlarm() BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
 	// AsBACnetConfirmedServiceRequestConfirmedCOVNotification converts this build to a subType of BACnetConfirmedServiceRequest. It is always possible to return to current builder using Done()
@@ -191,6 +193,11 @@ type _BACnetConfirmedServiceRequestBuilder struct {
 var _ (BACnetConfirmedServiceRequestBuilder) = (*_BACnetConfirmedServiceRequestBuilder)(nil)
 
 func (b *_BACnetConfirmedServiceRequestBuilder) WithMandatoryFields() BACnetConfirmedServiceRequestBuilder {
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestBuilder) WithArgServiceRequestLength(serviceRequestLength uint32) BACnetConfirmedServiceRequestBuilder {
+	b.ServiceRequestLength = serviceRequestLength
 	return b
 }
 

@@ -93,6 +93,8 @@ type BACnetUnconfirmedServiceRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetUnconfirmedServiceRequestBuilder
+	// WithArgServiceRequestLength sets a parser argument
+	WithArgServiceRequestLength(uint16) BACnetUnconfirmedServiceRequestBuilder
 	// AsBACnetUnconfirmedServiceRequestIAm converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
 	AsBACnetUnconfirmedServiceRequestIAm() BACnetUnconfirmedServiceRequestIAmBuilder
 	// AsBACnetUnconfirmedServiceRequestIHave converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
@@ -151,6 +153,11 @@ type _BACnetUnconfirmedServiceRequestBuilder struct {
 var _ (BACnetUnconfirmedServiceRequestBuilder) = (*_BACnetUnconfirmedServiceRequestBuilder)(nil)
 
 func (b *_BACnetUnconfirmedServiceRequestBuilder) WithMandatoryFields() BACnetUnconfirmedServiceRequestBuilder {
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) WithArgServiceRequestLength(serviceRequestLength uint16) BACnetUnconfirmedServiceRequestBuilder {
+	b.ServiceRequestLength = serviceRequestLength
 	return b
 }
 

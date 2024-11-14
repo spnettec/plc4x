@@ -95,6 +95,10 @@ type BACnetPropertyValuesBuilder interface {
 	WithInnerClosingTag(BACnetClosingTag) BACnetPropertyValuesBuilder
 	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
 	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetPropertyValuesBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetPropertyValuesBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) BACnetPropertyValuesBuilder
 	// Build builds the BACnetPropertyValues or returns an error if something is wrong
 	Build() (BACnetPropertyValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -156,6 +160,15 @@ func (b *_BACnetPropertyValuesBuilder) WithInnerClosingTagBuilder(builderSupplie
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetPropertyValuesBuilder) WithArgTagNumber(tagNumber uint8) BACnetPropertyValuesBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetPropertyValuesBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetPropertyValuesBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 

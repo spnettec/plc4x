@@ -85,6 +85,10 @@ type BACnetIPModeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetIPModeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetIPMode) BACnetIPModeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetIPModeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetIPModeTaggedBuilder
 	// Build builds the BACnetIPModeTagged or returns an error if something is wrong
 	Build() (BACnetIPModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetIPModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACn
 
 func (b *_BACnetIPModeTaggedBuilder) WithValue(value BACnetIPMode) BACnetIPModeTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetIPModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetIPModeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetIPModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetIPModeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

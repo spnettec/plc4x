@@ -105,6 +105,8 @@ type COTPPacketBuilder interface {
 	WithOptionalPayload(S7Message) COTPPacketBuilder
 	// WithOptionalPayloadBuilder adds Payload (property field) which is build by the builder
 	WithOptionalPayloadBuilder(func(S7MessageBuilder) S7MessageBuilder) COTPPacketBuilder
+	// WithArgCotpLen sets a parser argument
+	WithArgCotpLen(uint16) COTPPacketBuilder
 	// AsCOTPPacketData converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
 	AsCOTPPacketData() COTPPacketDataBuilder
 	// AsCOTPPacketConnectionRequest converts this build to a subType of COTPPacket. It is always possible to return to current builder using Done()
@@ -172,6 +174,11 @@ func (b *_COTPPacketBuilder) WithOptionalPayloadBuilder(builderSupplier func(S7M
 		}
 		b.err.Append(errors.Wrap(err, "S7MessageBuilder failed"))
 	}
+	return b
+}
+
+func (b *_COTPPacketBuilder) WithArgCotpLen(cotpLen uint16) COTPPacketBuilder {
+	b.CotpLen = cotpLen
 	return b
 }
 

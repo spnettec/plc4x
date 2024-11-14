@@ -132,6 +132,10 @@ type BACnetConstructedDataBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetConstructedDataBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConstructedDataBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetConstructedDataBuilder
+	// WithArgArrayIndexArgument sets a parser argument
+	WithArgArrayIndexArgument(BACnetTagPayloadUnsignedInteger) BACnetConstructedDataBuilder
 	// AsBACnetConstructedDataAbsenteeLimit converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
 	AsBACnetConstructedDataAbsenteeLimit() BACnetConstructedDataAbsenteeLimitBuilder
 	// AsBACnetConstructedDataAcceptedModes converts this build to a subType of BACnetConstructedData. It is always possible to return to current builder using Done()
@@ -1532,6 +1536,15 @@ func (b *_BACnetConstructedDataBuilder) WithClosingTagBuilder(builderSupplier fu
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetConstructedDataBuilder) WithArgTagNumber(tagNumber uint8) BACnetConstructedDataBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetConstructedDataBuilder) WithArgArrayIndexArgument(arrayIndexArgument BACnetTagPayloadUnsignedInteger) BACnetConstructedDataBuilder {
+	b.ArrayIndexArgument = arrayIndexArgument
 	return b
 }
 

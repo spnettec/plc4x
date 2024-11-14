@@ -85,6 +85,10 @@ type BACnetNodeTypeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNodeTypeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetNodeType) BACnetNodeTypeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetNodeTypeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetNodeTypeTaggedBuilder
 	// Build builds the BACnetNodeTypeTagged or returns an error if something is wrong
 	Build() (BACnetNodeTypeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetNodeTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BA
 
 func (b *_BACnetNodeTypeTaggedBuilder) WithValue(value BACnetNodeType) BACnetNodeTypeTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetNodeTypeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetNodeTypeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetNodeTypeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetNodeTypeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

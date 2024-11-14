@@ -85,6 +85,10 @@ type BACnetBackupStateTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetBackupStateTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetBackupState) BACnetBackupStateTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetBackupStateTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetBackupStateTaggedBuilder
 	// Build builds the BACnetBackupStateTagged or returns an error if something is wrong
 	Build() (BACnetBackupStateTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetBackupStateTaggedBuilder) WithHeaderBuilder(builderSupplier func
 
 func (b *_BACnetBackupStateTaggedBuilder) WithValue(value BACnetBackupState) BACnetBackupStateTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetBackupStateTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetBackupStateTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetBackupStateTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetBackupStateTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

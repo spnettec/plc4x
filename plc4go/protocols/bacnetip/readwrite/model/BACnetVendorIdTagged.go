@@ -92,6 +92,10 @@ type BACnetVendorIdTaggedBuilder interface {
 	WithValue(BACnetVendorId) BACnetVendorIdTaggedBuilder
 	// WithUnknownId adds UnknownId (property field)
 	WithUnknownId(uint32) BACnetVendorIdTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetVendorIdTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetVendorIdTaggedBuilder
 	// Build builds the BACnetVendorIdTagged or returns an error if something is wrong
 	Build() (BACnetVendorIdTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetVendorIdTaggedBuilder) WithValue(value BACnetVendorId) BACnetVen
 
 func (b *_BACnetVendorIdTaggedBuilder) WithUnknownId(unknownId uint32) BACnetVendorIdTaggedBuilder {
 	b.UnknownId = unknownId
+	return b
+}
+
+func (b *_BACnetVendorIdTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetVendorIdTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetVendorIdTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetVendorIdTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

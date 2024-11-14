@@ -94,6 +94,8 @@ type VTCloseErrorListOfVTSessionIdentifiersBuilder interface {
 	WithClosingTag(BACnetClosingTag) VTCloseErrorListOfVTSessionIdentifiersBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) VTCloseErrorListOfVTSessionIdentifiersBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) VTCloseErrorListOfVTSessionIdentifiersBuilder
 	// Build builds the VTCloseErrorListOfVTSessionIdentifiers or returns an error if something is wrong
 	Build() (VTCloseErrorListOfVTSessionIdentifiers, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithClosingTagBuilder(b
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_VTCloseErrorListOfVTSessionIdentifiersBuilder) WithArgTagNumber(tagNumber uint8) VTCloseErrorListOfVTSessionIdentifiersBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

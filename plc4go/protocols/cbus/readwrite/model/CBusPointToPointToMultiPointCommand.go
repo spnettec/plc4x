@@ -118,6 +118,8 @@ type CBusPointToPointToMultiPointCommandBuilder interface {
 	WithNetworkRouteBuilder(func(NetworkRouteBuilder) NetworkRouteBuilder) CBusPointToPointToMultiPointCommandBuilder
 	// WithPeekedApplication adds PeekedApplication (property field)
 	WithPeekedApplication(byte) CBusPointToPointToMultiPointCommandBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) CBusPointToPointToMultiPointCommandBuilder
 	// AsCBusPointToPointToMultiPointCommandStatus converts this build to a subType of CBusPointToPointToMultiPointCommand. It is always possible to return to current builder using Done()
 	AsCBusPointToPointToMultiPointCommandStatus() CBusPointToPointToMultiPointCommandStatusBuilder
 	// AsCBusPointToPointToMultiPointCommandNormal converts this build to a subType of CBusPointToPointToMultiPointCommand. It is always possible to return to current builder using Done()
@@ -195,6 +197,11 @@ func (b *_CBusPointToPointToMultiPointCommandBuilder) WithNetworkRouteBuilder(bu
 
 func (b *_CBusPointToPointToMultiPointCommandBuilder) WithPeekedApplication(peekedApplication byte) CBusPointToPointToMultiPointCommandBuilder {
 	b.PeekedApplication = peekedApplication
+	return b
+}
+
+func (b *_CBusPointToPointToMultiPointCommandBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusPointToPointToMultiPointCommandBuilder {
+	b.CBusOptions = cBusOptions
 	return b
 }
 

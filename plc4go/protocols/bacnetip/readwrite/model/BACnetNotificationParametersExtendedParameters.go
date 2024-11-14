@@ -203,6 +203,8 @@ type BACnetNotificationParametersExtendedParametersBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetNotificationParametersExtendedParametersBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersExtendedParametersBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetNotificationParametersExtendedParametersBuilder
 	// Build builds the BACnetNotificationParametersExtendedParameters or returns an error if something is wrong
 	Build() (BACnetNotificationParametersExtendedParameters, error)
 	// MustBuild does the same as Build but panics on error
@@ -529,6 +531,11 @@ func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithClosingTagB
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersExtendedParametersBuilder) WithArgTagNumber(tagNumber uint8) BACnetNotificationParametersExtendedParametersBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

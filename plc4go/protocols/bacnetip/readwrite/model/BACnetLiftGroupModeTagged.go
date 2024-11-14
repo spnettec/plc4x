@@ -85,6 +85,10 @@ type BACnetLiftGroupModeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftGroupModeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetLiftGroupModeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetLiftGroupModeTaggedBuilder
 	// Build builds the BACnetLiftGroupModeTagged or returns an error if something is wrong
 	Build() (BACnetLiftGroupModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetLiftGroupModeTaggedBuilder) WithHeaderBuilder(builderSupplier fu
 
 func (b *_BACnetLiftGroupModeTaggedBuilder) WithValue(value BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetLiftGroupModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLiftGroupModeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetLiftGroupModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLiftGroupModeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

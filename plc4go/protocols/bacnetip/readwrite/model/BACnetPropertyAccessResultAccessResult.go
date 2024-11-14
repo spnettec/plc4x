@@ -111,6 +111,12 @@ type BACnetPropertyAccessResultAccessResultBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetPropertyAccessResultAccessResultBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPropertyAccessResultAccessResultBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) BACnetPropertyAccessResultAccessResultBuilder
+	// WithArgPropertyIdentifierArgument sets a parser argument
+	WithArgPropertyIdentifierArgument(BACnetPropertyIdentifier) BACnetPropertyAccessResultAccessResultBuilder
+	// WithArgPropertyArrayIndexArgument sets a parser argument
+	WithArgPropertyArrayIndexArgument(BACnetTagPayloadUnsignedInteger) BACnetPropertyAccessResultAccessResultBuilder
 	// AsBACnetPropertyAccessResultAccessResultPropertyValue converts this build to a subType of BACnetPropertyAccessResultAccessResult. It is always possible to return to current builder using Done()
 	AsBACnetPropertyAccessResultAccessResultPropertyValue() BACnetPropertyAccessResultAccessResultPropertyValueBuilder
 	// AsBACnetPropertyAccessResultAccessResultPropertyAccessError converts this build to a subType of BACnetPropertyAccessResultAccessResult. It is always possible to return to current builder using Done()
@@ -165,6 +171,19 @@ func (b *_BACnetPropertyAccessResultAccessResultBuilder) WithPeekedTagHeaderBuil
 		}
 		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetPropertyAccessResultAccessResultBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
+	return b
+}
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) WithArgPropertyIdentifierArgument(propertyIdentifierArgument BACnetPropertyIdentifier) BACnetPropertyAccessResultAccessResultBuilder {
+	b.PropertyIdentifierArgument = propertyIdentifierArgument
+	return b
+}
+func (b *_BACnetPropertyAccessResultAccessResultBuilder) WithArgPropertyArrayIndexArgument(propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) BACnetPropertyAccessResultAccessResultBuilder {
+	b.PropertyArrayIndexArgument = propertyArrayIndexArgument
 	return b
 }
 

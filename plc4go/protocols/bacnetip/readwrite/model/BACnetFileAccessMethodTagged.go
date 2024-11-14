@@ -85,6 +85,10 @@ type BACnetFileAccessMethodTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFileAccessMethodTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetFileAccessMethod) BACnetFileAccessMethodTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetFileAccessMethodTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetFileAccessMethodTaggedBuilder
 	// Build builds the BACnetFileAccessMethodTagged or returns an error if something is wrong
 	Build() (BACnetFileAccessMethodTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetFileAccessMethodTaggedBuilder) WithHeaderBuilder(builderSupplier
 
 func (b *_BACnetFileAccessMethodTaggedBuilder) WithValue(value BACnetFileAccessMethod) BACnetFileAccessMethodTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetFileAccessMethodTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetFileAccessMethodTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetFileAccessMethodTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetFileAccessMethodTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

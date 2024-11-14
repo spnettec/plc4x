@@ -85,6 +85,10 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
 	// Build builds the BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 
 func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

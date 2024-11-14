@@ -127,6 +127,8 @@ type BACnetTagPayloadSignedIntegerBuilder interface {
 	WithOptionalValueInt56(int64) BACnetTagPayloadSignedIntegerBuilder
 	// WithValueInt64 adds ValueInt64 (property field)
 	WithOptionalValueInt64(int64) BACnetTagPayloadSignedIntegerBuilder
+	// WithArgActualLength sets a parser argument
+	WithArgActualLength(uint32) BACnetTagPayloadSignedIntegerBuilder
 	// Build builds the BACnetTagPayloadSignedInteger or returns an error if something is wrong
 	Build() (BACnetTagPayloadSignedInteger, error)
 	// MustBuild does the same as Build but panics on error
@@ -187,6 +189,11 @@ func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt56(valueInt5
 
 func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt64(valueInt64 int64) BACnetTagPayloadSignedIntegerBuilder {
 	b.ValueInt64 = &valueInt64
+	return b
+}
+
+func (b *_BACnetTagPayloadSignedIntegerBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadSignedIntegerBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 

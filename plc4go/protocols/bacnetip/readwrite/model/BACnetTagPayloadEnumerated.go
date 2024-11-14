@@ -76,6 +76,8 @@ type BACnetTagPayloadEnumeratedBuilder interface {
 	WithMandatoryFields(data []byte) BACnetTagPayloadEnumeratedBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) BACnetTagPayloadEnumeratedBuilder
+	// WithArgActualLength sets a parser argument
+	WithArgActualLength(uint32) BACnetTagPayloadEnumeratedBuilder
 	// Build builds the BACnetTagPayloadEnumerated or returns an error if something is wrong
 	Build() (BACnetTagPayloadEnumerated, error)
 	// MustBuild does the same as Build but panics on error
@@ -101,6 +103,11 @@ func (b *_BACnetTagPayloadEnumeratedBuilder) WithMandatoryFields(data []byte) BA
 
 func (b *_BACnetTagPayloadEnumeratedBuilder) WithData(data ...byte) BACnetTagPayloadEnumeratedBuilder {
 	b.Data = data
+	return b
+}
+
+func (b *_BACnetTagPayloadEnumeratedBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadEnumeratedBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 

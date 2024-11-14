@@ -94,6 +94,8 @@ type BACnetEventParameterChangeOfTimerAlarmValueBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfTimerAlarmValueBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfTimerAlarmValueBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetEventParameterChangeOfTimerAlarmValueBuilder
 	// Build builds the BACnetEventParameterChangeOfTimerAlarmValue or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfTimerAlarmValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) WithClosingTagBuil
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterChangeOfTimerAlarmValueBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

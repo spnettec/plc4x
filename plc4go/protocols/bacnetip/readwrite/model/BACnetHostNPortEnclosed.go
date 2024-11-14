@@ -99,6 +99,8 @@ type BACnetHostNPortEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetHostNPortEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetHostNPortEnclosedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetHostNPortEnclosedBuilder
 	// Build builds the BACnetHostNPortEnclosed or returns an error if something is wrong
 	Build() (BACnetHostNPortEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -173,6 +175,11 @@ func (b *_BACnetHostNPortEnclosedBuilder) WithClosingTagBuilder(builderSupplier 
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetHostNPortEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetHostNPortEnclosedBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

@@ -95,6 +95,8 @@ type BACnetServiceAckBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetServiceAckBuilder
+	// WithArgServiceAckLength sets a parser argument
+	WithArgServiceAckLength(uint32) BACnetServiceAckBuilder
 	// AsBACnetServiceAckGetAlarmSummary converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
 	AsBACnetServiceAckGetAlarmSummary() BACnetServiceAckGetAlarmSummaryBuilder
 	// AsBACnetServiceAckGetEnrollmentSummary converts this build to a subType of BACnetServiceAck. It is always possible to return to current builder using Done()
@@ -157,6 +159,11 @@ type _BACnetServiceAckBuilder struct {
 var _ (BACnetServiceAckBuilder) = (*_BACnetServiceAckBuilder)(nil)
 
 func (b *_BACnetServiceAckBuilder) WithMandatoryFields() BACnetServiceAckBuilder {
+	return b
+}
+
+func (b *_BACnetServiceAckBuilder) WithArgServiceAckLength(serviceAckLength uint32) BACnetServiceAckBuilder {
+	b.ServiceAckLength = serviceAckLength
 	return b
 }
 

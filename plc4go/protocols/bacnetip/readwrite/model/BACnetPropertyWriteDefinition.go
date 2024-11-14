@@ -100,6 +100,8 @@ type BACnetPropertyWriteDefinitionBuilder interface {
 	WithOptionalPriority(BACnetContextTagUnsignedInteger) BACnetPropertyWriteDefinitionBuilder
 	// WithOptionalPriorityBuilder adds Priority (property field) which is build by the builder
 	WithOptionalPriorityBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyWriteDefinitionBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) BACnetPropertyWriteDefinitionBuilder
 	// Build builds the BACnetPropertyWriteDefinition or returns an error if something is wrong
 	Build() (BACnetPropertyWriteDefinition, error)
 	// MustBuild does the same as Build but panics on error
@@ -192,6 +194,11 @@ func (b *_BACnetPropertyWriteDefinitionBuilder) WithOptionalPriorityBuilder(buil
 		}
 		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetPropertyWriteDefinitionBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetPropertyWriteDefinitionBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 

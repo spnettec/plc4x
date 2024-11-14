@@ -98,6 +98,8 @@ type OpcuaOpenResponseBuilder interface {
 	WithMessage(Payload) OpcuaOpenResponseBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaOpenResponseBuilder
+	// WithArgTotalLength sets a parser argument
+	WithArgTotalLength(uint32) OpcuaOpenResponseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() MessagePDUBuilder
 	// Build builds the OpcuaOpenResponse or returns an error if something is wrong
@@ -163,6 +165,11 @@ func (b *_OpcuaOpenResponseBuilder) WithMessageBuilder(builderSupplier func(Payl
 		}
 		b.err.Append(errors.Wrap(err, "PayloadBuilder failed"))
 	}
+	return b
+}
+
+func (b *_OpcuaOpenResponseBuilder) WithArgTotalLength(totalLength uint32) OpcuaOpenResponseBuilder {
+	b.TotalLength = totalLength
 	return b
 }
 

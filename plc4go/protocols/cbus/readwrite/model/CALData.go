@@ -111,6 +111,8 @@ type CALDataBuilder interface {
 	WithOptionalAdditionalData(CALData) CALDataBuilder
 	// WithOptionalAdditionalDataBuilder adds AdditionalData (property field) which is build by the builder
 	WithOptionalAdditionalDataBuilder(func(CALDataBuilder) CALDataBuilder) CALDataBuilder
+	// WithArgRequestContext sets a parser argument
+	WithArgRequestContext(RequestContext) CALDataBuilder
 	// AsCALDataReset converts this build to a subType of CALData. It is always possible to return to current builder using Done()
 	AsCALDataReset() CALDataResetBuilder
 	// AsCALDataRecall converts this build to a subType of CALData. It is always possible to return to current builder using Done()
@@ -186,6 +188,11 @@ func (b *_CALDataBuilder) WithOptionalAdditionalDataBuilder(builderSupplier func
 		}
 		b.err.Append(errors.Wrap(err, "CALDataBuilder failed"))
 	}
+	return b
+}
+
+func (b *_CALDataBuilder) WithArgRequestContext(requestContext RequestContext) CALDataBuilder {
+	b.RequestContext = requestContext
 	return b
 }
 

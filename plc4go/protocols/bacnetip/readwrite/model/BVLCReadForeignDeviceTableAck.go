@@ -84,6 +84,8 @@ type BVLCReadForeignDeviceTableAckBuilder interface {
 	WithMandatoryFields(table []BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder
 	// WithTable adds Table (property field)
 	WithTable(...BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder
+	// WithArgBvlcPayloadLength sets a parser argument
+	WithArgBvlcPayloadLength(uint16) BVLCReadForeignDeviceTableAckBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCReadForeignDeviceTableAck or returns an error if something is wrong
@@ -118,6 +120,11 @@ func (b *_BVLCReadForeignDeviceTableAckBuilder) WithMandatoryFields(table []BVLC
 
 func (b *_BVLCReadForeignDeviceTableAckBuilder) WithTable(table ...BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder {
 	b.Table = table
+	return b
+}
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCReadForeignDeviceTableAckBuilder {
+	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 

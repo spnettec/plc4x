@@ -85,6 +85,10 @@ type BACnetTimerStateTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetTimerState) BACnetTimerStateTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetTimerStateTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetTimerStateTaggedBuilder
 	// Build builds the BACnetTimerStateTagged or returns an error if something is wrong
 	Build() (BACnetTimerStateTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetTimerStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(
 
 func (b *_BACnetTimerStateTaggedBuilder) WithValue(value BACnetTimerState) BACnetTimerStateTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetTimerStateTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetTimerStateTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetTimerStateTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetTimerStateTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

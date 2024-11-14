@@ -92,6 +92,10 @@ type BACnetProgramErrorTaggedBuilder interface {
 	WithValue(BACnetProgramError) BACnetProgramErrorTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetProgramErrorTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetProgramErrorTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetProgramErrorTaggedBuilder
 	// Build builds the BACnetProgramErrorTagged or returns an error if something is wrong
 	Build() (BACnetProgramErrorTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetProgramErrorTaggedBuilder) WithValue(value BACnetProgramError) B
 
 func (b *_BACnetProgramErrorTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetProgramErrorTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetProgramErrorTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetProgramErrorTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetProgramErrorTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetProgramErrorTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

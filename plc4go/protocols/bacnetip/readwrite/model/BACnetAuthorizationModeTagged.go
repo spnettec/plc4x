@@ -92,6 +92,10 @@ type BACnetAuthorizationModeTaggedBuilder interface {
 	WithValue(BACnetAuthorizationMode) BACnetAuthorizationModeTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAuthorizationModeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAuthorizationModeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetAuthorizationModeTaggedBuilder
 	// Build builds the BACnetAuthorizationModeTagged or returns an error if something is wrong
 	Build() (BACnetAuthorizationModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetAuthorizationModeTaggedBuilder) WithValue(value BACnetAuthorizat
 
 func (b *_BACnetAuthorizationModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAuthorizationModeTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAuthorizationModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAuthorizationModeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetAuthorizationModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAuthorizationModeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

@@ -94,6 +94,8 @@ type ListOfCovNotificationsListBuilder interface {
 	WithClosingTag(BACnetClosingTag) ListOfCovNotificationsListBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) ListOfCovNotificationsListBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) ListOfCovNotificationsListBuilder
 	// Build builds the ListOfCovNotificationsList or returns an error if something is wrong
 	Build() (ListOfCovNotificationsList, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_ListOfCovNotificationsListBuilder) WithClosingTagBuilder(builderSuppli
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_ListOfCovNotificationsListBuilder) WithArgTagNumber(tagNumber uint8) ListOfCovNotificationsListBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

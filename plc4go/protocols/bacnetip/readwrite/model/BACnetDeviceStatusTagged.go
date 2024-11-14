@@ -92,6 +92,10 @@ type BACnetDeviceStatusTaggedBuilder interface {
 	WithValue(BACnetDeviceStatus) BACnetDeviceStatusTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetDeviceStatusTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetDeviceStatusTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetDeviceStatusTaggedBuilder
 	// Build builds the BACnetDeviceStatusTagged or returns an error if something is wrong
 	Build() (BACnetDeviceStatusTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetDeviceStatusTaggedBuilder) WithValue(value BACnetDeviceStatus) B
 
 func (b *_BACnetDeviceStatusTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetDeviceStatusTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetDeviceStatusTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetDeviceStatusTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetDeviceStatusTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetDeviceStatusTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

@@ -85,6 +85,10 @@ type BACnetSecurityLevelTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSecurityLevelTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetSecurityLevel) BACnetSecurityLevelTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetSecurityLevelTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetSecurityLevelTaggedBuilder
 	// Build builds the BACnetSecurityLevelTagged or returns an error if something is wrong
 	Build() (BACnetSecurityLevelTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetSecurityLevelTaggedBuilder) WithHeaderBuilder(builderSupplier fu
 
 func (b *_BACnetSecurityLevelTaggedBuilder) WithValue(value BACnetSecurityLevel) BACnetSecurityLevelTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetSecurityLevelTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetSecurityLevelTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetSecurityLevelTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetSecurityLevelTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

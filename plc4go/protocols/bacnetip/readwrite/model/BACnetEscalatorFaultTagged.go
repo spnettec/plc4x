@@ -92,6 +92,10 @@ type BACnetEscalatorFaultTaggedBuilder interface {
 	WithValue(BACnetEscalatorFault) BACnetEscalatorFaultTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetEscalatorFaultTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetEscalatorFaultTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetEscalatorFaultTaggedBuilder
 	// Build builds the BACnetEscalatorFaultTagged or returns an error if something is wrong
 	Build() (BACnetEscalatorFaultTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetEscalatorFaultTaggedBuilder) WithValue(value BACnetEscalatorFaul
 
 func (b *_BACnetEscalatorFaultTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetEscalatorFaultTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetEscalatorFaultTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetEscalatorFaultTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetEscalatorFaultTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetEscalatorFaultTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

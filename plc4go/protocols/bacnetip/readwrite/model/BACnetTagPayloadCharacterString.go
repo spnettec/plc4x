@@ -82,6 +82,8 @@ type BACnetTagPayloadCharacterStringBuilder interface {
 	WithEncoding(BACnetCharacterEncoding) BACnetTagPayloadCharacterStringBuilder
 	// WithValue adds Value (property field)
 	WithValue(string) BACnetTagPayloadCharacterStringBuilder
+	// WithArgActualLength sets a parser argument
+	WithArgActualLength(uint32) BACnetTagPayloadCharacterStringBuilder
 	// Build builds the BACnetTagPayloadCharacterString or returns an error if something is wrong
 	Build() (BACnetTagPayloadCharacterString, error)
 	// MustBuild does the same as Build but panics on error
@@ -112,6 +114,11 @@ func (b *_BACnetTagPayloadCharacterStringBuilder) WithEncoding(encoding BACnetCh
 
 func (b *_BACnetTagPayloadCharacterStringBuilder) WithValue(value string) BACnetTagPayloadCharacterStringBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetTagPayloadCharacterStringBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadCharacterStringBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 

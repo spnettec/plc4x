@@ -100,6 +100,8 @@ type BACnetPropertyValueBuilder interface {
 	WithOptionalPriority(BACnetContextTagUnsignedInteger) BACnetPropertyValueBuilder
 	// WithOptionalPriorityBuilder adds Priority (property field) which is build by the builder
 	WithOptionalPriorityBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyValueBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) BACnetPropertyValueBuilder
 	// Build builds the BACnetPropertyValue or returns an error if something is wrong
 	Build() (BACnetPropertyValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -192,6 +194,11 @@ func (b *_BACnetPropertyValueBuilder) WithOptionalPriorityBuilder(builderSupplie
 		}
 		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetPropertyValueBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetPropertyValueBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 

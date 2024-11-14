@@ -89,6 +89,8 @@ type CIPAttributesBuilder interface {
 	WithOptionalNumberActive(uint16) CIPAttributesBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) CIPAttributesBuilder
+	// WithArgPacketLength sets a parser argument
+	WithArgPacketLength(uint16) CIPAttributesBuilder
 	// Build builds the CIPAttributes or returns an error if something is wrong
 	Build() (CIPAttributes, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,6 +131,11 @@ func (b *_CIPAttributesBuilder) WithOptionalNumberActive(numberActive uint16) CI
 
 func (b *_CIPAttributesBuilder) WithData(data ...byte) CIPAttributesBuilder {
 	b.Data = data
+	return b
+}
+
+func (b *_CIPAttributesBuilder) WithArgPacketLength(packetLength uint16) CIPAttributesBuilder {
+	b.PacketLength = packetLength
 	return b
 }
 

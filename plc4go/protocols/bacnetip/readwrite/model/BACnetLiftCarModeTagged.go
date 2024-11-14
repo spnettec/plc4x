@@ -92,6 +92,10 @@ type BACnetLiftCarModeTaggedBuilder interface {
 	WithValue(BACnetLiftCarMode) BACnetLiftCarModeTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetLiftCarModeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetLiftCarModeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetLiftCarModeTaggedBuilder
 	// Build builds the BACnetLiftCarModeTagged or returns an error if something is wrong
 	Build() (BACnetLiftCarModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetLiftCarModeTaggedBuilder) WithValue(value BACnetLiftCarMode) BAC
 
 func (b *_BACnetLiftCarModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLiftCarModeTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetLiftCarModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLiftCarModeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetLiftCarModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLiftCarModeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

@@ -94,6 +94,8 @@ type BACnetNameValueCollectionBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetNameValueCollectionBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNameValueCollectionBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetNameValueCollectionBuilder
 	// Build builds the BACnetNameValueCollection or returns an error if something is wrong
 	Build() (BACnetNameValueCollection, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetNameValueCollectionBuilder) WithClosingTagBuilder(builderSupplie
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetNameValueCollectionBuilder) WithArgTagNumber(tagNumber uint8) BACnetNameValueCollectionBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

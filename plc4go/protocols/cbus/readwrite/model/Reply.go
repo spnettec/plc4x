@@ -101,6 +101,10 @@ type ReplyBuilder interface {
 	WithMandatoryFields(peekedByte byte) ReplyBuilder
 	// WithPeekedByte adds PeekedByte (property field)
 	WithPeekedByte(byte) ReplyBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) ReplyBuilder
+	// WithArgRequestContext sets a parser argument
+	WithArgRequestContext(RequestContext) ReplyBuilder
 	// AsPowerUpReply converts this build to a subType of Reply. It is always possible to return to current builder using Done()
 	AsPowerUpReply() PowerUpReplyBuilder
 	// AsParameterChangeReply converts this build to a subType of Reply. It is always possible to return to current builder using Done()
@@ -144,6 +148,15 @@ func (b *_ReplyBuilder) WithMandatoryFields(peekedByte byte) ReplyBuilder {
 
 func (b *_ReplyBuilder) WithPeekedByte(peekedByte byte) ReplyBuilder {
 	b.PeekedByte = peekedByte
+	return b
+}
+
+func (b *_ReplyBuilder) WithArgCBusOptions(cBusOptions CBusOptions) ReplyBuilder {
+	b.CBusOptions = cBusOptions
+	return b
+}
+func (b *_ReplyBuilder) WithArgRequestContext(requestContext RequestContext) ReplyBuilder {
+	b.RequestContext = requestContext
 	return b
 }
 

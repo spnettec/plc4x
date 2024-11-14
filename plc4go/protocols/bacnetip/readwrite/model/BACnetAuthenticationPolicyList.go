@@ -94,6 +94,8 @@ type BACnetAuthenticationPolicyListBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetAuthenticationPolicyListBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAuthenticationPolicyListBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAuthenticationPolicyListBuilder
 	// Build builds the BACnetAuthenticationPolicyList or returns an error if something is wrong
 	Build() (BACnetAuthenticationPolicyList, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetAuthenticationPolicyListBuilder) WithClosingTagBuilder(builderSu
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetAuthenticationPolicyListBuilder) WithArgTagNumber(tagNumber uint8) BACnetAuthenticationPolicyListBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

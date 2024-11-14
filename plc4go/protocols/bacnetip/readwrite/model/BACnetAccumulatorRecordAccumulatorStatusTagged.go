@@ -85,6 +85,10 @@ type BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
 	// Build builds the BACnetAccumulatorRecordAccumulatorStatusTagged or returns an error if something is wrong
 	Build() (BACnetAccumulatorRecordAccumulatorStatusTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithHeaderBuild
 
 func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithValue(value BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

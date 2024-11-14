@@ -92,6 +92,8 @@ type ModbusADUBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ModbusADUBuilder
+	// WithArgResponse sets a parser argument
+	WithArgResponse(bool) ModbusADUBuilder
 	// AsModbusTcpADU converts this build to a subType of ModbusADU. It is always possible to return to current builder using Done()
 	AsModbusTcpADU() ModbusTcpADUBuilder
 	// AsModbusRtuADU converts this build to a subType of ModbusADU. It is always possible to return to current builder using Done()
@@ -130,6 +132,11 @@ type _ModbusADUBuilder struct {
 var _ (ModbusADUBuilder) = (*_ModbusADUBuilder)(nil)
 
 func (b *_ModbusADUBuilder) WithMandatoryFields() ModbusADUBuilder {
+	return b
+}
+
+func (b *_ModbusADUBuilder) WithArgResponse(response bool) ModbusADUBuilder {
+	b.Response = response
 	return b
 }
 

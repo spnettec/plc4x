@@ -109,6 +109,8 @@ type BACnetPriorityValueBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetPriorityValueBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPriorityValueBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) BACnetPriorityValueBuilder
 	// AsBACnetPriorityValueNull converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
 	AsBACnetPriorityValueNull() BACnetPriorityValueNullBuilder
 	// AsBACnetPriorityValueReal converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
@@ -189,6 +191,11 @@ func (b *_BACnetPriorityValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier
 		}
 		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetPriorityValueBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetPriorityValueBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 

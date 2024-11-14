@@ -93,6 +93,8 @@ type FirmataCommandBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() FirmataCommandBuilder
+	// WithArgResponse sets a parser argument
+	WithArgResponse(bool) FirmataCommandBuilder
 	// AsFirmataCommandSysex converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
 	AsFirmataCommandSysex() FirmataCommandSysexBuilder
 	// AsFirmataCommandSetPinMode converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
@@ -135,6 +137,11 @@ type _FirmataCommandBuilder struct {
 var _ (FirmataCommandBuilder) = (*_FirmataCommandBuilder)(nil)
 
 func (b *_FirmataCommandBuilder) WithMandatoryFields() FirmataCommandBuilder {
+	return b
+}
+
+func (b *_FirmataCommandBuilder) WithArgResponse(response bool) FirmataCommandBuilder {
+	b.Response = response
 	return b
 }
 

@@ -98,6 +98,8 @@ type MonitoredSALBuilder interface {
 	WithMandatoryFields(salType byte) MonitoredSALBuilder
 	// WithSalType adds SalType (property field)
 	WithSalType(byte) MonitoredSALBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) MonitoredSALBuilder
 	// AsMonitoredSALLongFormSmartMode converts this build to a subType of MonitoredSAL. It is always possible to return to current builder using Done()
 	AsMonitoredSALLongFormSmartMode() MonitoredSALLongFormSmartModeBuilder
 	// AsMonitoredSALShortFormBasicMode converts this build to a subType of MonitoredSAL. It is always possible to return to current builder using Done()
@@ -139,6 +141,11 @@ func (b *_MonitoredSALBuilder) WithMandatoryFields(salType byte) MonitoredSALBui
 
 func (b *_MonitoredSALBuilder) WithSalType(salType byte) MonitoredSALBuilder {
 	b.SalType = salType
+	return b
+}
+
+func (b *_MonitoredSALBuilder) WithArgCBusOptions(cBusOptions CBusOptions) MonitoredSALBuilder {
+	b.CBusOptions = cBusOptions
 	return b
 }
 

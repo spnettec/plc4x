@@ -85,6 +85,10 @@ type BVLCResultCodeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BVLCResultCodeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BVLCResultCode) BVLCResultCodeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BVLCResultCodeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BVLCResultCodeTaggedBuilder
 	// Build builds the BVLCResultCodeTagged or returns an error if something is wrong
 	Build() (BVLCResultCodeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BVLCResultCodeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BA
 
 func (b *_BVLCResultCodeTaggedBuilder) WithValue(value BVLCResultCode) BVLCResultCodeTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BVLCResultCodeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BVLCResultCodeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BVLCResultCodeTaggedBuilder) WithArgTagClass(tagClass TagClass) BVLCResultCodeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

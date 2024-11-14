@@ -92,6 +92,10 @@ type BACnetDoorAlarmStateTaggedBuilder interface {
 	WithValue(BACnetDoorAlarmState) BACnetDoorAlarmStateTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetDoorAlarmStateTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetDoorAlarmStateTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetDoorAlarmStateTaggedBuilder
 	// Build builds the BACnetDoorAlarmStateTagged or returns an error if something is wrong
 	Build() (BACnetDoorAlarmStateTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetDoorAlarmStateTaggedBuilder) WithValue(value BACnetDoorAlarmStat
 
 func (b *_BACnetDoorAlarmStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetDoorAlarmStateTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetDoorAlarmStateTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetDoorAlarmStateTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetDoorAlarmStateTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetDoorAlarmStateTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

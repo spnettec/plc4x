@@ -92,6 +92,10 @@ type ErrorClassTaggedBuilder interface {
 	WithValue(ErrorClass) ErrorClassTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) ErrorClassTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) ErrorClassTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) ErrorClassTaggedBuilder
 	// Build builds the ErrorClassTagged or returns an error if something is wrong
 	Build() (ErrorClassTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_ErrorClassTaggedBuilder) WithValue(value ErrorClass) ErrorClassTaggedB
 
 func (b *_ErrorClassTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) ErrorClassTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_ErrorClassTaggedBuilder) WithArgTagNumber(tagNumber uint8) ErrorClassTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_ErrorClassTaggedBuilder) WithArgTagClass(tagClass TagClass) ErrorClassTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

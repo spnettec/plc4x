@@ -85,6 +85,10 @@ type BACnetNetworkNumberQualityTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNetworkNumberQualityTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetNetworkNumberQuality) BACnetNetworkNumberQualityTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetNetworkNumberQualityTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetNetworkNumberQualityTaggedBuilder
 	// Build builds the BACnetNetworkNumberQualityTagged or returns an error if something is wrong
 	Build() (BACnetNetworkNumberQualityTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithHeaderBuilder(builderSupp
 
 func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithValue(value BACnetNetworkNumberQuality) BACnetNetworkNumberQualityTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetNetworkNumberQualityTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetNetworkNumberQualityTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

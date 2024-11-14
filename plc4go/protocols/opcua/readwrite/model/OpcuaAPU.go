@@ -82,6 +82,10 @@ type OpcuaAPUBuilder interface {
 	WithMessage(MessagePDU) OpcuaAPUBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(MessagePDUBuilder) MessagePDUBuilder) OpcuaAPUBuilder
+	// WithArgResponse sets a parser argument
+	WithArgResponse(bool) OpcuaAPUBuilder
+	// WithArgBinaryEncoding sets a parser argument
+	WithArgBinaryEncoding(bool) OpcuaAPUBuilder
 	// Build builds the OpcuaAPU or returns an error if something is wrong
 	Build() (OpcuaAPU, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,6 +124,15 @@ func (b *_OpcuaAPUBuilder) WithMessageBuilder(builderSupplier func(MessagePDUBui
 		}
 		b.err.Append(errors.Wrap(err, "MessagePDUBuilder failed"))
 	}
+	return b
+}
+
+func (b *_OpcuaAPUBuilder) WithArgResponse(response bool) OpcuaAPUBuilder {
+	b.Response = response
+	return b
+}
+func (b *_OpcuaAPUBuilder) WithArgBinaryEncoding(binaryEncoding bool) OpcuaAPUBuilder {
+	b.BinaryEncoding = binaryEncoding
 	return b
 }
 

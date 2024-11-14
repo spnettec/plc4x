@@ -98,6 +98,8 @@ type CBusPointToMultiPointCommandBuilder interface {
 	WithMandatoryFields(peekedApplication byte) CBusPointToMultiPointCommandBuilder
 	// WithPeekedApplication adds PeekedApplication (property field)
 	WithPeekedApplication(byte) CBusPointToMultiPointCommandBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) CBusPointToMultiPointCommandBuilder
 	// AsCBusPointToMultiPointCommandStatus converts this build to a subType of CBusPointToMultiPointCommand. It is always possible to return to current builder using Done()
 	AsCBusPointToMultiPointCommandStatus() CBusPointToMultiPointCommandStatusBuilder
 	// AsCBusPointToMultiPointCommandNormal converts this build to a subType of CBusPointToMultiPointCommand. It is always possible to return to current builder using Done()
@@ -139,6 +141,11 @@ func (b *_CBusPointToMultiPointCommandBuilder) WithMandatoryFields(peekedApplica
 
 func (b *_CBusPointToMultiPointCommandBuilder) WithPeekedApplication(peekedApplication byte) CBusPointToMultiPointCommandBuilder {
 	b.PeekedApplication = peekedApplication
+	return b
+}
+
+func (b *_CBusPointToMultiPointCommandBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusPointToMultiPointCommandBuilder {
+	b.CBusOptions = cBusOptions
 	return b
 }
 

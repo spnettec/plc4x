@@ -103,6 +103,10 @@ type EncodedReplyBuilder interface {
 	WithMandatoryFields(peekedByte byte) EncodedReplyBuilder
 	// WithPeekedByte adds PeekedByte (property field)
 	WithPeekedByte(byte) EncodedReplyBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) EncodedReplyBuilder
+	// WithArgRequestContext sets a parser argument
+	WithArgRequestContext(RequestContext) EncodedReplyBuilder
 	// AsMonitoredSALReply converts this build to a subType of EncodedReply. It is always possible to return to current builder using Done()
 	AsMonitoredSALReply() MonitoredSALReplyBuilder
 	// AsEncodedReplyCALReply converts this build to a subType of EncodedReply. It is always possible to return to current builder using Done()
@@ -144,6 +148,15 @@ func (b *_EncodedReplyBuilder) WithMandatoryFields(peekedByte byte) EncodedReply
 
 func (b *_EncodedReplyBuilder) WithPeekedByte(peekedByte byte) EncodedReplyBuilder {
 	b.PeekedByte = peekedByte
+	return b
+}
+
+func (b *_EncodedReplyBuilder) WithArgCBusOptions(cBusOptions CBusOptions) EncodedReplyBuilder {
+	b.CBusOptions = cBusOptions
+	return b
+}
+func (b *_EncodedReplyBuilder) WithArgRequestContext(requestContext RequestContext) EncodedReplyBuilder {
+	b.RequestContext = requestContext
 	return b
 }
 

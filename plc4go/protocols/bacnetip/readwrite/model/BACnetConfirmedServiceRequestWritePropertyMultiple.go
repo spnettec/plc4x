@@ -82,6 +82,8 @@ type BACnetConfirmedServiceRequestWritePropertyMultipleBuilder interface {
 	WithMandatoryFields(data []BACnetWriteAccessSpecification) BACnetConfirmedServiceRequestWritePropertyMultipleBuilder
 	// WithData adds Data (property field)
 	WithData(...BACnetWriteAccessSpecification) BACnetConfirmedServiceRequestWritePropertyMultipleBuilder
+	// WithArgServiceRequestPayloadLength sets a parser argument
+	WithArgServiceRequestPayloadLength(uint32) BACnetConfirmedServiceRequestWritePropertyMultipleBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestWritePropertyMultiple or returns an error if something is wrong
@@ -116,6 +118,11 @@ func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) WithMandato
 
 func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) WithData(data ...BACnetWriteAccessSpecification) BACnetConfirmedServiceRequestWritePropertyMultipleBuilder {
 	b.Data = data
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestWritePropertyMultipleBuilder) WithArgServiceRequestPayloadLength(serviceRequestPayloadLength uint32) BACnetConfirmedServiceRequestWritePropertyMultipleBuilder {
+	b.ServiceRequestPayloadLength = serviceRequestPayloadLength
 	return b
 }
 

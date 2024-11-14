@@ -94,6 +94,8 @@ type BACnetSecurityKeySetKeyIdsBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetSecurityKeySetKeyIdsBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetSecurityKeySetKeyIdsBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetSecurityKeySetKeyIdsBuilder
 	// Build builds the BACnetSecurityKeySetKeyIds or returns an error if something is wrong
 	Build() (BACnetSecurityKeySetKeyIds, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithClosingTagBuilder(builderSuppli
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithArgTagNumber(tagNumber uint8) BACnetSecurityKeySetKeyIdsBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

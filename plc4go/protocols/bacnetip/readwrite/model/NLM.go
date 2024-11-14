@@ -97,6 +97,8 @@ type NLMBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() NLMBuilder
+	// WithArgApduLength sets a parser argument
+	WithArgApduLength(uint16) NLMBuilder
 	// AsNLMWhoIsRouterToNetwork converts this build to a subType of NLM. It is always possible to return to current builder using Done()
 	AsNLMWhoIsRouterToNetwork() NLMWhoIsRouterToNetworkBuilder
 	// AsNLMIAmRouterToNetwork converts this build to a subType of NLM. It is always possible to return to current builder using Done()
@@ -173,6 +175,11 @@ type _NLMBuilder struct {
 var _ (NLMBuilder) = (*_NLMBuilder)(nil)
 
 func (b *_NLMBuilder) WithMandatoryFields() NLMBuilder {
+	return b
+}
+
+func (b *_NLMBuilder) WithArgApduLength(apduLength uint16) NLMBuilder {
+	b.ApduLength = apduLength
 	return b
 }
 

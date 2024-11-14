@@ -98,6 +98,10 @@ type BACnetStatusFlagsTaggedBuilder interface {
 	WithPayload(BACnetTagPayloadBitString) BACnetStatusFlagsTaggedBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetStatusFlagsTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetStatusFlagsTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetStatusFlagsTaggedBuilder
 	// Build builds the BACnetStatusFlagsTagged or returns an error if something is wrong
 	Build() (BACnetStatusFlagsTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -154,6 +158,15 @@ func (b *_BACnetStatusFlagsTaggedBuilder) WithPayloadBuilder(builderSupplier fun
 		}
 		b.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetStatusFlagsTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetStatusFlagsTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetStatusFlagsTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetStatusFlagsTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

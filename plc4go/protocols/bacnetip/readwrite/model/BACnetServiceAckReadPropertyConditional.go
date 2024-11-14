@@ -82,6 +82,8 @@ type BACnetServiceAckReadPropertyConditionalBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckReadPropertyConditionalBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetServiceAckReadPropertyConditionalBuilder
+	// WithArgServiceAckPayloadLength sets a parser argument
+	WithArgServiceAckPayloadLength(uint32) BACnetServiceAckReadPropertyConditionalBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckReadPropertyConditional or returns an error if something is wrong
@@ -116,6 +118,11 @@ func (b *_BACnetServiceAckReadPropertyConditionalBuilder) WithMandatoryFields(by
 
 func (b *_BACnetServiceAckReadPropertyConditionalBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetServiceAckReadPropertyConditionalBuilder {
 	b.BytesOfRemovedService = bytesOfRemovedService
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyConditionalBuilder) WithArgServiceAckPayloadLength(serviceAckPayloadLength uint32) BACnetServiceAckReadPropertyConditionalBuilder {
+	b.ServiceAckPayloadLength = serviceAckPayloadLength
 	return b
 }
 

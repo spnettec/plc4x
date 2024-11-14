@@ -99,6 +99,8 @@ type BACnetRecipientEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetRecipientEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetRecipientEnclosedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetRecipientEnclosedBuilder
 	// Build builds the BACnetRecipientEnclosed or returns an error if something is wrong
 	Build() (BACnetRecipientEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -173,6 +175,11 @@ func (b *_BACnetRecipientEnclosedBuilder) WithClosingTagBuilder(builderSupplier 
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetRecipientEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetRecipientEnclosedBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

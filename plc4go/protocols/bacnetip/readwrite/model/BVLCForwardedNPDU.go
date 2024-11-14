@@ -101,6 +101,8 @@ type BVLCForwardedNPDUBuilder interface {
 	WithNpdu(NPDU) BVLCForwardedNPDUBuilder
 	// WithNpduBuilder adds Npdu (property field) which is build by the builder
 	WithNpduBuilder(func(NPDUBuilder) NPDUBuilder) BVLCForwardedNPDUBuilder
+	// WithArgBvlcPayloadLength sets a parser argument
+	WithArgBvlcPayloadLength(uint16) BVLCForwardedNPDUBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCForwardedNPDU or returns an error if something is wrong
@@ -158,6 +160,11 @@ func (b *_BVLCForwardedNPDUBuilder) WithNpduBuilder(builderSupplier func(NPDUBui
 		}
 		b.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BVLCForwardedNPDUBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCForwardedNPDUBuilder {
+	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 

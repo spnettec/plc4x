@@ -85,6 +85,10 @@ type BACnetLiftCarDoorCommandTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarDoorCommandTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetLiftCarDoorCommand) BACnetLiftCarDoorCommandTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetLiftCarDoorCommandTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetLiftCarDoorCommandTaggedBuilder
 	// Build builds the BACnetLiftCarDoorCommandTagged or returns an error if something is wrong
 	Build() (BACnetLiftCarDoorCommandTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetLiftCarDoorCommandTaggedBuilder) WithHeaderBuilder(builderSuppli
 
 func (b *_BACnetLiftCarDoorCommandTaggedBuilder) WithValue(value BACnetLiftCarDoorCommand) BACnetLiftCarDoorCommandTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetLiftCarDoorCommandTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLiftCarDoorCommandTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetLiftCarDoorCommandTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLiftCarDoorCommandTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

@@ -92,6 +92,10 @@ type BACnetAccessZoneOccupancyStateTaggedBuilder interface {
 	WithValue(BACnetAccessZoneOccupancyState) BACnetAccessZoneOccupancyStateTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAccessZoneOccupancyStateTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAccessZoneOccupancyStateTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetAccessZoneOccupancyStateTaggedBuilder
 	// Build builds the BACnetAccessZoneOccupancyStateTagged or returns an error if something is wrong
 	Build() (BACnetAccessZoneOccupancyStateTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithValue(value BACnetAcc
 
 func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessZoneOccupancyStateTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

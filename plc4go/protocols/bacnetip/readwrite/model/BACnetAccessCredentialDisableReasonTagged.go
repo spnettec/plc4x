@@ -92,6 +92,10 @@ type BACnetAccessCredentialDisableReasonTaggedBuilder interface {
 	WithValue(BACnetAccessCredentialDisableReason) BACnetAccessCredentialDisableReasonTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAccessCredentialDisableReasonTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAccessCredentialDisableReasonTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetAccessCredentialDisableReasonTaggedBuilder
 	// Build builds the BACnetAccessCredentialDisableReasonTagged or returns an error if something is wrong
 	Build() (BACnetAccessCredentialDisableReasonTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetAccessCredentialDisableReasonTaggedBuilder) WithValue(value BACn
 
 func (b *_BACnetAccessCredentialDisableReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessCredentialDisableReasonTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAccessCredentialDisableReasonTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessCredentialDisableReasonTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetAccessCredentialDisableReasonTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessCredentialDisableReasonTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

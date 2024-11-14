@@ -94,6 +94,8 @@ type BACnetFaultParameterFaultExtendedParametersBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultExtendedParametersBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultExtendedParametersBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetFaultParameterFaultExtendedParametersBuilder
 	// Build builds the BACnetFaultParameterFaultExtendedParameters or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultExtendedParameters, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithClosingTagBuil
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersBuilder) WithArgTagNumber(tagNumber uint8) BACnetFaultParameterFaultExtendedParametersBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

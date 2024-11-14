@@ -94,6 +94,8 @@ type BACnetLandingDoorStatusLandingDoorsListBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetLandingDoorStatusLandingDoorsListBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLandingDoorStatusLandingDoorsListBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetLandingDoorStatusLandingDoorsListBuilder
 	// Build builds the BACnetLandingDoorStatusLandingDoorsList or returns an error if something is wrong
 	Build() (BACnetLandingDoorStatusLandingDoorsList, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetLandingDoorStatusLandingDoorsListBuilder) WithClosingTagBuilder(
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetLandingDoorStatusLandingDoorsListBuilder) WithArgTagNumber(tagNumber uint8) BACnetLandingDoorStatusLandingDoorsListBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

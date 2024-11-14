@@ -92,6 +92,10 @@ type BACnetBinaryLightingPVTaggedBuilder interface {
 	WithValue(BACnetBinaryLightingPV) BACnetBinaryLightingPVTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetBinaryLightingPVTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetBinaryLightingPVTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetBinaryLightingPVTaggedBuilder
 	// Build builds the BACnetBinaryLightingPVTagged or returns an error if something is wrong
 	Build() (BACnetBinaryLightingPVTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetBinaryLightingPVTaggedBuilder) WithValue(value BACnetBinaryLight
 
 func (b *_BACnetBinaryLightingPVTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetBinaryLightingPVTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetBinaryLightingPVTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetBinaryLightingPVTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetBinaryLightingPVTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetBinaryLightingPVTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

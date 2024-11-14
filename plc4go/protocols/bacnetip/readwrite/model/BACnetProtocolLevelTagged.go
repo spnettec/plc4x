@@ -85,6 +85,10 @@ type BACnetProtocolLevelTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProtocolLevelTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetProtocolLevel) BACnetProtocolLevelTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetProtocolLevelTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetProtocolLevelTaggedBuilder
 	// Build builds the BACnetProtocolLevelTagged or returns an error if something is wrong
 	Build() (BACnetProtocolLevelTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetProtocolLevelTaggedBuilder) WithHeaderBuilder(builderSupplier fu
 
 func (b *_BACnetProtocolLevelTaggedBuilder) WithValue(value BACnetProtocolLevel) BACnetProtocolLevelTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetProtocolLevelTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetProtocolLevelTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetProtocolLevelTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetProtocolLevelTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

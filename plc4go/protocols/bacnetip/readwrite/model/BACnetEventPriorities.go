@@ -119,6 +119,8 @@ type BACnetEventPrioritiesBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventPrioritiesBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventPrioritiesBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetEventPrioritiesBuilder
 	// Build builds the BACnetEventPriorities or returns an error if something is wrong
 	Build() (BACnetEventPriorities, error)
 	// MustBuild does the same as Build but panics on error
@@ -229,6 +231,11 @@ func (b *_BACnetEventPrioritiesBuilder) WithClosingTagBuilder(builderSupplier fu
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetEventPrioritiesBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventPrioritiesBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

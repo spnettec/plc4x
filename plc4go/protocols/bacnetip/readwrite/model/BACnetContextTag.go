@@ -107,6 +107,8 @@ type BACnetContextTagBuilder interface {
 	WithHeader(BACnetTagHeader) BACnetContextTagBuilder
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetContextTagBuilder
+	// WithArgTagNumberArgument sets a parser argument
+	WithArgTagNumberArgument(uint8) BACnetContextTagBuilder
 	// AsBACnetContextTagNull converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
 	AsBACnetContextTagNull() BACnetContextTagNullBuilder
 	// AsBACnetContextTagBoolean converts this build to a subType of BACnetContextTag. It is always possible to return to current builder using Done()
@@ -185,6 +187,11 @@ func (b *_BACnetContextTagBuilder) WithHeaderBuilder(builderSupplier func(BACnet
 		}
 		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetContextTagBuilder) WithArgTagNumberArgument(tagNumberArgument uint8) BACnetContextTagBuilder {
+	b.TagNumberArgument = tagNumberArgument
 	return b
 }
 

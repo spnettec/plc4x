@@ -80,6 +80,8 @@ type BACnetRejectReasonTaggedBuilder interface {
 	WithValue(BACnetRejectReason) BACnetRejectReasonTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetRejectReasonTaggedBuilder
+	// WithArgActualLength sets a parser argument
+	WithArgActualLength(uint32) BACnetRejectReasonTaggedBuilder
 	// Build builds the BACnetRejectReasonTagged or returns an error if something is wrong
 	Build() (BACnetRejectReasonTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,11 @@ func (b *_BACnetRejectReasonTaggedBuilder) WithValue(value BACnetRejectReason) B
 
 func (b *_BACnetRejectReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetRejectReasonTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetRejectReasonTaggedBuilder) WithArgActualLength(actualLength uint32) BACnetRejectReasonTaggedBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 

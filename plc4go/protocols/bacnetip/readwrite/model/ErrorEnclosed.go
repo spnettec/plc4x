@@ -99,6 +99,8 @@ type ErrorEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) ErrorEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) ErrorEnclosedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) ErrorEnclosedBuilder
 	// Build builds the ErrorEnclosed or returns an error if something is wrong
 	Build() (ErrorEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -173,6 +175,11 @@ func (b *_ErrorEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACne
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_ErrorEnclosedBuilder) WithArgTagNumber(tagNumber uint8) ErrorEnclosedBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

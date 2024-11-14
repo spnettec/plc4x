@@ -74,6 +74,8 @@ type BACnetTagPayloadOctetStringBuilder interface {
 	WithMandatoryFields(octets []byte) BACnetTagPayloadOctetStringBuilder
 	// WithOctets adds Octets (property field)
 	WithOctets(...byte) BACnetTagPayloadOctetStringBuilder
+	// WithArgActualLength sets a parser argument
+	WithArgActualLength(uint32) BACnetTagPayloadOctetStringBuilder
 	// Build builds the BACnetTagPayloadOctetString or returns an error if something is wrong
 	Build() (BACnetTagPayloadOctetString, error)
 	// MustBuild does the same as Build but panics on error
@@ -99,6 +101,11 @@ func (b *_BACnetTagPayloadOctetStringBuilder) WithMandatoryFields(octets []byte)
 
 func (b *_BACnetTagPayloadOctetStringBuilder) WithOctets(octets ...byte) BACnetTagPayloadOctetStringBuilder {
 	b.Octets = octets
+	return b
+}
+
+func (b *_BACnetTagPayloadOctetStringBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadOctetStringBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 

@@ -85,6 +85,10 @@ type BACnetDoorValueTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDoorValueTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetDoorValue) BACnetDoorValueTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetDoorValueTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetDoorValueTaggedBuilder
 	// Build builds the BACnetDoorValueTagged or returns an error if something is wrong
 	Build() (BACnetDoorValueTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetDoorValueTaggedBuilder) WithHeaderBuilder(builderSupplier func(B
 
 func (b *_BACnetDoorValueTaggedBuilder) WithValue(value BACnetDoorValue) BACnetDoorValueTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetDoorValueTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetDoorValueTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetDoorValueTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetDoorValueTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

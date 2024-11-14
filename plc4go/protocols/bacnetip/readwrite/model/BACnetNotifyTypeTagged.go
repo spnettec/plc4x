@@ -85,6 +85,10 @@ type BACnetNotifyTypeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotifyTypeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetNotifyType) BACnetNotifyTypeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetNotifyTypeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetNotifyTypeTaggedBuilder
 	// Build builds the BACnetNotifyTypeTagged or returns an error if something is wrong
 	Build() (BACnetNotifyTypeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetNotifyTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(
 
 func (b *_BACnetNotifyTypeTaggedBuilder) WithValue(value BACnetNotifyType) BACnetNotifyTypeTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetNotifyTypeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetNotifyTypeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetNotifyTypeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetNotifyTypeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

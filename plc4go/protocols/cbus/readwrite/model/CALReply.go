@@ -111,6 +111,10 @@ type CALReplyBuilder interface {
 	WithCalData(CALData) CALReplyBuilder
 	// WithCalDataBuilder adds CalData (property field) which is build by the builder
 	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) CALReplyBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) CALReplyBuilder
+	// WithArgRequestContext sets a parser argument
+	WithArgRequestContext(RequestContext) CALReplyBuilder
 	// AsCALReplyLong converts this build to a subType of CALReply. It is always possible to return to current builder using Done()
 	AsCALReplyLong() CALReplyLongBuilder
 	// AsCALReplyShort converts this build to a subType of CALReply. It is always possible to return to current builder using Done()
@@ -170,6 +174,15 @@ func (b *_CALReplyBuilder) WithCalDataBuilder(builderSupplier func(CALDataBuilde
 		}
 		b.err.Append(errors.Wrap(err, "CALDataBuilder failed"))
 	}
+	return b
+}
+
+func (b *_CALReplyBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CALReplyBuilder {
+	b.CBusOptions = cBusOptions
+	return b
+}
+func (b *_CALReplyBuilder) WithArgRequestContext(requestContext RequestContext) CALReplyBuilder {
+	b.RequestContext = requestContext
 	return b
 }
 

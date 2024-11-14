@@ -82,6 +82,8 @@ type BACnetConfirmedServiceRequestVTCloseBuilder interface {
 	WithMandatoryFields(listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTCloseBuilder
 	// WithListOfRemoteVtSessionIdentifiers adds ListOfRemoteVtSessionIdentifiers (property field)
 	WithListOfRemoteVtSessionIdentifiers(...BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTCloseBuilder
+	// WithArgServiceRequestPayloadLength sets a parser argument
+	WithArgServiceRequestPayloadLength(uint32) BACnetConfirmedServiceRequestVTCloseBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestVTClose or returns an error if something is wrong
@@ -116,6 +118,11 @@ func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) WithMandatoryFields(listO
 
 func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) WithListOfRemoteVtSessionIdentifiers(listOfRemoteVtSessionIdentifiers ...BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTCloseBuilder {
 	b.ListOfRemoteVtSessionIdentifiers = listOfRemoteVtSessionIdentifiers
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) WithArgServiceRequestPayloadLength(serviceRequestPayloadLength uint32) BACnetConfirmedServiceRequestVTCloseBuilder {
+	b.ServiceRequestPayloadLength = serviceRequestPayloadLength
 	return b
 }
 

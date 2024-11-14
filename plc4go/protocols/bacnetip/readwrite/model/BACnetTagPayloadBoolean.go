@@ -74,6 +74,8 @@ type BACnetTagPayloadBooleanBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() BACnetTagPayloadBooleanBuilder
+	// WithArgActualLength sets a parser argument
+	WithArgActualLength(uint32) BACnetTagPayloadBooleanBuilder
 	// Build builds the BACnetTagPayloadBoolean or returns an error if something is wrong
 	Build() (BACnetTagPayloadBoolean, error)
 	// MustBuild does the same as Build but panics on error
@@ -94,6 +96,11 @@ type _BACnetTagPayloadBooleanBuilder struct {
 var _ (BACnetTagPayloadBooleanBuilder) = (*_BACnetTagPayloadBooleanBuilder)(nil)
 
 func (b *_BACnetTagPayloadBooleanBuilder) WithMandatoryFields() BACnetTagPayloadBooleanBuilder {
+	return b
+}
+
+func (b *_BACnetTagPayloadBooleanBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadBooleanBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 

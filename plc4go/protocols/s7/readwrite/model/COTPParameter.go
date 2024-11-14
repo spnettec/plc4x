@@ -93,6 +93,8 @@ type COTPParameterBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() COTPParameterBuilder
+	// WithArgRest sets a parser argument
+	WithArgRest(uint8) COTPParameterBuilder
 	// AsCOTPParameterTpduSize converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
 	AsCOTPParameterTpduSize() COTPParameterTpduSizeBuilder
 	// AsCOTPParameterCallingTsap converts this build to a subType of COTPParameter. It is always possible to return to current builder using Done()
@@ -135,6 +137,11 @@ type _COTPParameterBuilder struct {
 var _ (COTPParameterBuilder) = (*_COTPParameterBuilder)(nil)
 
 func (b *_COTPParameterBuilder) WithMandatoryFields() COTPParameterBuilder {
+	return b
+}
+
+func (b *_COTPParameterBuilder) WithArgRest(rest uint8) COTPParameterBuilder {
+	b.Rest = rest
 	return b
 }
 

@@ -92,6 +92,10 @@ type BACnetNetworkPortCommandTaggedBuilder interface {
 	WithValue(BACnetNetworkPortCommand) BACnetNetworkPortCommandTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetNetworkPortCommandTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetNetworkPortCommandTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetNetworkPortCommandTaggedBuilder
 	// Build builds the BACnetNetworkPortCommandTagged or returns an error if something is wrong
 	Build() (BACnetNetworkPortCommandTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetNetworkPortCommandTaggedBuilder) WithValue(value BACnetNetworkPo
 
 func (b *_BACnetNetworkPortCommandTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetNetworkPortCommandTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetNetworkPortCommandTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetNetworkPortCommandTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetNetworkPortCommandTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetNetworkPortCommandTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

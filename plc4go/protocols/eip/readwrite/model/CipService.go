@@ -97,6 +97,8 @@ type CipServiceBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CipServiceBuilder
+	// WithArgServiceLen sets a parser argument
+	WithArgServiceLen(uint16) CipServiceBuilder
 	// AsGetAttributeAllRequest converts this build to a subType of CipService. It is always possible to return to current builder using Done()
 	AsGetAttributeAllRequest() GetAttributeAllRequestBuilder
 	// AsGetAttributeAllResponse converts this build to a subType of CipService. It is always possible to return to current builder using Done()
@@ -179,6 +181,11 @@ type _CipServiceBuilder struct {
 var _ (CipServiceBuilder) = (*_CipServiceBuilder)(nil)
 
 func (b *_CipServiceBuilder) WithMandatoryFields() CipServiceBuilder {
+	return b
+}
+
+func (b *_CipServiceBuilder) WithArgServiceLen(serviceLen uint16) CipServiceBuilder {
+	b.ServiceLen = serviceLen
 	return b
 }
 

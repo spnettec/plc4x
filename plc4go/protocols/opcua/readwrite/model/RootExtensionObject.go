@@ -87,6 +87,8 @@ type RootExtensionObjectBuilder interface {
 	WithBody(ExtensionObjectDefinition) RootExtensionObjectBuilder
 	// WithBodyBuilder adds Body (property field) which is build by the builder
 	WithBodyBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RootExtensionObjectBuilder
+	// WithArgExtensionId sets a parser argument
+	WithArgExtensionId(int32) RootExtensionObjectBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() ExtensionObjectBuilder
 	// Build builds the RootExtensionObject or returns an error if something is wrong
@@ -134,6 +136,11 @@ func (b *_RootExtensionObjectBuilder) WithBodyBuilder(builderSupplier func(Exten
 		}
 		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
 	}
+	return b
+}
+
+func (b *_RootExtensionObjectBuilder) WithArgExtensionId(extensionId int32) RootExtensionObjectBuilder {
+	b.ExtensionId = extensionId
 	return b
 }
 

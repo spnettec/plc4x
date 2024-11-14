@@ -103,6 +103,8 @@ type ListOfCovNotificationsValueBuilder interface {
 	WithOptionalTimeOfChange(BACnetContextTagTime) ListOfCovNotificationsValueBuilder
 	// WithOptionalTimeOfChangeBuilder adds TimeOfChange (property field) which is build by the builder
 	WithOptionalTimeOfChangeBuilder(func(BACnetContextTagTimeBuilder) BACnetContextTagTimeBuilder) ListOfCovNotificationsValueBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) ListOfCovNotificationsValueBuilder
 	// Build builds the ListOfCovNotificationsValue or returns an error if something is wrong
 	Build() (ListOfCovNotificationsValue, error)
 	// MustBuild does the same as Build but panics on error
@@ -195,6 +197,11 @@ func (b *_ListOfCovNotificationsValueBuilder) WithOptionalTimeOfChangeBuilder(bu
 		}
 		b.err.Append(errors.Wrap(err, "BACnetContextTagTimeBuilder failed"))
 	}
+	return b
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) ListOfCovNotificationsValueBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 

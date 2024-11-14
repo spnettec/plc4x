@@ -74,6 +74,8 @@ type CustomManufacturerBuilder interface {
 	WithMandatoryFields(customString string) CustomManufacturerBuilder
 	// WithCustomString adds CustomString (property field)
 	WithCustomString(string) CustomManufacturerBuilder
+	// WithArgNumBytes sets a parser argument
+	WithArgNumBytes(uint8) CustomManufacturerBuilder
 	// Build builds the CustomManufacturer or returns an error if something is wrong
 	Build() (CustomManufacturer, error)
 	// MustBuild does the same as Build but panics on error
@@ -99,6 +101,11 @@ func (b *_CustomManufacturerBuilder) WithMandatoryFields(customString string) Cu
 
 func (b *_CustomManufacturerBuilder) WithCustomString(customString string) CustomManufacturerBuilder {
 	b.CustomString = customString
+	return b
+}
+
+func (b *_CustomManufacturerBuilder) WithArgNumBytes(numBytes uint8) CustomManufacturerBuilder {
+	b.NumBytes = numBytes
 	return b
 }
 

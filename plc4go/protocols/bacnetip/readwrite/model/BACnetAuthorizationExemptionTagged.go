@@ -92,6 +92,10 @@ type BACnetAuthorizationExemptionTaggedBuilder interface {
 	WithValue(BACnetAuthorizationExemption) BACnetAuthorizationExemptionTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAuthorizationExemptionTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAuthorizationExemptionTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetAuthorizationExemptionTaggedBuilder
 	// Build builds the BACnetAuthorizationExemptionTagged or returns an error if something is wrong
 	Build() (BACnetAuthorizationExemptionTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithValue(value BACnetAutho
 
 func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAuthorizationExemptionTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAuthorizationExemptionTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAuthorizationExemptionTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

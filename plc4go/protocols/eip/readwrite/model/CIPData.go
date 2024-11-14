@@ -79,6 +79,8 @@ type CIPDataBuilder interface {
 	WithDataType(CIPDataTypeCode) CIPDataBuilder
 	// WithData adds Data (property field)
 	WithData(...byte) CIPDataBuilder
+	// WithArgPacketLength sets a parser argument
+	WithArgPacketLength(uint16) CIPDataBuilder
 	// Build builds the CIPData or returns an error if something is wrong
 	Build() (CIPData, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,11 @@ func (b *_CIPDataBuilder) WithDataType(dataType CIPDataTypeCode) CIPDataBuilder 
 
 func (b *_CIPDataBuilder) WithData(data ...byte) CIPDataBuilder {
 	b.Data = data
+	return b
+}
+
+func (b *_CIPDataBuilder) WithArgPacketLength(packetLength uint16) CIPDataBuilder {
+	b.PacketLength = packetLength
 	return b
 }
 

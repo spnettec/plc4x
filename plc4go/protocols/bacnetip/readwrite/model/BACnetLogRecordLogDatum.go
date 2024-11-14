@@ -125,6 +125,8 @@ type BACnetLogRecordLogDatumBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetLogRecordLogDatumBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogRecordLogDatumBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetLogRecordLogDatumBuilder
 	// AsBACnetLogRecordLogDatumLogStatus converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
 	AsBACnetLogRecordLogDatumLogStatus() BACnetLogRecordLogDatumLogStatusBuilder
 	// AsBACnetLogRecordLogDatumBooleanValue converts this build to a subType of BACnetLogRecordLogDatum. It is always possible to return to current builder using Done()
@@ -233,6 +235,11 @@ func (b *_BACnetLogRecordLogDatumBuilder) WithClosingTagBuilder(builderSupplier 
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumBuilder) WithArgTagNumber(tagNumber uint8) BACnetLogRecordLogDatumBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

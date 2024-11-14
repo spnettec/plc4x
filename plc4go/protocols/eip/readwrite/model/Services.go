@@ -79,6 +79,8 @@ type ServicesBuilder interface {
 	WithOffsets(...uint16) ServicesBuilder
 	// WithServices adds Services (property field)
 	WithServices(...CipService) ServicesBuilder
+	// WithArgServicesLen sets a parser argument
+	WithArgServicesLen(uint16) ServicesBuilder
 	// Build builds the Services or returns an error if something is wrong
 	Build() (Services, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,6 +111,11 @@ func (b *_ServicesBuilder) WithOffsets(offsets ...uint16) ServicesBuilder {
 
 func (b *_ServicesBuilder) WithServices(services ...CipService) ServicesBuilder {
 	b.Services = services
+	return b
+}
+
+func (b *_ServicesBuilder) WithArgServicesLen(servicesLen uint16) ServicesBuilder {
+	b.ServicesLen = servicesLen
 	return b
 }
 

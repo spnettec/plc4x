@@ -93,6 +93,8 @@ type CEMIBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CEMIBuilder
+	// WithArgSize sets a parser argument
+	WithArgSize(uint16) CEMIBuilder
 	// AsLBusmonInd converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
 	AsLBusmonInd() LBusmonIndBuilder
 	// AsLDataReq converts this build to a subType of CEMI. It is always possible to return to current builder using Done()
@@ -171,6 +173,11 @@ type _CEMIBuilder struct {
 var _ (CEMIBuilder) = (*_CEMIBuilder)(nil)
 
 func (b *_CEMIBuilder) WithMandatoryFields() CEMIBuilder {
+	return b
+}
+
+func (b *_CEMIBuilder) WithArgSize(size uint16) CEMIBuilder {
+	b.Size = size
 	return b
 }
 

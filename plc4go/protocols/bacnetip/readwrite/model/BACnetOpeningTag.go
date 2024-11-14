@@ -79,6 +79,8 @@ type BACnetOpeningTagBuilder interface {
 	WithHeader(BACnetTagHeader) BACnetOpeningTagBuilder
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOpeningTagBuilder
+	// WithArgTagNumberArgument sets a parser argument
+	WithArgTagNumberArgument(uint8) BACnetOpeningTagBuilder
 	// Build builds the BACnetOpeningTag or returns an error if something is wrong
 	Build() (BACnetOpeningTag, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,6 +119,11 @@ func (b *_BACnetOpeningTagBuilder) WithHeaderBuilder(builderSupplier func(BACnet
 		}
 		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetOpeningTagBuilder) WithArgTagNumberArgument(tagNumberArgument uint8) BACnetOpeningTagBuilder {
+	b.TagNumberArgument = tagNumberArgument
 	return b
 }
 

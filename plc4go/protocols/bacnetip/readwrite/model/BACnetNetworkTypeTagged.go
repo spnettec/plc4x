@@ -92,6 +92,10 @@ type BACnetNetworkTypeTaggedBuilder interface {
 	WithValue(BACnetNetworkType) BACnetNetworkTypeTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetNetworkTypeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetNetworkTypeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetNetworkTypeTaggedBuilder
 	// Build builds the BACnetNetworkTypeTagged or returns an error if something is wrong
 	Build() (BACnetNetworkTypeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetNetworkTypeTaggedBuilder) WithValue(value BACnetNetworkType) BAC
 
 func (b *_BACnetNetworkTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetNetworkTypeTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetNetworkTypeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetNetworkTypeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetNetworkTypeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetNetworkTypeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

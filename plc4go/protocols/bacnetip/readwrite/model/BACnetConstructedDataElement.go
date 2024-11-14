@@ -110,6 +110,12 @@ type BACnetConstructedDataElementBuilder interface {
 	WithOptionalConstructedData(BACnetConstructedData) BACnetConstructedDataElementBuilder
 	// WithOptionalConstructedDataBuilder adds ConstructedData (property field) which is build by the builder
 	WithOptionalConstructedDataBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConstructedDataElementBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) BACnetConstructedDataElementBuilder
+	// WithArgPropertyIdentifierArgument sets a parser argument
+	WithArgPropertyIdentifierArgument(BACnetPropertyIdentifier) BACnetConstructedDataElementBuilder
+	// WithArgArrayIndexArgument sets a parser argument
+	WithArgArrayIndexArgument(BACnetTagPayloadUnsignedInteger) BACnetConstructedDataElementBuilder
 	// Build builds the BACnetConstructedDataElement or returns an error if something is wrong
 	Build() (BACnetConstructedDataElement, error)
 	// MustBuild does the same as Build but panics on error
@@ -202,6 +208,19 @@ func (b *_BACnetConstructedDataElementBuilder) WithOptionalConstructedDataBuilde
 		}
 		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetConstructedDataElementBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetConstructedDataElementBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
+	return b
+}
+func (b *_BACnetConstructedDataElementBuilder) WithArgPropertyIdentifierArgument(propertyIdentifierArgument BACnetPropertyIdentifier) BACnetConstructedDataElementBuilder {
+	b.PropertyIdentifierArgument = propertyIdentifierArgument
+	return b
+}
+func (b *_BACnetConstructedDataElementBuilder) WithArgArrayIndexArgument(arrayIndexArgument BACnetTagPayloadUnsignedInteger) BACnetConstructedDataElementBuilder {
+	b.ArrayIndexArgument = arrayIndexArgument
 	return b
 }
 

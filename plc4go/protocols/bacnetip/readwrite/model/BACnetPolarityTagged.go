@@ -85,6 +85,10 @@ type BACnetPolarityTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPolarityTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetPolarity) BACnetPolarityTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetPolarityTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetPolarityTaggedBuilder
 	// Build builds the BACnetPolarityTagged or returns an error if something is wrong
 	Build() (BACnetPolarityTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetPolarityTaggedBuilder) WithHeaderBuilder(builderSupplier func(BA
 
 func (b *_BACnetPolarityTaggedBuilder) WithValue(value BACnetPolarity) BACnetPolarityTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetPolarityTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetPolarityTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetPolarityTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetPolarityTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

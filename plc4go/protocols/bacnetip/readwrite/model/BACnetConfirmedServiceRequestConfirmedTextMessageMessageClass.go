@@ -125,6 +125,8 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder interf
 	WithClosingTag(BACnetClosingTag) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
 	// AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric converts this build to a subType of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass. It is always possible to return to current builder using Done()
 	AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
 	// AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter converts this build to a subType of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass. It is always possible to return to current builder using Done()
@@ -215,6 +217,11 @@ func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) 
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

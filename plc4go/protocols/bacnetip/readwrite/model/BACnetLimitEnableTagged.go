@@ -94,6 +94,10 @@ type BACnetLimitEnableTaggedBuilder interface {
 	WithPayload(BACnetTagPayloadBitString) BACnetLimitEnableTaggedBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetLimitEnableTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetLimitEnableTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetLimitEnableTaggedBuilder
 	// Build builds the BACnetLimitEnableTagged or returns an error if something is wrong
 	Build() (BACnetLimitEnableTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -150,6 +154,15 @@ func (b *_BACnetLimitEnableTaggedBuilder) WithPayloadBuilder(builderSupplier fun
 		}
 		b.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetLimitEnableTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLimitEnableTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetLimitEnableTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLimitEnableTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

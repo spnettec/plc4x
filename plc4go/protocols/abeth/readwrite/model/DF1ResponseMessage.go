@@ -116,6 +116,8 @@ type DF1ResponseMessageBuilder interface {
 	WithStatus(uint8) DF1ResponseMessageBuilder
 	// WithTransactionCounter adds TransactionCounter (property field)
 	WithTransactionCounter(uint16) DF1ResponseMessageBuilder
+	// WithArgPayloadLength sets a parser argument
+	WithArgPayloadLength(uint16) DF1ResponseMessageBuilder
 	// AsDF1CommandResponseMessageProtectedTypedLogicalRead converts this build to a subType of DF1ResponseMessage. It is always possible to return to current builder using Done()
 	AsDF1CommandResponseMessageProtectedTypedLogicalRead() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
 	// Build builds the DF1ResponseMessage or returns an error if something is wrong
@@ -170,6 +172,11 @@ func (b *_DF1ResponseMessageBuilder) WithStatus(status uint8) DF1ResponseMessage
 
 func (b *_DF1ResponseMessageBuilder) WithTransactionCounter(transactionCounter uint16) DF1ResponseMessageBuilder {
 	b.TransactionCounter = transactionCounter
+	return b
+}
+
+func (b *_DF1ResponseMessageBuilder) WithArgPayloadLength(payloadLength uint16) DF1ResponseMessageBuilder {
+	b.PayloadLength = payloadLength
 	return b
 }
 

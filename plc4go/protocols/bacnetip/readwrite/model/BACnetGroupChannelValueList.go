@@ -94,6 +94,8 @@ type BACnetGroupChannelValueListBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetGroupChannelValueListBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetGroupChannelValueListBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetGroupChannelValueListBuilder
 	// Build builds the BACnetGroupChannelValueList or returns an error if something is wrong
 	Build() (BACnetGroupChannelValueList, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetGroupChannelValueListBuilder) WithClosingTagBuilder(builderSuppl
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetGroupChannelValueListBuilder) WithArgTagNumber(tagNumber uint8) BACnetGroupChannelValueListBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

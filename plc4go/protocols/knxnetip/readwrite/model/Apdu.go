@@ -103,6 +103,8 @@ type ApduBuilder interface {
 	WithNumbered(bool) ApduBuilder
 	// WithCounter adds Counter (property field)
 	WithCounter(uint8) ApduBuilder
+	// WithArgDataLength sets a parser argument
+	WithArgDataLength(uint8) ApduBuilder
 	// AsApduControlContainer converts this build to a subType of Apdu. It is always possible to return to current builder using Done()
 	AsApduControlContainer() ApduControlContainerBuilder
 	// AsApduDataContainer converts this build to a subType of Apdu. It is always possible to return to current builder using Done()
@@ -149,6 +151,11 @@ func (b *_ApduBuilder) WithNumbered(numbered bool) ApduBuilder {
 
 func (b *_ApduBuilder) WithCounter(counter uint8) ApduBuilder {
 	b.Counter = counter
+	return b
+}
+
+func (b *_ApduBuilder) WithArgDataLength(dataLength uint8) ApduBuilder {
+	b.DataLength = dataLength
 	return b
 }
 

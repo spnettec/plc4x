@@ -94,6 +94,8 @@ type BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
 	// Build builds the BACnetFaultParameterFaultLifeSafetyListOfFaultValues or returns an error if something is wrong
 	Build() (BACnetFaultParameterFaultLifeSafetyListOfFaultValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) WithClosi
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) WithArgTagNumber(tagNumber uint8) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

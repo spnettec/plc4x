@@ -92,6 +92,10 @@ type BACnetAccessEventTaggedBuilder interface {
 	WithValue(BACnetAccessEvent) BACnetAccessEventTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAccessEventTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAccessEventTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetAccessEventTaggedBuilder
 	// Build builds the BACnetAccessEventTagged or returns an error if something is wrong
 	Build() (BACnetAccessEventTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetAccessEventTaggedBuilder) WithValue(value BACnetAccessEvent) BAC
 
 func (b *_BACnetAccessEventTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessEventTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAccessEventTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessEventTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetAccessEventTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessEventTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

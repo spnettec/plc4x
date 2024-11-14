@@ -94,6 +94,10 @@ type CBusMessageBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() CBusMessageBuilder
+	// WithArgRequestContext sets a parser argument
+	WithArgRequestContext(RequestContext) CBusMessageBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) CBusMessageBuilder
 	// AsCBusMessageToServer converts this build to a subType of CBusMessage. It is always possible to return to current builder using Done()
 	AsCBusMessageToServer() CBusMessageToServerBuilder
 	// AsCBusMessageToClient converts this build to a subType of CBusMessage. It is always possible to return to current builder using Done()
@@ -130,6 +134,15 @@ type _CBusMessageBuilder struct {
 var _ (CBusMessageBuilder) = (*_CBusMessageBuilder)(nil)
 
 func (b *_CBusMessageBuilder) WithMandatoryFields() CBusMessageBuilder {
+	return b
+}
+
+func (b *_CBusMessageBuilder) WithArgRequestContext(requestContext RequestContext) CBusMessageBuilder {
+	b.RequestContext = requestContext
+	return b
+}
+func (b *_CBusMessageBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusMessageBuilder {
+	b.CBusOptions = cBusOptions
 	return b
 }
 

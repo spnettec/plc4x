@@ -125,6 +125,8 @@ type BACnetEventParameterChangeOfValueCivCriteriaBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfValueCivCriteriaBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetEventParameterChangeOfValueCivCriteriaBuilder
 	// AsBACnetEventParameterChangeOfValueCivCriteriaBitmask converts this build to a subType of BACnetEventParameterChangeOfValueCivCriteria. It is always possible to return to current builder using Done()
 	AsBACnetEventParameterChangeOfValueCivCriteriaBitmask() BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
 	// AsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement converts this build to a subType of BACnetEventParameterChangeOfValueCivCriteria. It is always possible to return to current builder using Done()
@@ -215,6 +217,11 @@ func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) WithClosingTagBui
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

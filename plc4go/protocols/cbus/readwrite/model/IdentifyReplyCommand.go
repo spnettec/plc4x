@@ -91,6 +91,8 @@ type IdentifyReplyCommandBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() IdentifyReplyCommandBuilder
+	// WithArgNumBytes sets a parser argument
+	WithArgNumBytes(uint8) IdentifyReplyCommandBuilder
 	// AsIdentifyReplyCommandManufacturer converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
 	AsIdentifyReplyCommandManufacturer() IdentifyReplyCommandManufacturerBuilder
 	// AsIdentifyReplyCommandType converts this build to a subType of IdentifyReplyCommand. It is always possible to return to current builder using Done()
@@ -159,6 +161,11 @@ type _IdentifyReplyCommandBuilder struct {
 var _ (IdentifyReplyCommandBuilder) = (*_IdentifyReplyCommandBuilder)(nil)
 
 func (b *_IdentifyReplyCommandBuilder) WithMandatoryFields() IdentifyReplyCommandBuilder {
+	return b
+}
+
+func (b *_IdentifyReplyCommandBuilder) WithArgNumBytes(numBytes uint8) IdentifyReplyCommandBuilder {
+	b.NumBytes = numBytes
 	return b
 }
 

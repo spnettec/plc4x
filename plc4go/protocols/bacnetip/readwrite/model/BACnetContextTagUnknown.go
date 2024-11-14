@@ -82,6 +82,8 @@ type BACnetContextTagUnknownBuilder interface {
 	WithMandatoryFields(unknownData []byte) BACnetContextTagUnknownBuilder
 	// WithUnknownData adds UnknownData (property field)
 	WithUnknownData(...byte) BACnetContextTagUnknownBuilder
+	// WithArgActualLength sets a parser argument
+	WithArgActualLength(uint32) BACnetContextTagUnknownBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetContextTagBuilder
 	// Build builds the BACnetContextTagUnknown or returns an error if something is wrong
@@ -116,6 +118,11 @@ func (b *_BACnetContextTagUnknownBuilder) WithMandatoryFields(unknownData []byte
 
 func (b *_BACnetContextTagUnknownBuilder) WithUnknownData(unknownData ...byte) BACnetContextTagUnknownBuilder {
 	b.UnknownData = unknownData
+	return b
+}
+
+func (b *_BACnetContextTagUnknownBuilder) WithArgActualLength(actualLength uint32) BACnetContextTagUnknownBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 

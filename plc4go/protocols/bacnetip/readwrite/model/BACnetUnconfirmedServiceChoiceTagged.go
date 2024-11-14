@@ -85,6 +85,10 @@ type BACnetUnconfirmedServiceChoiceTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetUnconfirmedServiceChoiceTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetUnconfirmedServiceChoice) BACnetUnconfirmedServiceChoiceTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetUnconfirmedServiceChoiceTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetUnconfirmedServiceChoiceTaggedBuilder
 	// Build builds the BACnetUnconfirmedServiceChoiceTagged or returns an error if something is wrong
 	Build() (BACnetUnconfirmedServiceChoiceTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithHeaderBuilder(builder
 
 func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithValue(value BACnetUnconfirmedServiceChoice) BACnetUnconfirmedServiceChoiceTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

@@ -93,6 +93,8 @@ type ApduDataBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataBuilder
+	// WithArgDataLength sets a parser argument
+	WithArgDataLength(uint8) ApduDataBuilder
 	// AsApduDataGroupValueRead converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
 	AsApduDataGroupValueRead() ApduDataGroupValueReadBuilder
 	// AsApduDataGroupValueResponse converts this build to a subType of ApduData. It is always possible to return to current builder using Done()
@@ -157,6 +159,11 @@ type _ApduDataBuilder struct {
 var _ (ApduDataBuilder) = (*_ApduDataBuilder)(nil)
 
 func (b *_ApduDataBuilder) WithMandatoryFields() ApduDataBuilder {
+	return b
+}
+
+func (b *_ApduDataBuilder) WithArgDataLength(dataLength uint8) ApduDataBuilder {
+	b.DataLength = dataLength
 	return b
 }
 

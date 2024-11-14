@@ -82,6 +82,8 @@ type BACnetServiceAckReadPropertyMultipleBuilder interface {
 	WithMandatoryFields(data []BACnetReadAccessResult) BACnetServiceAckReadPropertyMultipleBuilder
 	// WithData adds Data (property field)
 	WithData(...BACnetReadAccessResult) BACnetServiceAckReadPropertyMultipleBuilder
+	// WithArgServiceAckPayloadLength sets a parser argument
+	WithArgServiceAckPayloadLength(uint32) BACnetServiceAckReadPropertyMultipleBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckReadPropertyMultiple or returns an error if something is wrong
@@ -116,6 +118,11 @@ func (b *_BACnetServiceAckReadPropertyMultipleBuilder) WithMandatoryFields(data 
 
 func (b *_BACnetServiceAckReadPropertyMultipleBuilder) WithData(data ...BACnetReadAccessResult) BACnetServiceAckReadPropertyMultipleBuilder {
 	b.Data = data
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyMultipleBuilder) WithArgServiceAckPayloadLength(serviceAckPayloadLength uint32) BACnetServiceAckReadPropertyMultipleBuilder {
+	b.ServiceAckPayloadLength = serviceAckPayloadLength
 	return b
 }
 

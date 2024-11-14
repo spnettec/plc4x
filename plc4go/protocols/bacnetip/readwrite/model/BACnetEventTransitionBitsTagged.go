@@ -96,6 +96,10 @@ type BACnetEventTransitionBitsTaggedBuilder interface {
 	WithPayload(BACnetTagPayloadBitString) BACnetEventTransitionBitsTaggedBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
 	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetEventTransitionBitsTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetEventTransitionBitsTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetEventTransitionBitsTaggedBuilder
 	// Build builds the BACnetEventTransitionBitsTagged or returns an error if something is wrong
 	Build() (BACnetEventTransitionBitsTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -152,6 +156,15 @@ func (b *_BACnetEventTransitionBitsTaggedBuilder) WithPayloadBuilder(builderSupp
 		}
 		b.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetEventTransitionBitsTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventTransitionBitsTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetEventTransitionBitsTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetEventTransitionBitsTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

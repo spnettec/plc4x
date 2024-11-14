@@ -105,6 +105,10 @@ type ReplyOrConfirmationBuilder interface {
 	WithMandatoryFields(peekedByte byte) ReplyOrConfirmationBuilder
 	// WithPeekedByte adds PeekedByte (property field)
 	WithPeekedByte(byte) ReplyOrConfirmationBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) ReplyOrConfirmationBuilder
+	// WithArgRequestContext sets a parser argument
+	WithArgRequestContext(RequestContext) ReplyOrConfirmationBuilder
 	// AsServerErrorReply converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
 	AsServerErrorReply() ServerErrorReplyBuilder
 	// AsReplyOrConfirmationConfirmation converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
@@ -148,6 +152,15 @@ func (b *_ReplyOrConfirmationBuilder) WithMandatoryFields(peekedByte byte) Reply
 
 func (b *_ReplyOrConfirmationBuilder) WithPeekedByte(peekedByte byte) ReplyOrConfirmationBuilder {
 	b.PeekedByte = peekedByte
+	return b
+}
+
+func (b *_ReplyOrConfirmationBuilder) WithArgCBusOptions(cBusOptions CBusOptions) ReplyOrConfirmationBuilder {
+	b.CBusOptions = cBusOptions
+	return b
+}
+func (b *_ReplyOrConfirmationBuilder) WithArgRequestContext(requestContext RequestContext) ReplyOrConfirmationBuilder {
+	b.RequestContext = requestContext
 	return b
 }
 

@@ -353,6 +353,12 @@ type ${type.name}Builder interface {
 	With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder(func(${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder)${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder) ${type.name}Builder
 	</#if>
 </#list>
+<#if filteredParserArgumentsLocalToType?has_content>
+	<#list filteredParserArgumentsLocalToType as parserArgument>
+	// WithArg${parserArgument.name?cap_first} sets a parser argument
+	WithArg${parserArgument.name?cap_first}(${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}) ${type.name}Builder
+	</#list>
+</#if>
 <#if type.isAbstract()>
 	<#list type.switchField.orElseThrow().cases as case>
 	// As${case.name} converts this build to a subType of ${type.name}. It is always possible to return to current builder using Done()
@@ -452,6 +458,15 @@ func (b *_${type.name}Builder) With<#if field.isOptionalField()>Optional</#if>${
 
 	</#if>
 </#list>
+
+<#if filteredParserArgumentsLocalToType?has_content>
+	<#list filteredParserArgumentsLocalToType as parserArgument>
+func (b *_${type.name}Builder) WithArg${parserArgument.name?cap_first}(${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}) ${type.name}Builder {
+	b.${parserArgument.name?cap_first} = ${parserArgument.name}
+	return b
+}
+	</#list>
+</#if>
 
 func (b *_${type.name}Builder) <#if type.isAbstract()>Partial</#if>Build() (${type.name}<#if type.isAbstract()>Contract</#if>,error) {
 <#list type.propertyFields?filter(field->!field.isOptionalField()) as field>

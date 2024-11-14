@@ -94,6 +94,8 @@ type BACnetEventParameterAccessEventListOfAccessEventsBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterAccessEventListOfAccessEventsBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterAccessEventListOfAccessEventsBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetEventParameterAccessEventListOfAccessEventsBuilder
 	// Build builds the BACnetEventParameterAccessEventListOfAccessEvents or returns an error if something is wrong
 	Build() (BACnetEventParameterAccessEventListOfAccessEvents, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) WithClosingT
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterAccessEventListOfAccessEventsBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

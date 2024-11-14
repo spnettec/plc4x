@@ -74,6 +74,8 @@ type CustomTypesBuilder interface {
 	WithMandatoryFields(customString string) CustomTypesBuilder
 	// WithCustomString adds CustomString (property field)
 	WithCustomString(string) CustomTypesBuilder
+	// WithArgNumBytes sets a parser argument
+	WithArgNumBytes(uint8) CustomTypesBuilder
 	// Build builds the CustomTypes or returns an error if something is wrong
 	Build() (CustomTypes, error)
 	// MustBuild does the same as Build but panics on error
@@ -99,6 +101,11 @@ func (b *_CustomTypesBuilder) WithMandatoryFields(customString string) CustomTyp
 
 func (b *_CustomTypesBuilder) WithCustomString(customString string) CustomTypesBuilder {
 	b.CustomString = customString
+	return b
+}
+
+func (b *_CustomTypesBuilder) WithArgNumBytes(numBytes uint8) CustomTypesBuilder {
+	b.NumBytes = numBytes
 	return b
 }
 

@@ -93,6 +93,8 @@ type ApduDataExtBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() ApduDataExtBuilder
+	// WithArgLength sets a parser argument
+	WithArgLength(uint8) ApduDataExtBuilder
 	// AsApduDataExtOpenRoutingTableRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
 	AsApduDataExtOpenRoutingTableRequest() ApduDataExtOpenRoutingTableRequestBuilder
 	// AsApduDataExtReadRoutingTableRequest converts this build to a subType of ApduDataExt. It is always possible to return to current builder using Done()
@@ -207,6 +209,11 @@ type _ApduDataExtBuilder struct {
 var _ (ApduDataExtBuilder) = (*_ApduDataExtBuilder)(nil)
 
 func (b *_ApduDataExtBuilder) WithMandatoryFields() ApduDataExtBuilder {
+	return b
+}
+
+func (b *_ApduDataExtBuilder) WithArgLength(length uint8) ApduDataExtBuilder {
+	b.Length = length
 	return b
 }
 

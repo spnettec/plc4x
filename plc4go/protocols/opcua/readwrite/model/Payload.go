@@ -103,6 +103,8 @@ type PayloadBuilder interface {
 	WithSequenceHeader(SequenceHeader) PayloadBuilder
 	// WithSequenceHeaderBuilder adds SequenceHeader (property field) which is build by the builder
 	WithSequenceHeaderBuilder(func(SequenceHeaderBuilder) SequenceHeaderBuilder) PayloadBuilder
+	// WithArgByteCount sets a parser argument
+	WithArgByteCount(uint32) PayloadBuilder
 	// AsExtensiblePayload converts this build to a subType of Payload. It is always possible to return to current builder using Done()
 	AsExtensiblePayload() ExtensiblePayloadBuilder
 	// AsBinaryPayload converts this build to a subType of Payload. It is always possible to return to current builder using Done()
@@ -157,6 +159,11 @@ func (b *_PayloadBuilder) WithSequenceHeaderBuilder(builderSupplier func(Sequenc
 		}
 		b.err.Append(errors.Wrap(err, "SequenceHeaderBuilder failed"))
 	}
+	return b
+}
+
+func (b *_PayloadBuilder) WithArgByteCount(byteCount uint32) PayloadBuilder {
+	b.ByteCount = byteCount
 	return b
 }
 

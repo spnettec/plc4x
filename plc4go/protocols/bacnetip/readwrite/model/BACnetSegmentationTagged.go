@@ -85,6 +85,10 @@ type BACnetSegmentationTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSegmentationTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetSegmentation) BACnetSegmentationTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetSegmentationTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetSegmentationTaggedBuilder
 	// Build builds the BACnetSegmentationTagged or returns an error if something is wrong
 	Build() (BACnetSegmentationTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetSegmentationTaggedBuilder) WithHeaderBuilder(builderSupplier fun
 
 func (b *_BACnetSegmentationTaggedBuilder) WithValue(value BACnetSegmentation) BACnetSegmentationTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetSegmentationTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetSegmentationTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetSegmentationTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetSegmentationTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

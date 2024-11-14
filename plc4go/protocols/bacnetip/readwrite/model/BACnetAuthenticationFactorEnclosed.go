@@ -99,6 +99,8 @@ type BACnetAuthenticationFactorEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetAuthenticationFactorEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAuthenticationFactorEnclosedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAuthenticationFactorEnclosedBuilder
 	// Build builds the BACnetAuthenticationFactorEnclosed or returns an error if something is wrong
 	Build() (BACnetAuthenticationFactorEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -173,6 +175,11 @@ func (b *_BACnetAuthenticationFactorEnclosedBuilder) WithClosingTagBuilder(build
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAuthenticationFactorEnclosedBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

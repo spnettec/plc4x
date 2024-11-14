@@ -82,6 +82,8 @@ type BACnetConfirmedServiceRequestReadPropertyConditionalBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
+	// WithArgServiceRequestPayloadLength sets a parser argument
+	WithArgServiceRequestPayloadLength(uint32) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetConfirmedServiceRequestBuilder
 	// Build builds the BACnetConfirmedServiceRequestReadPropertyConditional or returns an error if something is wrong
@@ -116,6 +118,11 @@ func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithManda
 
 func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
 	b.BytesOfRemovedService = bytesOfRemovedService
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithArgServiceRequestPayloadLength(serviceRequestPayloadLength uint32) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
+	b.ServiceRequestPayloadLength = serviceRequestPayloadLength
 	return b
 }
 

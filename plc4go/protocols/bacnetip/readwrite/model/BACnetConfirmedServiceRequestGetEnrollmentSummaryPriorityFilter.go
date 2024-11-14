@@ -109,6 +109,8 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder inte
 	WithClosingTag(BACnetClosingTag) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 	// Build builds the BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error)
 	// MustBuild does the same as Build but panics on error
@@ -201,6 +203,11 @@ func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

@@ -94,6 +94,8 @@ type BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder interface
 	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder
 	// Build builds the BACnetEventParameterChangeOfBitstringListOfBitstringValues or returns an error if something is wrong
 	Build() (BACnetEventParameterChangeOfBitstringListOfBitstringValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder) Wit
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventParameterChangeOfBitstringListOfBitstringValuesBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

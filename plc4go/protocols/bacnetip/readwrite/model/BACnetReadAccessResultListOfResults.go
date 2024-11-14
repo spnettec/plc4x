@@ -95,6 +95,10 @@ type BACnetReadAccessResultListOfResultsBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetReadAccessResultListOfResultsBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetReadAccessResultListOfResultsBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetReadAccessResultListOfResultsBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) BACnetReadAccessResultListOfResultsBuilder
 	// Build builds the BACnetReadAccessResultListOfResults or returns an error if something is wrong
 	Build() (BACnetReadAccessResultListOfResults, error)
 	// MustBuild does the same as Build but panics on error
@@ -156,6 +160,15 @@ func (b *_BACnetReadAccessResultListOfResultsBuilder) WithClosingTagBuilder(buil
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetReadAccessResultListOfResultsBuilder) WithArgTagNumber(tagNumber uint8) BACnetReadAccessResultListOfResultsBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetReadAccessResultListOfResultsBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetReadAccessResultListOfResultsBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 

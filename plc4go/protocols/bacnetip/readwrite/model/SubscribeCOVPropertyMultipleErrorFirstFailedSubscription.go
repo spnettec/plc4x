@@ -119,6 +119,8 @@ type SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder interface {
 	WithClosingTag(BACnetClosingTag) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder
 	// Build builds the SubscribeCOVPropertyMultipleErrorFirstFailedSubscription or returns an error if something is wrong
 	Build() (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error)
 	// MustBuild does the same as Build but panics on error
@@ -229,6 +231,11 @@ func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithC
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder) WithArgTagNumber(tagNumber uint8) SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

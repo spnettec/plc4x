@@ -84,6 +84,8 @@ type BVLCWriteBroadcastDistributionTableBuilder interface {
 	WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder
 	// WithTable adds Table (property field)
 	WithTable(...BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder
+	// WithArgBvlcPayloadLength sets a parser argument
+	WithArgBvlcPayloadLength(uint16) BVLCWriteBroadcastDistributionTableBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCWriteBroadcastDistributionTable or returns an error if something is wrong
@@ -118,6 +120,11 @@ func (b *_BVLCWriteBroadcastDistributionTableBuilder) WithMandatoryFields(table 
 
 func (b *_BVLCWriteBroadcastDistributionTableBuilder) WithTable(table ...BVLCBroadcastDistributionTableEntry) BVLCWriteBroadcastDistributionTableBuilder {
 	b.Table = table
+	return b
+}
+
+func (b *_BVLCWriteBroadcastDistributionTableBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCWriteBroadcastDistributionTableBuilder {
+	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 

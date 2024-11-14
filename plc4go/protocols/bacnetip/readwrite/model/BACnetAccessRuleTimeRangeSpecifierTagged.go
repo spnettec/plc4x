@@ -85,6 +85,10 @@ type BACnetAccessRuleTimeRangeSpecifierTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetAccessRuleTimeRangeSpecifier) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
 	// Build builds the BACnetAccessRuleTimeRangeSpecifierTagged or returns an error if something is wrong
 	Build() (BACnetAccessRuleTimeRangeSpecifierTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) WithHeaderBuilder(bui
 
 func (b *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) WithValue(value BACnetAccessRuleTimeRangeSpecifier) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

@@ -94,6 +94,8 @@ type BACnetSpecialEventListOfTimeValuesBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetSpecialEventListOfTimeValuesBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetSpecialEventListOfTimeValuesBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetSpecialEventListOfTimeValuesBuilder
 	// Build builds the BACnetSpecialEventListOfTimeValues or returns an error if something is wrong
 	Build() (BACnetSpecialEventListOfTimeValues, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetSpecialEventListOfTimeValuesBuilder) WithClosingTagBuilder(build
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetSpecialEventListOfTimeValuesBuilder) WithArgTagNumber(tagNumber uint8) BACnetSpecialEventListOfTimeValuesBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

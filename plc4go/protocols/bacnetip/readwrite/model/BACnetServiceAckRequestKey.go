@@ -82,6 +82,8 @@ type BACnetServiceAckRequestKeyBuilder interface {
 	WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckRequestKeyBuilder
 	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
 	WithBytesOfRemovedService(...byte) BACnetServiceAckRequestKeyBuilder
+	// WithArgServiceAckPayloadLength sets a parser argument
+	WithArgServiceAckPayloadLength(uint32) BACnetServiceAckRequestKeyBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BACnetServiceAckBuilder
 	// Build builds the BACnetServiceAckRequestKey or returns an error if something is wrong
@@ -116,6 +118,11 @@ func (b *_BACnetServiceAckRequestKeyBuilder) WithMandatoryFields(bytesOfRemovedS
 
 func (b *_BACnetServiceAckRequestKeyBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetServiceAckRequestKeyBuilder {
 	b.BytesOfRemovedService = bytesOfRemovedService
+	return b
+}
+
+func (b *_BACnetServiceAckRequestKeyBuilder) WithArgServiceAckPayloadLength(serviceAckPayloadLength uint32) BACnetServiceAckRequestKeyBuilder {
+	b.ServiceAckPayloadLength = serviceAckPayloadLength
 	return b
 }
 

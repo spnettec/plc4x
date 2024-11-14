@@ -92,6 +92,10 @@ type BACnetSilencedStateTaggedBuilder interface {
 	WithValue(BACnetSilencedState) BACnetSilencedStateTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetSilencedStateTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetSilencedStateTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetSilencedStateTaggedBuilder
 	// Build builds the BACnetSilencedStateTagged or returns an error if something is wrong
 	Build() (BACnetSilencedStateTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetSilencedStateTaggedBuilder) WithValue(value BACnetSilencedState)
 
 func (b *_BACnetSilencedStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetSilencedStateTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetSilencedStateTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetSilencedStateTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetSilencedStateTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetSilencedStateTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

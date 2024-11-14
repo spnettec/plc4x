@@ -94,6 +94,8 @@ type BACnetEventSummariesListBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetEventSummariesListBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventSummariesListBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetEventSummariesListBuilder
 	// Build builds the BACnetEventSummariesList or returns an error if something is wrong
 	Build() (BACnetEventSummariesList, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,6 +157,11 @@ func (b *_BACnetEventSummariesListBuilder) WithClosingTagBuilder(builderSupplier
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetEventSummariesListBuilder) WithArgTagNumber(tagNumber uint8) BACnetEventSummariesListBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

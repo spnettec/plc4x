@@ -125,6 +125,8 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
 	// AsBACnetFaultParameterFaultOutOfRangeMinNormalValueReal converts this build to a subType of BACnetFaultParameterFaultOutOfRangeMinNormalValue. It is always possible to return to current builder using Done()
 	AsBACnetFaultParameterFaultOutOfRangeMinNormalValueReal() BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
 	// AsBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned converts this build to a subType of BACnetFaultParameterFaultOutOfRangeMinNormalValue. It is always possible to return to current builder using Done()
@@ -219,6 +221,11 @@ func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) WithClosingT
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder) WithArgTagNumber(tagNumber uint8) BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

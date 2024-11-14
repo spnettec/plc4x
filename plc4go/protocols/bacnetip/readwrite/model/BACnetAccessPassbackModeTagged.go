@@ -85,6 +85,10 @@ type BACnetAccessPassbackModeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessPassbackModeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetAccessPassbackMode) BACnetAccessPassbackModeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAccessPassbackModeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetAccessPassbackModeTaggedBuilder
 	// Build builds the BACnetAccessPassbackModeTagged or returns an error if something is wrong
 	Build() (BACnetAccessPassbackModeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetAccessPassbackModeTaggedBuilder) WithHeaderBuilder(builderSuppli
 
 func (b *_BACnetAccessPassbackModeTaggedBuilder) WithValue(value BACnetAccessPassbackMode) BACnetAccessPassbackModeTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetAccessPassbackModeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessPassbackModeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetAccessPassbackModeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessPassbackModeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

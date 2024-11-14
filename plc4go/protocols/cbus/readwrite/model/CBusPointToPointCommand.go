@@ -110,6 +110,8 @@ type CBusPointToPointCommandBuilder interface {
 	WithCalData(CALData) CBusPointToPointCommandBuilder
 	// WithCalDataBuilder adds CalData (property field) which is build by the builder
 	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) CBusPointToPointCommandBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) CBusPointToPointCommandBuilder
 	// AsCBusPointToPointCommandDirect converts this build to a subType of CBusPointToPointCommand. It is always possible to return to current builder using Done()
 	AsCBusPointToPointCommandDirect() CBusPointToPointCommandDirectBuilder
 	// AsCBusPointToPointCommandIndirect converts this build to a subType of CBusPointToPointCommand. It is always possible to return to current builder using Done()
@@ -169,6 +171,11 @@ func (b *_CBusPointToPointCommandBuilder) WithCalDataBuilder(builderSupplier fun
 		}
 		b.err.Append(errors.Wrap(err, "CALDataBuilder failed"))
 	}
+	return b
+}
+
+func (b *_CBusPointToPointCommandBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusPointToPointCommandBuilder {
+	b.CBusOptions = cBusOptions
 	return b
 }
 

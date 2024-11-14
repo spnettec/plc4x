@@ -109,6 +109,8 @@ type BACnetTimerStateChangeValueBuilder interface {
 	WithPeekedTagHeader(BACnetTagHeader) BACnetTimerStateChangeValueBuilder
 	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
 	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateChangeValueBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) BACnetTimerStateChangeValueBuilder
 	// AsBACnetTimerStateChangeValueNull converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
 	AsBACnetTimerStateChangeValueNull() BACnetTimerStateChangeValueNullBuilder
 	// AsBACnetTimerStateChangeValueBoolean converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
@@ -193,6 +195,11 @@ func (b *_BACnetTimerStateChangeValueBuilder) WithPeekedTagHeaderBuilder(builder
 		}
 		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetTimerStateChangeValueBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
 	return b
 }
 

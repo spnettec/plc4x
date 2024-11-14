@@ -84,6 +84,8 @@ type BVLCReadBroadcastDistributionTableAckBuilder interface {
 	WithMandatoryFields(table []BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder
 	// WithTable adds Table (property field)
 	WithTable(...BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder
+	// WithArgBvlcPayloadLength sets a parser argument
+	WithArgBvlcPayloadLength(uint16) BVLCReadBroadcastDistributionTableAckBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() BVLCBuilder
 	// Build builds the BVLCReadBroadcastDistributionTableAck or returns an error if something is wrong
@@ -118,6 +120,11 @@ func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithMandatoryFields(tabl
 
 func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithTable(table ...BVLCBroadcastDistributionTableEntry) BVLCReadBroadcastDistributionTableAckBuilder {
 	b.Table = table
+	return b
+}
+
+func (b *_BVLCReadBroadcastDistributionTableAckBuilder) WithArgBvlcPayloadLength(bvlcPayloadLength uint16) BVLCReadBroadcastDistributionTableAckBuilder {
+	b.BvlcPayloadLength = bvlcPayloadLength
 	return b
 }
 

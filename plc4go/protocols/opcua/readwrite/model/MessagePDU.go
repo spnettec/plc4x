@@ -100,6 +100,8 @@ type MessagePDUBuilder interface {
 	WithMandatoryFields(chunk ChunkType) MessagePDUBuilder
 	// WithChunk adds Chunk (property field)
 	WithChunk(ChunkType) MessagePDUBuilder
+	// WithArgBinary sets a parser argument
+	WithArgBinary(bool) MessagePDUBuilder
 	// AsOpcuaHelloRequest converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
 	AsOpcuaHelloRequest() OpcuaHelloRequestBuilder
 	// AsOpcuaAcknowledgeResponse converts this build to a subType of MessagePDU. It is always possible to return to current builder using Done()
@@ -153,6 +155,11 @@ func (b *_MessagePDUBuilder) WithMandatoryFields(chunk ChunkType) MessagePDUBuil
 
 func (b *_MessagePDUBuilder) WithChunk(chunk ChunkType) MessagePDUBuilder {
 	b.Chunk = chunk
+	return b
+}
+
+func (b *_MessagePDUBuilder) WithArgBinary(binary bool) MessagePDUBuilder {
+	b.Binary = binary
 	return b
 }
 

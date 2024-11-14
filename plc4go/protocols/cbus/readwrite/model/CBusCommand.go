@@ -109,6 +109,8 @@ type CBusCommandBuilder interface {
 	WithHeader(CBusHeader) CBusCommandBuilder
 	// WithHeaderBuilder adds Header (property field) which is build by the builder
 	WithHeaderBuilder(func(CBusHeaderBuilder) CBusHeaderBuilder) CBusCommandBuilder
+	// WithArgCBusOptions sets a parser argument
+	WithArgCBusOptions(CBusOptions) CBusCommandBuilder
 	// AsCBusCommandDeviceManagement converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
 	AsCBusCommandDeviceManagement() CBusCommandDeviceManagementBuilder
 	// AsCBusCommandPointToPointToMultiPoint converts this build to a subType of CBusCommand. It is always possible to return to current builder using Done()
@@ -167,6 +169,11 @@ func (b *_CBusCommandBuilder) WithHeaderBuilder(builderSupplier func(CBusHeaderB
 		}
 		b.err.Append(errors.Wrap(err, "CBusHeaderBuilder failed"))
 	}
+	return b
+}
+
+func (b *_CBusCommandBuilder) WithArgCBusOptions(cBusOptions CBusOptions) CBusCommandBuilder {
+	b.CBusOptions = cBusOptions
 	return b
 }
 

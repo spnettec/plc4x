@@ -139,6 +139,8 @@ type NPDUBuilder interface {
 	WithOptionalApdu(APDU) NPDUBuilder
 	// WithOptionalApduBuilder adds Apdu (property field) which is build by the builder
 	WithOptionalApduBuilder(func(APDUBuilder) APDUBuilder) NPDUBuilder
+	// WithArgNpduLength sets a parser argument
+	WithArgNpduLength(uint16) NPDUBuilder
 	// Build builds the NPDU or returns an error if something is wrong
 	Build() (NPDU, error)
 	// MustBuild does the same as Build but panics on error
@@ -253,6 +255,11 @@ func (b *_NPDUBuilder) WithOptionalApduBuilder(builderSupplier func(APDUBuilder)
 		}
 		b.err.Append(errors.Wrap(err, "APDUBuilder failed"))
 	}
+	return b
+}
+
+func (b *_NPDUBuilder) WithArgNpduLength(npduLength uint16) NPDUBuilder {
+	b.NpduLength = npduLength
 	return b
 }
 

@@ -127,6 +127,8 @@ type BACnetTagPayloadUnsignedIntegerBuilder interface {
 	WithOptionalValueUint56(uint64) BACnetTagPayloadUnsignedIntegerBuilder
 	// WithValueUint64 adds ValueUint64 (property field)
 	WithOptionalValueUint64(uint64) BACnetTagPayloadUnsignedIntegerBuilder
+	// WithArgActualLength sets a parser argument
+	WithArgActualLength(uint32) BACnetTagPayloadUnsignedIntegerBuilder
 	// Build builds the BACnetTagPayloadUnsignedInteger or returns an error if something is wrong
 	Build() (BACnetTagPayloadUnsignedInteger, error)
 	// MustBuild does the same as Build but panics on error
@@ -187,6 +189,11 @@ func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint56(valueU
 
 func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint64(valueUint64 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
 	b.ValueUint64 = &valueUint64
+	return b
+}
+
+func (b *_BACnetTagPayloadUnsignedIntegerBuilder) WithArgActualLength(actualLength uint32) BACnetTagPayloadUnsignedIntegerBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 

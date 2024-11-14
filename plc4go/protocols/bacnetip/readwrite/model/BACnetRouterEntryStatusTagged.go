@@ -85,6 +85,10 @@ type BACnetRouterEntryStatusTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRouterEntryStatusTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetRouterEntryStatus) BACnetRouterEntryStatusTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetRouterEntryStatusTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetRouterEntryStatusTaggedBuilder
 	// Build builds the BACnetRouterEntryStatusTagged or returns an error if something is wrong
 	Build() (BACnetRouterEntryStatusTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetRouterEntryStatusTaggedBuilder) WithHeaderBuilder(builderSupplie
 
 func (b *_BACnetRouterEntryStatusTaggedBuilder) WithValue(value BACnetRouterEntryStatus) BACnetRouterEntryStatusTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetRouterEntryStatusTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetRouterEntryStatusTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetRouterEntryStatusTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetRouterEntryStatusTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

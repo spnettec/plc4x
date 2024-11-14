@@ -99,6 +99,8 @@ type BACnetDateTimeEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetDateTimeEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDateTimeEnclosedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetDateTimeEnclosedBuilder
 	// Build builds the BACnetDateTimeEnclosed or returns an error if something is wrong
 	Build() (BACnetDateTimeEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -173,6 +175,11 @@ func (b *_BACnetDateTimeEnclosedBuilder) WithClosingTagBuilder(builderSupplier f
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetDateTimeEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetDateTimeEnclosedBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

@@ -95,6 +95,8 @@ type FirmataMessageBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() FirmataMessageBuilder
+	// WithArgResponse sets a parser argument
+	WithArgResponse(bool) FirmataMessageBuilder
 	// AsFirmataMessageAnalogIO converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
 	AsFirmataMessageAnalogIO() FirmataMessageAnalogIOBuilder
 	// AsFirmataMessageDigitalIO converts this build to a subType of FirmataMessage. It is always possible to return to current builder using Done()
@@ -137,6 +139,11 @@ type _FirmataMessageBuilder struct {
 var _ (FirmataMessageBuilder) = (*_FirmataMessageBuilder)(nil)
 
 func (b *_FirmataMessageBuilder) WithMandatoryFields() FirmataMessageBuilder {
+	return b
+}
+
+func (b *_FirmataMessageBuilder) WithArgResponse(response bool) FirmataMessageBuilder {
+	b.Response = response
 	return b
 }
 

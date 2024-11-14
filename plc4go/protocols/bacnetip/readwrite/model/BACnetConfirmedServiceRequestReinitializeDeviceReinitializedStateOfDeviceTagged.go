@@ -85,6 +85,10 @@ type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
 	// Build builds the BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged or returns an error if something is wrong
 	Build() (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDev
 
 func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

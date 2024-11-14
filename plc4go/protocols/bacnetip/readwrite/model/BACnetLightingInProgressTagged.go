@@ -85,6 +85,10 @@ type BACnetLightingInProgressTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLightingInProgressTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetLightingInProgress) BACnetLightingInProgressTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetLightingInProgressTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetLightingInProgressTaggedBuilder
 	// Build builds the BACnetLightingInProgressTagged or returns an error if something is wrong
 	Build() (BACnetLightingInProgressTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetLightingInProgressTaggedBuilder) WithHeaderBuilder(builderSuppli
 
 func (b *_BACnetLightingInProgressTaggedBuilder) WithValue(value BACnetLightingInProgress) BACnetLightingInProgressTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetLightingInProgressTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLightingInProgressTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetLightingInProgressTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLightingInProgressTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

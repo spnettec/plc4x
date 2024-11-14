@@ -80,6 +80,8 @@ type BACnetAbortReasonTaggedBuilder interface {
 	WithValue(BACnetAbortReason) BACnetAbortReasonTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetAbortReasonTaggedBuilder
+	// WithArgActualLength sets a parser argument
+	WithArgActualLength(uint32) BACnetAbortReasonTaggedBuilder
 	// Build builds the BACnetAbortReasonTagged or returns an error if something is wrong
 	Build() (BACnetAbortReasonTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,6 +112,11 @@ func (b *_BACnetAbortReasonTaggedBuilder) WithValue(value BACnetAbortReason) BAC
 
 func (b *_BACnetAbortReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAbortReasonTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAbortReasonTaggedBuilder) WithArgActualLength(actualLength uint32) BACnetAbortReasonTaggedBuilder {
+	b.ActualLength = actualLength
 	return b
 }
 

@@ -129,6 +129,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder interface 
 	WithClosingTag(BACnetClosingTag) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
 	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
 	AsBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean() BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder
 	// AsBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned converts this build to a subType of BACnetNotificationParametersChangeOfDiscreteValueNewValue. It is always possible to return to current builder using Done()
@@ -235,6 +237,11 @@ func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) With
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder) WithArgTagNumber(tagNumber uint8) BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

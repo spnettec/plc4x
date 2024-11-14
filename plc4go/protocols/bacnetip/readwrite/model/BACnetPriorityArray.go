@@ -121,6 +121,12 @@ type BACnetPriorityArrayBuilder interface {
 	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetPriorityArrayBuilder
 	// WithData adds Data (property field)
 	WithData(...BACnetPriorityValue) BACnetPriorityArrayBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) BACnetPriorityArrayBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetPriorityArrayBuilder
+	// WithArgArrayIndexArgument sets a parser argument
+	WithArgArrayIndexArgument(BACnetTagPayloadUnsignedInteger) BACnetPriorityArrayBuilder
 	// Build builds the BACnetPriorityArray or returns an error if something is wrong
 	Build() (BACnetPriorityArray, error)
 	// MustBuild does the same as Build but panics on error
@@ -164,6 +170,19 @@ func (b *_BACnetPriorityArrayBuilder) WithOptionalNumberOfDataElementsBuilder(bu
 
 func (b *_BACnetPriorityArrayBuilder) WithData(data ...BACnetPriorityValue) BACnetPriorityArrayBuilder {
 	b.Data = data
+	return b
+}
+
+func (b *_BACnetPriorityArrayBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetPriorityArrayBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
+	return b
+}
+func (b *_BACnetPriorityArrayBuilder) WithArgTagNumber(tagNumber uint8) BACnetPriorityArrayBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetPriorityArrayBuilder) WithArgArrayIndexArgument(arrayIndexArgument BACnetTagPayloadUnsignedInteger) BACnetPriorityArrayBuilder {
+	b.ArrayIndexArgument = arrayIndexArgument
 	return b
 }
 

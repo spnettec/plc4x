@@ -99,6 +99,8 @@ type BACnetCalendarEntryEnclosedBuilder interface {
 	WithClosingTag(BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder
 	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
 	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCalendarEntryEnclosedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetCalendarEntryEnclosedBuilder
 	// Build builds the BACnetCalendarEntryEnclosed or returns an error if something is wrong
 	Build() (BACnetCalendarEntryEnclosed, error)
 	// MustBuild does the same as Build but panics on error
@@ -173,6 +175,11 @@ func (b *_BACnetCalendarEntryEnclosedBuilder) WithClosingTagBuilder(builderSuppl
 		}
 		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetCalendarEntryEnclosedBuilder) WithArgTagNumber(tagNumber uint8) BACnetCalendarEntryEnclosedBuilder {
+	b.TagNumber = tagNumber
 	return b
 }
 

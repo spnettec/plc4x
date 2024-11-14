@@ -92,6 +92,10 @@ type BACnetLoggingTypeTaggedBuilder interface {
 	WithValue(BACnetLoggingType) BACnetLoggingTypeTaggedBuilder
 	// WithProprietaryValue adds ProprietaryValue (property field)
 	WithProprietaryValue(uint32) BACnetLoggingTypeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetLoggingTypeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetLoggingTypeTaggedBuilder
 	// Build builds the BACnetLoggingTypeTagged or returns an error if something is wrong
 	Build() (BACnetLoggingTypeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -140,6 +144,15 @@ func (b *_BACnetLoggingTypeTaggedBuilder) WithValue(value BACnetLoggingType) BAC
 
 func (b *_BACnetLoggingTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLoggingTypeTaggedBuilder {
 	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetLoggingTypeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetLoggingTypeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetLoggingTypeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetLoggingTypeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

@@ -93,6 +93,8 @@ type APDUBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
 	WithMandatoryFields() APDUBuilder
+	// WithArgApduLength sets a parser argument
+	WithArgApduLength(uint16) APDUBuilder
 	// AsAPDUConfirmedRequest converts this build to a subType of APDU. It is always possible to return to current builder using Done()
 	AsAPDUConfirmedRequest() APDUConfirmedRequestBuilder
 	// AsAPDUUnconfirmedRequest converts this build to a subType of APDU. It is always possible to return to current builder using Done()
@@ -143,6 +145,11 @@ type _APDUBuilder struct {
 var _ (APDUBuilder) = (*_APDUBuilder)(nil)
 
 func (b *_APDUBuilder) WithMandatoryFields() APDUBuilder {
+	return b
+}
+
+func (b *_APDUBuilder) WithArgApduLength(apduLength uint16) APDUBuilder {
+	b.ApduLength = apduLength
 	return b
 }
 

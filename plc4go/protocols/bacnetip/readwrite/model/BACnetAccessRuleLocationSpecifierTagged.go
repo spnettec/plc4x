@@ -85,6 +85,10 @@ type BACnetAccessRuleLocationSpecifierTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessRuleLocationSpecifierTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetAccessRuleLocationSpecifier) BACnetAccessRuleLocationSpecifierTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAccessRuleLocationSpecifierTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetAccessRuleLocationSpecifierTaggedBuilder
 	// Build builds the BACnetAccessRuleLocationSpecifierTagged or returns an error if something is wrong
 	Build() (BACnetAccessRuleLocationSpecifierTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) WithHeaderBuilder(buil
 
 func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) WithValue(value BACnetAccessRuleLocationSpecifier) BACnetAccessRuleLocationSpecifierTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAccessRuleLocationSpecifierTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAccessRuleLocationSpecifierTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

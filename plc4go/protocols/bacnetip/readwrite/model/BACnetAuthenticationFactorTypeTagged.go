@@ -85,6 +85,10 @@ type BACnetAuthenticationFactorTypeTaggedBuilder interface {
 	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthenticationFactorTypeTaggedBuilder
 	// WithValue adds Value (property field)
 	WithValue(BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder
+	// WithArgTagNumber sets a parser argument
+	WithArgTagNumber(uint8) BACnetAuthenticationFactorTypeTaggedBuilder
+	// WithArgTagClass sets a parser argument
+	WithArgTagClass(TagClass) BACnetAuthenticationFactorTypeTaggedBuilder
 	// Build builds the BACnetAuthenticationFactorTypeTagged or returns an error if something is wrong
 	Build() (BACnetAuthenticationFactorTypeTagged, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,6 +132,15 @@ func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithHeaderBuilder(builder
 
 func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithValue(value BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder {
 	b.Value = value
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithArgTagNumber(tagNumber uint8) BACnetAuthenticationFactorTypeTaggedBuilder {
+	b.TagNumber = tagNumber
+	return b
+}
+func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithArgTagClass(tagClass TagClass) BACnetAuthenticationFactorTypeTaggedBuilder {
+	b.TagClass = tagClass
 	return b
 }
 

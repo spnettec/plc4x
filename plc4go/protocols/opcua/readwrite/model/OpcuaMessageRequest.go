@@ -98,6 +98,8 @@ type OpcuaMessageRequestBuilder interface {
 	WithMessage(Payload) OpcuaMessageRequestBuilder
 	// WithMessageBuilder adds Message (property field) which is build by the builder
 	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaMessageRequestBuilder
+	// WithArgTotalLength sets a parser argument
+	WithArgTotalLength(uint32) OpcuaMessageRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() MessagePDUBuilder
 	// Build builds the OpcuaMessageRequest or returns an error if something is wrong
@@ -163,6 +165,11 @@ func (b *_OpcuaMessageRequestBuilder) WithMessageBuilder(builderSupplier func(Pa
 		}
 		b.err.Append(errors.Wrap(err, "PayloadBuilder failed"))
 	}
+	return b
+}
+
+func (b *_OpcuaMessageRequestBuilder) WithArgTotalLength(totalLength uint32) OpcuaMessageRequestBuilder {
+	b.TotalLength = totalLength
 	return b
 }
 

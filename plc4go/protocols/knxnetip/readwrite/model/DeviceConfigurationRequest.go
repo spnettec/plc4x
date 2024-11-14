@@ -100,6 +100,8 @@ type DeviceConfigurationRequestBuilder interface {
 	WithCemi(CEMI) DeviceConfigurationRequestBuilder
 	// WithCemiBuilder adds Cemi (property field) which is build by the builder
 	WithCemiBuilder(func(CEMIBuilder) CEMIBuilder) DeviceConfigurationRequestBuilder
+	// WithArgTotalLength sets a parser argument
+	WithArgTotalLength(uint16) DeviceConfigurationRequestBuilder
 	// Done is used to finish work on this child and return (or create one if none) to the parent builder
 	Done() KnxNetIpMessageBuilder
 	// Build builds the DeviceConfigurationRequest or returns an error if something is wrong
@@ -165,6 +167,11 @@ func (b *_DeviceConfigurationRequestBuilder) WithCemiBuilder(builderSupplier fun
 		}
 		b.err.Append(errors.Wrap(err, "CEMIBuilder failed"))
 	}
+	return b
+}
+
+func (b *_DeviceConfigurationRequestBuilder) WithArgTotalLength(totalLength uint16) DeviceConfigurationRequestBuilder {
+	b.TotalLength = totalLength
 	return b
 }
 

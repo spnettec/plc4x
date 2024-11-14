@@ -97,6 +97,12 @@ type BACnetReadAccessPropertyReadResultBuilder interface {
 	WithOptionalPropertyAccessError(ErrorEnclosed) BACnetReadAccessPropertyReadResultBuilder
 	// WithOptionalPropertyAccessErrorBuilder adds PropertyAccessError (property field) which is build by the builder
 	WithOptionalPropertyAccessErrorBuilder(func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetReadAccessPropertyReadResultBuilder
+	// WithArgObjectTypeArgument sets a parser argument
+	WithArgObjectTypeArgument(BACnetObjectType) BACnetReadAccessPropertyReadResultBuilder
+	// WithArgPropertyIdentifierArgument sets a parser argument
+	WithArgPropertyIdentifierArgument(BACnetPropertyIdentifier) BACnetReadAccessPropertyReadResultBuilder
+	// WithArgArrayIndexArgument sets a parser argument
+	WithArgArrayIndexArgument(BACnetTagPayloadUnsignedInteger) BACnetReadAccessPropertyReadResultBuilder
 	// Build builds the BACnetReadAccessPropertyReadResult or returns an error if something is wrong
 	Build() (BACnetReadAccessPropertyReadResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -171,6 +177,19 @@ func (b *_BACnetReadAccessPropertyReadResultBuilder) WithOptionalPropertyAccessE
 		}
 		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
 	}
+	return b
+}
+
+func (b *_BACnetReadAccessPropertyReadResultBuilder) WithArgObjectTypeArgument(objectTypeArgument BACnetObjectType) BACnetReadAccessPropertyReadResultBuilder {
+	b.ObjectTypeArgument = objectTypeArgument
+	return b
+}
+func (b *_BACnetReadAccessPropertyReadResultBuilder) WithArgPropertyIdentifierArgument(propertyIdentifierArgument BACnetPropertyIdentifier) BACnetReadAccessPropertyReadResultBuilder {
+	b.PropertyIdentifierArgument = propertyIdentifierArgument
+	return b
+}
+func (b *_BACnetReadAccessPropertyReadResultBuilder) WithArgArrayIndexArgument(arrayIndexArgument BACnetTagPayloadUnsignedInteger) BACnetReadAccessPropertyReadResultBuilder {
+	b.ArrayIndexArgument = arrayIndexArgument
 	return b
 }
 
