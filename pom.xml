@@ -1655,7 +1655,7 @@
             Please don't change "target" to "${project.build.directory}" as profile-activation happens before
             property resolution ... it won't work with a property.
           -->
-          <exists>website/main/generated/</exists>
+          <exists>src/main/generated/</exists>
         </file>
       </activation>
       <build>
@@ -1672,7 +1672,7 @@
                 </goals>
                 <configuration>
                   <sources>
-                    <source>${project.basedir}/website/main/generated/</source>
+                    <source>${project.basedir}/src/main/generated/</source>
                   </sources>
                 </configuration>
               </execution>
