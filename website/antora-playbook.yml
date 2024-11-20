@@ -22,6 +22,7 @@ content:
   sources:   
   - url: ../..
     branches: HEAD
+    edit_url: '{web_url}/edit/develop/{path}'
     start_path: website/asciidoc
 ui: 
   bundle:

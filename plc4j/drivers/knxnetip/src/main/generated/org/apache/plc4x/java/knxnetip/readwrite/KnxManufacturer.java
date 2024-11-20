@@ -808,9 +808,13 @@ public enum KnxManufacturer {
   M_REXLITE_AI_INTEGRATIONS_CO__LTD(
       (int) 694, (int) 752, (String) "REXLiTE Ai Integrations CO.,LTD"),
   M_ALLORADO((int) 695, (int) 753, (String) "Allorado"),
-  M_ABB___RESERVED((int) 696, (int) 43954, (String) "ABB - reserved"),
+  M_FUZHOU_MILI_TECHNOLOGY_CO___LTD(
+      (int) 696, (int) 754, (String) "FUZHOU MILI TECHNOLOGY CO., LTD"),
+  M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD(
+      (int) 697, (int) 755, (String) "Maxtreen building technology co.,ltd"),
+  M_ABB___RESERVED((int) 698, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 697, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 699, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

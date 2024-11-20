@@ -111,7 +111,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_INNOTEAM = 84,
         M_ISE_GMBH = 85,
         M_TEAM_FOR_TRONICS = 86,
-        M_CIAT = 87,
+        M_CARRIER_SAS = 87,
         M_REMEHA_BV = 88,
         M_ESYLUX = 89,
         M_BASALTE = 90,
@@ -715,8 +715,15 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ITALIANA_CONDUTTORI_SRL = 688,
         M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_ = 689,
         M_LEDNX = 690,
-        M_ABB___RESERVED = 691,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 692,
+        M_EBELONG = 691,
+        M_ASTRA_LED_AG = 692,
+        M_WONDERFUL_HI_TECH_CO___LTD_ = 693,
+        M_REXLITE_AI_INTEGRATIONS_CO__LTD = 694,
+        M_ALLORADO = 695,
+        M_FUZHOU_MILI_TECHNOLOGY_CO___LTD = 696,
+        M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD = 697,
+        M_ABB___RESERVED = 698,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 699,
     }
 
     public static class KnxManufacturerInfo
@@ -2700,10 +2707,31 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_LEDNX: { /* '690' */
                     return 748;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '691' */
+                case KnxManufacturer.M_EBELONG: { /* '691' */
+                    return 749;
+                }
+                case KnxManufacturer.M_ASTRA_LED_AG: { /* '692' */
+                    return 750;
+                }
+                case KnxManufacturer.M_WONDERFUL_HI_TECH_CO___LTD_: { /* '693' */
+                    return 751;
+                }
+                case KnxManufacturer.M_REXLITE_AI_INTEGRATIONS_CO__LTD: { /* '694' */
+                    return 752;
+                }
+                case KnxManufacturer.M_ALLORADO: { /* '695' */
+                    return 753;
+                }
+                case KnxManufacturer.M_FUZHOU_MILI_TECHNOLOGY_CO___LTD: { /* '696' */
+                    return 754;
+                }
+                case KnxManufacturer.M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD: { /* '697' */
+                    return 755;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '698' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '692' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '699' */
                     return 43959;
                 }
                 case KnxManufacturer.M_GIRA_GIERSIEPEN: { /* '7' */
@@ -2763,7 +2791,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TEAM_FOR_TRONICS: { /* '86' */
                     return 125;
                 }
-                case KnxManufacturer.M_CIAT: { /* '87' */
+                case KnxManufacturer.M_CARRIER_SAS: { /* '87' */
                     return 126;
                 }
                 case KnxManufacturer.M_REMEHA_BV: { /* '88' */
@@ -4789,10 +4817,31 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_LEDNX: { /* '690' */
                     return "LedNX";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '691' */
+                case KnxManufacturer.M_EBELONG: { /* '691' */
+                    return "ebelong";
+                }
+                case KnxManufacturer.M_ASTRA_LED_AG: { /* '692' */
+                    return "Astra-LED AG";
+                }
+                case KnxManufacturer.M_WONDERFUL_HI_TECH_CO___LTD_: { /* '693' */
+                    return "Wonderful Hi-Tech Co., Ltd.";
+                }
+                case KnxManufacturer.M_REXLITE_AI_INTEGRATIONS_CO__LTD: { /* '694' */
+                    return "REXLiTE Ai Integrations CO.,LTD";
+                }
+                case KnxManufacturer.M_ALLORADO: { /* '695' */
+                    return "Allorado";
+                }
+                case KnxManufacturer.M_FUZHOU_MILI_TECHNOLOGY_CO___LTD: { /* '696' */
+                    return "FUZHOU MILI TECHNOLOGY CO., LTD";
+                }
+                case KnxManufacturer.M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD: { /* '697' */
+                    return "Maxtreen building technology co.,ltd";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '698' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '692' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '699' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_GIRA_GIERSIEPEN: { /* '7' */
@@ -4852,8 +4901,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TEAM_FOR_TRONICS: { /* '86' */
                     return "TEAM FOR TRONICS";
                 }
-                case KnxManufacturer.M_CIAT: { /* '87' */
-                    return "CIAT";
+                case KnxManufacturer.M_CARRIER_SAS: { /* '87' */
+                    return "CARRIER SAS";
                 }
                 case KnxManufacturer.M_REMEHA_BV: { /* '88' */
                     return "Remeha BV";

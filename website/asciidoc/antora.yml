@@ -20,6 +20,7 @@ name: plc4x
 version: '0.13.0-SNAPSHOT'
 prerelease: True
 title: PLC4X
+start_page: users:index.adoc
 nav:
 - modules/ROOT/nav.adoc
 - modules/users/nav.adoc

@@ -86,6 +86,38 @@
               <outputDirectory>${project.build.directory}/dependency/fontawesome</outputDirectory>
             </configuration>
           </execution>
+          <execution>
+            <id>get-source-hbs</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency/antora</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+            <execution>
+                <phase>pre-site</phase>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+                <configuration>
+                    <target>
+                        <delete failonerror="false">
+                            <fileset dir="${project.build.directory}/supplemental/partials" includes="header-content.hbs" />
+                        </delete>
+                    </target>
+                </configuration>
+            </execution>
         </executions>
       </plugin>
 
@@ -168,6 +200,12 @@
                     ${project.build.directory}/dependency/popper/popper-core-${popper.version}/dist/umd
                   </directory>
                   <targetPath>js</targetPath>
+                </resource>
+                <resource>
+                  <directory>
+                    ${project.build.directory}/dependency/antora/partials
+                  </directory>
+                  <targetPath>partials</targetPath>
                 </resource>
               </resources>
             </configuration>
@@ -252,6 +290,29 @@
           <useDefaultDelimiters>false</useDefaultDelimiters>
         </configuration-->
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>git-apply-patch-header</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>git</executable>
+              <arguments>
+                <argument>apply</argument>
+                <argument>-p0</argument>
+                <argument>patches/header-content.patch</argument>
+                <argument>--directory=target</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
 
       <!--
         The bootstrap uses "fonts" as directory for locating fonts and fontawesome uses "webfonts".
@@ -327,8 +388,7 @@
 
         </executions>
         <configuration>
-          <nodeVersion>v23.1.0</nodeVersion>
-          <npmVersion>10.9.0</npmVersion>
+          <nodeVersion>v16.16.0</nodeVersion>
           <workingDirectory>${pom.basedir}/target</workingDirectory>
           <installDirectory>${pom.basedir}/target</installDirectory>
         </configuration>

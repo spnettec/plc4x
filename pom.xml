@@ -125,7 +125,7 @@
     <commons-pool2.version>2.12.0</commons-pool2.version>
     <commons-csv.version>1.12.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <equalsverifier.version>3.17.1</equalsverifier.version>
+    <equalsverifier.version>3.17.3</equalsverifier.version>
     <!-- It seems freemarker 2.3.32 was the last to support Java 11, 2.3.33 requires Java 16 -->
     <freemarker.version>2.3.32</freemarker.version>
     <groovy.version>4.0.24</groovy.version>
@@ -134,7 +134,7 @@
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
     <jackson.version>2.18.1</jackson.version>
-    <woodstox-core.version>7.0.0</woodstox-core.version>
+    <woodstox-core.version>7.1.0</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.4</jaxb.version>
     <!-- Starting with Jetty 12 Java 17 is required -->
@@ -147,7 +147,7 @@
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.14</milo.version>
     <mockito.version>5.14.2</mockito.version>
-    <netty.version>4.1.114.Final</netty.version>
+    <netty.version>4.1.115.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.16</slf4j.version>
     <vavr.version>0.10.5</vavr.version>
@@ -834,6 +834,8 @@
             <exclude>ui/frontend/project/node/**</exclude>
             <exclude>ui/frontend/project/node_modules/**</exclude>
 
+            <exclude>website/node_modules/**</exclude>
+
             <exclude>.mvn/**</exclude>
 
             <!-- Exclude core dumps-->
@@ -1076,7 +1078,7 @@
         <plugin>
           <groupId>com.googlecode.maven-download-plugin</groupId>
           <artifactId>download-maven-plugin</artifactId>
-          <version>1.11.2</version>
+          <version>1.11.5</version>
         </plugin>
 
         <plugin>
@@ -1228,7 +1230,7 @@
             It also seems that as soon as we update to 3.20.0 (the next version) the asciidoctor plugin stops
             generating output.
           -->
-          <version>3.12.1</version>
+          <version>${version.maven-site-plugin}</version>
 
           <configuration>
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
@@ -1245,7 +1247,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.10.1</version>
+          <version>3.11.1</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page

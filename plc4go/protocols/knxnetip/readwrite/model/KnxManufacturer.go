@@ -739,8 +739,10 @@ const (
 	KnxManufacturer_M_WONDERFUL_HI_TECH_CO___LTD_                        KnxManufacturer = 693
 	KnxManufacturer_M_REXLITE_AI_INTEGRATIONS_CO__LTD                    KnxManufacturer = 694
 	KnxManufacturer_M_ALLORADO                                           KnxManufacturer = 695
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 696
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 697
+	KnxManufacturer_M_FUZHOU_MILI_TECHNOLOGY_CO___LTD                    KnxManufacturer = 696
+	KnxManufacturer_M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD               KnxManufacturer = 697
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 698
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 699
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1444,6 +1446,8 @@ func init() {
 		KnxManufacturer_M_WONDERFUL_HI_TECH_CO___LTD_,
 		KnxManufacturer_M_REXLITE_AI_INTEGRATIONS_CO__LTD,
 		KnxManufacturer_M_ALLORADO,
+		KnxManufacturer_M_FUZHOU_MILI_TECHNOLOGY_CO___LTD,
+		KnxManufacturer_M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4105,10 +4109,18 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 696:
 		{ /* '696' */
-			return 43954
+			return 754
 		}
 	case 697:
 		{ /* '697' */
+			return 755
+		}
+	case 698:
+		{ /* '698' */
+			return 43954
+		}
+	case 699:
+		{ /* '699' */
 			return 43959
 		}
 	case 7:
@@ -6915,10 +6927,18 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 696:
 		{ /* '696' */
-			return "ABB - reserved"
+			return "FUZHOU MILI TECHNOLOGY CO., LTD"
 		}
 	case 697:
 		{ /* '697' */
+			return "Maxtreen building technology co.,ltd"
+		}
+	case 698:
+		{ /* '698' */
+			return "ABB - reserved"
+		}
+	case 699:
+		{ /* '699' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 7:
@@ -8397,8 +8417,12 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 695:
 		return KnxManufacturer_M_ALLORADO, true
 	case 696:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_FUZHOU_MILI_TECHNOLOGY_CO___LTD, true
 	case 697:
+		return KnxManufacturer_M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD, true
+	case 698:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 699:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 7:
 		return KnxManufacturer_M_GIRA_GIERSIEPEN, true
@@ -9798,6 +9822,10 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_REXLITE_AI_INTEGRATIONS_CO__LTD, true
 	case "M_ALLORADO":
 		return KnxManufacturer_M_ALLORADO, true
+	case "M_FUZHOU_MILI_TECHNOLOGY_CO___LTD":
+		return KnxManufacturer_M_FUZHOU_MILI_TECHNOLOGY_CO___LTD, true
+	case "M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD":
+		return KnxManufacturer_M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -11272,6 +11300,10 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_REXLITE_AI_INTEGRATIONS_CO__LTD"
 	case KnxManufacturer_M_ALLORADO:
 		return "M_ALLORADO"
+	case KnxManufacturer_M_FUZHOU_MILI_TECHNOLOGY_CO___LTD:
+		return "M_FUZHOU_MILI_TECHNOLOGY_CO___LTD"
+	case KnxManufacturer_M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD:
+		return "M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
