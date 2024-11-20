@@ -54,6 +54,7 @@ pipeline {
         // When we have test-fails e.g. we don't need to run the remaining steps
         skipStagesAfterUnstable()
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '3'))
+        skipDefaultCheckout()
     }
 
     stages {
@@ -217,14 +218,7 @@ pipeline {
                             deleteDir()
                         }
                         // Build a directory containing the aggregated website.
-                        //sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies site:stage'
                         sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check site:stage -pl .'
-                        // Make sure the script is executable.
-                        //sh 'chmod +x tools/clean-site.sh'
-                        // Remove some redundant resources, which shouldn't be required.
-                        //sh 'tools/clean-site.sh'
-                        // Stash the generated site so we can publish it on the 'git-website' node.
-                        //stash includes: 'target/staging/**/*', name: 'plc4x-site'
                     }
                 }
                 stage('Deploy site') {
