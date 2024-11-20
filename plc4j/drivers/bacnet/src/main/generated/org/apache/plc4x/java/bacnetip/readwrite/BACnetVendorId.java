@@ -1726,6 +1726,21 @@ public enum BACnetVendorId {
   MESSUNG_SYSTEMS_PVT_LTD((int) 1501, (int) 1501, (String) "Messung Systems Pvt Ltd."),
   ABB_ELECTRIFICATION_CANADA_INC(
       (int) 1502, (int) 1502, (String) "ABB Electrification Canada Inc."),
+  CORE_CONTROLS((int) 1503, (int) 1503, (String) "Core Controls"),
+  NOORD_TECHDOO((int) 1504, (int) 1504, (String) "Noord Tech d.o.o."),
+  VARIBITSAS((int) 1505, (int) 1505, (String) "Varibits AS"),
+  ROGER_SPZOOSPK((int) 1506, (int) 1506, (String) "Roger Sp. z o.o. sp.k."),
+  VIEGA_GMBH_COKG((int) 1507, (int) 1507, (String) "Viega GmbH & Co. KG"),
+  ASTERSOFT((int) 1508, (int) 1508, (String) "Astersoft"),
+  BIGEU((int) 1509, (int) 1509, (String) "BIG-EU"),
+  INFERRIX_LIMITED((int) 1510, (int) 1510, (String) "Inferrix Limited"),
+  RICHARDS_ELECTRIC_MOTOR_CO((int) 1511, (int) 1511, (String) "Richards Electric Motor Co."),
+  DAPP_CONTROLS((int) 1512, (int) 1512, (String) "dAPPControls"),
+  ENTOUCH_CONTROLS((int) 1513, (int) 1513, (String) "Entouch Controls"),
+  ARIF_MESUT_YAVUZ((int) 1514, (int) 1514, (String) "Arif Mesut Yavuz"),
+  BUBBLY_NET((int) 1515, (int) 1515, (String) "BubblyNet"),
+  AL_MAYSSAN_TECHNICAL_SERVICES_CO_LTD(
+      (int) 1516, (int) 1516, (String) "AlMayssan Technical Services Co. Ltd."),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

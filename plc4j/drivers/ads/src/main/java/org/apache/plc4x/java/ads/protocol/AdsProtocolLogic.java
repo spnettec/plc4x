@@ -1591,7 +1591,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
         values.put(subscriptionHandle.getTagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK,
-            DataItem.staticParse(readBuffer, getPlcValueTypeForAdsDataType(subscriptionHandle.getAdsDataType()), data.length)));
+            DataItem.staticParse(readBuffer, getPlcValueTypeForAdsDataType(subscriptionHandle.getAdsDataType()), data.length, "")));
         tagMetadata.put(subscriptionHandle.getTagName(), new DefaultMetadata.Builder(metadata).build());
         return values;
     }
@@ -1860,7 +1860,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             AdsDataTypeTableEntry dataTypeTableEntry = dataTypeTableEntryOptional.get();
             return resolveDirectAdsTagForSymbolicNameFromDataType(
                 Arrays.asList(addressParts).subList(2, addressParts.length),
-                adsSymbolTableEntry.getGroup(), adsSymbolTableEntry.getOffset(), adsDataTypeTableEntry,symbolicAdsTag.getStringEncoding(adsSymbolTableEntry.getDataTypeName()));
+                adsSymbolTableEntry.getGroup(), adsSymbolTableEntry.getOffset(), dataTypeTableEntry, symbolicAdsTag.getStringEncoding(adsSymbolTableEntry.getDataTypeName()));
         }
     }
 
