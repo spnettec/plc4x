@@ -1112,7 +1112,7 @@
     ['360' M_V2_SPA ['411', '"V2 SpA"']]
     ['361' M_JOHNSON_CONTROLS ['412', '"Johnson Controls"']]
     ['362' M_ARKUD ['413', '"Arkud"']]
-    ['363' M_IRIDIUM_LTD_ ['414', '"Iridium Ltd."']]
+    ['363' M_IRIDI_LTD_ ['414', '"iRidi Ltd."']]
     ['364' M_BSMART ['415', '"bsmart"']]
     ['365' M_BAB_TECHNOLOGIE_GMBH ['416', '"BAB TECHNOLOGIE GmbH"']]
     ['366' M_NICE_SPA ['417', '"NICE Spa"']]
@@ -1448,8 +1448,9 @@
     ['696' M_FUZHOU_MILI_TECHNOLOGY_CO___LTD ['754', '"FUZHOU MILI TECHNOLOGY CO., LTD"']]
     ['697' M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD ['755', '"Maxtreen building technology co.,ltd"']]
     ['698' M_HYSINE ['756', '"Hysine"']]
-    ['699' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['700' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['699' M_SANTAN ['757', '"SANTAN"']]
+    ['700' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['701' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

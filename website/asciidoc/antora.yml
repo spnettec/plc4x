@@ -17,7 +17,7 @@
 # under the License.
 #
 name: plc4x
-version: '0.13.0-SNAPSHOT'
+version: 'latest'
 prerelease: True
 title: PLC4X
 start_page: users:index.adoc
@@ -25,3 +25,8 @@ nav:
 - modules/ROOT/nav.adoc
 - modules/users/nav.adoc
 - modules/developers/nav.adoc
+asciidoc:
+  attributes:
+    current-last-released-version: '0.13.0-SNAPSHOT'
+    current-full-version: '0.13.0'
+

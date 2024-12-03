@@ -83,7 +83,7 @@ It also provides (Java) tools for usage inside an application:
 ## Getting started
 
 Depending on the programming language, the usage will differ, therefore please go to the
-[Getting Started](https://plc4x.apache.org/users/getting-started/plc4j.html) on the PLC4X website to look up
+[Getting Started](https://plc4x.apache.org/plc4x/latest/users/getting-started/plc4j.html) on the PLC4X website to look up
 the language of choice.
 
 ### Java
@@ -91,7 +91,7 @@ the language of choice.
 NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 19 (We have tested all versions up to Java 21), however it's only the Java Tool UI, that requires this right now. All other modules need at least Java 11. 
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
-[https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
+[https://plc4x.apache.org/plc4x/latest/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
 
 ## Developers
 
@@ -108,7 +108,7 @@ WARNING: The code generation uses a utility which requires some additional VM se
 
 A more detailed description is available on our website:
 
-https://plc4x.apache.org/developers/preparing/index.html
+https://plc4x.apache.org/plc4x/latest/developers/preparing/index.html
 
 #### For building `PLC4C` we also need:
 
@@ -221,9 +221,7 @@ Join the PLC4X community by using one of the following channels. We'll be glad t
 Subscribe to the following mailing lists:
 * Apache PLC4X Developer List: [dev-subscribe@plc4x.apache.org](mailto:dev-subscribe@plc4x.apache.org)
 * Apache PLC4X Commits List: [commits-subscribe@plc4x.apache.org](mailto:commits-subscribe@plc4x.apache.org)
-* Apache PLC4X Jira Notification List: [issues-subscribe@plc4x.apache.org](mailto:issues-subscribe@plc4x.apache.org)
-
-See also: [https://plc4x.apache.org/mailing-lists.html](https://plc4x.apache.org/mailing-lists.html)
+* Apache PLC4X Issue Notification List: [issues-subscribe@plc4x.apache.org](mailto:issues-subscribe@plc4x.apache.org)
 
 ### Twitter
 
@@ -245,7 +243,7 @@ These are, but are not limited to:
 
 We are a very friendly bunch so don’t be afraid to step forward.
 If you'd like to contribute to PLC4X, have a look at our
-[contribution guide](https://plc4x.apache.org/developers/contributing.html)!
+[contribution guide](https://plc4x.apache.org/plc4x/latest/developers/contributing.html)!
 
 ## Licensing
 

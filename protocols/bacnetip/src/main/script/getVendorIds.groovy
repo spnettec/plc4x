@@ -92,6 +92,10 @@ while (iterator.hasNext()) {
     def exitingOrganizationCount = foundOrganization[organizationSanitized]
     if (exitingOrganizationCount) {
         println "$organization found ${exitingOrganizationCount+1} times"
+        while (foundOrganization[organizationSanitized+"${exitingOrganizationCount}"]) {
+            println "${organizationSanitized}${exitingOrganizationCount} already existing. Skipping one more (current count == ${exitingOrganizationCount})"
+            exitingOrganizationCount++
+        }
         organizationSanitized += "$exitingOrganizationCount"
         foundOrganization[organizationSanitized] = exitingOrganizationCount + 1
     } else {
