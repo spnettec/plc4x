@@ -1198,11 +1198,6 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     }
 
     protected byte[] serializePlcValue(PlcValue plcValue, String datatypeName) throws SerializationException {
-        // First check, if we have type information available.
-        if (!dataTypeTable.containsKey(datatypeName)) {
-            throw new SerializationException("Could not find data type: " + datatypeName);
-        }
-
         // Get the data type, allocate enough memory and serialize the value based on the
         // structure defined by the data type.
         Optional<AdsDataTypeTableEntry> dataTypeTableEntryOptional = getDataTypeTableEntry(datatypeName);
@@ -1953,13 +1948,28 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             return Optional.of(dataTypeTable.get(name));
         }
         try {
-            AdsDataType adsDataType = AdsDataType.valueOf(name);
+            AdsDataType adsDataType;
+            int numBytes;
+
+            if (name.startsWith("STRING(")) {
+                adsDataType = AdsDataType.valueOf("CHAR");
+                numBytes = Integer.parseInt(name.substring(7, name.length() - 1)) + 1;
+            }
+            else if (name.startsWith("WSTRING(")) {
+                adsDataType = AdsDataType.valueOf("WCHAR");
+                numBytes = Integer.parseInt(name.substring(8, name.length() - 1)) * 2 + 2;
+            }
+            else {
+                adsDataType = AdsDataType.valueOf(name);
+                numBytes = adsDataType.getNumBytes();
+            }
+
             // !It seems that the dataType value differs from system to system,
             // !However, we never really seem to use that value, so I would say it doesn't matter.
             return Optional.of(new AdsDataTypeTableEntry(
-                128, 1, 0, 0, adsDataType.getNumBytes(), 0,
+                128, 1, 0, 0, numBytes, 0,
                 adsDataType.getValue(), 0, 0, 0,
-                adsDataType.name(), "", "",
+                name, "", "",
                 Collections.emptyList(), Collections.emptyList(), new byte[0]));
         } catch (IllegalArgumentException e) {
             return Optional.empty();
