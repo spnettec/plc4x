@@ -125,7 +125,7 @@
     <commons-pool2.version>2.12.0</commons-pool2.version>
     <commons-csv.version>1.12.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <equalsverifier.version>3.17.4</equalsverifier.version>
+    <equalsverifier.version>3.17.5</equalsverifier.version>
     <!-- It seems freemarker 2.3.32 was the last to support Java 11, 2.3.33 requires Java 16 -->
     <freemarker.version>2.3.32</freemarker.version>
     <groovy.version>4.0.24</groovy.version>
@@ -1048,7 +1048,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-invoker-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.9.0</version>
         </plugin>
 
         <plugin>
@@ -1247,7 +1247,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.11.1</version>
+          <version>3.11.2</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page
