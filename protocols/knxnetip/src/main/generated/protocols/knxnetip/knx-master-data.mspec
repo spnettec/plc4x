@@ -1449,8 +1449,10 @@
     ['697' M_MAXTREEN_BUILDING_TECHNOLOGY_CO__LTD ['755', '"Maxtreen building technology co.,ltd"']]
     ['698' M_HYSINE ['756', '"Hysine"']]
     ['699' M_SANTAN ['757', '"SANTAN"']]
-    ['700' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['701' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['700' M_HUIXIANGJU_IOT_TECHNOLOGY_SHANGHAI_CO___LTD ['758', '"Huixiangju IoT Technology (Shanghai) Co., Ltd"']]
+    ['701' M_SHANGHAI_BENKONG_ELECTRONIC_TECHNOLOGY_CO__LTD ['759', '"Shanghai Benkong Electronic Technology Co.,Ltd"']]
+    ['702' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['703' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
