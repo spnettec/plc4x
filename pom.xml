@@ -25,6 +25,7 @@
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <version>33</version>
+    <relativePath/>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -127,7 +128,7 @@
     <dom4j.version>2.1.4</dom4j.version>
     <equalsverifier.version>3.17.5</equalsverifier.version>
     <!-- It seems freemarker 2.3.32 was the last to support Java 11, 2.3.33 requires Java 16 -->
-    <freemarker.version>2.3.32</freemarker.version>
+    <freemarker.version>2.3.34</freemarker.version>
     <groovy.version>4.0.24</groovy.version>
     <guava.version>33.4.0-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
@@ -139,15 +140,15 @@
     <jaxb.version>4.0.4</jaxb.version>
     <!-- Starting with Jetty 12 Java 17 is required -->
     <jetty-util.version>11.0.20</jetty-util.version>
-    <jna.version>5.15.0</jna.version>
+    <jna.version>5.16.0</jna.version>
     <jserialcom.version>2.11.0</jserialcom.version>
     <junit.jupiter.version>5.11.4</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.5.12</logback.version>
+    <logback.version>1.5.15</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.15</milo.version>
     <mockito.version>5.14.2</mockito.version>
-    <netty.version>4.1.115.Final</netty.version>
+    <netty.version>4.1.116.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.16</slf4j.version>
     <vavr.version>0.10.5</vavr.version>
