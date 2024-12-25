@@ -746,8 +746,11 @@ const (
 	KnxManufacturer_M_HUIXIANGJU_IOT_TECHNOLOGY_SHANGHAI_CO___LTD        KnxManufacturer = 700
 	KnxManufacturer_M_SHANGHAI_BENKONG_ELECTRONIC_TECHNOLOGY_CO__LTD     KnxManufacturer = 701
 	KnxManufacturer_M_POLAR_BEAR_DESIGN                                  KnxManufacturer = 702
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 703
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 704
+	KnxManufacturer_M_ELESSAN_NV                                         KnxManufacturer = 703
+	KnxManufacturer_M_MIR                                                KnxManufacturer = 704
+	KnxManufacturer_M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD               KnxManufacturer = 705
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 706
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 707
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1458,6 +1461,9 @@ func init() {
 		KnxManufacturer_M_HUIXIANGJU_IOT_TECHNOLOGY_SHANGHAI_CO___LTD,
 		KnxManufacturer_M_SHANGHAI_BENKONG_ELECTRONIC_TECHNOLOGY_CO__LTD,
 		KnxManufacturer_M_POLAR_BEAR_DESIGN,
+		KnxManufacturer_M_ELESSAN_NV,
+		KnxManufacturer_M_MIR,
+		KnxManufacturer_M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4155,10 +4161,22 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 703:
 		{ /* '703' */
-			return 43954
+			return 761
 		}
 	case 704:
 		{ /* '704' */
+			return 762
+		}
+	case 705:
+		{ /* '705' */
+			return 763
+		}
+	case 706:
+		{ /* '706' */
+			return 43954
+		}
+	case 707:
+		{ /* '707' */
 			return 43959
 		}
 	case 71:
@@ -6993,10 +7011,22 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 703:
 		{ /* '703' */
-			return "ABB - reserved"
+			return "Elessan NV"
 		}
 	case 704:
 		{ /* '704' */
+			return "MIR"
+		}
+	case 705:
+		{ /* '705' */
+			return "Zhejiang Misilin Technology Co., Ltd"
+		}
+	case 706:
+		{ /* '706' */
+			return "ABB - reserved"
+		}
+	case 707:
+		{ /* '707' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 71:
@@ -8485,8 +8515,14 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 702:
 		return KnxManufacturer_M_POLAR_BEAR_DESIGN, true
 	case 703:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_ELESSAN_NV, true
 	case 704:
+		return KnxManufacturer_M_MIR, true
+	case 705:
+		return KnxManufacturer_M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD, true
+	case 706:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 707:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 71:
 		return KnxManufacturer_M_BECKER_ANTRIEBE_GMBH, true
@@ -9900,6 +9936,12 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_SHANGHAI_BENKONG_ELECTRONIC_TECHNOLOGY_CO__LTD, true
 	case "M_POLAR_BEAR_DESIGN":
 		return KnxManufacturer_M_POLAR_BEAR_DESIGN, true
+	case "M_ELESSAN_NV":
+		return KnxManufacturer_M_ELESSAN_NV, true
+	case "M_MIR":
+		return KnxManufacturer_M_MIR, true
+	case "M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD":
+		return KnxManufacturer_M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -11388,6 +11430,12 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_SHANGHAI_BENKONG_ELECTRONIC_TECHNOLOGY_CO__LTD"
 	case KnxManufacturer_M_POLAR_BEAR_DESIGN:
 		return "M_POLAR_BEAR_DESIGN"
+	case KnxManufacturer_M_ELESSAN_NV:
+		return "M_ELESSAN_NV"
+	case KnxManufacturer_M_MIR:
+		return "M_MIR"
+	case KnxManufacturer_M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD:
+		return "M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
