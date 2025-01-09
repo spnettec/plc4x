@@ -113,7 +113,7 @@
     <cmake.version>3.30.2-b1</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.9.0</commons-cli.version>
-    <commons-codec.version>1.17.1</commons-codec.version>
+    <commons-codec.version>1.17.2</commons-codec.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-compress.version>1.27.1</commons-compress.version>
     <commons-configuration2.version>2.11.0</commons-configuration2.version>
@@ -144,10 +144,10 @@
     <jserialcom.version>2.11.0</jserialcom.version>
     <junit.jupiter.version>5.11.4</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.5.15</logback.version>
+    <logback.version>1.5.16</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.15</milo.version>
-    <mockito.version>5.14.2</mockito.version>
+    <mockito.version>5.15.2</mockito.version>
     <netty.version>4.1.116.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.16</slf4j.version>
@@ -526,7 +526,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20241224</version>
+        <version>20250107</version>
       </dependency>
 
       <dependency>
@@ -1073,7 +1073,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-remote-resources-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.0</version>
         </plugin>
 
         <plugin>
