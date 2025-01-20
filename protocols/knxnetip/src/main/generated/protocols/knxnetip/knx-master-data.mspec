@@ -1457,8 +1457,9 @@
     ['705' M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD ['763', '"Zhejiang Misilin Technology Co., Ltd"']]
     ['706' M_LEAX_CONTROLS_CO___LTD_ ['764', '"LEAX CONTROLS CO., LTD."']]
     ['707' M_ALCAD ['765', '"alcad"']]
-    ['708' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['709' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['708' M_GUANG_DONG_REMAC_SMART_TECHNOLOGY_CO___LTD ['766', '"GUANG DONG REMAC SMART TECHNOLOGY CO., LTD"']]
+    ['709' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['710' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

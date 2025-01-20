@@ -751,8 +751,9 @@ const (
 	KnxManufacturer_M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD               KnxManufacturer = 705
 	KnxManufacturer_M_LEAX_CONTROLS_CO___LTD_                            KnxManufacturer = 706
 	KnxManufacturer_M_ALCAD                                              KnxManufacturer = 707
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 708
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 709
+	KnxManufacturer_M_GUANG_DONG_REMAC_SMART_TECHNOLOGY_CO___LTD         KnxManufacturer = 708
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 709
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 710
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1468,6 +1469,7 @@ func init() {
 		KnxManufacturer_M_ZHEJIANG_MISILIN_TECHNOLOGY_CO___LTD,
 		KnxManufacturer_M_LEAX_CONTROLS_CO___LTD_,
 		KnxManufacturer_M_ALCAD,
+		KnxManufacturer_M_GUANG_DONG_REMAC_SMART_TECHNOLOGY_CO___LTD,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4185,15 +4187,19 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 708:
 		{ /* '708' */
-			return 43954
+			return 766
 		}
 	case 709:
 		{ /* '709' */
-			return 43959
+			return 43954
 		}
 	case 71:
 		{ /* '71' */
 			return 110
+		}
+	case 710:
+		{ /* '710' */
+			return 43959
 		}
 	case 72:
 		{ /* '72' */
@@ -7043,15 +7049,19 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 708:
 		{ /* '708' */
-			return "ABB - reserved"
+			return "GUANG DONG REMAC SMART TECHNOLOGY CO., LTD"
 		}
 	case 709:
 		{ /* '709' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "ABB - reserved"
 		}
 	case 71:
 		{ /* '71' */
 			return "Becker-Antriebe GmbH"
+		}
+	case 710:
+		{ /* '710' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 72:
 		{ /* '72' */
@@ -8545,11 +8555,13 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 707:
 		return KnxManufacturer_M_ALCAD, true
 	case 708:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_GUANG_DONG_REMAC_SMART_TECHNOLOGY_CO___LTD, true
 	case 709:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case 71:
 		return KnxManufacturer_M_BECKER_ANTRIEBE_GMBH, true
+	case 710:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 72:
 		return KnxManufacturer_M_J_STEHLEPlusSOEHNE_GMBH, true
 	case 73:
@@ -9970,12 +9982,14 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_LEAX_CONTROLS_CO___LTD_, true
 	case "M_ALCAD":
 		return KnxManufacturer_M_ALCAD, true
+	case "M_GUANG_DONG_REMAC_SMART_TECHNOLOGY_CO___LTD":
+		return KnxManufacturer_M_GUANG_DONG_REMAC_SMART_TECHNOLOGY_CO___LTD, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
-	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_BECKER_ANTRIEBE_GMBH":
 		return KnxManufacturer_M_BECKER_ANTRIEBE_GMBH, true
+	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_J_STEHLEPlusSOEHNE_GMBH":
 		return KnxManufacturer_M_J_STEHLEPlusSOEHNE_GMBH, true
 	case "M_AGFEO":
@@ -11468,12 +11482,14 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_LEAX_CONTROLS_CO___LTD_"
 	case KnxManufacturer_M_ALCAD:
 		return "M_ALCAD"
+	case KnxManufacturer_M_GUANG_DONG_REMAC_SMART_TECHNOLOGY_CO___LTD:
+		return "M_GUANG_DONG_REMAC_SMART_TECHNOLOGY_CO___LTD"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
-	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
-		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_BECKER_ANTRIEBE_GMBH:
 		return "M_BECKER_ANTRIEBE_GMBH"
+	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
+		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_J_STEHLEPlusSOEHNE_GMBH:
 		return "M_J_STEHLEPlusSOEHNE_GMBH"
 	case KnxManufacturer_M_AGFEO:
