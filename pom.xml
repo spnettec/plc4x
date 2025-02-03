@@ -109,11 +109,11 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.80</bouncycastle.version>
-    <byte-buddy.version>1.16.1</byte-buddy.version>
+    <byte-buddy.version>1.17.0</byte-buddy.version>
     <cmake.version>3.30.2-b1</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.9.0</commons-cli.version>
-    <commons-codec.version>1.17.2</commons-codec.version>
+    <commons-codec.version>1.18.0</commons-codec.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-compress.version>1.27.1</commons-compress.version>
     <commons-configuration2.version>2.11.0</commons-configuration2.version>
@@ -126,10 +126,10 @@
     <commons-pool2.version>2.12.0</commons-pool2.version>
     <commons-csv.version>1.13.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <equalsverifier.version>3.18.1</equalsverifier.version>
+    <equalsverifier.version>3.18.2</equalsverifier.version>
     <!-- It seems freemarker 2.3.32 was the last to support Java 11, 2.3.33 requires Java 16 -->
     <freemarker.version>2.3.34</freemarker.version>
-    <groovy.version>4.0.24</groovy.version>
+    <groovy.version>4.0.25</groovy.version>
     <guava.version>33.4.0-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
@@ -653,12 +653,12 @@
             </goals>
             <inherited>false</inherited>
             <configuration>
-              <source>${project.basedir}/website/main/script/prerequisiteCheck.groovy</source>
+              <source>${project.basedir}/src/main/script/prerequisiteCheck.groovy</source>
             </configuration>
           </execution>
           <!--
             Set some dynamic variables which are useful for the site generation and
-            generate an 'pom.adoc' file containing them in a format asciidoc can use.
+            generate a 'pom.adoc' file containing them in a format asciidoc can use.
           -->
           <execution>
             <id>provide-custom-properties</id>
@@ -667,7 +667,7 @@
               <goal>execute</goal>
             </goals>
             <configuration>
-              <source>${project.basedir}/website/main/script/preSiteGeneration.groovy</source>
+              <source>${project.basedir}/website/src/main/script/preSiteGeneration.groovy</source>
             </configuration>
           </execution>
         </executions>
@@ -691,6 +691,11 @@
             <groupId>org.pcap4j</groupId>
             <artifactId>pcap4j-packetfactory-static</artifactId>
             <version>${pcap4j.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>${jna.version}</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -1061,7 +1066,7 @@
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.4.6</version>
+          <version>4.4.7</version>
         </plugin>
 
         <plugin>
