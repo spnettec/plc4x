@@ -108,6 +108,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
             int currentDataBlockNumber = -1;
             int currentChunkStartByteOffset = -1;
             int currentChunkEndByteOffset = -1;
+            String stringEncode = "";
             Map<PlcTag, String> currentChunkTags = createTagMap();
             for (PlcTag plcTag : tagList.keySet()) {
                 // We don't do anything for Szl and Clk tags.
@@ -125,7 +126,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                 // Only regular tags are optimized.
                 else if (plcTag instanceof S7Tag) {
                     S7Tag s7Tag = (S7Tag) plcTag;
-
+                    stringEncode = s7Tag.getStringEncoding();
                     int curTagSize = s7Tag.getDataType().getSizeInBytes() * s7Tag.getNumberOfElements();
                     // In case of fixed length strings, a string starts with two bytes: max length,
                     // actual length and then the string bytes after that.
@@ -151,7 +152,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                                 new S7TagChunk(TransportSize.BYTE, currentMemoryArea, currentDataBlockNumber,
                                     currentChunkStartByteOffset, (byte) 0,
                                     currentChunkEndByteOffset - currentChunkStartByteOffset,
-                                    currentChunkTags)));
+                                    currentChunkTags,s7Tag.getStringEncoding())));
 
                         // Start a new one.
                         currentChunkStartByteOffset = s7Tag.getByteOffset();
@@ -174,7 +175,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                     new S7TagChunk(TransportSize.BYTE, currentMemoryArea, currentDataBlockNumber,
                         currentChunkStartByteOffset, (byte) 0,
                         currentChunkEndByteOffset - currentChunkStartByteOffset,
-                        currentChunkTags)));
+                        currentChunkTags,stringEncode)));
         }
 
         return super.processReadRequest(
@@ -272,11 +273,11 @@ public class S7BlockReadOptimizer extends S7Optimizer {
     private PlcValue parsePlcValue(S7Tag tag, byte[] data, S7DriverContext s7DriverContext) {
         ReadBuffer readBuffer = new ReadBufferByteBased(data);
         try {
-            int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
+            int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
             if (tag.getNumberOfElements() == 1) {
                 // TODO: Pass the type of plc into the parse function ...
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                    s7DriverContext.getControllerType(), stringLength);
+                    s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
             } else {
                 // In case of reading an array of bytes, make use of our simpler PlcRawByteArray as the user is
                 // probably expecting to process the read raw data.
@@ -287,7 +288,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                     final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
                         try {
                             return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                                s7DriverContext.getControllerType(), stringLength);
+                                s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
                         } catch (ParseException e) {
                             logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
                         }
@@ -306,8 +307,8 @@ public class S7BlockReadOptimizer extends S7Optimizer {
 
         private final Map<PlcTag, String> chunkTags;
 
-        public S7TagChunk(TransportSize dataType, MemoryArea memoryArea, int blockNumber, int byteOffset, byte bitOffset, int numElements, Map<PlcTag, String> chunkTags) {
-            super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+        public S7TagChunk(TransportSize dataType, MemoryArea memoryArea, int blockNumber, int byteOffset, byte bitOffset, int numElements, Map<PlcTag, String> chunkTags,String stringEncoding) {
+            super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements,stringEncoding);
             this.chunkTags = chunkTags;
         }
 
