@@ -48,6 +48,8 @@ type Discoverer struct {
 	deviceScanningWorkItemId            atomic.Int32
 	deviceScanningQueue                 pool.Executor
 
+	wg sync.WaitGroup // use to track spawned go routines
+
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
 }
@@ -81,7 +83,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	}
 
 	transportInstances := make(chan transports.TransportInstance)
-	wg := &sync.WaitGroup{}
+	wg := new(sync.WaitGroup)
 	tcpTransport := tcp.NewTransport()
 	// Iterate over all network devices of this system.
 	for _, netInterface := range interfaces {
@@ -95,7 +97,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			return err
 		}
 		wg.Add(1)
+		d.wg.Add(1)
 		go func(netInterface addressProvider, interfaceLog zerolog.Logger) {
+			defer d.wg.Done()
 			defer func() {
 				if err := recover(); err != nil {
 					interfaceLog.Error().
@@ -130,7 +134,8 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				if ipv4Addr == nil || ipv4Addr.IsLoopback() {
 					continue
 				}
-				addresses, err := utils.GetIPAddresses(d.log, ctx, netInterface.containedInterface(), false)
+				addresses, ipWg, err := utils.GetIPAddresses(d.log, ctx, netInterface.containedInterface(), false)
+				_ = ipWg // TODO: handle ipWg
 				if err != nil {
 					addressLogger.Warn().Err(err).
 						Interface("containedInterface", netInterface.containedInterface()).
@@ -172,13 +177,18 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			}
 		}(netInterface, interfaceLog)
 	}
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
+		d.log.Trace().Msg("waiting for go routines to end")
 		wg.Wait()
 		d.log.Trace().Msg("Closing transport instance channel")
 		close(transportInstances)
 	}()
 
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				d.log.Error().
@@ -187,27 +197,29 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					Msg("panic-ed")
 			}
 		}()
-		deviceScanWg := sync.WaitGroup{}
+		deviceScanWg := new(sync.WaitGroup)
 		for transportInstance := range transportInstances {
 			if err := ctx.Err(); err != nil {
 				d.log.Debug().Err(err).Msg("ending")
 				return
 			}
 			d.log.Debug().Stringer("transportInstance", transportInstance).Msg("submitting device scan")
-			completionFuture := d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
+			completionFuture := d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(ctx, transportInstance.(*tcp.TransportInstance), callback))
 			deviceScanWg.Add(1)
+			d.wg.Add(1)
 			go func() {
+				defer d.wg.Done()
 				defer deviceScanWg.Done()
 				if err := completionFuture.AwaitCompletion(ctx); err != nil {
 					d.log.Debug().Err(err).Msg("error waiting for completion")
 				}
 			}()
-			deviceScanWg.Wait()
-			d.log.Info().Msg("Discovery done")
-			d.transportInstanceCreationQueue.Stop()
-			d.deviceScanningQueue.Stop()
-			// TODO: do we maybe want a callback for that? As option for example
 		}
+		deviceScanWg.Wait()
+		d.log.Info().Msg("Discovery done")
+		d.transportInstanceCreationQueue.Stop()
+		d.deviceScanningQueue.Stop()
+		// TODO: do we maybe want a callback for that? As option for example
 	}()
 	return nil
 }
@@ -246,7 +258,7 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 	}
 }
 
-func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) pool.Runnable {
+func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, tcpTransportInstance *tcp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) pool.Runnable {
 	return func() {
 		transportInstanceLogger := d.log.With().Stringer("transportInstance", tcpTransportInstance).Logger()
 		transportInstanceLogger.Debug().Stringer("tcpTransportInstance", tcpTransportInstance).Msg("Scanning")
@@ -256,7 +268,7 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 			append(d._options, options.WithCustomLogger(d.log))...,
 		)
 		// Explicitly start the worker
-		if err := codec.ConnectWithContext(context.TODO()); err != nil {
+		if err := codec.ConnectWithContext(ctx); err != nil {
 			transportInstanceLogger.Debug().Err(err).Msg("Error connecting")
 			return
 		}
@@ -363,6 +375,9 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 			case <-timeout.C:
 				timeout.Stop()
 				continue
+			case <-ctx.Done():
+				transportInstanceLogger.Trace().Msg("ctx done")
+				return
 			}
 		}
 	}
