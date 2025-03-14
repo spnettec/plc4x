@@ -214,7 +214,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                     new DefaultPlcTagItem<>(
                         new S7TagChunk(curTag.getDataType(), curTag.getMemoryArea(), curTag.getBlockNumber(), curTagOffset, (byte) 0, curTagSize,
                             (curTag instanceof S7TagChunk) ? ((S7TagChunk) curTag).getChunkTags() : Collections.singletonMap(curTag, tagNameSize.getTagName()),
-                            curPartIndex, totalPartCount, curTagSize)));
+                            curPartIndex, totalPartCount, curTagSize, curTag.getStringEncoding())));
             }
             // Just copy over tags that fit into a request.
             else {
