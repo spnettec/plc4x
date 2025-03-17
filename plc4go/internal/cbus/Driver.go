@@ -21,7 +21,6 @@ package cbus
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"net/url"
 	"strconv"
 
@@ -35,6 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Driver struct {

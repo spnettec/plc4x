@@ -23,8 +23,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"runtime/debug"
@@ -32,6 +30,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -41,6 +40,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Discoverer struct {
