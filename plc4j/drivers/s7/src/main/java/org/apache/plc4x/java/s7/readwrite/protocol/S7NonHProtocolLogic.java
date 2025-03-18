@@ -241,8 +241,10 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			return future;
 		}
 		if(readRequest instanceof LargeTagPlcReadRequest){
-			final S7VarRequestParameterItem s7VarRequestParameterItem = new S7VarRequestParameterItemAddress(encodeS7Address(readRequest.getTags().get(0)));
-			return toLargePlcReadResponse((LargeTagPlcReadRequest)readRequest, readLargeInternal(s7VarRequestParameterItem));
+            final LargeTagPlcReadRequest largeTagPlcReadRequest = (LargeTagPlcReadRequest) readRequest;
+			final S7VarRequestParameterItem s7VarRequestParameterItem =
+                new S7VarRequestParameterItemAddress(encodeS7Address(largeTagPlcReadRequest.getTag()));
+			return toLargePlcReadResponse(largeTagPlcReadRequest, readLargeInternal(s7VarRequestParameterItem));
 		}
 		DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
 		CompletableFuture<S7Message> responseFuture;
@@ -1942,13 +1944,14 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
 						s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
 			} else {
+                // In case of reading an array of bytes, make use of our simpler PlcRawByteArray as the user is
+                // probably expecting to process the read raw data.
+                if(tag.getDataType() == TransportSize.BYTE) {
+                    return new PlcRawByteArray(data);
+                } else {
 				// Fetch all
 				final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
 					try {
-						if(tag.getDataType()==TransportSize.BOOL){
-							Byte value = readUnsignedByte(readBuffer, 1).read("value");
-							return new PlcBOOL(value);
-						}
 						return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
 								s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
 					} catch (ParseException e) {
@@ -1957,6 +1960,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 					return null;
 				}).toArray(PlcValue[]::new);
 				return DefaultPlcValueHandler.of(resultItems);
+                }
 			}
 		} catch (ParseException e) {
 			logger.warn("Error parsing tag item of type: '{}'", tag.getDataType().name(), e);
@@ -2043,9 +2047,13 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			numElements = numElements * (stringLength + 2) * 2;
 		}
 		else if (transportSize == TransportSize.BOOL && s7Tag.getNumberOfElements() > 1 ) {
-			numElements = (int) Math.ceil((double) numElements / 8);
+			//numElements = (int) Math.ceil((double) numElements / 8);
 			transportSize = TransportSize.BYTE;
 		}
+        else if (transportSize == TransportSize.BIT && s7Tag.getNumberOfElements() > 1 ) {
+            //numElements = (int) Math.ceil((double) numElements / 8);
+            transportSize = TransportSize.BYTE;
+        }
 		if (transportSize.getCode() == 0x00) {
 			numElements = numElements * transportSize.getSizeInBytes();
 			transportSize = TransportSize.BYTE;

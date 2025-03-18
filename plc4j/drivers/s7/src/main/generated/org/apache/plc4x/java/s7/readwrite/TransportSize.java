@@ -454,6 +454,19 @@ public enum TransportSize {
       (boolean) true,
       DataTransportSize.BYTE_WORD_DWORD,
       (String) "IEC61131_DTL",
+      null),
+  BIT(
+      (short) 0x22,
+      (boolean) true,
+      (boolean) true,
+      (short) 0x01,
+      (short) 1,
+      (boolean) true,
+      (boolean) true,
+      (short) 'X',
+      (boolean) true,
+      DataTransportSize.BIT,
+      (String) "IEC61131_BIT",
       null);
   private static final Map<Short, TransportSize> map;
 

@@ -51,7 +51,10 @@ public class DataItem {
       Integer stringLength,
       String stringEncoding)
       throws ParseException {
-    if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_BOOL")) { // BOOL
+    if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_BIT")) { // BIT
+      boolean value = readSimpleField("value", readBoolean(readBuffer));
+      return new PlcBIT(value);
+    } else if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_BOOL")) { // BOOL
       Byte reservedField0 =
           readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
@@ -280,7 +283,10 @@ public class DataItem {
       Integer stringLength,
       String stringEncoding) {
     int lengthInBits = 0;
-    if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_BOOL")) { // BOOL
+    if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_BIT")) { // BIT
+      // Simple field (value)
+      lengthInBits += 1;
+    } else if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_BOOL")) { // BOOL
       // Reserved Field (reserved)
       lengthInBits += 7;
 
@@ -445,7 +451,10 @@ public class DataItem {
       String stringEncoding,
       ByteOrder byteOrder)
       throws SerializationException {
-    if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_BOOL")) { // BOOL
+    if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_BIT")) { // BIT
+      // Simple Field (value)
+      writeSimpleField("value", (boolean) _value.getBoolean(), writeBoolean(writeBuffer));
+    } else if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_BOOL")) { // BOOL
       // Reserved Field (reserved)
       writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
 

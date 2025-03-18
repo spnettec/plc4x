@@ -682,6 +682,12 @@
         // -----------------------------------------
         // Bit
         // -----------------------------------------
+        ['"IEC61131_BIT"' BIT
+            [simple   bit    value]
+        ]
+        // -----------------------------------------
+        // Bit
+        // -----------------------------------------
         ['"IEC61131_BOOL"' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value]
@@ -916,6 +922,7 @@
     ['0x1E' DATE_AND_LTIME ['0x00'     , 'X'             , '8'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_DATE_AND_LTIME' , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
     ['0x1F' LDT            ['0x00'     , 'X'             , '8'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_DATE_AND_LTIME' , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
     ['0x21' DTL            ['0x00'     , 'X'             , '12'              , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_DTL'            , 'false'             , 'false'             , 'true'               , 'true'               , 'false'             ]]
+    ['0x22' BIT            ['0x01'     , 'X'             , '1'               , 'null'                , 'BIT'                              , 'IEC61131_BIT'            , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
 ]
 
 [enum uint 8 MemoryArea(string 24 shortName)

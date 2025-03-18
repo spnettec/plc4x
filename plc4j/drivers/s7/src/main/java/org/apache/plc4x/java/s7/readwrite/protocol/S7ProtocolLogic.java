@@ -132,7 +132,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
     * transferred to the event stack and the value is updated in this HashMap.
     */
     private final Map<Short, S7CyclicEvent> cycChangeValueEvents = new HashMap<>();
-
     private S7DriverContext s7DriverContext;
     private RequestTransactionManager tm;
 
@@ -1853,11 +1852,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                             if (parameteritem.getLastDataUnit() == 1) {
                                 final short sequenceNumber = parameteritem.getSequenceNumber();
                                 boolean flag  = false;
-                                ContextHandler handler = null;
 
                                 S7MessageUserData msg = null;
 
-                                CompletableFuture<S7MessageUserData>  nextFuture = null;
+                                CompletableFuture<S7MessageUserData>  nextFuture;
 
                                     int lastDataUnit = 1;
 //                                    CompletableFuture<S7MessageUserData> nextFuture;
@@ -2114,21 +2112,23 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
                         s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
             } else {
-                // Fetch all
-                final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
-                    try {
-                        if(tag.getDataType()==TransportSize.BOOL){
-                            Byte value = readUnsignedByte(readBuffer, 1).read("value");
-                            return new PlcBOOL(value);
-                        }
-                        return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
+                // In case of reading an array of bytes, make use of our simpler PlcRawByteArray as the user is
+                // probably expecting to process the read raw data.
+                if(tag.getDataType() == TransportSize.BYTE) {
+                    return new PlcRawByteArray(data);
+                } else {
+                    // Fetch all
+                    final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
+                        try {
+                            return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
                                 s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
-                    } catch (ParseException e) {
-                        logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
-                    }
-                    return null;
-                }).toArray(PlcValue[]::new);
-                return DefaultPlcValueHandler.of(tag, resultItems);
+                        } catch (ParseException e) {
+                            logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
+                        }
+                        return null;
+                    }).toArray(PlcValue[]::new);
+                    return DefaultPlcValueHandler.of(tag, resultItems);
+                }
             }
         } catch (ParseException e) {
             logger.warn("Error parsing tag item of type: '{}'", tag.getDataType().name(), e);
@@ -2220,7 +2220,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             transportSize = TransportSize.BYTE;
         }
         if (transportSize.getCode() == 0x00) {
-            numElements = numElements * transportSize.getSizeInBytes();
+            // numElements = numElements * transportSize.getSizeInBytes();
             transportSize = TransportSize.BYTE;
         }
         return new S7AddressAny(transportSize, numElements, s7Tag.getBlockNumber(),
