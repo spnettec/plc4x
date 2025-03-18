@@ -24,6 +24,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import java.util.List;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.s7.readwrite.ControllerType;
@@ -147,12 +148,12 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                         sessionDisconnectCompleteFuture,
                         sessionDiscoveredCompleteFuture));
 
-                //channel.pipeline().addFirst(new LoggingHandler("DOOM"));
                 channel.pipeline().addFirst("Multiplexor", s7hmux);
+
             }
 
             ((S7HMux) s7hmux).setEmbededhannel(channel, configuration);
-            //channel.pipeline().addFirst((new LoggingHandler(LogLevel.INFO)));
+//            channel.pipeline().addFirst((new LoggingHandler("CEOS")));
             /*
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
@@ -176,9 +177,9 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                 }
             }
 
-            scf = executor.scheduleAtFixedRate(this, 1, 1, TimeUnit.SECONDS);
-
-            /*
+            scf = executor.scheduleAtFixedRate(this, 1, 1, TimeUnit.SECONDS); 
+            
+            /*            
             primary_channel.closeFuture().addListener(future -> {/watch?v=TmENMZFUU_0&list=RDlBlx1JffMQ4&index=27
                 if (!sessionDiscoveredCompleteFuture.isDone()) {
                     //Do Nothing
@@ -189,7 +190,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     }
 
                 }
-            });
+            });            
             */
 
             // Send an event to the pipeline telling the Protocol filters what's going on.
@@ -436,7 +437,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         if (!isSubscribeSupported()) {
             throw new PlcUnsupportedOperationException("The connection does not support subscription");
         }
-        return new S7PlcSubscriptionRequest.Builder(this, getPlcTagHandler());
-    }
+        return new S7PlcSubscriptionRequest.Builder(this, getPlcTagHandler());        
+    }        
 
 }

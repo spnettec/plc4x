@@ -282,6 +282,7 @@ func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTranspor
 }
 
 func (d *Discoverer) Close() error {
+	defer utils.StopWarn(d.log)()
 	d.log.Trace().Msg("Closing discoverer")
 	finalErr := new(utils.MultiError)
 	d.log.Trace().Msg("Closing transport instance creation queue")
