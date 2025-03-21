@@ -31,24 +31,33 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 class ConnectionContainer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionContainer.class);
     private final PlcConnectionManager connectionManager;
     private final String connectionUrl;
     private final Duration maxLeaseTime;
+    private final Duration maxIdleTime;
+    private final Function<String, Void> closeConnectionHandler;
     private final Queue<CompletableFuture<PlcConnection>> queue;
 
     private PlcConnection connection;
     private LeasedPlcConnection leasedConnection;
+    private Timer idleTimer;
 
     public ConnectionContainer(PlcConnectionManager connectionManager, String connectionUrl,
-                               Duration maxLeaseTime) {
+                               Duration maxLeaseTime, Duration maxIdleTime,
+                               Function<String, Void> closeConnectionHandler) {
         this.connectionManager = connectionManager;
         this.connectionUrl = connectionUrl;
         this.maxLeaseTime = maxLeaseTime;
+        this.maxIdleTime = maxIdleTime;
+        this.closeConnectionHandler = closeConnectionHandler;
         this.queue = new LinkedList<>();
         this.connection = null;
         this.leasedConnection = null;
@@ -102,6 +111,13 @@ class ConnectionContainer {
         else {
             queue.add(connectionFuture);
         }
+
+        // Stop the idle timer.
+        if(idleTimer != null) {
+            idleTimer.cancel();
+            idleTimer.purge();
+        }
+
         return connectionFuture;
     }
 
@@ -142,6 +158,22 @@ class ConnectionContainer {
         // If the queue is empty, simply return.
         if(queue.isEmpty()) {
             leasedConnection = null;
+
+            // Start a timer to invalidate this connection if it's idle for too long.
+            idleTimer = new Timer("CC-Idle-Timer-" + Thread.currentThread().getId());
+            idleTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if(connection != null) {
+                        try {
+                            connection.close();
+                        } catch (Exception e) {
+                            // Ignore ...
+                        }
+                    }
+                    closeConnectionHandler.apply(connectionUrl);
+                }
+            }, maxIdleTime.toMillis());
             return;
         }
 

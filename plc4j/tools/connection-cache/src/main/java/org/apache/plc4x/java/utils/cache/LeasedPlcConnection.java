@@ -48,13 +48,14 @@ public class LeasedPlcConnection implements EventPlcConnection {
     private static final Logger log = LoggerFactory.getLogger(LeasedPlcConnection.class);
     private ConnectionContainer connectionContainer;
     private final AtomicReference<PlcConnection> connection;
-    private boolean invalidateConnection= false;
+    private boolean invalidateConnection;
     private boolean hasInvalidateConnection= false;
     private final Timer usageTimer;
 
     LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
         this.connection = new AtomicReference<>(connection);
+        this.invalidateConnection = false;
         this.usageTimer = new Timer();
         this.usageTimer.schedule(new TimerTask() {
             @Override
