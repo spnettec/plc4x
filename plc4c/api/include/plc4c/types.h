@@ -75,6 +75,7 @@ typedef enum plc4c_response_code {
 typedef enum plc4c_data_type {
   // Boolean/Bit-String Types
   PLC4C_BOOL,
+  PLC4C_BIT,
   PLC4C_BYTE,
   PLC4C_WORD,
   PLC4C_DWORD,

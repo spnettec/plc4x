@@ -161,11 +161,14 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_value_of(c
     if(strcmp(value_string, "DTL") == 0) {
         return plc4c_s7_read_write_transport_size_DTL;
     }
+    if(strcmp(value_string, "BIT") == 0) {
+        return plc4c_s7_read_write_transport_size_BIT;
+    }
     return -1;
 }
 
 int plc4c_s7_read_write_transport_size_num_values() {
-  return 33;
+  return 34;
 }
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_value_for_index(int index) {
@@ -268,6 +271,9 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_value_for_
       }
       case 32: {
         return plc4c_s7_read_write_transport_size_DTL;
+      }
+      case 33: {
+        return plc4c_s7_read_write_transport_size_BIT;
       }
       default: {
         return -1;
@@ -372,6 +378,9 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_300(plc4c_s7_read_writ
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
       return false;
+    }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
+      return true;
     }
     default: {
       return 0;
@@ -485,6 +494,9 @@ bool plc4c_s7_read_write_transport_size_get_supported__logo(plc4c_s7_read_write_
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
       return false;
     }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
+      return true;
+    }
     default: {
       return 0;
     }
@@ -596,6 +608,9 @@ uint8_t plc4c_s7_read_write_transport_size_get_code(plc4c_s7_read_write_transpor
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
       return 0;
+    }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
+      return 1;
     }
     default: {
       return 0;
@@ -745,6 +760,9 @@ uint8_t plc4c_s7_read_write_transport_size_get_size_in_bytes(plc4c_s7_read_write
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
       return 12;
     }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
+      return 1;
+    }
     default: {
       return 0;
     }
@@ -872,6 +890,9 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_400(plc4c_s7_read_writ
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
       return false;
     }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
+      return true;
+    }
     default: {
       return 0;
     }
@@ -984,6 +1005,9 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_1200(plc4c_s7_read_wri
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
       return true;
     }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
+      return true;
+    }
     default: {
       return 0;
     }
@@ -1094,6 +1118,9 @@ uint8_t plc4c_s7_read_write_transport_size_get_short_name(plc4c_s7_read_write_tr
       return 'X';
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
+      return 'X';
+    }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
       return 'X';
     }
     default: {
@@ -1220,6 +1247,9 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_1500(plc4c_s7_read_wri
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
       return true;
     }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
+      return true;
+    }
     default: {
       return 0;
     }
@@ -1331,6 +1361,9 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_transport_size_get_d
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
       return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
+    }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
+      return plc4c_s7_read_write_data_transport_size_BIT;
     }
     default: {
       return 0;
@@ -1459,6 +1492,9 @@ char* plc4c_s7_read_write_transport_size_get_data_protocol_id(plc4c_s7_read_writ
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
       return "IEC61131_DTL";
     }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
+      return "IEC61131_BIT";
+    }
     default: {
       return 0;
     }
@@ -1466,6 +1502,9 @@ char* plc4c_s7_read_write_transport_size_get_data_protocol_id(plc4c_s7_read_writ
 }
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_data_protocol_id(char* value) {
+    if (strcmp(value, "IEC61131_BIT") == 0) {
+        return plc4c_s7_read_write_transport_size_BIT;
+    }
     if (strcmp(value, "IEC61131_BOOL") == 0) {
         return plc4c_s7_read_write_transport_size_BOOL;
     }
@@ -1648,6 +1687,9 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_base_t
       return -1;
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
+      return -1;
+    }
+    case plc4c_s7_read_write_transport_size_BIT: { /* '0x22' */
       return -1;
     }
     default: {

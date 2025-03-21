@@ -34,6 +34,16 @@ plc4c_data *plc4c_data_create_bool_data(bool b) {
   return data;
 }
 
+plc4c_data *plc4c_data_create_bit_data(bool b) {
+  plc4c_data *data = malloc(sizeof(plc4c_data));
+  data->data_type = PLC4C_BIT;
+  data->size = sizeof(bool);
+  data->data.bool_value = b;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
+  return data;
+}
+
 plc4c_data *plc4c_data_create_bool_array(bool *b, int nItems) {
   plc4c_list *list = malloc(sizeof(plc4c_list));
   plc4c_data *elem;

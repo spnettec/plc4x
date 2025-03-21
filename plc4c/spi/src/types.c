@@ -110,6 +110,8 @@ char *plc4c_data_type_name(plc4c_data_type data_type) {
     // Boolean/Bit-String Types
     case PLC4C_BOOL:
       return "PLC4C_BOOL";
+    case PLC4C_BIT:
+      return "PLC4C_BIT";
     case PLC4C_BYTE:
       return "PLC4C_BYTE";
     case PLC4C_WORD:

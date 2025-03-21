@@ -41,6 +41,15 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 	_ = log
 	readBuffer.PullContext("DataItem")
 	switch {
+	case dataProtocolId == "IEC61131_BIT": // BIT
+		// Simple Field (value)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("value")
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+		readBuffer.CloseContext("DataItem")
+		return values.NewPlcBIT(value), nil
 	case dataProtocolId == "IEC61131_BOOL": // BOOL
 		// Reserved Field (Just skip the bytes)
 		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7); _err != nil {
@@ -442,6 +451,11 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 	_ = m
 	writeBuffer.PushContext("DataItem")
 	switch {
+	case dataProtocolId == "IEC61131_BIT": // BIT
+		// Simple Field (value)
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
+		}
 	case dataProtocolId == "IEC61131_BOOL": // BOOL
 		// Reserved Field (Just skip the bytes)
 		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {

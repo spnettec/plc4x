@@ -36,7 +36,18 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
     uint16_t curPos;
     plc4c_return_code _res = OK;
 
-        if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
+        if(strcmp(dataProtocolId, "IEC61131_BIT") == 0) { /* BIT */
+
+                // Simple Field (value)
+                bool value = false;
+                _res = plc4c_spi_read_bit(readBuffer, (bool*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_bit_data(value);
+
+    } else         if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -475,7 +486,14 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
 
 plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, char* dataProtocolId, plc4c_s7_read_write_controller_type controllerType, int32_t stringLength, char* stringEncoding, plc4c_data** data_item) {
   plc4c_return_code _res = OK;
-        if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
+        if(strcmp(dataProtocolId, "IEC61131_BIT") == 0) { /* BIT */
+
+                    // Simple field (value)
+                    _res = plc4c_spi_write_bit(writeBuffer, (*data_item)->data.bit_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
 
                     // Reserved Field (reserved)
 
@@ -739,7 +757,11 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bytes(plc4x_spi_context ctx, pl
 
 uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4x_spi_context ctx, plc4c_data* data_item, char* dataProtocolId, plc4c_s7_read_write_controller_type controllerType, int32_t stringLength, char* stringEncoding) {
   uint16_t lengthInBits = 0;
-    if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
+    if(strcmp(dataProtocolId, "IEC61131_BIT") == 0) { /* BIT */
+
+        // Simple field (value)
+        lengthInBits += 1;
+    } else     if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
 
         // Reserved Field (reserved)
         lengthInBits += 7;
