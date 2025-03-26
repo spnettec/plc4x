@@ -493,14 +493,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 .unwrap(COTPPacket::getPayload)
                 .check(p -> p.getTpduReference() == tpduId)
                 .handle(p -> {
+                    // Finish the request-transaction.
+                    transaction.endRequest();
+
                     try {
                         //future.complete(decodeEventSubscriptionRequest(tagName, p, subscriptionRequest));
                         futures.get("DATA_").complete(p);
                     } catch (Exception e) {
                         logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
                     }
-                    // Finish the request-transaction.
-                    transaction.endRequest();
                 }));
 
             try {
@@ -705,13 +706,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             .unwrap(COTPPacket::getPayload)
             .check(p -> p.getTpduReference() == tpduId)
             .handle(p -> {
+                // Finish the request-transaction.
+                transaction.endRequest();
+
                 try {
                     future.complete(null);
                 } catch (Exception e) {
                     logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
                 }
-                // Finish the request-transaction.
-                transaction.endRequest();
             }));
 
         return future;
@@ -1486,9 +1488,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             .unwrap(COTPPacket::getPayload)
             .check(p -> p.getTpduReference() == tpduId)
             .handle(p -> {
-                future.complete(p);
                 // Finish the request-transaction.
                 transaction.endRequest();
+
+                try {
+                    future.complete(p);
+                } catch (Exception e) {
+                    logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
+                }
             }));
 
         return future;

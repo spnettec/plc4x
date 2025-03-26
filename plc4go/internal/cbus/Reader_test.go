@@ -459,7 +459,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.FailRequest(mock.Anything).Return(errors.New("no I say")).Run(func(_ error) {
-					close(ch)
+					if ch != nil {
+						close(ch)
+						ch = nil
+					}
 				})
 				args.transaction = transaction
 

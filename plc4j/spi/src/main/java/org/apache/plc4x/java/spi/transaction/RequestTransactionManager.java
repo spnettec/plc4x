@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.spi.transaction;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +29,7 @@ import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.logging.SimpleFormatter;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 /**
  * This is a limited Queue of Requests, a Protocol can use.
@@ -97,7 +95,7 @@ public class RequestTransactionManager {
         // As we might have increased the number, try to send some more requests.
         processWorkLog();
     }
-
+    
     /*
     * It allows the sequential shutdown of the associated driver.
     */
@@ -240,7 +238,7 @@ public class RequestTransactionManager {
         @Override
         public void run() {
             //try (final MDC.MDCCloseable closeable = MDC.putCloseable("plc4x.transactionId", Integer.toString(transactionId))) {
-            try{
+            try{    
                 logger.trace("Start execution of transaction {}", transactionId);
                 delegate.run();
                 logger.trace("Completed execution of transaction {}", transactionId);

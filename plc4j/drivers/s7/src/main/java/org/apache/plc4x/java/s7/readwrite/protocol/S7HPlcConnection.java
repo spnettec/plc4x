@@ -24,7 +24,6 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import java.util.List;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.s7.readwrite.ControllerType;
@@ -39,7 +38,6 @@ import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
@@ -153,7 +151,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             }
 
             ((S7HMux) s7hmux).setEmbededhannel(channel, configuration);
-//            channel.pipeline().addFirst((new LoggingHandler("CEOS")));
+//            channel.pipeline().addFirst((new LoggingHandler("CEOS"))); 
             /*
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
