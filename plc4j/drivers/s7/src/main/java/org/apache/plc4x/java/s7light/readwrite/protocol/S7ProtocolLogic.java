@@ -77,7 +77,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // maximum of only one request being able to be sent at a time. During the login process
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1,"S7LightProtocolLogic");
     }
 
     @Override
@@ -202,7 +202,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         //Pointers
         S7Message[] responseMessage = new S7Message[1];
         PlcReadRequest[] plcReadRequest = new PlcReadRequest[1];
-        
+
         responseFuture.whenComplete((s7Message, throwable) -> {
             if (throwable != null) {
                 clientFuture.completeExceptionally(new PlcProtocolException("Error reading", throwable));
@@ -303,10 +303,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 S7Tag s7Tag = (S7Tag) plcTagItem.getTag();
                 TransportSize dataType = s7Tag.getDataType();
                 if(dataType == TransportSize.STRING) {
-                    updatedRequestItems.put(tagName, new DefaultPlcTagItem<>(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 2)));
+                    updatedRequestItems.put(tagName, new DefaultPlcTagItem<>(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 2, s7Tag.getStringEncoding())));
                     numVarLengthStrings++;
                 } else if(dataType == TransportSize.WSTRING) {
-                    updatedRequestItems.put(tagName, new DefaultPlcTagItem<>(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 4)));
+                    updatedRequestItems.put(tagName, new DefaultPlcTagItem<>(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 4, s7Tag.getStringEncoding())));
                     numVarLengthStrings++;
                 }
             } else {
@@ -335,11 +335,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                             if (s7tag.getDataType() == TransportSize.STRING) {
                                 rb.readShort(8);
                                 int stringLength = rb.readShort(8);
-                                varLengthStringTags.put(tagName, new DefaultPlcTagItem<>(new S7StringFixedLengthTag(TransportSize.STRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength)));
+                                varLengthStringTags.put(tagName, new DefaultPlcTagItem<>(new S7StringFixedLengthTag(TransportSize.STRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength, s7tag.getStringEncoding())));
                             } else if (s7tag.getDataType() == TransportSize.WSTRING) {
                                 rb.readInt(16);
                                 int stringLength = rb.readInt(16);
-                                varLengthStringTags.put(tagName, new DefaultPlcTagItem<>(new S7StringFixedLengthTag(TransportSize.WSTRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength)));
+                                varLengthStringTags.put(tagName, new DefaultPlcTagItem<>(new S7StringFixedLengthTag(TransportSize.WSTRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength, s7tag.getStringEncoding())));
                             }
                         } catch (Exception e) {
                             logger.warn("Error parsing string size for tag {}", tagName, e);
@@ -443,7 +443,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         int stringLength = s7StringVarLengthTagStringSizesMap.get(varLengthTag).getCurLength();
                         S7StringFixedLengthTag newTag = new S7StringFixedLengthTag(varLengthTag.getDataType(), varLengthTag.getMemoryArea(),
                             varLengthTag.getBlockNumber(), varLengthTag.getByteOffset(), varLengthTag.getBitOffset(),
-                            varLengthTag.getNumberOfElements(), stringLength);
+                            varLengthTag.getNumberOfElements(), stringLength,((S7StringVarLengthTag) tag).getStringEncoding());
                         updatedRequestItems.put(tagName, new DefaultPlcTagValueItem<>(newTag, value));
                     } else {
                         updatedRequestItems.put(tagName, new DefaultPlcTagValueItem<>(tag, value));
@@ -785,7 +785,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 byteBuffer.put(plcValue.getRaw());
             } else {
                 for (int i = 0; i < tag.getNumberOfElements(); i++) {
-                    int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
+                    int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
                     // Cap the length of the string with the maximum allowed size.
                     if (tag.getDataType() == TransportSize.STRING) {
                         lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
@@ -795,7 +795,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         lengthInBits = lengthInBits * 8;
                     }
                     final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                    DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
+                    DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
                     // Allocate enough space for all items.
                     if (byteBuffer == null) {
                         // TODO: This logic will cause problems when reading arrays of strings.
@@ -817,11 +817,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private PlcValue parsePlcValue(S7Tag tag, byte[] data) {
         ReadBuffer readBuffer = new ReadBufferByteBased(data);
         try {
-            int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
+            int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
             if (tag.getNumberOfElements() == 1) {
                 // TODO: Pass the type of plc into the parse function ...
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                    s7DriverContext.getControllerType(), stringLength);
+                        s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
             } else {
                 // In case of reading an array of bytes, make use of our simpler PlcRawByteArray as the user is
                 // probably expecting to process the read raw data.
@@ -832,7 +832,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
                         try {
                             return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                                s7DriverContext.getControllerType(), stringLength);
+                                    s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
                         } catch (ParseException e) {
                             logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
                         }
