@@ -28,8 +28,8 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.*;
-import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
+import org.apache.plc4x.java.s7light.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7light.readwrite.tag.S7PlcTagHandler;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -63,7 +62,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
 
-    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
     private final AtomicInteger tpduGenerator = new AtomicInteger(10);
     private S7DriverContext s7DriverContext;
     private RequestTransactionManager tm;
@@ -105,7 +103,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 // TODO: We're saying that we're closing the channel, but not closing the channel ... sure, this is what we want?
                 //context.getChannel().close();
             })
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, s7DriverContext.getReadTimeoutDuration())
             .unwrap(TPKTPacket::getPayload)
             .only(COTPPacketConnectionResponse.class)
             .handle(cotpPacketConnectionResponse -> {
@@ -116,7 +114,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         logger.warn("Timeout during Connection establishing, closing channel...");
                         context.getChannel().close();
                     })
-                    .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                    .expectResponse(TPKTPacket.class, s7DriverContext.getReadTimeoutDuration())
                     .unwrap(TPKTPacket::getPayload)
                     .only(COTPPacketData.class)
                     .unwrap(COTPPacket::getPayload)
@@ -153,7 +151,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                 logger.warn("Timeout during Connection establishing, closing channel...");
                                 context.getChannel().close();
                             })
-                            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                            .expectResponse(TPKTPacket.class, s7DriverContext.getReadTimeoutDuration())
                             .unwrap(TPKTPacket::getPayload)
                             .only(COTPPacketData.class)
                             .unwrap(COTPPacketData::getPayload)
@@ -506,7 +504,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, s7DriverContext.getReadTimeoutDuration())
             .unwrap(TPKTPacket::getPayload)
             .only(COTPPacketData.class)
             .check(p -> p.getPayload() != null)

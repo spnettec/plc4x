@@ -233,6 +233,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         }
         // Shutdown the Worker Group
         channelFactory.closeEventLoopForChannel(channel);
+
         channel = null;
         connected = false;
     }
@@ -277,7 +278,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                             sessionDisconnectCompleteFuture.complete(null);
                             eventListeners.forEach(ConnectionStateListener::disconnected);
                             // Fix for https://github.com/apache/plc4x/issues/801
-                            // super.userEventTriggered(ctx, evt);
+                            super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
                         } else if (evt instanceof ConnectEvent || evt instanceof DiscoverEvent) {
@@ -286,8 +287,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                 if (awaitSessionSetupComplete) {
                                     setupProtocol(pipeline);
                                 }
+                                super.userEventTriggered(ctx, evt);
                             }
-                            super.userEventTriggered(ctx, evt);
                         } else {
                             super.userEventTriggered(ctx, evt);
                         }
