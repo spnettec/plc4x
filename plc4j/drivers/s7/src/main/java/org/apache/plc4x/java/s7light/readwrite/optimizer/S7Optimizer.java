@@ -130,7 +130,7 @@ public class S7Optimizer extends BaseOptimizer {
                 int itemsLeft = tag.getNumberOfElements();
                 for(int curRequest = 0; curRequest < numRequests; curRequest++) {
                     int numCurRequestItems = Math.min(numItemsPerRequest, itemsLeft);
-                    S7Tag tagFragment = new S7Tag(tag.getDataType(), tag.getMemoryArea(), tag.getBlockNumber(), curByteOffset, (byte) 0, numCurRequestItems);
+                    S7Tag tagFragment = new S7Tag(tag.getDataType(), tag.getMemoryArea(), tag.getBlockNumber(), curByteOffset, (byte) 0, numCurRequestItems, tag.getStringEncoding());
                     LinkedHashMap<String, PlcTagItem<PlcTag>> tagFragments = new LinkedHashMap<>();
                     tagFragments.put(tagName, new DefaultPlcTagItem<>(tagFragment));
                     processedRequests.add(new DefaultPlcReadRequest(((DefaultPlcReadRequest) readRequest).getReader(), tagFragments));
@@ -183,7 +183,7 @@ public class S7Optimizer extends BaseOptimizer {
 
                     if (readRequest.getTag(tagName) instanceof S7SzlTag) {
                         tagValues.put(tagName, new DefaultPlcResponseItem<>(responseCode, value));
-                    } else {                                        
+                    } else {
                         // If the number of elements in the current tag differs from the global number,
                         // then this is a split-up array and needs to be explicitly handled.
                         S7Tag globalS7Tag = (S7Tag) readRequest.getTag(tagName);
@@ -238,12 +238,12 @@ public class S7Optimizer extends BaseOptimizer {
                         } else {
                             tagValues.put(tagName, new DefaultPlcResponseItem<>(responseCode, value));
                         }
-                    
+
                     }
                 } else {
                     tagValues.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }
-                
+
             }
         }
         return new DefaultPlcReadResponse(readRequest, tagValues);
