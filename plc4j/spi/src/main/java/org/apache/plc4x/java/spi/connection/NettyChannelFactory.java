@@ -104,11 +104,11 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      */
     public EventLoopGroup getEventLoopGroup() {
         if (ClassUtils.classIsPresent("io.netty.channel.epoll.Epoll") && Epoll.isAvailable()) {
-            return  new EpollEventLoopGroup();
+            return  new EpollEventLoopGroup(1);
         } else if(ClassUtils.classIsPresent("io.netty.channel.kqueue.KQueue") && KQueue.isAvailable()) {
-            return new KQueueEventLoopGroup();
+            return new KQueueEventLoopGroup(1);
         } else {
-            return new NioEventLoopGroup();
+            return new NioEventLoopGroup(1);
         }
     }
 
