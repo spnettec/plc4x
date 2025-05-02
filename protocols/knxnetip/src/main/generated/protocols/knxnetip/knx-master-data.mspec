@@ -1473,8 +1473,10 @@
     ['721' M_ORENDA_ELECTRIC ['782', '"Orenda Electric"']]
     ['722' M_ERSE_KABLO ['783', '"ERSE KABLO"']]
     ['723' M_PRADO_EUROPE_BV ['784', '"prado europe bv"']]
-    ['724' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['725' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['724' M_E2S_GBR ['785', '"e2s GbR"']]
+    ['725' M_UNITLINK ['786', '"UnitLink"']]
+    ['726' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['727' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

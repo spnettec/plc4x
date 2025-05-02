@@ -68,6 +68,9 @@ public class LargeTagPlcWriteRequest implements PlcWriteRequest {
     public PlcTag getTag(String name) {
         return tagItem.getTag();
     }
+    public PlcTag getTag() {
+        return tagItem.getTag();
+    }
 
     @Override
     public List<PlcTag> getTags() {
