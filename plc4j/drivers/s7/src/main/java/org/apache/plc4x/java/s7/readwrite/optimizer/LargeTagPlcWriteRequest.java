@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 
 import java.util.*;
@@ -32,8 +33,8 @@ import java.util.concurrent.CompletableFuture;
 public class LargeTagPlcWriteRequest implements PlcWriteRequest {
 
     private final PlcValue plcValue;
-    private final PlcTagItem<PlcTag> tagItem;
-    public LargeTagPlcWriteRequest(String tagName, PlcValue plcValue, PlcTagItem<PlcTag> tagItem) {
+    private final PlcTagItem<S7Tag> tagItem;
+    public LargeTagPlcWriteRequest(String tagName, PlcValue plcValue, PlcTagItem<S7Tag> tagItem) {
         this.tagName = tagName;
         this.plcValue = plcValue;
         this.tagItem = tagItem;
@@ -68,7 +69,7 @@ public class LargeTagPlcWriteRequest implements PlcWriteRequest {
     public PlcTag getTag(String name) {
         return tagItem.getTag();
     }
-    public PlcTag getTag() {
+    public S7Tag getTag() {
         return tagItem.getTag();
     }
 

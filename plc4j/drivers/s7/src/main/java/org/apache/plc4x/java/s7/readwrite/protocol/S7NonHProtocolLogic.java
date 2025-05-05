@@ -35,6 +35,7 @@ import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.optimizer.LargeTagPlcReadRequest;
+import org.apache.plc4x.java.s7.readwrite.optimizer.LargeTagPlcWriteRequest;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
@@ -65,8 +66,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer.EMPTY_READ_REQUEST_SIZE;
-import static org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer.EMPTY_READ_RESPONSE_SIZE;
+import static org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer.*;
 import static org.apache.plc4x.java.spi.connection.AbstractPlcConnection.IS_CONNECTED;
 
 /**
@@ -279,6 +279,17 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
         });
     }
 
+    private CompletableFuture<PlcWriteResponse> toLargePlcWriteResponse(LargeTagPlcWriteRequest writeRequest) {
+        List<CompletableFuture<S7Message>> response = writeLargeInternal(writeRequest);
+        return allOf(response).thenApply(value -> {
+            try {
+                return (PlcWriteResponse) decodeLargeWriteResponse(value, writeRequest);
+            } catch (PlcProtocolException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     /**
      * Maps the S7ReadResponse of a PlcReadRequest to a PlcReadResponse
      */
@@ -316,14 +327,12 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
         if (writeRequest.getTagNames().stream().anyMatch(t -> writeRequest.getTag(t) instanceof S7ClkTag)) {
             responseFuture = performClkSetRequest(writeRequest);
         } else {
-            //if(writeRequest instanceof LargeTagPlcWriteRequest){
-            //	final LargeTagPlcWriteRequest largeTagPlcWriteRequest = (LargeTagPlcWriteRequest) writeRequest;
-            //	final S7VarRequestParameterItem s7VarRequestParameterItem =
-            //			new S7VarRequestParameterItemAddress(encodeS7Address(largeTagPlcWriteRequest.getTag()));
-            //	return toLargePlcWriteResponse(largeTagPlcWriteRequest, writeLargeInternal(s7VarRequestParameterItem));
-            //} else {
-            responseFuture = performOrdinaryWriteRequest(writeRequest);
-            //}
+            if (writeRequest instanceof LargeTagPlcWriteRequest) {
+                final LargeTagPlcWriteRequest largeTagPlcWriteRequest = (LargeTagPlcWriteRequest) writeRequest;
+                return toLargePlcWriteResponse(largeTagPlcWriteRequest);
+            } else {
+                responseFuture = performOrdinaryWriteRequest(writeRequest);
+            }
         }
 
         return toPlcWriteResponse(writeRequest, responseFuture);
@@ -480,12 +489,27 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
         return futures;
     }
 
+    private List<CompletableFuture<S7Message>> writeLargeInternal(LargeTagPlcWriteRequest largeTagPlcWriteRequest) {
+        List<CompletableFuture<S7Message>> futures = new ArrayList<>();
+        if (!isConnected()) {
+            CompletableFuture<S7Message> future = new CompletableFuture<>();
+            futures.add(future);
+            future.completeExceptionally(new PlcRuntimeException("Disconnected"));
+            return futures;
+        }
+
+        List<S7Message> messages = splitLargeTagWriteVarParameter(largeTagPlcWriteRequest,
+                this.s7DriverContext.getPduSize());
+        messages.forEach(message -> futures.add(sendInternal(message)));
+        return futures;
+    }
+
     private List<S7Message> splitLargeTagReadVarParameter(LargeTagPlcReadRequest largeTagPlcReadRequest, int pduSize) {
         List<S7Message> result = new LinkedList<>();
         int maxResponseSize = pduSize - EMPTY_READ_RESPONSE_SIZE - 4;
         final S7AddressAny address = (S7AddressAny) encodeS7Address(largeTagPlcReadRequest.getTag());
         // Calculate the sizes in the request and response adding this item to the current request would add.
-        int readRequestItemSize = address.getLengthInBytes();
+        int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
         // Constant size of the parameter item in the response (0 bytes) + Constant size of the payload item +
         // payload data size.
         int readResponseItemSize = 4 + (address.getNumberOfElements() * address.getTransportSize().getSizeInBytes());
@@ -513,7 +537,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
                 int numCurElements = Math.min(remainingNumElements, maxNumElements);
                 S7VarRequestParameterItemAddress subVarParameterItem = new S7VarRequestParameterItemAddress(
                         new S7AddressAny(address.getTransportSize(), numCurElements, address.getDbNumber(),
-                                address.getArea(), curByteAddress, (byte) 0));
+                                address.getArea(), curByteAddress, address.getBitAddress()));
 
                 subMessage = new S7MessageRequest(getTpduId(),
                         new S7ParameterReadVarRequest(Collections.singletonList(subVarParameterItem)), null);
@@ -528,6 +552,71 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
             S7Message subMessage = new S7MessageRequest(getTpduId(), new S7ParameterReadVarRequest(
                     Collections.singletonList(new S7VarRequestParameterItemAddress(address))), null);
+
+            result.add(subMessage);
+        }
+
+        return result;
+    }
+
+    private List<S7Message> splitLargeTagWriteVarParameter(LargeTagPlcWriteRequest largeTagPlcWriteRequest,
+            int pduSize) {
+        List<S7Message> result = new LinkedList<>();
+        int maxRequestSize = pduSize - S7_ADDRESS_ANY_SIZE - EMPTY_WRITE_REQUEST_SIZE - 4;
+        final S7AddressAny address = (S7AddressAny) encodeS7Address(largeTagPlcWriteRequest.getTag());
+        // Calculate the sizes in the request and response adding this item to the current request would add.
+        //int writeRequestItemSize = address.getLengthInBytes();
+        // Constant size of the parameter item in the response (0 bytes) + Constant size of the payload item +
+        // payload data size.
+        int writeRequestItemSize = S7_ADDRESS_ANY_SIZE + 4 + (address.getNumberOfElements() * address.getTransportSize().getSizeInBytes());
+        // If it's an odd number of bytes, add one to make it even
+        if (writeRequestItemSize % 2 == 1) {
+            writeRequestItemSize++;
+        }
+        int writeResponseItemSize = 4;
+        // If the item would not fit into a separate message, we have to split it.
+        if (((EMPTY_WRITE_REQUEST_SIZE + writeRequestItemSize) > pduSize) || (
+                EMPTY_WRITE_RESPONSE_SIZE + writeResponseItemSize > pduSize)) {
+            // Create a new sub message.
+            S7Message subMessage;
+            // Calculate the maximum number of items that would fit in a single request.
+            int maxNumElements = (int) Math.floor(
+                    (double) maxRequestSize / (double) address.getTransportSize().getSizeInBytes());
+
+            // Initialize the loop with the total number of elements and the original address.
+            int remainingNumElements = address.getNumberOfElements();
+            int curByteAddress = address.getByteAddress();
+            PlcValue plcValue = largeTagPlcWriteRequest.getPlcValue();
+            WriteBufferByteBased writeBufferByteBased = serializePlcValueToWriteBuffer(largeTagPlcWriteRequest.getTag(), plcValue);
+            if (writeBufferByteBased == null) {
+                throw new PlcRuntimeException("writeBufferByteBased is null");
+            }
+            // Keep on adding chunks of the original address until all have been added.
+            while (remainingNumElements > 0) {
+                int numCurElements = Math.min(remainingNumElements, maxNumElements);
+                S7VarRequestParameterItemAddress subVarParameterItem = new S7VarRequestParameterItemAddress(
+                        new S7AddressAny(address.getTransportSize(), numCurElements, address.getDbNumber(),
+                                address.getArea(), curByteAddress, address.getBitAddress()));
+                int start = curByteAddress - address.getByteAddress();
+                byte[] bytes = writeBufferByteBased.getBytes(start, start + numCurElements);
+                subMessage = new S7MessageRequest(getTpduId(),
+                        new S7ParameterWriteVarRequest(Collections.singletonList(subVarParameterItem)),
+                        new S7PayloadWriteVarRequest(Collections.singletonList(
+                                new S7VarPayloadDataItem(DataTransportErrorCode.OK,
+                                        address.getTransportSize().getDataTransportSize(), bytes))));
+
+                result.add(subMessage);
+
+                remainingNumElements -= numCurElements;
+                curByteAddress += numCurElements;
+            }
+        } else {
+            logger.warn("Write Var Request size is too small, this is not large enough");
+
+            S7Message subMessage = new S7MessageRequest(getTpduId(), new S7ParameterWriteVarRequest(
+                    Collections.singletonList(new S7VarRequestParameterItemAddress(address))),
+                    new S7PayloadWriteVarRequest(Collections.singletonList(
+                            serializePlcValue(largeTagPlcWriteRequest.getTag(),largeTagPlcWriteRequest.getPlcValue()))));
 
             result.add(subMessage);
         }
@@ -1467,6 +1556,60 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
         return new DefaultPlcReadResponse(plcReadRequest, values);
     }
 
+    private PlcResponse decodeLargeWriteResponse(List<S7Message> responseMessages,
+            LargeTagPlcWriteRequest plcWriteRequest) throws PlcProtocolException {
+        Map<String, PlcResponseCode> values = new HashMap<>();
+        short errorClass;
+        short errorCode;
+        S7ParameterUserDataItemCPUFunctions parameteritem;
+        String tagName = plcWriteRequest.getTagName();
+        PlcResponseCode responseCode = null;
+        for (S7Message responseMessage : responseMessages) {
+            if (responseMessage instanceof S7MessageResponseData) {
+                S7MessageResponseData messageResponseData = (S7MessageResponseData) responseMessage;
+                errorClass = messageResponseData.getErrorClass();
+                errorCode = messageResponseData.getErrorCode();
+            } else if (responseMessage instanceof S7MessageResponse) {
+                S7MessageResponse messageResponse = (S7MessageResponse) responseMessage;
+                errorClass = messageResponse.getErrorClass();
+                errorCode = messageResponse.getErrorCode();
+            } else if (responseMessage instanceof S7MessageUserData) {
+                S7MessageUserData messageResponse = (S7MessageUserData) responseMessage;
+                S7ParameterUserData parameters = (S7ParameterUserData) messageResponse.getParameter();
+                parameteritem = (S7ParameterUserDataItemCPUFunctions) parameters.getItems().get(0);
+                errorClass = 0;
+                errorCode = parameteritem.getErrorCode().shortValue();
+            } else {
+                throw new PlcProtocolException("Unsupported message type " + responseMessage.getClass().getName());
+            }
+            if ((errorClass != 0) || (errorCode != 0)) {
+                if ((errorClass == 129) && (errorCode == 4)) {
+                    logger.warn("Got an error response from the PLC. This particular response code usually indicates "
+                            + "that PUT/GET is not enabled on the PLC.");
+                    values.put(tagName, PlcResponseCode.ACCESS_DENIED);
+                    return new DefaultPlcWriteResponse(plcWriteRequest, values);
+                } else {
+                    logger.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. "
+                            + "We probably need to implement explicit handling for this, so please file a bug-report "
+                            + "on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "
+                            + "containing a capture of the communication.", errorClass, errorCode);
+                    values.put(tagName, PlcResponseCode.INTERNAL_ERROR);
+                    return new DefaultPlcWriteResponse(plcWriteRequest, values);
+                }
+            }
+            S7PayloadWriteVarResponse payload = (S7PayloadWriteVarResponse) responseMessage.getPayload();
+
+            S7VarPayloadStatusItem payloadItem = payload.getItems().get(0);
+
+            responseCode = decodeResponseCode(payloadItem.getReturnCode());
+            if (responseCode != PlcResponseCode.OK) {
+                break;
+            }
+        }
+        values.put(tagName, responseCode);
+        return new DefaultPlcWriteResponse(plcWriteRequest, values);
+    }
+
     private PlcResponse decodeReadResponse(S7Message responseMessage, PlcReadRequest plcReadRequest)
             throws PlcProtocolException {
         Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
@@ -1744,8 +1887,23 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
     }
 
     private S7VarPayloadDataItem serializePlcValue(S7Tag tag, PlcValue plcValue) {
+
+        DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
+
+        final WriteBufferByteBased writeBuffer = serializePlcValueToWriteBuffer(tag, plcValue);
+        if (writeBuffer == null) {
+            return null;
+        }
+        byte[] data = writeBuffer.getBytes();
+        if (data != null && data.length > 0) {
+            return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data);
+        }
+
+        return null;
+    }
+
+    private WriteBufferByteBased serializePlcValueToWriteBuffer(S7Tag tag, PlcValue plcValue) {
         try {
-            DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
             int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(0), tag.getDataType().getDataProtocolId(),
                     s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
@@ -1764,10 +1922,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
                 DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(),
                         s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
             }
-            byte[] data = writeBuffer.getBytes();
-            if (data != null && data.length > 0) {
-                return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data);
-            }
+            return writeBuffer;
         } catch (SerializationException e) {
             logger.warn("Error serializing tag item of type: '{}'", tag.getDataType().name(), e);
         }

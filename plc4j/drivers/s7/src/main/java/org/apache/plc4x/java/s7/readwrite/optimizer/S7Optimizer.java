@@ -136,8 +136,8 @@ public class S7Optimizer extends BaseOptimizer {
                 }
 
                 // Reset the size and item lists.
-                curRequestSize = EMPTY_READ_REQUEST_SIZE + readRequestItemSize;
-                curResponseSize = EMPTY_READ_RESPONSE_SIZE + readResponseItemSize;
+                curRequestSize = EMPTY_READ_REQUEST_SIZE;
+                curResponseSize = EMPTY_READ_RESPONSE_SIZE;
                 curTagItems = new LinkedHashMap<>();
                 PlcTagItem<PlcTag> tagItem = new DefaultPlcTagItem<>(tag);
                 // Splitting of huge tags not yet implemented, throw an exception instead.
@@ -221,8 +221,8 @@ public class S7Optimizer extends BaseOptimizer {
                 }
 
                 // Reset the size and item lists.
-                curRequestSize = EMPTY_WRITE_REQUEST_SIZE + writeRequestItemSize;
-                curResponseSize = EMPTY_WRITE_RESPONSE_SIZE + writeResponseItemSize;
+                curRequestSize = EMPTY_WRITE_REQUEST_SIZE;
+                curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
                 curTags = new LinkedHashMap<>();
 
                 // Splitting of huge tags not yet implemented, throw an exception instead.

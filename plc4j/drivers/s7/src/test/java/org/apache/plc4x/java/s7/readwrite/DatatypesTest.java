@@ -33,7 +33,7 @@ public class DatatypesTest {
         CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
         //PlcConnectionManager plcConnectionManager = new DefaultPlcDriverManager();
 
-        while(true) {
+        /*while(true) {
             try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.57")) {
                 final PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL"); // true
@@ -74,7 +74,7 @@ public class DatatypesTest {
 
 
         }
-
+*/
 /*
         while(true) {
         try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.110.20.104?controller-type=S7_200&remote-rack=0&remote-slot=2")) {
@@ -146,18 +146,26 @@ public class DatatypesTest {
 
         }*/
 
-  /*       try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.57")) {
-                final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-                builder.addTagAddress("string", "%DB1:56:STRING","aaa"); // true
+         try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.57")) {
+                final PlcWriteRequest.Builder writeBuilder = connection.writeRequestBuilder();
+             writeBuilder.addTagAddress("string", "%DB1:56:STRING","ccccccccccccc"); // true
 
-                final PlcWriteRequest readRequest = builder.build();
+                final PlcWriteRequest writeRequest = writeBuilder.build();
 
-                final PlcWriteResponse readResponse = readRequest.execute().get();
+                final PlcWriteResponse writeResponse = writeRequest.execute().get();
 
-                System.out.println(readResponse.getTag("string"));
-            }*/
-/*
-         try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.47")) {
+                System.out.println(writeResponse.getTag("string"));
+             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
+             builder.addTagAddress("string", "%DB1:56:STRING"); // true
+
+             final PlcReadRequest readRequest = builder.build();
+
+             final PlcReadResponse readResponse = readRequest.execute().get();
+
+             System.out.println(readResponse.getAsPlcValue());
+            }
+
+         /*try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.47")) {
                 final PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 builder.addTagAddress("string", "%DB1:56:STRING"); // true
 
