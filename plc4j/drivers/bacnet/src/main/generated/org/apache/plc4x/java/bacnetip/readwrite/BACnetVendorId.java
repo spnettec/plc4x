@@ -350,7 +350,7 @@ public enum BACnetVendorId {
   GE_CONSUMER_INDUSTRIAL((int) 276, (int) 276, (String) "GE Consumer & Industrial"),
   FUNCTIONAL_DEVICES_INC((int) 277, (int) 277, (String) "Functional Devices, Inc."),
   STUDIOSC((int) 278, (int) 278, (String) "StudioSC"),
-  M_SYSTEM_CO_LTD((int) 279, (int) 279, (String) "M-System Co., Ltd."),
+  MGCOLTD((int) 279, (int) 279, (String) "MG CO., LTD."),
   YOKOTA_CO_LTD((int) 280, (int) 280, (String) "Yokota Co., Ltd."),
   HITRANSE_TECHNOLOGY_COLTD((int) 281, (int) 281, (String) "Hitranse Technology Co., LTD"),
   VIGILENT_CORPORATION((int) 282, (int) 282, (String) "Vigilent Corporation"),
@@ -1765,6 +1765,16 @@ public enum BACnetVendorId {
   ACACIA_GREEN_TECHNOLOGIES_LTD((int) 1537, (int) 1537, (String) "Acacia Green Technologies Ltd"),
   DEGREE_ANALYTICS((int) 1538, (int) 1538, (String) "Degree Analytics"),
   ROLTEK_TEKNOLOJIAS((int) 1539, (int) 1539, (String) "Roltek Teknoloji A.S."),
+  DIGITAL_CONTROL_TECHNOLOGY_LIMITED(
+      (int) 1540, (int) 1540, (String) "Digital Control Technology Limited"),
+  KENTIMAAB((int) 1541, (int) 1541, (String) "Kentima AB"),
+  PERGAMON_PERCEPTIVE_TECHNOLOGIES(
+      (int) 1542, (int) 1542, (String) "Pergamon Perceptive Technologies"),
+  PREFECT_CONTROLS_LTD((int) 1543, (int) 1543, (String) "Prefect Controls Ltd."),
+  SEN_TECH_CORPORATION((int) 1544, (int) 1544, (String) "SenTech Corporation"),
+  SS_REGELTECHNIK_GMBH((int) 1545, (int) 1545, (String) "S+S Regeltechnik GmbH"),
+  AIR_BOX_INC((int) 1546, (int) 1546, (String) "AirBox, Inc."),
+  RVE((int) 1547, (int) 1547, (String) "RVE"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
