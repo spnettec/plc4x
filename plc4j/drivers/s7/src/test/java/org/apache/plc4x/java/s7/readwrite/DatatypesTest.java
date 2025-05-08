@@ -18,13 +18,9 @@
  */
 package org.apache.plc4x.java.s7.readwrite;
 
-import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 
 public class DatatypesTest {
@@ -146,24 +142,100 @@ public class DatatypesTest {
 
         }*/
 
-         try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.57")) {
-                final PlcWriteRequest.Builder writeBuilder = connection.writeRequestBuilder();
+        try (PlcConnection connection = plcConnectionManager.getConnection(
+                "s7://10.96.110.103?remote-rack=0&remote-slot=1")) {
+                /*final PlcWriteRequest.Builder writeBuilder = connection.writeRequestBuilder();
              writeBuilder.addTagAddress("string", "%DB1:56:STRING","ccccccccccccc"); // true
 
                 final PlcWriteRequest writeRequest = writeBuilder.build();
 
                 final PlcWriteResponse writeResponse = writeRequest.execute().get();
 
-                System.out.println(writeResponse.getTag("string"));
-             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-             builder.addTagAddress("string", "%DB1:56:STRING"); // true
+                System.out.println(writeResponse.getTag("string"));*/
+            final PlcReadRequest.Builder builder = connection.readRequestBuilder();
+            builder.addTagAddress("string1", "%DB90:0.0:BOOL");
+            builder.addTagAddress("string2", "%DB90:96:REAL");
+            builder.addTagAddress("string3", "%DB90:156:REAL");
+            builder.addTagAddress("string4", "%DB90:92:REAL");
+            builder.addTagAddress("string5", "%DB90:10:INT");
+            builder.addTagAddress("string6", "%DB90:88:REAL");
+            builder.addTagAddress("string7", "%DB90:392:STRING(30)");
+            builder.addTagAddress("string8", "%DB90:8:INT");
+            builder.addTagAddress("string9", "%DB90:0.2:BOOL");
+            builder.addTagAddress("string10", "%DB90:0.3:BOOL");
+            builder.addTagAddress("string11", "%DB90:100:REAL");
+            builder.addTagAddress("string12", "%DB90:104:REAL");
+            builder.addTagAddress("string13", "%DB90:108:REAL");
+            builder.addTagAddress("string14", "%DB90:112:REAL");
+            builder.addTagAddress("string15", "%DB90:116:REAL");
+            builder.addTagAddress("string16", "%DB90:120:REAL");
+            builder.addTagAddress("string17", "%DB90:72:REAL");
+            builder.addTagAddress("string18", "%DB90:80:REAL");
+            builder.addTagAddress("string19", "%DB90:84:REAL");
+            builder.addTagAddress("string20", "%DB90:76:REAL");
+            builder.addTagAddress("string21", "%DB90:0.4:BOOL");
+            builder.addTagAddress("string22", "%DB90:424:STRING(30)");
+            builder.addTagAddress("string23", "%DB90:456:STRING(30)");
+            builder.addTagAddress("string24", "%DB90:488:STRING(30)");
+            builder.addTagAddress("string25", "%DB90:520:STRING(30)");
+            builder.addTagAddress("string26", "%DB90:336:DWORD");
+            builder.addTagAddress("string27", "%DB90:328:DWORD");
+            builder.addTagAddress("string28", "%DB90:124:REAL");
+            builder.addTagAddress("string29", "%DB90:128:REAL");
+            builder.addTagAddress("string30", "%DB90:132:REAL");
+            builder.addTagAddress("string31", "%DB90:136:REAL");
+            builder.addTagAddress("string32", "%DB90:140:REAL");
+            builder.addTagAddress("string33", "%DB90:144:REAL");
+            builder.addTagAddress("string34", "%DB90:148:REAL");
+            builder.addTagAddress("string35", "%DB90:152:REAL");
+            builder.addTagAddress("string36", "%DB90:160:REAL");
+            builder.addTagAddress("string37", "%DB90:0.1:BOOL");
+            builder.addTagAddress("string38", "%DB90:332:DWORD");
+            builder.addTagAddress("string39", "%DB90:4.0:BOOL");
+            builder.addTagAddress("string40", "%DB90:224:REAL");
+            builder.addTagAddress("string41", "%DB90:284:REAL");
+            builder.addTagAddress("string42", "%DB90:220:REAL");
+            builder.addTagAddress("string43", "%DB90:42:INT");
+            builder.addTagAddress("string44", "%DB90:216:REAL");
+            builder.addTagAddress("string45", "%DB90:648:STRING(30)");
+            builder.addTagAddress("string46", "%DB90:40:INT");
+            builder.addTagAddress("string47", "%DB90:4.2:BOOL");
+            builder.addTagAddress("string48", "%DB90:4.3:BOOL");
+            builder.addTagAddress("string49", "%DB90:228:REAL");
+            builder.addTagAddress("string50", "%DB90:232:REAL");
+            builder.addTagAddress("string51", "%DB90:236:REAL");
+            builder.addTagAddress("string52", "%DB90:240:REAL");
+            builder.addTagAddress("string53", "%DB90:244:REAL");
+            builder.addTagAddress("string54", "%DB90:248:REAL");
+            builder.addTagAddress("string55", "%DB90:200:REAL");
+            builder.addTagAddress("string56", "%DB90:208:REAL");
+            builder.addTagAddress("string57", "%DB90:212:REAL");
+            builder.addTagAddress("string58", "%DB90:204:REAL");
+            builder.addTagAddress("string59", "%DB90:4.4:BOOL");
+            builder.addTagAddress("string60", "%DB90:680:STRING(30)");
+            builder.addTagAddress("string61", "%DB90:712:STRING(30)");
+            builder.addTagAddress("string62", "%DB90:744:STRING(30)");
+            builder.addTagAddress("string63", "%DB90:776:STRING(30)");
+            builder.addTagAddress("string64", "%DB90:368:DWORD");
+            builder.addTagAddress("string65", "%DB90:360:DWORD");
+            builder.addTagAddress("string66", "%DB90:252:REAL");
+            builder.addTagAddress("string67", "%DB90:256:REAL");
+            builder.addTagAddress("string68", "%DB90:260:REAL");
+            builder.addTagAddress("string69", "%DB90:264:REAL");
+            builder.addTagAddress("string70", "%DB90:268:REAL");
+            builder.addTagAddress("string71", "%DB90:272:REAL");
+            builder.addTagAddress("string72", "%DB90:276:REAL");
+            builder.addTagAddress("string73", "%DB90:280:REAL");
+            builder.addTagAddress("string74", "%DB90:288:REAL");
+            builder.addTagAddress("string75", "%DB90:4.1:BOOL");
+            builder.addTagAddress("string76", "%DB90:364:DWORD");
 
-             final PlcReadRequest readRequest = builder.build();
+            final PlcReadRequest readRequest = builder.build();
 
-             final PlcReadResponse readResponse = readRequest.execute().get();
+            final PlcReadResponse readResponse = readRequest.execute().get();
 
-             System.out.println(readResponse.getAsPlcValue());
-            }
+            System.out.println(readResponse.getAsPlcValue());
+        }
 
          /*try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.47")) {
                 final PlcReadRequest.Builder builder = connection.readRequestBuilder();
@@ -175,7 +247,6 @@ public class DatatypesTest {
 
                 System.out.println(readResponse.getAsPlcValue());
             }*/
-
 
     }
 

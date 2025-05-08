@@ -136,13 +136,13 @@ public class S7Optimizer extends BaseOptimizer {
                 }
 
                 // Reset the size and item lists.
-                curRequestSize = EMPTY_READ_REQUEST_SIZE;
-                curResponseSize = EMPTY_READ_RESPONSE_SIZE;
+                curRequestSize = EMPTY_READ_REQUEST_SIZE + readRequestItemSize;
+                curResponseSize = EMPTY_READ_RESPONSE_SIZE + readResponseItemSize;
                 curTagItems = new LinkedHashMap<>();
                 PlcTagItem<PlcTag> tagItem = new DefaultPlcTagItem<>(tag);
                 // Splitting of huge tags not yet implemented, throw an exception instead.
-                if (((curRequestSize + readRequestItemSize) > s7DriverContext.getPduSize()) ||
-                    ((curResponseSize + readResponseItemSize) > s7DriverContext.getPduSize())) {
+                if (((curRequestSize) > s7DriverContext.getPduSize()) ||
+                    ((curResponseSize) > s7DriverContext.getPduSize())) {
                     processedRequests.add(new LargeTagPlcReadRequest(tagName, tagItem));
                     //throw new PlcRuntimeException("Tag size exceeds maximum payload for one item.");
                 } else {
@@ -221,13 +221,13 @@ public class S7Optimizer extends BaseOptimizer {
                 }
 
                 // Reset the size and item lists.
-                curRequestSize = EMPTY_WRITE_REQUEST_SIZE;
-                curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
+                curRequestSize = EMPTY_WRITE_REQUEST_SIZE + writeRequestItemSize;
+                curResponseSize = EMPTY_WRITE_RESPONSE_SIZE + writeResponseItemSize;
                 curTags = new LinkedHashMap<>();
 
                 // Splitting of huge tags not yet implemented, throw an exception instead.
-                if (((curRequestSize + writeRequestItemSize) > s7DriverContext.getPduSize()) ||
-                    ((curResponseSize + writeResponseItemSize) > s7DriverContext.getPduSize())) {
+                if (((curRequestSize) > s7DriverContext.getPduSize()) ||
+                    ((curResponseSize) > s7DriverContext.getPduSize())) {
                     processedRequests.add(new LargeTagPlcWriteRequest(tagName,value,new DefaultPlcTagItem<>(tag)));
                     //throw new PlcRuntimeException("Tag size exceeds maximum payload for one item.");
                 } else {

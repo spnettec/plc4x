@@ -846,9 +846,12 @@ public enum KnxManufacturer {
   M_PRADO_EUROPE_BV((int) 723, (int) 784, (String) "prado europe bv"),
   M_E2S_GBR((int) 724, (int) 785, (String) "e2s GbR"),
   M_UNITLINK((int) 725, (int) 786, (String) "UnitLink"),
-  M_ABB___RESERVED((int) 726, (int) 43954, (String) "ABB - reserved"),
+  M_ONNA((int) 726, (int) 787, (String) "ONNA"),
+  M_CENTERSVET_LLC((int) 727, (int) 788, (String) "CENTERSVET LLC"),
+  M_ADVECO_TECHNOLOGY_CO___LTD_((int) 728, (int) 789, (String) "Adveco Technology Co., Ltd."),
+  M_ABB___RESERVED((int) 729, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 727, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 730, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

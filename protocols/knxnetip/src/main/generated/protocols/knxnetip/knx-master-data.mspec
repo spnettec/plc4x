@@ -1475,8 +1475,11 @@
     ['723' M_PRADO_EUROPE_BV ['784', '"prado europe bv"']]
     ['724' M_E2S_GBR ['785', '"e2s GbR"']]
     ['725' M_UNITLINK ['786', '"UnitLink"']]
-    ['726' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['727' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['726' M_ONNA ['787', '"ONNA"']]
+    ['727' M_CENTERSVET_LLC ['788', '"CENTERSVET LLC"']]
+    ['728' M_ADVECO_TECHNOLOGY_CO___LTD_ ['789', '"Adveco Technology Co., Ltd."']]
+    ['729' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['730' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

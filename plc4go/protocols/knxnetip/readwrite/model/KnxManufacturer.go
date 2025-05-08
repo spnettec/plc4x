@@ -769,8 +769,11 @@ const (
 	KnxManufacturer_M_PRADO_EUROPE_BV                                    KnxManufacturer = 723
 	KnxManufacturer_M_E2S_GBR                                            KnxManufacturer = 724
 	KnxManufacturer_M_UNITLINK                                           KnxManufacturer = 725
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 726
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 727
+	KnxManufacturer_M_ONNA                                               KnxManufacturer = 726
+	KnxManufacturer_M_CENTERSVET_LLC                                     KnxManufacturer = 727
+	KnxManufacturer_M_ADVECO_TECHNOLOGY_CO___LTD_                        KnxManufacturer = 728
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 729
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 730
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1504,6 +1507,9 @@ func init() {
 		KnxManufacturer_M_PRADO_EUROPE_BV,
 		KnxManufacturer_M_E2S_GBR,
 		KnxManufacturer_M_UNITLINK,
+		KnxManufacturer_M_ONNA,
+		KnxManufacturer_M_CENTERSVET_LLC,
+		KnxManufacturer_M_ADVECO_TECHNOLOGY_CO___LTD_,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4301,15 +4307,27 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 726:
 		{ /* '726' */
-			return 43954
+			return 787
 		}
 	case 727:
 		{ /* '727' */
-			return 43959
+			return 788
+		}
+	case 728:
+		{ /* '728' */
+			return 789
+		}
+	case 729:
+		{ /* '729' */
+			return 43954
 		}
 	case 73:
 		{ /* '73' */
 			return 112
+		}
+	case 730:
+		{ /* '730' */
+			return 43959
 		}
 	case 74:
 		{ /* '74' */
@@ -7231,15 +7249,27 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 726:
 		{ /* '726' */
-			return "ABB - reserved"
+			return "ONNA"
 		}
 	case 727:
 		{ /* '727' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "CENTERSVET LLC"
+		}
+	case 728:
+		{ /* '728' */
+			return "Adveco Technology Co., Ltd."
+		}
+	case 729:
+		{ /* '729' */
+			return "ABB - reserved"
 		}
 	case 73:
 		{ /* '73' */
 			return "AGFEO"
+		}
+	case 730:
+		{ /* '730' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 74:
 		{ /* '74' */
@@ -8765,11 +8795,17 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 725:
 		return KnxManufacturer_M_UNITLINK, true
 	case 726:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_ONNA, true
 	case 727:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_CENTERSVET_LLC, true
+	case 728:
+		return KnxManufacturer_M_ADVECO_TECHNOLOGY_CO___LTD_, true
+	case 729:
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case 73:
 		return KnxManufacturer_M_AGFEO, true
+	case 730:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 74:
 		return KnxManufacturer_M_ZENNIO, true
 	case 75:
@@ -10226,12 +10262,18 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_E2S_GBR, true
 	case "M_UNITLINK":
 		return KnxManufacturer_M_UNITLINK, true
+	case "M_ONNA":
+		return KnxManufacturer_M_ONNA, true
+	case "M_CENTERSVET_LLC":
+		return KnxManufacturer_M_CENTERSVET_LLC, true
+	case "M_ADVECO_TECHNOLOGY_CO___LTD_":
+		return KnxManufacturer_M_ADVECO_TECHNOLOGY_CO___LTD_, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
-	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_AGFEO":
 		return KnxManufacturer_M_AGFEO, true
+	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_ZENNIO":
 		return KnxManufacturer_M_ZENNIO, true
 	case "M_TAPKO_TECHNOLOGIES":
@@ -11760,12 +11802,18 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_E2S_GBR"
 	case KnxManufacturer_M_UNITLINK:
 		return "M_UNITLINK"
+	case KnxManufacturer_M_ONNA:
+		return "M_ONNA"
+	case KnxManufacturer_M_CENTERSVET_LLC:
+		return "M_CENTERSVET_LLC"
+	case KnxManufacturer_M_ADVECO_TECHNOLOGY_CO___LTD_:
+		return "M_ADVECO_TECHNOLOGY_CO___LTD_"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
-	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
-		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_AGFEO:
 		return "M_AGFEO"
+	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
+		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_ZENNIO:
 		return "M_ZENNIO"
 	case KnxManufacturer_M_TAPKO_TECHNOLOGIES:
