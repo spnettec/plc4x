@@ -1171,7 +1171,7 @@
     ['419' M_ONTROL ['471', '"Ontrol"']]
     ['420' M_STARNET ['472', '"Starnet"']]
     ['421' M_BETA_CAVI ['473', '"BETA CAVI"']]
-    ['422' M_EASEMORE ['474', '"EaseMore"']]
+    ['422' M_HANGZHOU_YIYUE_TECHNOLOGY_CO___LTD_ ['474', '"Hangzhou YiYue Technology Co., Ltd."']]
     ['423' M_VIVALDI_SRL ['475', '"Vivaldi srl"']]
     ['424' M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI ['476', '"Gree Electric Appliances,Inc. of Zhuhai"']]
     ['425' M_HWISCON ['477', '"HWISCON"']]
@@ -1478,8 +1478,11 @@
     ['726' M_ONNA ['787', '"ONNA"']]
     ['727' M_CENTERSVET_LLC ['788', '"CENTERSVET LLC"']]
     ['728' M_ADVECO_TECHNOLOGY_CO___LTD_ ['789', '"Adveco Technology Co., Ltd."']]
-    ['729' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['730' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['729' M_FR__LUERSSEN_WERFT ['790', '"Fr. Lürssen Werft"']]
+    ['730' M_MYLYR ['791', '"mylyr"']]
+    ['731' M_HYUNDAI_HT ['792', '"HYUNDAI HT"']]
+    ['732' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['733' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

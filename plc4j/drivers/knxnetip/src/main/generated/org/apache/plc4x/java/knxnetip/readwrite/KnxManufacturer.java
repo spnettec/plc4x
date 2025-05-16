@@ -477,7 +477,8 @@ public enum KnxManufacturer {
   M_ONTROL((int) 419, (int) 471, (String) "Ontrol"),
   M_STARNET((int) 420, (int) 472, (String) "Starnet"),
   M_BETA_CAVI((int) 421, (int) 473, (String) "BETA CAVI"),
-  M_EASEMORE((int) 422, (int) 474, (String) "EaseMore"),
+  M_HANGZHOU_YIYUE_TECHNOLOGY_CO___LTD_(
+      (int) 422, (int) 474, (String) "Hangzhou YiYue Technology Co., Ltd."),
   M_VIVALDI_SRL((int) 423, (int) 475, (String) "Vivaldi srl"),
   M_GREE_ELECTRIC_APPLIANCES_INC__OF_ZHUHAI(
       (int) 424, (int) 476, (String) "Gree Electric Appliances,Inc. of Zhuhai"),
@@ -849,9 +850,12 @@ public enum KnxManufacturer {
   M_ONNA((int) 726, (int) 787, (String) "ONNA"),
   M_CENTERSVET_LLC((int) 727, (int) 788, (String) "CENTERSVET LLC"),
   M_ADVECO_TECHNOLOGY_CO___LTD_((int) 728, (int) 789, (String) "Adveco Technology Co., Ltd."),
-  M_ABB___RESERVED((int) 729, (int) 43954, (String) "ABB - reserved"),
+  M_FR__LUERSSEN_WERFT((int) 729, (int) 790, (String) "Fr. Lürssen Werft"),
+  M_MYLYR((int) 730, (int) 791, (String) "mylyr"),
+  M_HYUNDAI_HT((int) 731, (int) 792, (String) "HYUNDAI HT"),
+  M_ABB___RESERVED((int) 732, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 730, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 733, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
