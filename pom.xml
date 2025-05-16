@@ -123,7 +123,7 @@
     <commons-math3.version>3.6.1</commons-math3.version>
     <commons-net.version>3.11.1</commons-net.version>
     <commons-text.version>1.13.0</commons-text.version>
-    <commons-pool2.version>2.12.0</commons-pool2.version>
+    <commons-pool2.version>2.12.1</commons-pool2.version>
     <commons-csv.version>1.14.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
     <equalsverifier.version>3.19.1</equalsverifier.version>
@@ -169,7 +169,7 @@
     <enable-all-tests>false</enable-all-tests>
     <excluded-test-groups>require-all-tests</excluded-test-groups>
     <reflow.skin.version>2.3.3</reflow.skin.version>
-    <h2.version>2.2.224</h2.version>
+    <h2.version>2.3.232</h2.version>
   </properties>
 
   <modules>
