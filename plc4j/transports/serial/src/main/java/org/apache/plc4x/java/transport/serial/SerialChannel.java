@@ -349,12 +349,16 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                 SerialPollingSelector selector = (SerialPollingSelector) method.invoke(eventLoop);
 
                 // Register the channel
-                serialSelectionKey = (SerialSelectionKey) ((SerialChannel) promise.channel()).javaChannel().register(selector, 0, SerialChannel.this);
+                SerialChannel.this.serialSelectionKey = (SerialSelectionKey) ((SerialChannel) promise.channel()).javaChannel().register(selector, 0, SerialChannel.this);
 
                 // Set selection key
-                final Field selectionKeyField = AbstractNioChannel.class.getDeclaredField("selectionKey");
-                selectionKeyField.setAccessible(true);
-                selectionKeyField.set(SerialChannel.this, serialSelectionKey);
+                try {
+                    final Field selectionKeyField = AbstractNioChannel.class.getDeclaredField("selectionKey");
+                    selectionKeyField.setAccessible(true);
+                    selectionKeyField.set(SerialChannel.this, serialSelectionKey);
+                }catch (NoSuchFieldException e){
+
+                }
 
                 // Set event loop (again, via reflection)
                 final Field loop = AbstractChannel.class.getDeclaredField("eventLoop");
