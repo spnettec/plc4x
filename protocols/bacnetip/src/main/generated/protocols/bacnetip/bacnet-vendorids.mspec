@@ -1544,7 +1544,7 @@
   ['1530' BUILDING_LOGIX ['1530', '"BuildingLogiX"']]
   ['1531' IFESCA_GMBH ['1531', '"Ifesca GmbH"']]
   ['1532' FELLOWES_INC ['1532', '"Fellowes Inc."']]
-  ['1533' BLANK ['1533', '"BLANK"']]
+  ['1533' CALEFFI_SPA ['1533', '"Caleffi S.p.A."']]
   ['1534' JDRF_ELECTROMAG ['1534', '"JDRF Electromag"']]
   ['1535' REDWIRE_LABS ['1535', '"Redwire Labs"']]
   ['1536' WECON_TECHNOLOGY_CO_LTD ['1536', '"Wecon Technology Co., Ltd."']]

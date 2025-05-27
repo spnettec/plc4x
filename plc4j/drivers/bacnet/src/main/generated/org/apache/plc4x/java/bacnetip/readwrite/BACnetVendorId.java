@@ -1758,7 +1758,7 @@ public enum BACnetVendorId {
   BUILDING_LOGIX((int) 1530, (int) 1530, (String) "BuildingLogiX"),
   IFESCA_GMBH((int) 1531, (int) 1531, (String) "Ifesca GmbH"),
   FELLOWES_INC((int) 1532, (int) 1532, (String) "Fellowes Inc."),
-  BLANK((int) 1533, (int) 1533, (String) "BLANK"),
+  CALEFFI_SPA((int) 1533, (int) 1533, (String) "Caleffi S.p.A."),
   JDRF_ELECTROMAG((int) 1534, (int) 1534, (String) "JDRF Electromag"),
   REDWIRE_LABS((int) 1535, (int) 1535, (String) "Redwire Labs"),
   WECON_TECHNOLOGY_CO_LTD((int) 1536, (int) 1536, (String) "Wecon Technology Co., Ltd."),

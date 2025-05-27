@@ -1481,8 +1481,10 @@
     ['729' M_FR__LUERSSEN_WERFT ['790', '"Fr. Lürssen Werft"']]
     ['730' M_MYLYR ['791', '"mylyr"']]
     ['731' M_HYUNDAI_HT ['792', '"HYUNDAI HT"']]
-    ['732' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['733' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['732' M_GUANGDONG_YUEJINGRUN_TECHNOLOGY_CO__LTD ['793', '"Guangdong Yuejingrun Technology Co.,Ltd"']]
+    ['733' M_SMATEK_ELECTRONICS_LIMITED ['794', '"SMATEK ELECTRONICS LIMITED"']]
+    ['734' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['735' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

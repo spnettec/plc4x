@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
+
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionRequest;
@@ -83,6 +84,8 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
 
     protected int slicePing = 0;
     protected int sliceRetryTime = 0;
+
+    protected int retrysPing = 0;
 
     public S7HPlcConnection(
         boolean canPing,
@@ -145,13 +148,13 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     getChannelHandler(sessionSetupCompleteFuture,
                         sessionDisconnectCompleteFuture,
                         sessionDiscoveredCompleteFuture));
-
+                channel.pipeline().removeLast();
                 channel.pipeline().addFirst("Multiplexor", s7hmux);
 
             }
 
             ((S7HMux) s7hmux).setEmbededhannel(channel, configuration);
-//            channel.pipeline().addFirst((new LoggingHandler("CEOS"))); 
+            //channel.pipeline().addFirst((new LoggingHandler("CEOS")));
             /*
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
@@ -175,9 +178,9 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                 }
             }
 
-            scf = executor.scheduleAtFixedRate(this, 1, 1, TimeUnit.SECONDS); 
-            
-            /*            
+            scf = executor.scheduleAtFixedRate(this, 1, 1, TimeUnit.SECONDS);
+
+            /*
             primary_channel.closeFuture().addListener(future -> {/watch?v=TmENMZFUU_0&list=RDlBlx1JffMQ4&index=27
                 if (!sessionDiscoveredCompleteFuture.isDone()) {
                     //Do Nothing
@@ -188,7 +191,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     }
 
                 }
-            });            
+            });
             */
 
             // Send an event to the pipeline telling the Protocol filters what's going on.
@@ -203,15 +206,18 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             connected = true;
             //((EmbeddedChannel) channel).runPendingTasks();
         } catch (InterruptedException e) {
+            logger.error(e.getMessage());
             Thread.currentThread().interrupt();
             throw new PlcConnectionException(e);
         } catch (ExecutionException e) {
+            logger.error(e.getMessage());
             throw new PlcConnectionException(e);
         }
     }
 
     @Override
     public void close() throws PlcConnectionException {
+        logger.info("Close connection.");
         if (closed) {
             return;
         }
@@ -226,6 +232,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     primaryChannel.pipeline().remove(MULTIPLEXER);
                     primaryChannel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                     primaryChannel.eventLoop().shutdownGracefully();
+                    logger.info("Close primary channel.");
                 } catch (Exception ex) {
                     logger.info(ex.toString());
                 }
@@ -237,8 +244,10 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                 secondaryChannel.pipeline().remove(MULTIPLEXER);
                 secondaryChannel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                 secondaryChannel.eventLoop().shutdownGracefully();
+                logger.info("Close secondary channel.");
             }
         }
+
 
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
         scf.cancel(true);
@@ -248,7 +257,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
 
     @Override
     public boolean isConnected() {
-        return channel.attr(IS_CONNECTED).get();
+        return !closed && channel.attr(IS_CONNECTED).get();
     }
 
     /**
@@ -268,7 +277,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             primaryChannel = channelFactory.createChannel(new LoggingHandler(LogLevel.TRACE));
         } catch (Exception ex) {
             primaryChannel = null;
-            logger.info(ex.toString());
+            logger.error("doPrimaryTcpConnections: " + ex.toString());
         }
         if (primaryChannel != null) {
             if (primaryChannel.isActive()) {
@@ -283,7 +292,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             secondaryChannel = secondaryChannelFactory.createChannel(new LoggingHandler(LogLevel.TRACE));
         } catch (Exception ex) {
             secondaryChannel = null;
-            logger.info(ex.toString());
+            logger.info("doSecondaryTcpConnections(): " + ex.toString());
         }
         if (secondaryChannel != null) {
             if (secondaryChannel.isActive()) {
@@ -424,6 +433,11 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     logger.debug("PING: " + readResponse.getResponseCode("value"));
                 } catch (Exception ex) {
                     logger.info("PING: " + ex);
+                    retrysPing++;
+                    if (retrysPing > channel.attr(S7HMuxImpl.RETRY_TIME).get()){
+                        channel.attr(IS_CONNECTED).set(false);
+                        retrysPing = 0;
+                    }
                 }
             });
         }
@@ -435,7 +449,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         if (!isSubscribeSupported()) {
             throw new PlcUnsupportedOperationException("The connection does not support subscription");
         }
-        return new S7PlcSubscriptionRequest.Builder(this, getPlcTagHandler());        
-    }        
+        return new S7PlcSubscriptionRequest.Builder(this, getPlcTagHandler());
+    }
 
 }

@@ -1566,7 +1566,7 @@ const (
 	BACnetVendorId_BUILDING_LOGIX                                                               BACnetVendorId = 1530
 	BACnetVendorId_IFESCA_GMBH                                                                  BACnetVendorId = 1531
 	BACnetVendorId_FELLOWES_INC                                                                 BACnetVendorId = 1532
-	BACnetVendorId_BLANK                                                                        BACnetVendorId = 1533
+	BACnetVendorId_CALEFFI_SPA                                                                  BACnetVendorId = 1533
 	BACnetVendorId_JDRF_ELECTROMAG                                                              BACnetVendorId = 1534
 	BACnetVendorId_REDWIRE_LABS                                                                 BACnetVendorId = 1535
 	BACnetVendorId_WECON_TECHNOLOGY_CO_LTD                                                      BACnetVendorId = 1536
@@ -3112,7 +3112,7 @@ func init() {
 		BACnetVendorId_BUILDING_LOGIX,
 		BACnetVendorId_IFESCA_GMBH,
 		BACnetVendorId_FELLOWES_INC,
-		BACnetVendorId_BLANK,
+		BACnetVendorId_CALEFFI_SPA,
 		BACnetVendorId_JDRF_ELECTROMAG,
 		BACnetVendorId_REDWIRE_LABS,
 		BACnetVendorId_WECON_TECHNOLOGY_CO_LTD,
@@ -11677,7 +11677,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 1533:
 		{ /* '1533' */
-			return "BLANK"
+			return "Caleffi S.p.A."
 		}
 	case 1534:
 		{ /* '1534' */
@@ -16665,7 +16665,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 1532:
 		return BACnetVendorId_FELLOWES_INC, true
 	case 1533:
-		return BACnetVendorId_BLANK, true
+		return BACnetVendorId_CALEFFI_SPA, true
 	case 1534:
 		return BACnetVendorId_JDRF_ELECTROMAG, true
 	case 1535:
@@ -19748,8 +19748,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_IFESCA_GMBH, true
 	case "FELLOWES_INC":
 		return BACnetVendorId_FELLOWES_INC, true
-	case "BLANK":
-		return BACnetVendorId_BLANK, true
+	case "CALEFFI_SPA":
+		return BACnetVendorId_CALEFFI_SPA, true
 	case "JDRF_ELECTROMAG":
 		return BACnetVendorId_JDRF_ELECTROMAG, true
 	case "REDWIRE_LABS":
@@ -22904,8 +22904,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "IFESCA_GMBH"
 	case BACnetVendorId_FELLOWES_INC:
 		return "FELLOWES_INC"
-	case BACnetVendorId_BLANK:
-		return "BLANK"
+	case BACnetVendorId_CALEFFI_SPA:
+		return "CALEFFI_SPA"
 	case BACnetVendorId_JDRF_ELECTROMAG:
 		return "JDRF_ELECTROMAG"
 	case BACnetVendorId_REDWIRE_LABS:
