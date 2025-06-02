@@ -777,8 +777,13 @@ const (
 	KnxManufacturer_M_HYUNDAI_HT                                         KnxManufacturer = 731
 	KnxManufacturer_M_GUANGDONG_YUEJINGRUN_TECHNOLOGY_CO__LTD            KnxManufacturer = 732
 	KnxManufacturer_M_SMATEK_ELECTRONICS_LIMITED                         KnxManufacturer = 733
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 734
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 735
+	KnxManufacturer_M_ANYTEK_ELECTRONIC_TECHNOLOGY_SZ_CO___LTD_          KnxManufacturer = 734
+	KnxManufacturer_M_MORELINKS_SMART_HOME                               KnxManufacturer = 735
+	KnxManufacturer_M_CIRTX_GMBH                                         KnxManufacturer = 736
+	KnxManufacturer_M_QLITE                                              KnxManufacturer = 737
+	KnxManufacturer_M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD                   KnxManufacturer = 738
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 739
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 740
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1520,6 +1525,11 @@ func init() {
 		KnxManufacturer_M_HYUNDAI_HT,
 		KnxManufacturer_M_GUANGDONG_YUEJINGRUN_TECHNOLOGY_CO__LTD,
 		KnxManufacturer_M_SMATEK_ELECTRONICS_LIMITED,
+		KnxManufacturer_M_ANYTEK_ELECTRONIC_TECHNOLOGY_SZ_CO___LTD_,
+		KnxManufacturer_M_MORELINKS_SMART_HOME,
+		KnxManufacturer_M_CIRTX_GMBH,
+		KnxManufacturer_M_QLITE,
+		KnxManufacturer_M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4353,15 +4363,35 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 734:
 		{ /* '734' */
-			return 43954
+			return 795
 		}
 	case 735:
 		{ /* '735' */
-			return 43959
+			return 796
+		}
+	case 736:
+		{ /* '736' */
+			return 797
+		}
+	case 737:
+		{ /* '737' */
+			return 798
+		}
+	case 738:
+		{ /* '738' */
+			return 799
+		}
+	case 739:
+		{ /* '739' */
+			return 43954
 		}
 	case 74:
 		{ /* '74' */
 			return 113
+		}
+	case 740:
+		{ /* '740' */
+			return 43959
 		}
 	case 75:
 		{ /* '75' */
@@ -7315,15 +7345,35 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 734:
 		{ /* '734' */
-			return "ABB - reserved"
+			return "Anytek Electronic Technology (SZ) Co., Ltd."
 		}
 	case 735:
 		{ /* '735' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "Morelinks Smart Home"
+		}
+	case 736:
+		{ /* '736' */
+			return "Cirtx GmbH"
+		}
+	case 737:
+		{ /* '737' */
+			return "QLITE"
+		}
+	case 738:
+		{ /* '738' */
+			return "Zhongshan Illus LIghting Co.,Ltd"
+		}
+	case 739:
+		{ /* '739' */
+			return "ABB - reserved"
 		}
 	case 74:
 		{ /* '74' */
 			return "Zennio"
+		}
+	case 740:
+		{ /* '740' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 75:
 		{ /* '75' */
@@ -8863,11 +8913,21 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 733:
 		return KnxManufacturer_M_SMATEK_ELECTRONICS_LIMITED, true
 	case 734:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_ANYTEK_ELECTRONIC_TECHNOLOGY_SZ_CO___LTD_, true
 	case 735:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_MORELINKS_SMART_HOME, true
+	case 736:
+		return KnxManufacturer_M_CIRTX_GMBH, true
+	case 737:
+		return KnxManufacturer_M_QLITE, true
+	case 738:
+		return KnxManufacturer_M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD, true
+	case 739:
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case 74:
 		return KnxManufacturer_M_ZENNIO, true
+	case 740:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 75:
 		return KnxManufacturer_M_TAPKO_TECHNOLOGIES, true
 	case 76:
@@ -10340,12 +10400,22 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_GUANGDONG_YUEJINGRUN_TECHNOLOGY_CO__LTD, true
 	case "M_SMATEK_ELECTRONICS_LIMITED":
 		return KnxManufacturer_M_SMATEK_ELECTRONICS_LIMITED, true
+	case "M_ANYTEK_ELECTRONIC_TECHNOLOGY_SZ_CO___LTD_":
+		return KnxManufacturer_M_ANYTEK_ELECTRONIC_TECHNOLOGY_SZ_CO___LTD_, true
+	case "M_MORELINKS_SMART_HOME":
+		return KnxManufacturer_M_MORELINKS_SMART_HOME, true
+	case "M_CIRTX_GMBH":
+		return KnxManufacturer_M_CIRTX_GMBH, true
+	case "M_QLITE":
+		return KnxManufacturer_M_QLITE, true
+	case "M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD":
+		return KnxManufacturer_M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
-	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_ZENNIO":
 		return KnxManufacturer_M_ZENNIO, true
+	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_TAPKO_TECHNOLOGIES":
 		return KnxManufacturer_M_TAPKO_TECHNOLOGIES, true
 	case "M_HDL":
@@ -11890,12 +11960,22 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_GUANGDONG_YUEJINGRUN_TECHNOLOGY_CO__LTD"
 	case KnxManufacturer_M_SMATEK_ELECTRONICS_LIMITED:
 		return "M_SMATEK_ELECTRONICS_LIMITED"
+	case KnxManufacturer_M_ANYTEK_ELECTRONIC_TECHNOLOGY_SZ_CO___LTD_:
+		return "M_ANYTEK_ELECTRONIC_TECHNOLOGY_SZ_CO___LTD_"
+	case KnxManufacturer_M_MORELINKS_SMART_HOME:
+		return "M_MORELINKS_SMART_HOME"
+	case KnxManufacturer_M_CIRTX_GMBH:
+		return "M_CIRTX_GMBH"
+	case KnxManufacturer_M_QLITE:
+		return "M_QLITE"
+	case KnxManufacturer_M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD:
+		return "M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
-	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
-		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_ZENNIO:
 		return "M_ZENNIO"
+	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
+		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_TAPKO_TECHNOLOGIES:
 		return "M_TAPKO_TECHNOLOGIES"
 	case KnxManufacturer_M_HDL:

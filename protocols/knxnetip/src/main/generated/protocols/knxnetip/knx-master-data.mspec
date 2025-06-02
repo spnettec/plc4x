@@ -1483,8 +1483,13 @@
     ['731' M_HYUNDAI_HT ['792', '"HYUNDAI HT"']]
     ['732' M_GUANGDONG_YUEJINGRUN_TECHNOLOGY_CO__LTD ['793', '"Guangdong Yuejingrun Technology Co.,Ltd"']]
     ['733' M_SMATEK_ELECTRONICS_LIMITED ['794', '"SMATEK ELECTRONICS LIMITED"']]
-    ['734' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['735' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['734' M_ANYTEK_ELECTRONIC_TECHNOLOGY_SZ_CO___LTD_ ['795', '"Anytek Electronic Technology (SZ) Co., Ltd."']]
+    ['735' M_MORELINKS_SMART_HOME ['796', '"Morelinks Smart Home"']]
+    ['736' M_CIRTX_GMBH ['797', '"Cirtx GmbH"']]
+    ['737' M_QLITE ['798', '"QLITE"']]
+    ['738' M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD ['799', '"Zhongshan Illus LIghting Co.,Ltd"']]
+    ['739' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['740' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

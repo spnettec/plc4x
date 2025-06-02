@@ -856,9 +856,16 @@ public enum KnxManufacturer {
   M_GUANGDONG_YUEJINGRUN_TECHNOLOGY_CO__LTD(
       (int) 732, (int) 793, (String) "Guangdong Yuejingrun Technology Co.,Ltd"),
   M_SMATEK_ELECTRONICS_LIMITED((int) 733, (int) 794, (String) "SMATEK ELECTRONICS LIMITED"),
-  M_ABB___RESERVED((int) 734, (int) 43954, (String) "ABB - reserved"),
+  M_ANYTEK_ELECTRONIC_TECHNOLOGY_SZ_CO___LTD_(
+      (int) 734, (int) 795, (String) "Anytek Electronic Technology (SZ) Co., Ltd."),
+  M_MORELINKS_SMART_HOME((int) 735, (int) 796, (String) "Morelinks Smart Home"),
+  M_CIRTX_GMBH((int) 736, (int) 797, (String) "Cirtx GmbH"),
+  M_QLITE((int) 737, (int) 798, (String) "QLITE"),
+  M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD(
+      (int) 738, (int) 799, (String) "Zhongshan Illus LIghting Co.,Ltd"),
+  M_ABB___RESERVED((int) 739, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 735, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 740, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
