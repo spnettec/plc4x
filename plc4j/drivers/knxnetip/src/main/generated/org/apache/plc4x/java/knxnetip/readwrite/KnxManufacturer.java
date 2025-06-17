@@ -863,9 +863,11 @@ public enum KnxManufacturer {
   M_QLITE((int) 737, (int) 798, (String) "QLITE"),
   M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD(
       (int) 738, (int) 799, (String) "Zhongshan Illus LIghting Co.,Ltd"),
-  M_ABB___RESERVED((int) 739, (int) 43954, (String) "ABB - reserved"),
+  M_HANGZHOU_KONKE_INFORMATION_TECHNOLOGY_CO___LTD_(
+      (int) 739, (int) 800, (String) "Hangzhou Konke Information Technology Co., Ltd."),
+  M_ABB___RESERVED((int) 740, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 740, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 741, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

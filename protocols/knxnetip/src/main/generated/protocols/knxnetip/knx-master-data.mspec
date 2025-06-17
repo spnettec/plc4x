@@ -1488,8 +1488,9 @@
     ['736' M_CIRTX_GMBH ['797', '"Cirtx GmbH"']]
     ['737' M_QLITE ['798', '"QLITE"']]
     ['738' M_ZHONGSHAN_ILLUS_LIGHTING_CO__LTD ['799', '"Zhongshan Illus LIghting Co.,Ltd"']]
-    ['739' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['740' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['739' M_HANGZHOU_KONKE_INFORMATION_TECHNOLOGY_CO___LTD_ ['800', '"Hangzhou Konke Information Technology Co., Ltd."']]
+    ['740' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['741' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
