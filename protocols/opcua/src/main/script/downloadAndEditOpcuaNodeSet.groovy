@@ -65,7 +65,7 @@ def download(String url, String localFileName) {
         }
     }
     // TODO: temp
-    // update = true
+    update = false
 
     if (update) {
         try {
