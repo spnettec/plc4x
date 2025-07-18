@@ -436,7 +436,7 @@ const (
 	KnxManufacturer_M_MOORGEN_DEUTSCHLAND_GMBH                           KnxManufacturer = 390
 	KnxManufacturer_M_CULLMANN_TECH                                      KnxManufacturer = 391
 	KnxManufacturer_M_EYRISE_B_V                                         KnxManufacturer = 392
-	KnxManufacturer_M_ABEGO                                              KnxManufacturer = 393
+	KnxManufacturer_M_DOBNEL                                             KnxManufacturer = 393
 	KnxManufacturer_M_MYGEKKO                                            KnxManufacturer = 394
 	KnxManufacturer_M_ERGO3_SARL                                         KnxManufacturer = 395
 	KnxManufacturer_M_STMICROELECTRONICS_INTERNATIONAL_N_V_              KnxManufacturer = 396
@@ -1191,7 +1191,7 @@ func init() {
 		KnxManufacturer_M_MOORGEN_DEUTSCHLAND_GMBH,
 		KnxManufacturer_M_CULLMANN_TECH,
 		KnxManufacturer_M_EYRISE_B_V,
-		KnxManufacturer_M_ABEGO,
+		KnxManufacturer_M_DOBNEL,
 		KnxManufacturer_M_MYGEKKO,
 		KnxManufacturer_M_ERGO3_SARL,
 		KnxManufacturer_M_STMICROELECTRONICS_INTERNATIONAL_N_V_,
@@ -5871,7 +5871,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 393:
 		{ /* '393' */
-			return "ABEGO"
+			return "Dobnel"
 		}
 	case 394:
 		{ /* '394' */
@@ -8225,7 +8225,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 392:
 		return KnxManufacturer_M_EYRISE_B_V, true
 	case 393:
-		return KnxManufacturer_M_ABEGO, true
+		return KnxManufacturer_M_DOBNEL, true
 	case 394:
 		return KnxManufacturer_M_MYGEKKO, true
 	case 395:
@@ -9726,8 +9726,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_CULLMANN_TECH, true
 	case "M_EYRISE_B_V":
 		return KnxManufacturer_M_EYRISE_B_V, true
-	case "M_ABEGO":
-		return KnxManufacturer_M_ABEGO, true
+	case "M_DOBNEL":
+		return KnxManufacturer_M_DOBNEL, true
 	case "M_MYGEKKO":
 		return KnxManufacturer_M_MYGEKKO, true
 	case "M_ERGO3_SARL":
@@ -11300,8 +11300,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_CULLMANN_TECH"
 	case KnxManufacturer_M_EYRISE_B_V:
 		return "M_EYRISE_B_V"
-	case KnxManufacturer_M_ABEGO:
-		return "M_ABEGO"
+	case KnxManufacturer_M_DOBNEL:
+		return "M_DOBNEL"
 	case KnxManufacturer_M_MYGEKKO:
 		return "M_MYGEKKO"
 	case KnxManufacturer_M_ERGO3_SARL:
