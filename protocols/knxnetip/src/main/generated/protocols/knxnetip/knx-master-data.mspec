@@ -1495,8 +1495,12 @@
     ['743' M_SHANGHAI_INNOVATECH_INFORMATION_TECHNOLOGY_CO___LT ['804', '"Shanghai Innovatech Information Technology Co., Lt"']]
     ['744' M_ABI_SICHERHEITSSYSTEME_GMBH ['805', '"ABI Sicherheitssysteme GmbH"']]
     ['745' M_RYT ['806', '"RYT"']]
-    ['746' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['747' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['746' M_AURIGA_SYSTEMS ['807', '"Auriga Systems"']]
+    ['747' M_ALZINGERANDVOGEL_SOFTWAREENTWICKLUNGS_GMBH ['808', '"Alzinger&Vogel Softwareentwicklungs GmbH"']]
+    ['748' M_GIANFRANCO_SMART_SOLUTIONS_LTD ['809', '"Gianfranco Smart Solutions Ltd"']]
+    ['749' M_ROGERWELL_CONTROL_SYSTEM_LIMITED ['810', '"Rogerwell Control System Limited"']]
+    ['750' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['751' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

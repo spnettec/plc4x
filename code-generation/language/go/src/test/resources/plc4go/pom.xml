@@ -53,7 +53,7 @@
             <resources>
               <resource>
                 <targetPath>.</targetPath>
-                <directory>../../../../../plc4go/pkg</directory>
+                <directory>../../../../../../plc4go/pkg</directory>
                 <filtering>false</filtering>
               </resource>
             </resources>
@@ -71,7 +71,7 @@
             <resources>
               <resource>
                 <targetPath>.</targetPath>
-                <directory>../../../../../plc4go/spi</directory>
+                <directory>../../../../../../plc4go/spi</directory>
                 <excludes>
                   <exclude>testutils/**</exclude>
                 </excludes>
@@ -249,6 +249,11 @@
     <scope>test</scope>
   </dependency>
 
+  <dependency>
+    <groupId>org.junit.platform</groupId>
+    <artifactId>junit-platform-launcher</artifactId>
+    <scope>test</scope>
+  </dependency>
 </dependencies>
 
 </project>

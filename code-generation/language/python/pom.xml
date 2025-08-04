@@ -23,21 +23,28 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-code-generation</artifactId>
-    <version>0.13.0-SNAPSHOT</version>
+    <artifactId>plc4x-code-generation-language</artifactId>
+    <version>0.14.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4x-code-generation-language-go</artifactId>
+  <artifactId>plc4x-code-generation-language-python</artifactId>
 
-  <name>Code-Generation: Language: Go</name>
-  <description>Code generation template for generating Go(lang) code</description>
+  <name>Code-Generation: Language: Python</name>
+  <description>Code generation template for generating Python code</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
@@ -87,7 +94,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-base-freemarker</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.14.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
+      <version>0.14.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -103,24 +115,17 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
 
-    <!-- Make sure the dependencies of the module are built first -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-test</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.14.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-test</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.14.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>

@@ -25,62 +25,44 @@
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation</artifactId>
     <version>@project.version@</version>
-    <relativePath>../../../..</relativePath>
+    <relativePath>../../../../pom.xml</relativePath>
   </parent>
 
-  <artifactId>plc4py-python-mspec-test</artifactId>
+  <artifactId>plc4j-c-mspec-test</artifactId>
 
-  <name>PLC4PY: Driver: Python Mspec Test</name>
-  <description></description>
+  <name>PLC4J: Driver: C Mspec Test</name>
+
+  <properties>
+    <unity.version>2.5.0</unity.version>
+    <!-- Tell Sonar where to find the c++ sources -->
+    <sonar.sources/>
+    <option.with-proxies>OFF</option.with-proxies>
+  </properties>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.3.0</version>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
         <executions>
+          <!--
+            Get additional stuff we need for the build.
+          -->
           <execution>
-            <id>python-copy-setup</id>
-            <phase>initialize</phase>
+            <id>get-unity</id>
+            <phase>generate-sources</phase>
             <goals>
-              <goal>copy-resources</goal>
+              <goal>wget</goal>
             </goals>
             <configuration>
-              <outputDirectory>./</outputDirectory>
-              <resources>
-                <resource>
-                  <targetPath>.</targetPath>
-                  <directory>${project.basedir}/../../../../../plc4py/</directory>
-                  <includes>
-                    <include>pyproject.toml</include>
-                  </includes>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
-              <encoding>UTF-8</encoding>
-            </configuration>
-          </execution>
-          <execution>
-            <id>python-copy</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>./plc4py</outputDirectory>
-              <resources>
-                <resource>
-                  <targetPath>.</targetPath>
-                  <directory>${project.basedir}/../../../../../plc4py/plc4py</directory>
-                  <filtering>false</filtering>
-                </resource>
-              </resources>
-              <encoding>UTF-8</encoding>
+              <url>https://github.com/ThrowTheSwitch/Unity/archive/v${unity.version}.zip</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency</outputDirectory>
             </configuration>
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.plc4x.plugins</groupId>
         <artifactId>plc4x-maven-plugin</artifactId>
@@ -94,9 +76,9 @@
             </goals>
             <configuration>
               <protocolName>test</protocolName>
-              <languageName>python</languageName>
+              <languageName>c</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/plc4py/protocols</outputDir>
+              <outputDir>${project.basedir}/generated-sources</outputDir>
             </configuration>
           </execution>
         </executions>
@@ -153,103 +135,76 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-python</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-c</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-code-generation-protocol-test</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
 
+      <!--
+              Do the actual build.
+            -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
+        <groupId>com.googlecode.cmake-maven-project</groupId>
+        <artifactId>cmake-maven-plugin</artifactId>
         <executions>
+          <!-- Generate the configuration for the main compilation -->
           <execution>
-            <id>python-venv</id>
-            <phase>initialize</phase>
+            <id>cmake-generate-compile</id>
+            <phase>compile</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+          <!-- Compile the main code -->
+          <execution>
+            <id>cmake-execute-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <!-- Generate the configuration for the test compilation -->
+          <execution>
+            <id>cmake-generate-test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>generate</goal>
             </goals>
             <configuration>
-              <executable>${python.exe.bin}</executable>
-              <arguments>
-                <argument>-m</argument>
-                <argument>venv</argument>
-                <argument>./venv</argument>
-              </arguments>
+              <options>
+                <option>-DUNITY_VERSION:STRING=${unity.version}</option>
+                <option>-DBUILD_PHASE=test-compile</option>
+              </options>
             </configuration>
           </execution>
-
+          <!-- Compile the test code -->
           <execution>
-            <id>python-upgrade-pip</id>
-            <phase>initialize</phase>
+            <id>cmake-execute-test-compile</id>
+            <phase>test-compile</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>compile</goal>
             </goals>
-            <configuration>
-              <executable>${python.venv.bin}${python.exe.bin}</executable>
-              <arguments>
-                <argument>-m</argument>
-                <argument>pip</argument>
-                <argument>install</argument>
-                <argument>--upgrade</argument>
-                <argument>pip</argument>
-              </arguments>
-            </configuration>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>python-install</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>${python.venv.bin}pip3</executable>
-              <arguments>
-                <argument>install</argument>
-                <argument>.</argument>
-              </arguments>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>python-test-compile</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>${python.venv.bin}pip3</executable>
-              <arguments>
-                <argument>install</argument>
-                <argument>.[dev]</argument>
-              </arguments>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>python-black</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>${python.venv.bin}${python.exe.bin}</executable>
-              <arguments>
-                <argument>-m</argument>
-                <argument>black</argument>
-                <argument>.</argument>
-              </arguments>
-            </configuration>
-          </execution>
-
-        </executions>
+        <configuration>
+          <!--
+            Actually the path to the CMakeList.txt file which then again
+            tells to tool where to find the sources.
+          -->
+          <sourcePath>${project.basedir}</sourcePath>
+          <!--
+            Path to where the build configuration is generated
+            (This directory is then used in the compile-step to actually perform the build)
+          -->
+          <targetPath>${project.build.directory}/build</targetPath>
+          <!--
+            Name of the generator the compile-step will be executing.
+          -->
+          <generator>${cmake.generator}</generator>
+          <!-- The directory where the "generate" step generated the build configuration -->
+          <projectDirectory>${project.build.directory}/build</projectDirectory>
+        </configuration>
       </plugin>
 
       <!--
@@ -276,10 +231,10 @@
     </plugins>
   </build>
 
-<dependencies>
+  <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-python</artifactId>
+      <artifactId>plc4x-code-generation-language-c</artifactId>
       <version>@project.version@</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -289,6 +244,8 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-test</artifactId>
       <version>@project.version@</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -300,6 +257,11 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>
