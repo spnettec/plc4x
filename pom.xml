@@ -124,6 +124,7 @@
     <commons-net.version>3.11.1</commons-net.version>
     <commons-text.version>1.14.0</commons-text.version>
     <commons-csv.version>1.14.1</commons-csv.version>
+    <commons-pool2.version>2.12.1</commons-pool2.version>
     <dom4j.version>2.2.0</dom4j.version>
     <!-- Starting with version 4, equalsverifier requires java 17 -->
     <equalsverifier.version>3.19.4</equalsverifier.version>
