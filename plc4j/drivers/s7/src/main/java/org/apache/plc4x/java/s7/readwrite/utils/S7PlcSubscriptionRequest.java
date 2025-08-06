@@ -203,7 +203,11 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval) {
-            return addChangeOfStateTagAddress(name,tagAddress,pollingInterval);
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
+            }
+            tags.put(name, new Builder.BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.CHANGE_OF_STATE, pollingInterval, consumer));
+            return this;
         }
 
         /*
@@ -230,7 +234,7 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
-            return addChangeOfStateTagAddress(tagAddress, name);
+            return addChangeOfStateTagAddress(name, tagAddress, (Duration) null);
         }
 
         /*
