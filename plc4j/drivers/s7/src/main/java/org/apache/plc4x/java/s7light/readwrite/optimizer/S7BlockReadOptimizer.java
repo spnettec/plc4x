@@ -37,6 +37,7 @@ import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcNull;
 import org.apache.plc4x.java.spi.values.PlcRawByteArray;
 import org.slf4j.Logger;
@@ -406,7 +407,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                     return PlcBOOL.of(bitValue);
                 } else {
                     return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                        s7DriverContext.getControllerType(), stringLength);
+                        s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
                 }
             } else {
                 // In case of reading an array of bytes, make use of our simpler PlcRawByteArray as the user is
@@ -430,7 +431,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                         final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
                             try {
                                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                                    s7DriverContext.getControllerType(), stringLength);
+                                    s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
                             } catch (ParseException e) {
                                 logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
                             }
