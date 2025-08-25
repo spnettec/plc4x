@@ -882,9 +882,10 @@ public enum KnxManufacturer {
   M_SHANGHAI_YUKON_AUTOMATION_TECHNOLOGIES_CO___LTD_(
       (int) 750, (int) 811, (String) "Shanghai YUKON Automation Technologies Co., Ltd."),
   M_TECCO_PTY_LTD((int) 751, (int) 812, (String) "Tecco Pty Ltd"),
-  M_ABB___RESERVED((int) 752, (int) 43954, (String) "ABB - reserved"),
+  M_A_LAN_TECHNOLOGIE((int) 752, (int) 813, (String) "A-LAN Technologie"),
+  M_ABB___RESERVED((int) 753, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 753, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 754, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
