@@ -109,7 +109,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.81</bouncycastle.version>
-    <byte-buddy.version>1.17.6</byte-buddy.version>
+    <byte-buddy.version>1.17.7</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.10.0</commons-cli.version>
@@ -148,7 +148,7 @@
     <logback.version>1.5.18</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.16</milo.version>
-    <mockito.version>5.18.0</mockito.version>
+    <mockito.version>5.19.0</mockito.version>
     <!-- Netty 4.2.x seems to break the serial transports -->
     <netty.version>4.2.2.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
@@ -1194,7 +1194,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.11.2</version>
+          <version>3.11.3</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page
