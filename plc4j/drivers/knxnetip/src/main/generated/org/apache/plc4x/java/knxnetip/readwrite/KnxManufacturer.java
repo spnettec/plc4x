@@ -28,11 +28,11 @@ import java.util.Map;
 public enum KnxManufacturer {
   M_UNKNOWN((int) 0, (int) 0, (String) "Unknown Manufacturer"),
   M_SIEMENS((int) 1, (int) 1, (String) "Siemens"),
-  M_ABB((int) 2, (int) 2, (String) "ABB"),
+  M_ABB_AG_STOTZ___KONTAKT((int) 2, (int) 2, (String) "ABB AG (Stotz - Kontakt)"),
   M_ALBRECHT_JUNG((int) 3, (int) 4, (String) "Albrecht Jung"),
   M_BTICINO((int) 4, (int) 5, (String) "Bticino"),
   M_BERKER((int) 5, (int) 6, (String) "Berker"),
-  M_BUSCH_JAEGER_ELEKTRO((int) 6, (int) 7, (String) "Busch-Jaeger Elektro"),
+  M_ABB_AG_BUSCH___JAEGER((int) 6, (int) 7, (String) "ABB AG (Busch - Jaeger)"),
   M_GIRA_GIERSIEPEN((int) 7, (int) 8, (String) "GIRA Giersiepen"),
   M_HAGER_ELECTRO((int) 8, (int) 9, (String) "Hager Electro"),
   M_INSTA_GMBH((int) 9, (int) 10, (String) "Insta GmbH"),
@@ -886,9 +886,10 @@ public enum KnxManufacturer {
   M_VOLTAN_TECHNOLOGY((int) 753, (int) 814, (String) "Voltan Technology"),
   M_BAERWINKEL_AND_STRASSER_GMBH((int) 754, (int) 815, (String) "Baerwinkel & Strasser GmbH"),
   M_CATERLUX((int) 755, (int) 816, (String) "Caterlux"),
-  M_ABB___RESERVED((int) 756, (int) 43954, (String) "ABB - reserved"),
+  M_EVOTEC_SOLUTION_LTD((int) 756, (int) 817, (String) "evotec solution ltd"),
+  M_ABB___RESERVED((int) 757, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 757, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 758, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

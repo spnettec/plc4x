@@ -751,11 +751,11 @@
 [enum uint 16 KnxManufacturer(uint 16 number, string 8 name)
     ['0' M_UNKNOWN ['0', '"Unknown Manufacturer"']]
     ['1' M_SIEMENS ['1', '"Siemens"']]
-    ['2' M_ABB ['2', '"ABB"']]
+    ['2' M_ABB_AG_STOTZ___KONTAKT ['2', '"ABB AG (Stotz - Kontakt)"']]
     ['3' M_ALBRECHT_JUNG ['4', '"Albrecht Jung"']]
     ['4' M_BTICINO ['5', '"Bticino"']]
     ['5' M_BERKER ['6', '"Berker"']]
-    ['6' M_BUSCH_JAEGER_ELEKTRO ['7', '"Busch-Jaeger Elektro"']]
+    ['6' M_ABB_AG_BUSCH___JAEGER ['7', '"ABB AG (Busch - Jaeger)"']]
     ['7' M_GIRA_GIERSIEPEN ['8', '"GIRA Giersiepen"']]
     ['8' M_HAGER_ELECTRO ['9', '"Hager Electro"']]
     ['9' M_INSTA_GMBH ['10', '"Insta GmbH"']]
@@ -1505,8 +1505,9 @@
     ['753' M_VOLTAN_TECHNOLOGY ['814', '"Voltan Technology"']]
     ['754' M_BAERWINKEL_AND_STRASSER_GMBH ['815', '"Baerwinkel & Strasser GmbH"']]
     ['755' M_CATERLUX ['816', '"Caterlux"']]
-    ['756' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['757' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['756' M_EVOTEC_SOLUTION_LTD ['817', '"evotec solution ltd"']]
+    ['757' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['758' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
