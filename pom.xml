@@ -128,7 +128,7 @@
     <dom4j.version>2.2.0</dom4j.version>
     <equalsverifier.version>4.1</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
-    <groovy.version>5.0.0</groovy.version>
+    <groovy.version>5.0.1</groovy.version>
     <guava.version>33.4.8-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
@@ -1065,7 +1065,7 @@
             <dependency>
               <groupId>org.eclipse.jdt</groupId>
               <artifactId>ecj</artifactId>
-              <version>3.42.0</version>
+              <version>3.43.0</version>
             </dependency>
           </dependencies>
         </plugin>
