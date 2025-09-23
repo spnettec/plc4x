@@ -613,7 +613,8 @@ public enum KnxManufacturer {
       (int) 533, (int) 588, (String) "WUERTH ELEKTRONIK STELVIO KONTEK S.p.A."),
   M_NANOTECO_CORPORATION((int) 534, (int) 589, (String) "NANOTECO corporation"),
   M_NIETIAN((int) 535, (int) 590, (String) "Nietian"),
-  M_SUMSIR((int) 536, (int) 591, (String) "Sumsir"),
+  M_GUANGZHOU_SUMSIR_INTELLIGENT_TECHNOLOGY_CO___LTD(
+      (int) 536, (int) 591, (String) "Guangzhou Sumsir Intelligent Technology Co., Ltd"),
   M_ORBIS_TECNOLOGIA_ELECTRICA_SA((int) 537, (int) 592, (String) "ORBIS TECNOLOGIA ELECTRICA SA"),
   M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_(
       (int) 538, (int) 593, (String) "Nanjing Zhongyi IoT Technology Co., Ltd."),
@@ -835,7 +836,7 @@ public enum KnxManufacturer {
   M_LAPP((int) 712, (int) 773, (String) "LAPP"),
   M_ZEROBIT_DYNAMIC((int) 713, (int) 774, (String) "ZEROBIT DYNAMIC"),
   M_HAVELLS((int) 714, (int) 775, (String) "havells"),
-  M_MULLER_INTUITIV((int) 715, (int) 776, (String) "Muller Intuitiv"),
+  M_INTUIS_ELEC((int) 715, (int) 776, (String) "intuis-Elec"),
   M_TASKIT_GMBH((int) 716, (int) 777, (String) "taskit GmbH"),
   M_COSTER_GROUP((int) 717, (int) 778, (String) "Coster Group"),
   M_NXP_SEMICONDUCTOR((int) 718, (int) 779, (String) "NXP Semiconductor"),
@@ -887,9 +888,16 @@ public enum KnxManufacturer {
   M_BAERWINKEL_AND_STRASSER_GMBH((int) 754, (int) 815, (String) "Baerwinkel & Strasser GmbH"),
   M_CATERLUX((int) 755, (int) 816, (String) "Caterlux"),
   M_EVOTEC_SOLUTION_LTD((int) 756, (int) 817, (String) "evotec solution ltd"),
-  M_ABB___RESERVED((int) 757, (int) 43954, (String) "ABB - reserved"),
+  M_NANTONG_JINGXI((int) 757, (int) 818, (String) "NanTong JingXi"),
+  M_ENERVON_TECHNOLOGY((int) 758, (int) 819, (String) "Enervon Technology"),
+  M_STRUCTURED_CABLE_PRODUCTS((int) 759, (int) 820, (String) "structured cable products"),
+  M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_(
+      (int) 760, (int) 821, (String) "Jiwu (Fuzhou) Technology Co., Ltd."),
+  M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_(
+      (int) 761, (int) 822, (String) "Foshan Brisdom Technology Co., Ltd."),
+  M_ABB___RESERVED((int) 762, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 758, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 763, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

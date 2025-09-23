@@ -84,7 +84,7 @@
     ['58' DPT_RELATIVE_CONTROL_RGB ['254', '24', '"Relative Control RGB"']]
     ['59' DPT_F32F32 ['255', '64', '"F32F32"']]
     ['60' DPT_F16F16F16F16 ['275', '64', '"F16F16F16F16"']]
-    
+
 ]
 
 [enum uint 32 KnxDatapointType(vstring id, uint 16 number, KnxDatapointMainType datapointMainType, string 8 name, PlcValueType plcValueTpe)
@@ -442,7 +442,7 @@
     ['349' DPT_GeographicalLocation ['DPST-255-1', '1', 'DPT_F32F32', '"geographical location (longitude and latitude) expressed in degrees"', 'Struct']]
     ['350' DPT_TempRoomSetpSetF16_4 ['DPST-275-100', '100', 'DPT_F16F16F16F16', '"Temperature setpoint setting for 4 HVAC Modes"', 'Struct']]
     ['351' DPT_TempRoomSetpSetShiftF16_4 ['DPST-275-101', '101', 'DPT_F16F16F16F16', '"Temperature setpoint shift setting for 4 HVAC Modes"', 'Struct']]
-    
+
 ]
 
 [enum uint 16 KnxInterfaceObjectType(string 8 code, string 8 name)
@@ -471,7 +471,7 @@
     ['22' OT_SWITCHING_SENSOR_BASIC ['421', '"Switching Sensor Basic"']]
     ['23' OT_SUNBLIND_ACTUATOR_BASIC ['800', '"Sunblind Actuator Basic"']]
     ['24' OT_SUNBLIND_SENSOR_BASIC ['801', '"Sunblind Sensor Basic"']]
-    
+
 ]
 
 [enum uint 32 KnxInterfaceObjectProperty(uint 8 propertyId, KnxInterfaceObjectType objectType, KnxPropertyDataType propertyDataType, string 8 name)
@@ -691,7 +691,7 @@
     ['213' PID_SUNBLIND_SENSOR_BASIC_ENABLE_BLINDS_MODE ['51', 'OT_SUNBLIND_SENSOR_BASIC', 'PDT_UNKNOWN', '""']]
     ['214' PID_SUNBLIND_SENSOR_BASIC_UP_DOWN_ACTION ['52', 'OT_SUNBLIND_SENSOR_BASIC', 'PDT_UNKNOWN', '""']]
     ['215' PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE ['53', 'OT_SUNBLIND_SENSOR_BASIC', 'PDT_UNKNOWN', '""']]
-    
+
 ]
 
 [enum uint 8 KnxPropertyDataType(uint 8 number, uint 8 sizeInBytes, string 8 name)
@@ -745,7 +745,7 @@
     ['47' PDT_NE_FL ['61', '0', '"PDT_NE_FL"']]
     ['48' PDT_FUNCTION ['62', '0', '"PDT_FUNCTION"']]
     ['49' PDT_ESCAPE ['63', '0', '"PDT_ESCAPE"']]
-    
+
 ]
 
 [enum uint 16 KnxManufacturer(uint 16 number, string 8 name)
@@ -1285,7 +1285,7 @@
     ['533' M_WUERTH_ELEKTRONIK_STELVIO_KONTEK_S_P_A_ ['588', '"WUERTH ELEKTRONIK STELVIO KONTEK S.p.A."']]
     ['534' M_NANOTECO_CORPORATION ['589', '"NANOTECO corporation"']]
     ['535' M_NIETIAN ['590', '"Nietian"']]
-    ['536' M_SUMSIR ['591', '"Sumsir"']]
+    ['536' M_GUANGZHOU_SUMSIR_INTELLIGENT_TECHNOLOGY_CO___LTD ['591', '"Guangzhou Sumsir Intelligent Technology Co., Ltd"']]
     ['537' M_ORBIS_TECNOLOGIA_ELECTRICA_SA ['592', '"ORBIS TECNOLOGIA ELECTRICA SA"']]
     ['538' M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_ ['593', '"Nanjing Zhongyi IoT Technology Co., Ltd."']]
     ['539' M_ANLIPS ['594', '"Anlips"']]
@@ -1464,7 +1464,7 @@
     ['712' M_LAPP ['773', '"LAPP"']]
     ['713' M_ZEROBIT_DYNAMIC ['774', '"ZEROBIT DYNAMIC"']]
     ['714' M_HAVELLS ['775', '"havells"']]
-    ['715' M_MULLER_INTUITIV ['776', '"Muller Intuitiv"']]
+    ['715' M_INTUIS_ELEC ['776', '"intuis-Elec"']]
     ['716' M_TASKIT_GMBH ['777', '"taskit GmbH"']]
     ['717' M_COSTER_GROUP ['778', '"Coster Group"']]
     ['718' M_NXP_SEMICONDUCTOR ['779', '"NXP Semiconductor"']]
@@ -1506,9 +1506,14 @@
     ['754' M_BAERWINKEL_AND_STRASSER_GMBH ['815', '"Baerwinkel & Strasser GmbH"']]
     ['755' M_CATERLUX ['816', '"Caterlux"']]
     ['756' M_EVOTEC_SOLUTION_LTD ['817', '"evotec solution ltd"']]
-    ['757' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['758' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
-    
+    ['757' M_NANTONG_JINGXI ['818', '"NanTong JingXi"']]
+    ['758' M_ENERVON_TECHNOLOGY ['819', '"Enervon Technology"']]
+    ['759' M_STRUCTURED_CABLE_PRODUCTS ['820', '"structured cable products"']]
+    ['760' M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_ ['821', '"Jiwu (Fuzhou) Technology Co., Ltd."']]
+    ['761' M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_ ['822', '"Foshan Brisdom Technology Co., Ltd."']]
+    ['762' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['763' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+
 ]
 
 [dataIo KnxDatapoint(KnxDatapointType datapointType)
@@ -1633,3185 +1638,3185 @@
             [simple   uint 32 nanoseconds]
         ]
 
-    
+
         ['DPT_Switch' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Bool' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Enable' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Ramp' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Alarm' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_BinaryValue' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Step' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_UpDown' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_OpenClose' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Start' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_State' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Invert' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_DimSendStyle' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_InputSource' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Reset' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Ack' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Trigger' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Occupancy' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Window_Door' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_LogicalFunction' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Scene_AB' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_ShutterBlinds_Mode' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_DayNight' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Heat_Cool' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_Switch_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit on]
-                
+
         ]
-    
+
         ['DPT_Bool_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit valueTrue]
-                
+
         ]
-    
+
         ['DPT_Enable_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit enable]
-                
+
         ]
-    
+
         ['DPT_Ramp_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit ramp]
-                
+
         ]
-    
+
         ['DPT_Alarm_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit alarm]
-                
+
         ]
-    
+
         ['DPT_BinaryValue_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit high]
-                
+
         ]
-    
+
         ['DPT_Step_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit increase]
-                
+
         ]
-    
+
         ['DPT_Direction1_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit down]
-                
+
         ]
-    
+
         ['DPT_Direction2_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit close]
-                
+
         ]
-    
+
         ['DPT_Start_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit start]
-                
+
         ]
-    
+
         ['DPT_State_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit active]
-                
+
         ]
-    
+
         ['DPT_Invert_Control' Struct
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                    
+
                     [simple bit control]
-                
+
                     [simple bit inverted]
-                
+
         ]
-    
+
         ['DPT_Control_Dimming' Struct
            // Field Size 4
            [reserved uint 4 '0x00']
 
-                    
+
                     [simple bit increase]
-                
+
                     [simple uint 3 stepcode]
-                
+
         ]
-    
+
         ['DPT_Control_Blinds' Struct
            // Field Size 4
            [reserved uint 4 '0x00']
 
-                    
+
                     [simple bit down]
-                
+
                     [simple uint 3 stepcode]
-                
+
         ]
-    
+
         ['DPT_Char_ASCII' STRING
             [reserved uint 8 '0x00']
             [simple   string 8 value encoding='"ASCII"']
-            
+
         ]
-    
+
         ['DPT_Char_8859_1' STRING
             [reserved uint 8 '0x00']
             [simple   string 8 value encoding='"ISO-8859-1"']
-            
+
         ]
-    
+
         ['DPT_Scaling' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Angle' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Percent_U8' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_DecimalFactor' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Tariff' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Value_1_Ucount' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_FanStage' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Percent_V8' SINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 8 value]
-            
+
         ]
-    
+
         ['DPT_Value_1_Count' SINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 8 value]
-            
+
         ]
-    
+
         ['DPT_Status_Mode3' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit statusA]
-                
+
                     [simple bit statusB]
-                
+
                     [simple bit statusC]
-                
+
                     [simple bit statusD]
-                
+
                     [simple bit statusE]
-                
+
                     [simple uint 3 mode]
-                
+
         ]
-    
+
         ['DPT_Value_2_Ucount' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_TimePeriodMsec' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_TimePeriod10Msec' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_TimePeriod100Msec' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_TimePeriodSec' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_TimePeriodMin' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_TimePeriodHrs' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_PropDataType' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_Length_mm' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_UElCurrentmA' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_Brightness' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_Absolute_Colour_Temperature' UINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 16 value]
-            
+
         ]
-    
+
         ['DPT_Value_2_Count' INT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 16 value]
-            
+
         ]
-    
+
         ['DPT_DeltaTimeMsec' INT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 16 value]
-            
+
         ]
-    
+
         ['DPT_DeltaTime10Msec' INT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 16 value]
-            
+
         ]
-    
+
         ['DPT_DeltaTime100Msec' INT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 16 value]
-            
+
         ]
-    
+
         ['DPT_DeltaTimeSec' INT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 16 value]
-            
+
         ]
-    
+
         ['DPT_DeltaTimeMin' INT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 16 value]
-            
+
         ]
-    
+
         ['DPT_DeltaTimeHrs' INT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 16 value]
-            
+
         ]
-    
+
         ['DPT_Percent_V16' INT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 16 value]
-            
+
         ]
-    
+
         ['DPT_Rotation_Angle' INT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 16 value]
-            
+
         ]
-    
+
         ['DPT_Length_m' INT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 16 value]
-            
+
         ]
-    
+
         ['DPT_Value_Temp' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Tempd' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Tempa' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Lux' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Wsp' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Pres' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Humidity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_AirQuality' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_AirFlow' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Time1' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Time2' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Volt' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Curr' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_PowerDensity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_KelvinPerPercent' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Power' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Volume_Flow' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Rain_Amount' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Temp_F' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Wsp_kmh' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Value_Absolute_Humidity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Concentration_ygm3' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Coefficient' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_TimeOfDay' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 3 day]
-                
+
                     [simple uint 5 hour]
-                
+
                     [reserved uint 2 '0x00']
-                
+
                     [simple uint 6 minutes]
-                
+
                     [reserved uint 2 '0x00']
-                
+
                     [simple uint 6 seconds]
-                
+
         ]
-    
+
         ['DPT_Date' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 3 '0x00']
-                
+
                     [simple uint 5 dayOfMonth]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple uint 4 month]
-                
+
                     [reserved uint 1 '0x00']
-                
+
                     [simple uint 7 year]
-                
+
         ]
-    
+
         ['DPT_Value_4_Ucount' UDINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 32 value]
-            
+
         ]
-    
+
         ['DPT_LongTimePeriod_Sec' UDINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 32 value]
-            
+
         ]
-    
+
         ['DPT_LongTimePeriod_Min' UDINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 32 value]
-            
+
         ]
-    
+
         ['DPT_LongTimePeriod_Hrs' UDINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 32 value]
-            
+
         ]
-    
+
         ['DPT_VolumeLiquid_Litre' UDINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 32 value]
-            
+
         ]
-    
+
         ['DPT_Volume_m_3' UDINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 32 value]
-            
+
         ]
-    
+
         ['DPT_Value_4_Count' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_FlowRate_m3h' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_ActiveEnergy' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_ApparentEnergy' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_ReactiveEnergy' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_ActiveEnergy_kWh' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_ApparentEnergy_kVAh' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_ReactiveEnergy_kVARh' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_ActiveEnergy_MWh' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_LongDeltaTimeSec' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_DeltaVolumeLiquid_Litre ' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_DeltaVolume_m_3' DINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 32 value]
-            
+
         ]
-    
+
         ['DPT_Value_Acceleration' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Acceleration_Angular' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Activation_Energy' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Activity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Mol' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Amplitude' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_AngleRad' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_AngleDeg' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Angular_Momentum' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Angular_Velocity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Area' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Capacitance' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Charge_DensitySurface' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Charge_DensityVolume' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Compressibility' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Conductance' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electrical_Conductivity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Density' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_Charge' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_Current' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_CurrentDensity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_DipoleMoment' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_Displacement' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_FieldStrength' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_Flux' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_FluxDensity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_Polarization' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_Potential' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electric_PotentialDifference' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_ElectromagneticMoment' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Electromotive_Force' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Energy' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Force' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Frequency' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Angular_Frequency' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Heat_Capacity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Heat_FlowRate' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Heat_Quantity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Impedance' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Length' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Light_Quantity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Luminance' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Luminous_Flux' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Luminous_Intensity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Magnetic_FieldStrength' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Magnetic_Flux' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Magnetic_FluxDensity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Magnetic_Moment' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Magnetic_Polarization' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Magnetization' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_MagnetomotiveForce' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Mass' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_MassFlux' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Momentum' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Phase_AngleRad' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Phase_AngleDeg' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Power' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Power_Factor' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Pressure' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Reactance' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Resistance' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Resistivity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_SelfInductance' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_SolidAngle' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Sound_Intensity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Speed' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Stress' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Surface_Tension' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Common_Temperature' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Absolute_Temperature' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_TemperatureDifference' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Thermal_Capacity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Thermal_Conductivity' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_ThermoelectricPower' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Time' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Torque' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Volume' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Volume_Flux' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Weight' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_Work' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Value_ApparentPower' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 32 value]
-                    
+
         ]
-    
+
         ['DPT_Volume_Flux_Meter' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Volume_Flux_ls' REAL
             [reserved uint 8 '0x00']
-                
+
             [simple   float 16 value encoding='"KNXFloat"']
-                    
+
         ]
-    
+
         ['DPT_Access_Data' Struct
            // Field Size 32
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 4 hurz]
-                
+
                     [simple uint 4 value1]
-                
+
                     [simple uint 4 value2]
-                
+
                     [simple uint 4 value3]
-                
+
                     [simple uint 4 value4]
-                
+
                     [simple uint 4 value5]
-                
+
                     [simple bit detectionError]
-                
+
                     [simple bit permission]
-                
+
                     [simple bit readDirection]
-                
+
                     [simple bit encryptionOfAccessInformation]
-                
+
                     [simple uint 4 indexOfAccessIdentificationCode]
-                
+
         ]
-    
+
         ['DPT_String_ASCII' STRING
             [reserved uint 8 '0x00']
             [simple   string 112 value encoding='"ASCII"']
-            
+
         ]
-    
+
         ['DPT_String_8859_1' STRING
             [reserved uint 8 '0x00']
             [simple   string 112 value encoding='"ISO-8859-1"']
-            
+
         ]
-    
+
         ['DPT_SceneNumber' USINT
             [reserved uint 2 '0x00']
-                    
+
             [simple   uint 6 value]
-            
+
         ]
-    
+
         ['DPT_SceneControl' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit learnTheSceneCorrespondingToTheFieldSceneNumber]
-                
+
                     [reserved uint 1 '0x00']
-                
+
                     [simple uint 6 sceneNumber]
-                
+
         ]
-    
+
         ['DPT_DateTime' Struct
            // Field Size 64
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 8 year]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple uint 4 month]
-                
+
                     [reserved uint 3 '0x00']
-                
+
                     [simple uint 5 dayofmonth]
-                
+
                     [simple uint 3 dayofweek]
-                
+
                     [simple uint 5 hourofday]
-                
+
                     [reserved uint 2 '0x00']
-                
+
                     [simple uint 6 minutes]
-                
+
                     [reserved uint 2 '0x00']
-                
+
                     [simple uint 6 seconds]
-                
+
                     [simple bit fault]
-                
+
                     [simple bit workingDay]
-                
+
                     [simple bit noWd]
-                
+
                     [simple bit noYear]
-                
+
                     [simple bit noDate]
-                
+
                     [simple bit noDayOfWeek]
-                
+
                     [simple bit noTime]
-                
+
                     [simple bit standardSummerTime]
-                
+
                     [simple bit qualityOfClock]
-                
+
                     [reserved uint 7 '0x00']
-                
+
         ]
-    
+
         ['DPT_SCLOMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_BuildingMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_OccMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Priority' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_LightApplicationMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_ApplicationArea' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_AlarmClassType' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_PSUMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_ErrorClass_System' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_ErrorClass_HVAC' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Time_Delay' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Beaufort_Wind_Force_Scale' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_SensorSelect' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_ActuatorConnectType' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Cloud_Cover' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_PowerReturnMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_FuelType' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_BurnerType' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_HVACMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_DHWMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_LoadPriority' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_HVACContrMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_HVACEmergMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_ChangeoverMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_ValveMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_DamperMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_HeaterMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_FanMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_MasterSlaveMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_StatusRoomSetp' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Metering_DeviceType' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_HumDehumMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_EnableHCStage' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_ADAType' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_BackupMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_StartSynchronization' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Behaviour_Lock_Unlock' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Behaviour_Bus_Power_Up_Down' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_DALI_Fade_Time' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_BlinkingMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_LightControlMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_SwitchPBModel' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_PBAction' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_DimmPBModel' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_SwitchOnMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_LoadTypeSet' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_LoadTypeDetected' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Converter_Test_Control' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_Converter_Control' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_SABExcept_Behaviour' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_SABBehaviour_Lock_Unlock' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_SSSBMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_BlindsControlMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_CommMode' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_AddInfoTypes' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_RF_ModeSelect' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_RF_FilterSelect' USINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   uint 8 value]
-            
+
         ]
-    
+
         ['DPT_StatusGen' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 3 '0x00']
-                
+
                     [simple bit alarmStatusOfCorrespondingDatapointIsNotAcknowledged]
-                
+
                     [simple bit correspondingDatapointIsInAlarm]
-                
+
                     [simple bit correspondingDatapointMainValueIsOverridden]
-                
+
                     [simple bit correspondingDatapointMainValueIsCorruptedDueToFailure]
-                
+
                     [simple bit correspondingDatapointValueIsOutOfService]
-                
+
         ]
-    
+
         ['DPT_Device_Control' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 5 '0x00']
-                
+
                     [simple bit verifyModeIsOn]
-                
+
                     [simple bit aDatagramWithTheOwnIndividualAddressAsSourceAddressHasBeenReceived]
-                
+
                     [simple bit theUserApplicationIsStopped]
-                
+
         ]
-    
+
         ['DPT_ForceSign' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit roomhmax]
-                
+
                     [simple bit roomhconf]
-                
+
                     [simple bit dhwlegio]
-                
+
                     [simple bit dhwnorm]
-                
+
                     [simple bit overrun]
-                
+
                     [simple bit oversupply]
-                
+
                     [simple bit protection]
-                
+
                     [simple bit forcerequest]
-                
+
         ]
-    
+
         ['DPT_ForceSignCool' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_StatusRHC' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit summermode]
-                
+
                     [simple bit statusstopoptim]
-                
+
                     [simple bit statusstartoptim]
-                
+
                     [simple bit statusmorningboost]
-                
+
                     [simple bit tempreturnlimit]
-                
+
                     [simple bit tempflowlimit]
-                
+
                     [simple bit satuseco]
-                
+
                     [simple bit fault]
-                
+
         ]
-    
+
         ['DPT_StatusSDHWC' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 5 '0x00']
-                
+
                     [simple bit solarloadsufficient]
-                
+
                     [simple bit sdhwloadactive]
-                
+
                     [simple bit fault]
-                
+
         ]
-    
+
         ['DPT_FuelTypeSet' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 5 '0x00']
-                
+
                     [simple bit solidstate]
-                
+
                     [simple bit gas]
-                
+
                     [simple bit oil]
-                
+
         ]
-    
+
         ['DPT_StatusRCC' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value ]
-            
+
         ]
-    
+
         ['DPT_StatusAHU' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit cool]
-                
+
                     [simple bit heat]
-                
+
                     [simple bit fanactive]
-                
+
                     [simple bit fault]
-                
+
         ]
-    
+
         ['DPT_CombinedStatus_RTSM' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 3 '0x00']
-                
+
                     [simple bit statusOfHvacModeUser]
-                
+
                     [simple bit statusOfComfortProlongationUser]
-                
+
                     [simple bit effectiveValueOfTheComfortPushButton]
-                
+
                     [simple bit effectiveValueOfThePresenceStatus]
-                
+
                     [simple bit effectiveValueOfTheWindowStatus]
-                
+
         ]
-    
+
         ['DPT_LightActuatorErrorInfo' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 1 '0x00']
-                
+
                     [simple bit overheat]
-                
+
                     [simple bit lampfailure]
-                
+
                     [simple bit defectiveload]
-                
+
                     [simple bit underload]
-                
+
                     [simple bit overcurrent]
-                
+
                     [simple bit undervoltage]
-                
+
                     [simple bit loaddetectionerror]
-                
+
         ]
-    
+
         ['DPT_RF_ModeInfo' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 5 '0x00']
-                
+
                     [simple bit bibatSlave]
-                
+
                     [simple bit bibatMaster]
-                
+
                     [simple bit asynchronous]
-                
+
         ]
-    
+
         ['DPT_RF_FilterInfo' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 5 '0x00']
-                
+
                     [simple bit doa]
-                
+
                     [simple bit knxSn]
-                
+
                     [simple bit doaAndKnxSn]
-                
+
         ]
-    
+
         ['DPT_Channel_Activation_8' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit activationStateOfChannel1]
-                
+
                     [simple bit activationStateOfChannel2]
-                
+
                     [simple bit activationStateOfChannel3]
-                
+
                     [simple bit activationStateOfChannel4]
-                
+
                     [simple bit activationStateOfChannel5]
-                
+
                     [simple bit activationStateOfChannel6]
-                
+
                     [simple bit activationStateOfChannel7]
-                
+
                     [simple bit activationStateOfChannel8]
-                
+
         ]
-    
+
         ['DPT_StatusDHWC' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 8 '0x00']
-                
+
                     [simple bit tempoptimshiftactive]
-                
+
                     [simple bit solarenergysupport]
-                
+
                     [simple bit solarenergyonly]
-                
+
                     [simple bit otherenergysourceactive]
-                
+
                     [simple bit dhwpushactive]
-                
+
                     [simple bit legioprotactive]
-                
+
                     [simple bit dhwloadactive]
-                
+
                     [simple bit fault]
-                
+
         ]
-    
+
         ['DPT_StatusRHCC' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 1 '0x00']
-                
+
                     [simple bit overheatalarm]
-                
+
                     [simple bit frostalarm]
-                
+
                     [simple bit dewpointstatus]
-                
+
                     [simple bit coolingdisabled]
-                
+
                     [simple bit statusprecool]
-                
+
                     [simple bit statusecoc]
-                
+
                     [simple bit heatcoolmode]
-                
+
                     [simple bit heatingdiabled]
-                
+
                     [simple bit statusstopoptim]
-                
+
                     [simple bit statusstartoptim]
-                
+
                     [simple bit statusmorningboosth]
-                
+
                     [simple bit tempflowreturnlimit]
-                
+
                     [simple bit tempflowlimit]
-                
+
                     [simple bit statusecoh]
-                
+
                     [simple bit fault]
-                
+
         ]
-    
+
         ['DPT_CombinedStatus_HVA' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 7 '0x00']
-                
+
                     [simple bit calibrationMode]
-                
+
                     [simple bit lockedPosition]
-                
+
                     [simple bit forcedPosition]
-                
+
                     [simple bit manuaOperationOverridden]
-                
+
                     [simple bit serviceMode]
-                
+
                     [simple bit valveKick]
-                
+
                     [simple bit overload]
-                
+
                     [simple bit shortCircuit]
-                
+
                     [simple bit currentValvePosition]
-                
+
         ]
-    
+
         ['DPT_CombinedStatus_RTC' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 7 '0x00']
-                
+
                     [simple bit coolingModeEnabled]
-                
+
                     [simple bit heatingModeEnabled]
-                
+
                     [simple bit additionalHeatingCoolingStage2Stage]
-                
+
                     [simple bit controllerInactive]
-                
+
                     [simple bit overheatAlarm]
-                
+
                     [simple bit frostAlarm]
-                
+
                     [simple bit dewPointStatus]
-                
+
                     [simple bit activeMode]
-                
+
                     [simple bit generalFailureInformation]
-                
+
         ]
-    
+
         ['DPT_Media' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 10 '0x00']
-                
+
                     [simple bit knxIp]
-                
+
                     [simple bit rf]
-                
+
                     [reserved uint 1 '0x00']
-                
+
                     [simple bit pl110]
-                
+
                     [simple bit tp1]
-                
+
                     [reserved uint 1 '0x00']
-                
+
         ]
-    
+
         ['DPT_Channel_Activation_16' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit activationStateOfChannel1]
-                
+
                     [simple bit activationStateOfChannel2]
-                
+
                     [simple bit activationStateOfChannel3]
-                
+
                     [simple bit activationStateOfChannel4]
-                
+
                     [simple bit activationStateOfChannel5]
-                
+
                     [simple bit activationStateOfChannel6]
-                
+
                     [simple bit activationStateOfChannel7]
-                
+
                     [simple bit activationStateOfChannel8]
-                
+
                     [simple bit activationStateOfChannel9]
-                
+
                     [simple bit activationStateOfChannel10]
-                
+
                     [simple bit activationStateOfChannel11]
-                
+
                     [simple bit activationStateOfChannel12]
-                
+
                     [simple bit activationStateOfChannel13]
-                
+
                     [simple bit activationStateOfChannel14]
-                
+
                     [simple bit activationStateOfChannel15]
-                
+
                     [simple bit activationStateOfChannel16]
-                
+
         ]
-    
+
         ['DPT_OnOffAction' USINT
             [reserved uint 6 '0x00']
-                    
+
             [simple   uint 2 value]
-            
+
         ]
-    
+
         ['DPT_Alarm_Reaction' USINT
             [reserved uint 6 '0x00']
-                    
+
             [simple   uint 2 value]
-            
+
         ]
-    
+
         ['DPT_UpDown_Action' USINT
             [reserved uint 6 '0x00']
-                    
+
             [simple   uint 2 value]
-            
+
         ]
-    
+
         ['DPT_HVAC_PB_Action' USINT
             [reserved uint 6 '0x00']
-                    
+
             [simple   uint 2 value]
-            
+
         ]
-    
+
         ['DPT_DoubleNibble' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 4 busy]
-                
+
                     [simple uint 4 nak]
-                
+
         ]
-    
+
         ['DPT_SceneInfo' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 1 '0x00']
-                
+
                     [simple bit sceneIsInactive]
-                
+
                     [simple uint 6 scenenumber]
-                
+
         ]
-    
+
         ['DPT_CombinedInfoOnOff' Struct
            // Field Size 32
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit maskBitInfoOnOffOutput16]
-                
+
                     [simple bit maskBitInfoOnOffOutput15]
-                
+
                     [simple bit maskBitInfoOnOffOutput14]
-                
+
                     [simple bit maskBitInfoOnOffOutput13]
-                
+
                     [simple bit maskBitInfoOnOffOutput12]
-                
+
                     [simple bit maskBitInfoOnOffOutput11]
-                
+
                     [simple bit maskBitInfoOnOffOutput10]
-                
+
                     [simple bit maskBitInfoOnOffOutput9]
-                
+
                     [simple bit maskBitInfoOnOffOutput8]
-                
+
                     [simple bit maskBitInfoOnOffOutput7]
-                
+
                     [simple bit maskBitInfoOnOffOutput6]
-                
+
                     [simple bit maskBitInfoOnOffOutput5]
-                
+
                     [simple bit maskBitInfoOnOffOutput4]
-                
+
                     [simple bit maskBitInfoOnOffOutput3]
-                
+
                     [simple bit maskBitInfoOnOffOutput2]
-                
+
                     [simple bit maskBitInfoOnOffOutput1]
-                
+
                     [simple bit infoOnOffOutput16]
-                
+
                     [simple bit infoOnOffOutput15]
-                
+
                     [simple bit infoOnOffOutput14]
-                
+
                     [simple bit infoOnOffOutput13]
-                
+
                     [simple bit infoOnOffOutput12]
-                
+
                     [simple bit infoOnOffOutput11]
-                
+
                     [simple bit infoOnOffOutput10]
-                
+
                     [simple bit infoOnOffOutput9]
-                
+
                     [simple bit infoOnOffOutput8]
-                
+
                     [simple bit infoOnOffOutput7]
-                
+
                     [simple bit infoOnOffOutput6]
-                
+
                     [simple bit infoOnOffOutput5]
-                
+
                     [simple bit infoOnOffOutput4]
-                
+
                     [simple bit infoOnOffOutput3]
-                
+
                     [simple bit infoOnOffOutput2]
-                
+
                     [simple bit infoOnOffOutput1]
-                
+
         ]
-    
+
         ['DPT_ActiveEnergy_V64' LINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 64 value]
-            
+
         ]
-    
+
         ['DPT_ApparentEnergy_V64' LINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 64 value]
-            
+
         ]
-    
+
         ['DPT_ReactiveEnergy_V64' LINT
             [reserved uint 8 '0x00']
-                    
+
             [simple   int 64 value]
-            
+
         ]
-    
+
         ['DPT_Channel_Activation_24' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit activationStateOfChannel1]
-                
+
                     [simple bit activationStateOfChannel2]
-                
+
                     [simple bit activationStateOfChannel3]
-                
+
                     [simple bit activationStateOfChannel4]
-                
+
                     [simple bit activationStateOfChannel5]
-                
+
                     [simple bit activationStateOfChannel6]
-                
+
                     [simple bit activationStateOfChannel7]
-                
+
                     [simple bit activationStateOfChannel8]
-                
+
                     [simple bit activationStateOfChannel9]
-                
+
                     [simple bit activationStateOfChannel10]
-                
+
                     [simple bit activationStateOfChannel11]
-                
+
                     [simple bit activationStateOfChannel12]
-                
+
                     [simple bit activationStateOfChannel13]
-                
+
                     [simple bit activationStateOfChannel14]
-                
+
                     [simple bit activationStateOfChannel15]
-                
+
                     [simple bit activationStateOfChannel16]
-                
+
                     [simple bit activationStateOfChannel17]
-                
+
                     [simple bit activationStateOfChannel18]
-                
+
                     [simple bit activationStateOfChannel19]
-                
+
                     [simple bit activationStateOfChannel20]
-                
+
                     [simple bit activationStateOfChannel21]
-                
+
                     [simple bit activationStateOfChannel22]
-                
+
                     [simple bit activationStateOfChannel23]
-                
+
                     [simple bit activationStateOfChannel24]
-                
+
         ]
-    
+
         ['DPT_HVACModeNext' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 16 delayTimeMin]
-                
+
                     [simple uint 8 hvacMode]
-                
+
         ]
-    
+
         ['DPT_DHWModeNext' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 16 delayTimeMin]
-                
+
                     [simple uint 8 dhwMode]
-                
+
         ]
-    
+
         ['DPT_OccModeNext' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 16 delayTimeMin]
-                
+
                     [simple uint 8 occupancyMode]
-                
+
         ]
-    
+
         ['DPT_BuildingModeNext' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 16 delayTimeMin]
-                
+
                     [simple uint 8 buildingMode]
-                
+
         ]
-    
+
         ['DPT_StatusLightingActuator' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit validactualvalue]
-                
+
                     [simple bit locked]
-                
+
                     [simple bit forced]
-                
+
                     [simple bit nightmodeactive]
-                
+
                     [simple bit staircaselightingFunction]
-                
+
                     [simple bit dimming]
-                
+
                     [simple bit localoverride]
-                
+
                     [simple bit failure]
-                
+
                     [simple uint 8 actualvalue]
-                
+
         ]
-    
+
         ['DPT_Version' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 5 magicNumber]
-                
+
                     [simple uint 5 versionNumber]
-                
+
                     [simple uint 6 revisionNumber]
-                
+
         ]
-    
+
         ['DPT_AlarmInfo' Struct
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 8 logNumber]
-                
+
                     [simple uint 8 alarmPriority]
-                
+
                     [simple uint 8 applicationArea]
-                
+
                     [simple uint 8 errorClass]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit errorcodeSup]
-                
+
                     [simple bit alarmtextSup]
-                
+
                     [simple bit timestampSup]
-                
+
                     [simple bit ackSup]
-                
+
                     [reserved uint 5 '0x00']
-                
+
                     [simple bit locked]
-                
+
                     [simple bit alarmunack]
-                
+
                     [simple bit inalarm]
-                
+
         ]
-    
+
         ['DPT_TempRoomSetpSetF16_3' Struct
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple float 16 tempsetpcomf encoding='"KNXFloat"']
-                
+
                     [simple float 16 tempsetpstdby encoding='"KNXFloat"']
-                
+
                     [simple float 16 tempsetpeco encoding='"KNXFloat"']
-                
+
         ]
-    
+
         ['DPT_TempRoomSetpSetShiftF16_3' Struct
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple float 16 tempsetpshiftcomf encoding='"KNXFloat"']
-                
+
                     [simple float 16 tempsetpshiftstdby encoding='"KNXFloat"']
-                
+
                     [simple float 16 tempsetpshifteco encoding='"KNXFloat"']
-                
+
         ]
-    
+
         ['DPT_Scaling_Speed' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 16 timePeriod]
-                
+
                     [simple uint 8 percent]
-                
+
         ]
-    
+
         ['DPT_Scaling_Step_Time' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 16 timePeriod]
-                
+
                     [simple uint 8 percent]
-                
+
         ]
-    
+
         ['DPT_MeteringValue' Struct
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple int 32 countval]
-                
+
                     [simple uint 8 valinffield]
-                
+
                     [reserved uint 3 '0x00']
-                
+
                     [simple bit alarmunack]
-                
+
                     [simple bit inalarm]
-                
+
                     [simple bit overridden]
-                
+
                     [simple bit fault]
-                
+
                     [simple bit outofservice]
-                
+
         ]
-    
+
         ['DPT_MBus_Address' Struct
            // Field Size 64
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 16 manufactid]
-                
+
                     [simple uint 32 identnumber]
-                
+
                     [simple uint 8 version]
-                
+
                     [simple uint 8 medium]
-                
+
         ]
-    
+
         ['DPT_Colour_RGB' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 8 r]
-                
+
                     [simple uint 8 g]
-                
+
                     [simple uint 8 b]
-                
+
         ]
-    
+
         ['DPT_LanguageCodeAlpha2_ASCII' STRING
             [reserved uint 8 '0x00']
             [simple   string 16 value encoding='"ASCII"']
-            
+
         ]
-    
+
         ['DPT_Tariff_ActiveEnergy' Struct
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple int 32 activeelectricalenergy]
-                
+
                     [simple uint 8 tariff]
-                
+
                     [reserved uint 6 '0x00']
-                
+
                     [simple bit electricalengergyvalidity]
-                
+
                     [simple bit tariffvalidity]
-                
+
         ]
-    
+
         ['DPT_Prioritised_Mode_Control' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit deactivationOfPriority]
-                
+
                     [simple uint 3 priorityLevel]
-                
+
                     [simple uint 4 modeLevel]
-                
+
         ]
-    
+
         ['DPT_DALI_Control_Gear_Diagnostic' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 5 '0x00']
-                
+
                     [simple bit convertorError]
-                
+
                     [simple bit ballastFailure]
-                
+
                     [simple bit lampFailure]
-                
+
                     [simple bit readOrResponse]
-                
+
                     [simple bit addressIndicator]
-                
+
                     [simple uint 6 daliDeviceAddressOrDaliGroupAddress]
-                
+
         ]
-    
+
         ['DPT_DALI_Diagnostics' Struct
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple bit ballastFailure]
-                
+
                     [simple bit lampFailure]
-                
+
                     [simple uint 6 deviceAddress]
-                
+
         ]
-    
+
         ['DPT_CombinedPosition' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 8 heightPosition]
-                
+
                     [simple uint 8 slatsPosition]
-                
+
                     [reserved uint 6 '0x00']
-                
+
                     [simple bit validitySlatsPosition]
-                
+
                     [simple bit validityHeightPosition]
-                
+
         ]
-    
+
         ['DPT_StatusSAB' Struct
            // Field Size 32
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 8 heightPosition]
-                
+
                     [simple uint 8 slatsPosition]
-                
+
                     [simple bit upperEndPosReached]
-                
+
                     [simple bit lowerEndPosReached]
-                
+
                     [simple bit lowerPredefPosReachedTypHeight100PercentSlatsAngle100Percent]
-                
+
                     [simple bit targetPosDrive]
-                
+
                     [simple bit restrictionOfTargetHeightPosPosCanNotBeReached]
-                
+
                     [simple bit restrictionOfSlatsHeightPosPosCanNotBeReached]
-                
+
                     [simple bit atLeastOneOfTheInputsWindRainFrostAlarmIsInAlarm]
-                
+
                     [simple bit upDownPositionIsForcedByMoveupdownforcedInput]
-                
+
                     [simple bit movementIsLockedEGByDevicelockedInput]
-                
+
                     [simple bit actuatorSetvalueIsLocallyOverriddenEGViaALocalUserInterface]
-                
+
                     [simple bit generalFailureOfTheActuatorOrTheDrive]
-                
+
                     [reserved uint 3 '0x00']
-                
+
                     [simple bit validityHeightPos]
-                
+
                     [simple bit validitySlatsPos]
-                
+
         ]
-    
+
         ['DPT_Colour_xyY' Struct
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 16 xAxis]
-                
+
                     [simple uint 16 yAxis]
-                
+
                     [simple uint 8 brightness]
-                
+
                     [reserved uint 6 '0x00']
-                
+
                     [simple bit validityXy]
-                
+
                     [simple bit validityBrightness]
-                
+
         ]
-    
+
         ['DPT_Converter_Status' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 4 converterModeAccordingToTheDaliConverterStateMachine]
-                
+
                     [reserved uint 2 '0x00']
-                
+
                     [simple bit hardwiredSwitchIsActive]
-                
+
                     [simple bit hardwiredInhibitIsActive]
-                
+
                     [simple uint 2 functionTestPending]
-                
+
                     [simple uint 2 durationTestPending]
-                
+
                     [simple uint 2 partialDurationTestPending]
-                
+
                     [simple uint 2 converterFailure]
-                
+
         ]
-    
+
         ['DPT_Converter_Test_Result' Struct
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 4 ltrf]
-                
+
                     [simple uint 4 ltrd]
-                
+
                     [simple uint 4 ltrp]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple uint 2 sf]
-                
+
                     [simple uint 2 sd]
-                
+
                     [simple uint 2 sp]
-                
+
                     [reserved uint 2 '0x00']
-                
+
                     [simple uint 16 ldtr]
-                
+
                     [simple uint 8 lpdtr]
-                
+
         ]
-    
+
         ['DPT_Battery_Info' Struct
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 5 '0x00']
-                
+
                     [simple bit batteryFailure]
-                
+
                     [simple bit batteryDurationFailure]
-                
+
                     [simple bit batteryFullyCharged]
-                
+
                     [simple uint 8 batteryChargeLevel]
-                
+
         ]
-    
+
         ['DPT_Brightness_Colour_Temperature_Transition' Struct
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 16 ms]
-                
+
                     [simple uint 16 temperatureK]
-                
+
                     [simple uint 8 percent]
-                
+
                     [reserved uint 5 '0x00']
-                
+
                     [simple bit validityOfTheTimePeriod]
-                
+
                     [simple bit validityOfTheAbsoluteColourTemperature]
-                
+
                     [simple bit validityOfTheAbsoluteBrightness]
-                
+
         ]
-    
+
         ['DPT_Brightness_Colour_Temperature_Control' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit cct]
-                
+
                     [simple uint 3 stepCodeColourTemperature]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit cb]
-                
+
                     [simple uint 3 stepCodeBrightness]
-                
+
                     [reserved uint 6 '0x00']
-                
+
                     [simple bit cctAndStepCodeColourValidity]
-                
+
                     [simple bit cbAndStepCodeBrightnessValidity]
-                
+
         ]
-    
+
         ['DPT_Colour_RGBW' Struct
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple uint 8 colourLevelRed]
-                
+
                     [simple uint 8 colourLevelGreen]
-                
+
                     [simple uint 8 colourLevelBlue]
-                
+
                     [simple uint 8 colourLevelWhite]
-                
+
                     [reserved uint 8 '0x00']
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit mr]
-                
+
                     [simple bit mg]
-                
+
                     [simple bit mb]
-                
+
                     [simple bit mw]
-                
+
         ]
-    
+
         ['DPT_Relative_Control_RGBW' Struct
            // Field Size 40
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit maskcw]
-                
+
                     [simple bit maskcb]
-                
+
                     [simple bit maskcg]
-                
+
                     [simple bit maskcr]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit cw]
-                
+
                     [simple uint 3 stepCodeColourWhite]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit cb]
-                
+
                     [simple uint 3 stepCodeColourBlue]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit cg]
-                
+
                     [simple uint 3 stepCodeColourGreen]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit cr]
-                
+
                     [simple uint 3 stepCodeColourRed]
-                
+
         ]
-    
+
         ['DPT_Relative_Control_RGB' Struct
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                    
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit cb]
-                
+
                     [simple uint 3 stepCodeColourBlue]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit cg]
-                
+
                     [simple uint 3 stepCodeColourGreen]
-                
+
                     [reserved uint 4 '0x00']
-                
+
                     [simple bit cr]
-                
+
                     [simple uint 3 stepCodeColourRed]
-                
+
         ]
-    
+
         ['DPT_GeographicalLocation' Struct
            // Field Size 64
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple float 32 longitude]
-                
+
                     [simple float 32 latitude]
-                
+
         ]
-    
+
         ['DPT_TempRoomSetpSetF16_4' Struct
            // Field Size 64
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple float 16 roomTemperatureSetpointComfort encoding='"KNXFloat"']
-                
+
                     [simple float 16 roomTemperatureSetpointStandby encoding='"KNXFloat"']
-                
+
                     [simple float 16 roomTemperatureSetpointEconomy encoding='"KNXFloat"']
-                
+
                     [simple float 16 roomTemperatureSetpointBuildingProtection encoding='"KNXFloat"']
-                
+
         ]
-    
+
         ['DPT_TempRoomSetpSetShiftF16_4' Struct
            // Field Size 64
            [reserved uint 8 '0x00']
 
-                    
+
                     [simple float 16 roomTemperatureSetpointShiftComfort encoding='"KNXFloat"']
-                
+
                     [simple float 16 roomTemperatureSetpointShiftStandby encoding='"KNXFloat"']
-                
+
                     [simple float 16 roomTemperatureSetpointShiftEconomy encoding='"KNXFloat"']
-                
+
                     [simple float 16 roomTemperatureSetpointShiftBuildingProtection encoding='"KNXFloat"']
-                
+
         ]
-    
+
     ]
 ]
 
@@ -4821,4 +4826,3 @@
 
 [enum PlcValueType external='true']
 
-    

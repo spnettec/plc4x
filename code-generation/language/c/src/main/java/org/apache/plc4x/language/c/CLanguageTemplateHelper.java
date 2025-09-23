@@ -572,8 +572,16 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
+                int numChars;
+                if("UTF-8".equalsIgnoreCase(encoding)) {
+                    numChars = simpleTypeReference.getSizeInBits() / 8;
+                } else if("UTF-16".equalsIgnoreCase(encoding)) {
+                    numChars = simpleTypeReference.getSizeInBits() / 16;
+                } else {
+                    throw new FreemarkerException("Unsupported encoding " + encoding);
+                }
                 return "plc4c_spi_write_string(writeBuffer, " + length + ", \"" +
-                    encoding + "\", (char*) " + fieldName + ")";
+                    encoding + "\", (const uint8_t*) " + (numChars == 1 ? "&" : "") + fieldName + ")";
             }
             case VSTRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
@@ -584,7 +592,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 // Here we need to use the serialized expression of the length instead.
                 String lengthExpression = toSerializationExpression(thisType, field, simpleTypeReference.asVstringTypeReference().orElseThrow().getLengthExpression(), null);
                 return "plc4c_spi_write_string(writeBuffer, " + lengthExpression + ", \"" +
-                    encoding + "\", " + fieldName + ")";
+                    encoding + "\", (const uint8_t*) " + fieldName + ")";
             }
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());

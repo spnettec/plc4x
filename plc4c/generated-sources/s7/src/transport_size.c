@@ -389,11 +389,13 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_300(plc4c_s7_read_writ
 }
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_supported__s7_300(bool value) {
-        if (!value) {
-            return plc4c_s7_read_write_transport_size_LWORD;
-        } else {
-            return plc4c_s7_read_write_transport_size_BOOL;
-        }
+    if (value == false) {
+      return plc4c_s7_read_write_transport_size_LWORD;
+    }
+    if (value == true) {
+      return plc4c_s7_read_write_transport_size_BOOL;
+    }
+    return -1;
 }
 
 bool plc4c_s7_read_write_transport_size_get_supported__logo(plc4c_s7_read_write_transport_size value) {
@@ -504,11 +506,13 @@ bool plc4c_s7_read_write_transport_size_get_supported__logo(plc4c_s7_read_write_
 }
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_supported__logo(bool value) {
-        if (!value) {
-            return plc4c_s7_read_write_transport_size_LWORD;
-        } else {
-            return plc4c_s7_read_write_transport_size_BOOL;
-        }
+    if (value == false) {
+      return plc4c_s7_read_write_transport_size_LWORD;
+    }
+    if (value == true) {
+      return plc4c_s7_read_write_transport_size_BOOL;
+    }
+    return -1;
 }
 
 uint8_t plc4c_s7_read_write_transport_size_get_code(plc4c_s7_read_write_transport_size value) {
@@ -620,45 +624,45 @@ uint8_t plc4c_s7_read_write_transport_size_get_code(plc4c_s7_read_write_transpor
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_code(uint8_t value) {
     switch(value) {
-        case 0: {
-            return plc4c_s7_read_write_transport_size_LWORD;
-        }
-        case 1: {
-            return plc4c_s7_read_write_transport_size_BOOL;
-        }
-        case 2: {
-            return plc4c_s7_read_write_transport_size_BYTE;
-        }
-        case 3: {
-            return plc4c_s7_read_write_transport_size_CHAR;
-        }
-        case 4: {
-            return plc4c_s7_read_write_transport_size_WORD;
-        }
-        case 5: {
-            return plc4c_s7_read_write_transport_size_INT;
-        }
-        case 6: {
-            return plc4c_s7_read_write_transport_size_DWORD;
-        }
-        case 7: {
-            return plc4c_s7_read_write_transport_size_DINT;
-        }
-        case 8: {
-            return plc4c_s7_read_write_transport_size_REAL;
-        }
-        case 10: {
-            return plc4c_s7_read_write_transport_size_TOD;
-        }
-        case 19: {
-            return plc4c_s7_read_write_transport_size_WCHAR;
-        }
-        case 28: {
-            return plc4c_s7_read_write_transport_size_COUNTER;
-        }
-        default: {
-            return -1;
-        }
+      case 0: {
+        return plc4c_s7_read_write_transport_size_LWORD;
+      }
+      case 1: {
+        return plc4c_s7_read_write_transport_size_BOOL;
+      }
+      case 2: {
+        return plc4c_s7_read_write_transport_size_BYTE;
+      }
+      case 3: {
+        return plc4c_s7_read_write_transport_size_CHAR;
+      }
+      case 4: {
+        return plc4c_s7_read_write_transport_size_WORD;
+      }
+      case 5: {
+        return plc4c_s7_read_write_transport_size_INT;
+      }
+      case 6: {
+        return plc4c_s7_read_write_transport_size_DWORD;
+      }
+      case 7: {
+        return plc4c_s7_read_write_transport_size_DINT;
+      }
+      case 8: {
+        return plc4c_s7_read_write_transport_size_REAL;
+      }
+      case 10: {
+        return plc4c_s7_read_write_transport_size_TOD;
+      }
+      case 19: {
+        return plc4c_s7_read_write_transport_size_WCHAR;
+      }
+      case 28: {
+        return plc4c_s7_read_write_transport_size_COUNTER;
+      }
+      default: {
+        return -1;
+      }
     }
 }
 
@@ -771,24 +775,24 @@ uint8_t plc4c_s7_read_write_transport_size_get_size_in_bytes(plc4c_s7_read_write
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_size_in_bytes(uint8_t value) {
     switch(value) {
-        case 1: {
-            return plc4c_s7_read_write_transport_size_BOOL;
-        }
-        case 12: {
-            return plc4c_s7_read_write_transport_size_DTL;
-        }
-        case 2: {
-            return plc4c_s7_read_write_transport_size_WORD;
-        }
-        case 4: {
-            return plc4c_s7_read_write_transport_size_DWORD;
-        }
-        case 8: {
-            return plc4c_s7_read_write_transport_size_LWORD;
-        }
-        default: {
-            return -1;
-        }
+      case 1: {
+        return plc4c_s7_read_write_transport_size_BOOL;
+      }
+      case 12: {
+        return plc4c_s7_read_write_transport_size_DTL;
+      }
+      case 2: {
+        return plc4c_s7_read_write_transport_size_WORD;
+      }
+      case 4: {
+        return plc4c_s7_read_write_transport_size_DWORD;
+      }
+      case 8: {
+        return plc4c_s7_read_write_transport_size_LWORD;
+      }
+      default: {
+        return -1;
+      }
     }
 }
 
@@ -900,11 +904,13 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_400(plc4c_s7_read_writ
 }
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_supported__s7_400(bool value) {
-        if (!value) {
-            return plc4c_s7_read_write_transport_size_LWORD;
-        } else {
-            return plc4c_s7_read_write_transport_size_BOOL;
-        }
+    if (value == false) {
+      return plc4c_s7_read_write_transport_size_LWORD;
+    }
+    if (value == true) {
+      return plc4c_s7_read_write_transport_size_BOOL;
+    }
+    return -1;
 }
 
 bool plc4c_s7_read_write_transport_size_get_supported__s7_1200(plc4c_s7_read_write_transport_size value) {
@@ -1015,11 +1021,13 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_1200(plc4c_s7_read_wri
 }
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_supported__s7_1200(bool value) {
-        if (!value) {
-            return plc4c_s7_read_write_transport_size_LWORD;
-        } else {
-            return plc4c_s7_read_write_transport_size_BOOL;
-        }
+    if (value == false) {
+      return plc4c_s7_read_write_transport_size_LWORD;
+    }
+    if (value == true) {
+      return plc4c_s7_read_write_transport_size_BOOL;
+    }
+    return -1;
 }
 
 uint8_t plc4c_s7_read_write_transport_size_get_short_name(plc4c_s7_read_write_transport_size value) {
@@ -1131,21 +1139,21 @@ uint8_t plc4c_s7_read_write_transport_size_get_short_name(plc4c_s7_read_write_tr
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_short_name(uint8_t value) {
     switch(value) {
-        case 'B': {
-            return plc4c_s7_read_write_transport_size_BYTE;
-        }
-        case 'D': {
-            return plc4c_s7_read_write_transport_size_DWORD;
-        }
-        case 'W': {
-            return plc4c_s7_read_write_transport_size_WORD;
-        }
-        case 'X': {
-            return plc4c_s7_read_write_transport_size_BOOL;
-        }
-        default: {
-            return -1;
-        }
+      case 'B': {
+        return plc4c_s7_read_write_transport_size_BYTE;
+      }
+      case 'D': {
+        return plc4c_s7_read_write_transport_size_DWORD;
+      }
+      case 'W': {
+        return plc4c_s7_read_write_transport_size_WORD;
+      }
+      case 'X': {
+        return plc4c_s7_read_write_transport_size_BOOL;
+      }
+      default: {
+        return -1;
+      }
     }
 }
 
@@ -1257,11 +1265,10 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_1500(plc4c_s7_read_wri
 }
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_supported__s7_1500(bool value) {
-        if (!value) {
-            return plc4c_s7_read_write_transport_size_BOOL;
-        } else {
-            return -1;
-        }
+    if (value == true) {
+      return plc4c_s7_read_write_transport_size_BOOL;
+    }
+    return -1;
 }
 
 plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_transport_size_get_data_transport_size(plc4c_s7_read_write_transport_size value) {
@@ -1373,24 +1380,24 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_transport_size_get_d
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_data_transport_size(plc4c_s7_read_write_data_transport_size value) {
     switch(value) {
-        case plc4c_s7_read_write_transport_size_BOOL: /* '0x01' */{
-            return plc4c_s7_read_write_transport_size_BOOL;
-        }
-        case plc4c_s7_read_write_transport_size_BYTE: /* '0x02' */{
-            return plc4c_s7_read_write_transport_size_BYTE;
-        }
-        case plc4c_s7_read_write_transport_size_INT: /* '0x06' */{
-            return plc4c_s7_read_write_transport_size_INT;
-        }
-        case plc4c_s7_read_write_transport_size_COUNTER: /* '0x1C' */{
-            return plc4c_s7_read_write_transport_size_COUNTER;
-        }
-        case plc4c_s7_read_write_transport_size_REAL: /* '0x0E' */{
-            return plc4c_s7_read_write_transport_size_REAL;
-        }
-        default: {
-            return -1;
-        }
+      case plc4c_s7_read_write_data_transport_size_BIT: {
+        return plc4c_s7_read_write_transport_size_BOOL;
+      }
+      case plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD: {
+        return plc4c_s7_read_write_transport_size_BYTE;
+      }
+      case plc4c_s7_read_write_data_transport_size_INTEGER: {
+        return plc4c_s7_read_write_transport_size_INT;
+      }
+      case plc4c_s7_read_write_data_transport_size_OCTET_STRING: {
+        return plc4c_s7_read_write_transport_size_COUNTER;
+      }
+      case plc4c_s7_read_write_data_transport_size_REAL: {
+        return plc4c_s7_read_write_transport_size_REAL;
+      }
+      default: {
+        return -1;
+      }
     }
 }
 
@@ -1589,6 +1596,7 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_
     if (strcmp(value, "S7_S5TIME") == 0) {
         return plc4c_s7_read_write_transport_size_S5TIME;
     }
+    return (plc4c_s7_read_write_transport_size) 0;
 }
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_base_type(plc4c_s7_read_write_transport_size value) {
@@ -1700,24 +1708,21 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_base_t
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_enum_for_field_base_type(plc4c_s7_read_write_transport_size value) {
     switch(value) {
-        case plc4c_s7_read_write_transport_size_UINT: /* '0x07' */{
-            return plc4c_s7_read_write_transport_size_UINT;
-        }
-        case plc4c_s7_read_write_transport_size_LREAL: /* '0x0F' */{
-            return plc4c_s7_read_write_transport_size_LREAL;
-        }
-        case plc4c_s7_read_write_transport_size_LTIME: /* '0x16' */{
-            return plc4c_s7_read_write_transport_size_LTIME;
-        }
-        case plc4c_s7_read_write_transport_size_DWORD: /* '0x04' */{
-            return plc4c_s7_read_write_transport_size_DWORD;
-        }
-        case plc4c_s7_read_write_transport_size_BOOL: /* '0x01' */{
-            return plc4c_s7_read_write_transport_size_BOOL;
-        }
-        default: {
-            return -1;
-        }
+      case plc4c_s7_read_write_transport_size_INT: {
+        return plc4c_s7_read_write_transport_size_UINT;
+      }
+      case plc4c_s7_read_write_transport_size_REAL: {
+        return plc4c_s7_read_write_transport_size_LREAL;
+      }
+      case plc4c_s7_read_write_transport_size_TIME: {
+        return plc4c_s7_read_write_transport_size_LTIME;
+      }
+      case plc4c_s7_read_write_transport_size_WORD: {
+        return plc4c_s7_read_write_transport_size_DWORD;
+      }
+      default: {
+        return -1;
+      }
     }
 }
 
