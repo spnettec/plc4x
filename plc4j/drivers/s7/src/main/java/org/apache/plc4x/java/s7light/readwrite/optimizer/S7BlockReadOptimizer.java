@@ -164,7 +164,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                                     new S7TagChunk(TransportSize.BYTE, currentMemoryArea, currentDataBlockNumber,
                                         currentChunkStartByteOffset, (byte) 0,
                                         currentChunkEndByteOffset - currentChunkStartByteOffset,
-                                        currentChunkTags, 0, 1, currentChunkEndByteOffset - currentChunkStartByteOffset)));
+                                        currentChunkTags, 0, 1, currentChunkEndByteOffset - currentChunkStartByteOffset, s7Tag.getStringEncoding())));
 
                             // Start a new one.
                             currentChunkStartByteOffset = s7Tag.getByteOffset();
@@ -211,7 +211,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                     optimizedTagMap2.put(new TagNameSize(curTagNameBase + "." + curTagFragmentNumber, maxRequestSize),
                         new DefaultPlcTagItem<>(
                             new S7TagChunk(curTag.getDataType(), curTag.getMemoryArea(), curTag.getBlockNumber(), curTagOffset, (byte) 0, maxRequestSize,
-                                (curTag instanceof S7TagChunk) ? ((S7TagChunk) curTag).getChunkTags() : Collections.singletonMap(curTag, tagNameSize.getTagName()),
+                                (curTag instanceof S7TagChunk) ? ((S7TagChunk) curTag).getChunkTags() : Collections.singletonMap(curTag, Set.of(tagNameSize.getTagName())),
                                 curPartIndex, totalPartCount, curTagSize, curTag.getStringEncoding())));
 
                     curTagOffset += maxRequestSize;
@@ -222,7 +222,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                 optimizedTagMap2.put(new TagNameSize(curTagNameBase + "." + curTagFragmentNumber, curTagSize),
                     new DefaultPlcTagItem<>(
                         new S7TagChunk(curTag.getDataType(), curTag.getMemoryArea(), curTag.getBlockNumber(), curTagOffset, (byte) 0, curTagSize,
-                            (curTag instanceof S7TagChunk) ? ((S7TagChunk) curTag).getChunkTags() : Collections.singletonMap(curTag, tagNameSize.getTagName()),
+                            (curTag instanceof S7TagChunk) ? ((S7TagChunk) curTag).getChunkTags() : Collections.singletonMap(curTag, Set.of(tagNameSize.getTagName())),
                             curPartIndex, totalPartCount, curTagSize, curTag.getStringEncoding())));
             }
             // Just copy over tags that fit into a request.
