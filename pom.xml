@@ -126,7 +126,7 @@
     <commons-csv.version>1.14.1</commons-csv.version>
     <commons-pool2.version>2.12.1</commons-pool2.version>
     <dom4j.version>2.2.0</dom4j.version>
-    <equalsverifier.version>4.1.1</equalsverifier.version>
+    <equalsverifier.version>4.2</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
     <groovy.version>5.0.1</groovy.version>
     <guava.version>33.5.0-jre</guava.version>
@@ -285,7 +285,7 @@
       <dependency>
         <groupId>com.google.googlejavaformat</groupId>
         <artifactId>google-java-format</artifactId>
-        <version>1.28.0</version>
+        <version>1.29.0</version>
       </dependency>
 
       <dependency>
@@ -920,7 +920,7 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.10.0</version>
+            <version>1.11.0</version>
           </dependency>
           <dependency>
             <groupId>org.apache.maven.shared</groupId>
@@ -993,7 +993,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.6.2</version>
         </plugin>
 
         <plugin>
@@ -1207,7 +1207,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>3.6.1</version>
         </plugin>
 
         <plugin>
@@ -1243,7 +1243,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.9.0</version>
           <dependencies>
             <!--dependency>
               <groupId>org.apache.maven.shared</groupId>
