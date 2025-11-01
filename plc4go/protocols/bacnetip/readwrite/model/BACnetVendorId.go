@@ -409,7 +409,7 @@ const (
 	BACnetVendorId_CEAG_NOTLICHTSYSTEME_GMBH                                                    BACnetVendorId = 363
 	BACnetVendorId_DISTECH_CONTROLS_INC                                                         BACnetVendorId = 364
 	BACnetVendorId_INDUSTRIAL_TECHNOLOGY_RESEARCH_INSTITUTE                                     BACnetVendorId = 365
-	BACnetVendorId_ICONICS_INC                                                                  BACnetVendorId = 366
+	BACnetVendorId_MITSUBISHI_ELECTRIC_ICONICS_DIGITAL_SOLUTIONS                                BACnetVendorId = 366
 	BACnetVendorId_IQ_CONTROLSSC                                                                BACnetVendorId = 367
 	BACnetVendorId_OJ_ELECTRONICSAS                                                             BACnetVendorId = 368
 	BACnetVendorId_ROLBIT_LTD                                                                   BACnetVendorId = 369
@@ -1304,7 +1304,7 @@ const (
 	BACnetVendorId_ELMEASURE_INDIA_PVT_LTD                                                      BACnetVendorId = 1265
 	BACnetVendorId_PINESHORE_ENERGYLLC                                                          BACnetVendorId = 1266
 	BACnetVendorId_BRASCH_ENVIRONMENTAL_TECHNOLOGIESLLC                                         BACnetVendorId = 1267
-	BACnetVendorId_LION_CONTROLS_COLTD                                                          BACnetVendorId = 1268
+	BACnetVendorId_SHEN_ZHEN_ZHI_XING_BUILDING_TECH_CO_LTD                                      BACnetVendorId = 1268
 	BACnetVendorId_SINUX                                                                        BACnetVendorId = 1269
 	BACnetVendorId_AVNET_INC                                                                    BACnetVendorId = 1270
 	BACnetVendorId_SOMFY_ACTIVITESSA                                                            BACnetVendorId = 1271
@@ -1566,7 +1566,7 @@ const (
 	BACnetVendorId_BUILDING_LOGIX                                                               BACnetVendorId = 1530
 	BACnetVendorId_IFESCA_GMBH                                                                  BACnetVendorId = 1531
 	BACnetVendorId_FELLOWES_INC                                                                 BACnetVendorId = 1532
-	BACnetVendorId_BLANK                                                                        BACnetVendorId = 1533
+	BACnetVendorId_CALEFFI_SPA                                                                  BACnetVendorId = 1533
 	BACnetVendorId_JDRF_ELECTROMAG                                                              BACnetVendorId = 1534
 	BACnetVendorId_REDWIRE_LABS                                                                 BACnetVendorId = 1535
 	BACnetVendorId_WECON_TECHNOLOGY_CO_LTD                                                      BACnetVendorId = 1536
@@ -1581,6 +1581,36 @@ const (
 	BACnetVendorId_SS_REGELTECHNIK_GMBH                                                         BACnetVendorId = 1545
 	BACnetVendorId_AIR_BOX_INC                                                                  BACnetVendorId = 1546
 	BACnetVendorId_RVE                                                                          BACnetVendorId = 1547
+	BACnetVendorId_MOTOROLA_SOLUTIONS                                                           BACnetVendorId = 1548
+	BACnetVendorId_BACSYS_INNOVATIONS_PRIVATE_LIMITED                                           BACnetVendorId = 1549
+	BACnetVendorId_EWATTCH                                                                      BACnetVendorId = 1550
+	BACnetVendorId_BUILTLAYERLLC                                                                BACnetVendorId = 1551
+	BACnetVendorId_AG_DOMOTIXSRL                                                                BACnetVendorId = 1552
+	BACnetVendorId_HYTRONIK_INDUSTRIAL_LIMITED                                                  BACnetVendorId = 1553
+	BACnetVendorId_WHO_REINRAUMTECHNIK                                                          BACnetVendorId = 1554
+	BACnetVendorId_TRICO_LIMITED                                                                BACnetVendorId = 1555
+	BACnetVendorId_SLK_AUTOMATIONSRL                                                            BACnetVendorId = 1556
+	BACnetVendorId_ZAPHIREAS                                                                    BACnetVendorId = 1557
+	BACnetVendorId_AJ_MANUFACTURING                                                             BACnetVendorId = 1558
+	BACnetVendorId_FUTURE_MOTORS_LTD                                                            BACnetVendorId = 1559
+	BACnetVendorId_HIMEL_HONG_KONG_LIMITED                                                      BACnetVendorId = 1560
+	BACnetVendorId_SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD                                         BACnetVendorId = 1561
+	BACnetVendorId_ACTILITYSA                                                                   BACnetVendorId = 1562
+	BACnetVendorId_OY_HALTON_GROUP_LTD                                                          BACnetVendorId = 1563
+	BACnetVendorId_AVTECH_SOFTWARE_INC                                                          BACnetVendorId = 1564
+	BACnetVendorId_IN_CONTROL_ENGINEERINGLLC                                                    BACnetVendorId = 1565
+	BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC                                                  BACnetVendorId = 1566
+	BACnetVendorId_CIRCULAR_BV                                                                  BACnetVendorId = 1567
+	BACnetVendorId_NORMATICAS                                                                   BACnetVendorId = 1568
+	BACnetVendorId_DOCK_RD                                                                      BACnetVendorId = 1569
+	BACnetVendorId_SMARTD_TECHNOLOGIES_INC                                                      BACnetVendorId = 1570
+	BACnetVendorId_LINEOF_SIGHT_SERVICESLLC                                                     BACnetVendorId = 1571
+	BACnetVendorId_LAIIER_LTD                                                                   BACnetVendorId = 1572
+	BACnetVendorId_ANTEC_CONTROLS                                                               BACnetVendorId = 1573
+	BACnetVendorId_CG_CONCEPTION                                                                BACnetVendorId = 1574
+	BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD                              BACnetVendorId = 1575
+	BACnetVendorId_ARMATURALLC                                                                  BACnetVendorId = 1576
+	BACnetVendorId_INGYBV                                                                       BACnetVendorId = 1577
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -1955,7 +1985,7 @@ func init() {
 		BACnetVendorId_CEAG_NOTLICHTSYSTEME_GMBH,
 		BACnetVendorId_DISTECH_CONTROLS_INC,
 		BACnetVendorId_INDUSTRIAL_TECHNOLOGY_RESEARCH_INSTITUTE,
-		BACnetVendorId_ICONICS_INC,
+		BACnetVendorId_MITSUBISHI_ELECTRIC_ICONICS_DIGITAL_SOLUTIONS,
 		BACnetVendorId_IQ_CONTROLSSC,
 		BACnetVendorId_OJ_ELECTRONICSAS,
 		BACnetVendorId_ROLBIT_LTD,
@@ -2850,7 +2880,7 @@ func init() {
 		BACnetVendorId_ELMEASURE_INDIA_PVT_LTD,
 		BACnetVendorId_PINESHORE_ENERGYLLC,
 		BACnetVendorId_BRASCH_ENVIRONMENTAL_TECHNOLOGIESLLC,
-		BACnetVendorId_LION_CONTROLS_COLTD,
+		BACnetVendorId_SHEN_ZHEN_ZHI_XING_BUILDING_TECH_CO_LTD,
 		BACnetVendorId_SINUX,
 		BACnetVendorId_AVNET_INC,
 		BACnetVendorId_SOMFY_ACTIVITESSA,
@@ -3112,7 +3142,7 @@ func init() {
 		BACnetVendorId_BUILDING_LOGIX,
 		BACnetVendorId_IFESCA_GMBH,
 		BACnetVendorId_FELLOWES_INC,
-		BACnetVendorId_BLANK,
+		BACnetVendorId_CALEFFI_SPA,
 		BACnetVendorId_JDRF_ELECTROMAG,
 		BACnetVendorId_REDWIRE_LABS,
 		BACnetVendorId_WECON_TECHNOLOGY_CO_LTD,
@@ -3127,6 +3157,36 @@ func init() {
 		BACnetVendorId_SS_REGELTECHNIK_GMBH,
 		BACnetVendorId_AIR_BOX_INC,
 		BACnetVendorId_RVE,
+		BACnetVendorId_MOTOROLA_SOLUTIONS,
+		BACnetVendorId_BACSYS_INNOVATIONS_PRIVATE_LIMITED,
+		BACnetVendorId_EWATTCH,
+		BACnetVendorId_BUILTLAYERLLC,
+		BACnetVendorId_AG_DOMOTIXSRL,
+		BACnetVendorId_HYTRONIK_INDUSTRIAL_LIMITED,
+		BACnetVendorId_WHO_REINRAUMTECHNIK,
+		BACnetVendorId_TRICO_LIMITED,
+		BACnetVendorId_SLK_AUTOMATIONSRL,
+		BACnetVendorId_ZAPHIREAS,
+		BACnetVendorId_AJ_MANUFACTURING,
+		BACnetVendorId_FUTURE_MOTORS_LTD,
+		BACnetVendorId_HIMEL_HONG_KONG_LIMITED,
+		BACnetVendorId_SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD,
+		BACnetVendorId_ACTILITYSA,
+		BACnetVendorId_OY_HALTON_GROUP_LTD,
+		BACnetVendorId_AVTECH_SOFTWARE_INC,
+		BACnetVendorId_IN_CONTROL_ENGINEERINGLLC,
+		BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC,
+		BACnetVendorId_CIRCULAR_BV,
+		BACnetVendorId_NORMATICAS,
+		BACnetVendorId_DOCK_RD,
+		BACnetVendorId_SMARTD_TECHNOLOGIES_INC,
+		BACnetVendorId_LINEOF_SIGHT_SERVICESLLC,
+		BACnetVendorId_LAIIER_LTD,
+		BACnetVendorId_ANTEC_CONTROLS,
+		BACnetVendorId_CG_CONCEPTION,
+		BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD,
+		BACnetVendorId_ARMATURALLC,
+		BACnetVendorId_INGYBV,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5565,17 +5625,137 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1547' */
 			return 1547
 		}
+	case 1548:
+		{ /* '1548' */
+			return 1548
+		}
+	case 1549:
+		{ /* '1549' */
+			return 1549
+		}
 	case 155:
 		{ /* '155' */
 			return 155
+		}
+	case 1550:
+		{ /* '1550' */
+			return 1550
+		}
+	case 1551:
+		{ /* '1551' */
+			return 1551
+		}
+	case 1552:
+		{ /* '1552' */
+			return 1552
+		}
+	case 1553:
+		{ /* '1553' */
+			return 1553
+		}
+	case 1554:
+		{ /* '1554' */
+			return 1554
+		}
+	case 1555:
+		{ /* '1555' */
+			return 1555
+		}
+	case 1556:
+		{ /* '1556' */
+			return 1556
+		}
+	case 1557:
+		{ /* '1557' */
+			return 1557
+		}
+	case 1558:
+		{ /* '1558' */
+			return 1558
+		}
+	case 1559:
+		{ /* '1559' */
+			return 1559
 		}
 	case 156:
 		{ /* '156' */
 			return 156
 		}
+	case 1560:
+		{ /* '1560' */
+			return 1560
+		}
+	case 1561:
+		{ /* '1561' */
+			return 1561
+		}
+	case 1562:
+		{ /* '1562' */
+			return 1562
+		}
+	case 1563:
+		{ /* '1563' */
+			return 1563
+		}
+	case 1564:
+		{ /* '1564' */
+			return 1564
+		}
+	case 1565:
+		{ /* '1565' */
+			return 1565
+		}
+	case 1566:
+		{ /* '1566' */
+			return 1566
+		}
+	case 1567:
+		{ /* '1567' */
+			return 1567
+		}
+	case 1568:
+		{ /* '1568' */
+			return 1568
+		}
+	case 1569:
+		{ /* '1569' */
+			return 1569
+		}
 	case 157:
 		{ /* '157' */
 			return 157
+		}
+	case 1570:
+		{ /* '1570' */
+			return 1570
+		}
+	case 1571:
+		{ /* '1571' */
+			return 1571
+		}
+	case 1572:
+		{ /* '1572' */
+			return 1572
+		}
+	case 1573:
+		{ /* '1573' */
+			return 1573
+		}
+	case 1574:
+		{ /* '1574' */
+			return 1574
+		}
+	case 1575:
+		{ /* '1575' */
+			return 1575
+		}
+	case 1576:
+		{ /* '1576' */
+			return 1576
+		}
+	case 1577:
+		{ /* '1577' */
+			return 1577
 		}
 	case 158:
 		{ /* '158' */
@@ -10509,7 +10689,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 1268:
 		{ /* '1268' */
-			return "Lion Controls Co., LTD"
+			return "ShenZhen ZhiXing Building Tech Co., Ltd"
 		}
 	case 1269:
 		{ /* '1269' */
@@ -11677,7 +11857,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 1533:
 		{ /* '1533' */
-			return "BLANK"
+			return "Caleffi S.p.A."
 		}
 	case 1534:
 		{ /* '1534' */
@@ -11739,17 +11919,137 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1547' */
 			return "RVE"
 		}
+	case 1548:
+		{ /* '1548' */
+			return "Motorola Solutions"
+		}
+	case 1549:
+		{ /* '1549' */
+			return "BACSYS Innovations Private Limited"
+		}
 	case 155:
 		{ /* '155' */
 			return "Kanden Engineering Company"
+		}
+	case 1550:
+		{ /* '1550' */
+			return "Ewattch"
+		}
+	case 1551:
+		{ /* '1551' */
+			return "Builtlayer LLC"
+		}
+	case 1552:
+		{ /* '1552' */
+			return "A&G Domotix S.R.L."
+		}
+	case 1553:
+		{ /* '1553' */
+			return "Hytronik Industrial Limited"
+		}
+	case 1554:
+		{ /* '1554' */
+			return "WHO Reinraumtechnik"
+		}
+	case 1555:
+		{ /* '1555' */
+			return "TRICO Limited"
+		}
+	case 1556:
+		{ /* '1556' */
+			return "SLKAutomation SRL"
+		}
+	case 1557:
+		{ /* '1557' */
+			return "Zaphire AS"
+		}
+	case 1558:
+		{ /* '1558' */
+			return "AJ Manufacturing"
+		}
+	case 1559:
+		{ /* '1559' */
+			return "Future Motors Ltd."
 		}
 	case 156:
 		{ /* '156' */
 			return "Messner Gebäudetechnik GmbH"
 		}
+	case 1560:
+		{ /* '1560' */
+			return "Himel Hong Kong Limited"
+		}
+	case 1561:
+		{ /* '1561' */
+			return "Shenzhen Sunricher Technology Co., Ltd."
+		}
+	case 1562:
+		{ /* '1562' */
+			return "Actility S.A."
+		}
+	case 1563:
+		{ /* '1563' */
+			return "Oy Halton Group Ltd."
+		}
+	case 1564:
+		{ /* '1564' */
+			return "AVTECH Software, Inc."
+		}
+	case 1565:
+		{ /* '1565' */
+			return "InControl Engineering LLC"
+		}
+	case 1566:
+		{ /* '1566' */
+			return "SoundWater Technologies LLC"
+		}
+	case 1567:
+		{ /* '1567' */
+			return "Circular Bv"
+		}
+	case 1568:
+		{ /* '1568' */
+			return "Normatic AS"
+		}
+	case 1569:
+		{ /* '1569' */
+			return "Dock Rd"
+		}
 	case 157:
 		{ /* '157' */
 			return "Integrated.CH"
+		}
+	case 1570:
+		{ /* '1570' */
+			return "SmartD Technologies Inc."
+		}
+	case 1571:
+		{ /* '1571' */
+			return "Line of Sight Services LLC"
+		}
+	case 1572:
+		{ /* '1572' */
+			return "LAIIER Ltd."
+		}
+	case 1573:
+		{ /* '1573' */
+			return "Antec Controls"
+		}
+	case 1574:
+		{ /* '1574' */
+			return "CG Conception"
+		}
+	case 1575:
+		{ /* '1575' */
+			return "Shanghai YuanKong Automation Technology Co., Ltd."
+		}
+	case 1576:
+		{ /* '1576' */
+			return "Armatura LLC"
+		}
+	case 1577:
+		{ /* '1577' */
+			return "Ingy BV"
 		}
 	case 158:
 		{ /* '158' */
@@ -12677,7 +12977,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 366:
 		{ /* '366' */
-			return "ICONICS, Inc."
+			return "Mitsubishi Electric Iconics Digital Solutions"
 		}
 	case 367:
 		{ /* '367' */
@@ -16081,7 +16381,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 1267:
 		return BACnetVendorId_BRASCH_ENVIRONMENTAL_TECHNOLOGIESLLC, true
 	case 1268:
-		return BACnetVendorId_LION_CONTROLS_COLTD, true
+		return BACnetVendorId_SHEN_ZHEN_ZHI_XING_BUILDING_TECH_CO_LTD, true
 	case 1269:
 		return BACnetVendorId_SINUX, true
 	case 127:
@@ -16665,7 +16965,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 1532:
 		return BACnetVendorId_FELLOWES_INC, true
 	case 1533:
-		return BACnetVendorId_BLANK, true
+		return BACnetVendorId_CALEFFI_SPA, true
 	case 1534:
 		return BACnetVendorId_JDRF_ELECTROMAG, true
 	case 1535:
@@ -16696,12 +16996,72 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_AIR_BOX_INC, true
 	case 1547:
 		return BACnetVendorId_RVE, true
+	case 1548:
+		return BACnetVendorId_MOTOROLA_SOLUTIONS, true
+	case 1549:
+		return BACnetVendorId_BACSYS_INNOVATIONS_PRIVATE_LIMITED, true
 	case 155:
 		return BACnetVendorId_KANDEN_ENGINEERING_COMPANY, true
+	case 1550:
+		return BACnetVendorId_EWATTCH, true
+	case 1551:
+		return BACnetVendorId_BUILTLAYERLLC, true
+	case 1552:
+		return BACnetVendorId_AG_DOMOTIXSRL, true
+	case 1553:
+		return BACnetVendorId_HYTRONIK_INDUSTRIAL_LIMITED, true
+	case 1554:
+		return BACnetVendorId_WHO_REINRAUMTECHNIK, true
+	case 1555:
+		return BACnetVendorId_TRICO_LIMITED, true
+	case 1556:
+		return BACnetVendorId_SLK_AUTOMATIONSRL, true
+	case 1557:
+		return BACnetVendorId_ZAPHIREAS, true
+	case 1558:
+		return BACnetVendorId_AJ_MANUFACTURING, true
+	case 1559:
+		return BACnetVendorId_FUTURE_MOTORS_LTD, true
 	case 156:
 		return BACnetVendorId_MESSNER_GEBUDETECHNIK_GMBH, true
+	case 1560:
+		return BACnetVendorId_HIMEL_HONG_KONG_LIMITED, true
+	case 1561:
+		return BACnetVendorId_SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD, true
+	case 1562:
+		return BACnetVendorId_ACTILITYSA, true
+	case 1563:
+		return BACnetVendorId_OY_HALTON_GROUP_LTD, true
+	case 1564:
+		return BACnetVendorId_AVTECH_SOFTWARE_INC, true
+	case 1565:
+		return BACnetVendorId_IN_CONTROL_ENGINEERINGLLC, true
+	case 1566:
+		return BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC, true
+	case 1567:
+		return BACnetVendorId_CIRCULAR_BV, true
+	case 1568:
+		return BACnetVendorId_NORMATICAS, true
+	case 1569:
+		return BACnetVendorId_DOCK_RD, true
 	case 157:
 		return BACnetVendorId_INTEGRATEDCH, true
+	case 1570:
+		return BACnetVendorId_SMARTD_TECHNOLOGIES_INC, true
+	case 1571:
+		return BACnetVendorId_LINEOF_SIGHT_SERVICESLLC, true
+	case 1572:
+		return BACnetVendorId_LAIIER_LTD, true
+	case 1573:
+		return BACnetVendorId_ANTEC_CONTROLS, true
+	case 1574:
+		return BACnetVendorId_CG_CONCEPTION, true
+	case 1575:
+		return BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD, true
+	case 1576:
+		return BACnetVendorId_ARMATURALLC, true
+	case 1577:
+		return BACnetVendorId_INGYBV, true
 	case 158:
 		return BACnetVendorId_PRICE_INDUSTRIES, true
 	case 159:
@@ -17165,7 +17525,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 365:
 		return BACnetVendorId_INDUSTRIAL_TECHNOLOGY_RESEARCH_INSTITUTE, true
 	case 366:
-		return BACnetVendorId_ICONICS_INC, true
+		return BACnetVendorId_MITSUBISHI_ELECTRIC_ICONICS_DIGITAL_SOLUTIONS, true
 	case 367:
 		return BACnetVendorId_IQ_CONTROLSSC, true
 	case 368:
@@ -19164,8 +19524,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_PINESHORE_ENERGYLLC, true
 	case "BRASCH_ENVIRONMENTAL_TECHNOLOGIESLLC":
 		return BACnetVendorId_BRASCH_ENVIRONMENTAL_TECHNOLOGIESLLC, true
-	case "LION_CONTROLS_COLTD":
-		return BACnetVendorId_LION_CONTROLS_COLTD, true
+	case "SHEN_ZHEN_ZHI_XING_BUILDING_TECH_CO_LTD":
+		return BACnetVendorId_SHEN_ZHEN_ZHI_XING_BUILDING_TECH_CO_LTD, true
 	case "SINUX":
 		return BACnetVendorId_SINUX, true
 	case "ABB_INC":
@@ -19748,8 +20108,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_IFESCA_GMBH, true
 	case "FELLOWES_INC":
 		return BACnetVendorId_FELLOWES_INC, true
-	case "BLANK":
-		return BACnetVendorId_BLANK, true
+	case "CALEFFI_SPA":
+		return BACnetVendorId_CALEFFI_SPA, true
 	case "JDRF_ELECTROMAG":
 		return BACnetVendorId_JDRF_ELECTROMAG, true
 	case "REDWIRE_LABS":
@@ -19780,12 +20140,72 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_AIR_BOX_INC, true
 	case "RVE":
 		return BACnetVendorId_RVE, true
+	case "MOTOROLA_SOLUTIONS":
+		return BACnetVendorId_MOTOROLA_SOLUTIONS, true
+	case "BACSYS_INNOVATIONS_PRIVATE_LIMITED":
+		return BACnetVendorId_BACSYS_INNOVATIONS_PRIVATE_LIMITED, true
 	case "KANDEN_ENGINEERING_COMPANY":
 		return BACnetVendorId_KANDEN_ENGINEERING_COMPANY, true
+	case "EWATTCH":
+		return BACnetVendorId_EWATTCH, true
+	case "BUILTLAYERLLC":
+		return BACnetVendorId_BUILTLAYERLLC, true
+	case "AG_DOMOTIXSRL":
+		return BACnetVendorId_AG_DOMOTIXSRL, true
+	case "HYTRONIK_INDUSTRIAL_LIMITED":
+		return BACnetVendorId_HYTRONIK_INDUSTRIAL_LIMITED, true
+	case "WHO_REINRAUMTECHNIK":
+		return BACnetVendorId_WHO_REINRAUMTECHNIK, true
+	case "TRICO_LIMITED":
+		return BACnetVendorId_TRICO_LIMITED, true
+	case "SLK_AUTOMATIONSRL":
+		return BACnetVendorId_SLK_AUTOMATIONSRL, true
+	case "ZAPHIREAS":
+		return BACnetVendorId_ZAPHIREAS, true
+	case "AJ_MANUFACTURING":
+		return BACnetVendorId_AJ_MANUFACTURING, true
+	case "FUTURE_MOTORS_LTD":
+		return BACnetVendorId_FUTURE_MOTORS_LTD, true
 	case "MESSNER_GEBUDETECHNIK_GMBH":
 		return BACnetVendorId_MESSNER_GEBUDETECHNIK_GMBH, true
+	case "HIMEL_HONG_KONG_LIMITED":
+		return BACnetVendorId_HIMEL_HONG_KONG_LIMITED, true
+	case "SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD":
+		return BACnetVendorId_SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD, true
+	case "ACTILITYSA":
+		return BACnetVendorId_ACTILITYSA, true
+	case "OY_HALTON_GROUP_LTD":
+		return BACnetVendorId_OY_HALTON_GROUP_LTD, true
+	case "AVTECH_SOFTWARE_INC":
+		return BACnetVendorId_AVTECH_SOFTWARE_INC, true
+	case "IN_CONTROL_ENGINEERINGLLC":
+		return BACnetVendorId_IN_CONTROL_ENGINEERINGLLC, true
+	case "SOUND_WATER_TECHNOLOGIESLLC":
+		return BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC, true
+	case "CIRCULAR_BV":
+		return BACnetVendorId_CIRCULAR_BV, true
+	case "NORMATICAS":
+		return BACnetVendorId_NORMATICAS, true
+	case "DOCK_RD":
+		return BACnetVendorId_DOCK_RD, true
 	case "INTEGRATEDCH":
 		return BACnetVendorId_INTEGRATEDCH, true
+	case "SMARTD_TECHNOLOGIES_INC":
+		return BACnetVendorId_SMARTD_TECHNOLOGIES_INC, true
+	case "LINEOF_SIGHT_SERVICESLLC":
+		return BACnetVendorId_LINEOF_SIGHT_SERVICESLLC, true
+	case "LAIIER_LTD":
+		return BACnetVendorId_LAIIER_LTD, true
+	case "ANTEC_CONTROLS":
+		return BACnetVendorId_ANTEC_CONTROLS, true
+	case "CG_CONCEPTION":
+		return BACnetVendorId_CG_CONCEPTION, true
+	case "SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD":
+		return BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD, true
+	case "ARMATURALLC":
+		return BACnetVendorId_ARMATURALLC, true
+	case "INGYBV":
+		return BACnetVendorId_INGYBV, true
 	case "PRICE_INDUSTRIES":
 		return BACnetVendorId_PRICE_INDUSTRIES, true
 	case "SE_ELEKTRONIC_GMBH":
@@ -20248,8 +20668,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_DISTECH_CONTROLS_INC, true
 	case "INDUSTRIAL_TECHNOLOGY_RESEARCH_INSTITUTE":
 		return BACnetVendorId_INDUSTRIAL_TECHNOLOGY_RESEARCH_INSTITUTE, true
-	case "ICONICS_INC":
-		return BACnetVendorId_ICONICS_INC, true
+	case "MITSUBISHI_ELECTRIC_ICONICS_DIGITAL_SOLUTIONS":
+		return BACnetVendorId_MITSUBISHI_ELECTRIC_ICONICS_DIGITAL_SOLUTIONS, true
 	case "IQ_CONTROLSSC":
 		return BACnetVendorId_IQ_CONTROLSSC, true
 	case "OJ_ELECTRONICSAS":
@@ -22320,8 +22740,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "PINESHORE_ENERGYLLC"
 	case BACnetVendorId_BRASCH_ENVIRONMENTAL_TECHNOLOGIESLLC:
 		return "BRASCH_ENVIRONMENTAL_TECHNOLOGIESLLC"
-	case BACnetVendorId_LION_CONTROLS_COLTD:
-		return "LION_CONTROLS_COLTD"
+	case BACnetVendorId_SHEN_ZHEN_ZHI_XING_BUILDING_TECH_CO_LTD:
+		return "SHEN_ZHEN_ZHI_XING_BUILDING_TECH_CO_LTD"
 	case BACnetVendorId_SINUX:
 		return "SINUX"
 	case BACnetVendorId_ABB_INC:
@@ -22904,8 +23324,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "IFESCA_GMBH"
 	case BACnetVendorId_FELLOWES_INC:
 		return "FELLOWES_INC"
-	case BACnetVendorId_BLANK:
-		return "BLANK"
+	case BACnetVendorId_CALEFFI_SPA:
+		return "CALEFFI_SPA"
 	case BACnetVendorId_JDRF_ELECTROMAG:
 		return "JDRF_ELECTROMAG"
 	case BACnetVendorId_REDWIRE_LABS:
@@ -22936,12 +23356,72 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "AIR_BOX_INC"
 	case BACnetVendorId_RVE:
 		return "RVE"
+	case BACnetVendorId_MOTOROLA_SOLUTIONS:
+		return "MOTOROLA_SOLUTIONS"
+	case BACnetVendorId_BACSYS_INNOVATIONS_PRIVATE_LIMITED:
+		return "BACSYS_INNOVATIONS_PRIVATE_LIMITED"
 	case BACnetVendorId_KANDEN_ENGINEERING_COMPANY:
 		return "KANDEN_ENGINEERING_COMPANY"
+	case BACnetVendorId_EWATTCH:
+		return "EWATTCH"
+	case BACnetVendorId_BUILTLAYERLLC:
+		return "BUILTLAYERLLC"
+	case BACnetVendorId_AG_DOMOTIXSRL:
+		return "AG_DOMOTIXSRL"
+	case BACnetVendorId_HYTRONIK_INDUSTRIAL_LIMITED:
+		return "HYTRONIK_INDUSTRIAL_LIMITED"
+	case BACnetVendorId_WHO_REINRAUMTECHNIK:
+		return "WHO_REINRAUMTECHNIK"
+	case BACnetVendorId_TRICO_LIMITED:
+		return "TRICO_LIMITED"
+	case BACnetVendorId_SLK_AUTOMATIONSRL:
+		return "SLK_AUTOMATIONSRL"
+	case BACnetVendorId_ZAPHIREAS:
+		return "ZAPHIREAS"
+	case BACnetVendorId_AJ_MANUFACTURING:
+		return "AJ_MANUFACTURING"
+	case BACnetVendorId_FUTURE_MOTORS_LTD:
+		return "FUTURE_MOTORS_LTD"
 	case BACnetVendorId_MESSNER_GEBUDETECHNIK_GMBH:
 		return "MESSNER_GEBUDETECHNIK_GMBH"
+	case BACnetVendorId_HIMEL_HONG_KONG_LIMITED:
+		return "HIMEL_HONG_KONG_LIMITED"
+	case BACnetVendorId_SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD:
+		return "SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD"
+	case BACnetVendorId_ACTILITYSA:
+		return "ACTILITYSA"
+	case BACnetVendorId_OY_HALTON_GROUP_LTD:
+		return "OY_HALTON_GROUP_LTD"
+	case BACnetVendorId_AVTECH_SOFTWARE_INC:
+		return "AVTECH_SOFTWARE_INC"
+	case BACnetVendorId_IN_CONTROL_ENGINEERINGLLC:
+		return "IN_CONTROL_ENGINEERINGLLC"
+	case BACnetVendorId_SOUND_WATER_TECHNOLOGIESLLC:
+		return "SOUND_WATER_TECHNOLOGIESLLC"
+	case BACnetVendorId_CIRCULAR_BV:
+		return "CIRCULAR_BV"
+	case BACnetVendorId_NORMATICAS:
+		return "NORMATICAS"
+	case BACnetVendorId_DOCK_RD:
+		return "DOCK_RD"
 	case BACnetVendorId_INTEGRATEDCH:
 		return "INTEGRATEDCH"
+	case BACnetVendorId_SMARTD_TECHNOLOGIES_INC:
+		return "SMARTD_TECHNOLOGIES_INC"
+	case BACnetVendorId_LINEOF_SIGHT_SERVICESLLC:
+		return "LINEOF_SIGHT_SERVICESLLC"
+	case BACnetVendorId_LAIIER_LTD:
+		return "LAIIER_LTD"
+	case BACnetVendorId_ANTEC_CONTROLS:
+		return "ANTEC_CONTROLS"
+	case BACnetVendorId_CG_CONCEPTION:
+		return "CG_CONCEPTION"
+	case BACnetVendorId_SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD:
+		return "SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD"
+	case BACnetVendorId_ARMATURALLC:
+		return "ARMATURALLC"
+	case BACnetVendorId_INGYBV:
+		return "INGYBV"
 	case BACnetVendorId_PRICE_INDUSTRIES:
 		return "PRICE_INDUSTRIES"
 	case BACnetVendorId_SE_ELEKTRONIC_GMBH:
@@ -23404,8 +23884,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "DISTECH_CONTROLS_INC"
 	case BACnetVendorId_INDUSTRIAL_TECHNOLOGY_RESEARCH_INSTITUTE:
 		return "INDUSTRIAL_TECHNOLOGY_RESEARCH_INSTITUTE"
-	case BACnetVendorId_ICONICS_INC:
-		return "ICONICS_INC"
+	case BACnetVendorId_MITSUBISHI_ELECTRIC_ICONICS_DIGITAL_SOLUTIONS:
+		return "MITSUBISHI_ELECTRIC_ICONICS_DIGITAL_SOLUTIONS"
 	case BACnetVendorId_IQ_CONTROLSSC:
 		return "IQ_CONTROLSSC"
 	case BACnetVendorId_OJ_ELECTRONICSAS:

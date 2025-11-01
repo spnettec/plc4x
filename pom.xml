@@ -128,7 +128,7 @@
     <dom4j.version>2.2.0</dom4j.version>
     <equalsverifier.version>4.2</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
-    <groovy.version>5.0.1</groovy.version>
+    <groovy.version>5.0.2</groovy.version>
     <guava.version>33.5.0-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
@@ -143,7 +143,7 @@
     <jserialcom.version>2.11.2</jserialcom.version>
     <junit.jupiter.version>6.0.0</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.5.19</logback.version>
+    <logback.version>1.5.20</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.16</milo.version>
     <mockito.version>5.20.0</mockito.version>
@@ -152,7 +152,7 @@
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.17</slf4j.version>
     <vavr.version>0.10.7</vavr.version>
-    <xmlunit.version>2.10.4</xmlunit.version>
+    <xmlunit.version>2.11.0</xmlunit.version>
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.6</asciidoctor.maven.plugin.version>
@@ -285,7 +285,7 @@
       <dependency>
         <groupId>com.google.googlejavaformat</groupId>
         <artifactId>google-java-format</artifactId>
-        <version>1.29.0</version>
+        <version>1.31.0</version>
       </dependency>
 
       <dependency>
@@ -1035,7 +1035,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.13</version>
+          <version>0.8.14</version>
         </plugin>
 
         <plugin>
@@ -1207,7 +1207,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.6.2</version>
         </plugin>
 
         <plugin>

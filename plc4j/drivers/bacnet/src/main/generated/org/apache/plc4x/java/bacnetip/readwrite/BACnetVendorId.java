@@ -446,7 +446,8 @@ public enum BACnetVendorId {
   DISTECH_CONTROLS_INC((int) 364, (int) 364, (String) "Distech Controls Inc."),
   INDUSTRIAL_TECHNOLOGY_RESEARCH_INSTITUTE(
       (int) 365, (int) 365, (String) "Industrial Technology Research Institute"),
-  ICONICS_INC((int) 366, (int) 366, (String) "ICONICS, Inc."),
+  MITSUBISHI_ELECTRIC_ICONICS_DIGITAL_SOLUTIONS(
+      (int) 366, (int) 366, (String) "Mitsubishi Electric Iconics Digital Solutions"),
   IQ_CONTROLSSC((int) 367, (int) 367, (String) "IQ Controls s.c."),
   OJ_ELECTRONICSAS((int) 368, (int) 368, (String) "OJ Electronics A/S"),
   ROLBIT_LTD((int) 369, (int) 369, (String) "Rolbit Ltd."),
@@ -1452,7 +1453,8 @@ public enum BACnetVendorId {
   PINESHORE_ENERGYLLC((int) 1266, (int) 1266, (String) "Pineshore Energy LLC"),
   BRASCH_ENVIRONMENTAL_TECHNOLOGIESLLC(
       (int) 1267, (int) 1267, (String) "Brasch Environmental Technologies, LLC"),
-  LION_CONTROLS_COLTD((int) 1268, (int) 1268, (String) "Lion Controls Co., LTD"),
+  SHEN_ZHEN_ZHI_XING_BUILDING_TECH_CO_LTD(
+      (int) 1268, (int) 1268, (String) "ShenZhen ZhiXing Building Tech Co., Ltd"),
   SINUX((int) 1269, (int) 1269, (String) "Sinux"),
   AVNET_INC((int) 1270, (int) 1270, (String) "Avnet Inc."),
   SOMFY_ACTIVITESSA((int) 1271, (int) 1271, (String) "Somfy Activites SA"),
@@ -1758,7 +1760,7 @@ public enum BACnetVendorId {
   BUILDING_LOGIX((int) 1530, (int) 1530, (String) "BuildingLogiX"),
   IFESCA_GMBH((int) 1531, (int) 1531, (String) "Ifesca GmbH"),
   FELLOWES_INC((int) 1532, (int) 1532, (String) "Fellowes Inc."),
-  BLANK((int) 1533, (int) 1533, (String) "BLANK"),
+  CALEFFI_SPA((int) 1533, (int) 1533, (String) "Caleffi S.p.A."),
   JDRF_ELECTROMAG((int) 1534, (int) 1534, (String) "JDRF Electromag"),
   REDWIRE_LABS((int) 1535, (int) 1535, (String) "Redwire Labs"),
   WECON_TECHNOLOGY_CO_LTD((int) 1536, (int) 1536, (String) "Wecon Technology Co., Ltd."),
@@ -1775,6 +1777,39 @@ public enum BACnetVendorId {
   SS_REGELTECHNIK_GMBH((int) 1545, (int) 1545, (String) "S+S Regeltechnik GmbH"),
   AIR_BOX_INC((int) 1546, (int) 1546, (String) "AirBox, Inc."),
   RVE((int) 1547, (int) 1547, (String) "RVE"),
+  MOTOROLA_SOLUTIONS((int) 1548, (int) 1548, (String) "Motorola Solutions"),
+  BACSYS_INNOVATIONS_PRIVATE_LIMITED(
+      (int) 1549, (int) 1549, (String) "BACSYS Innovations Private Limited"),
+  EWATTCH((int) 1550, (int) 1550, (String) "Ewattch"),
+  BUILTLAYERLLC((int) 1551, (int) 1551, (String) "Builtlayer LLC"),
+  AG_DOMOTIXSRL((int) 1552, (int) 1552, (String) "A&G Domotix S.R.L."),
+  HYTRONIK_INDUSTRIAL_LIMITED((int) 1553, (int) 1553, (String) "Hytronik Industrial Limited"),
+  WHO_REINRAUMTECHNIK((int) 1554, (int) 1554, (String) "WHO Reinraumtechnik"),
+  TRICO_LIMITED((int) 1555, (int) 1555, (String) "TRICO Limited"),
+  SLK_AUTOMATIONSRL((int) 1556, (int) 1556, (String) "SLKAutomation SRL"),
+  ZAPHIREAS((int) 1557, (int) 1557, (String) "Zaphire AS"),
+  AJ_MANUFACTURING((int) 1558, (int) 1558, (String) "AJ Manufacturing"),
+  FUTURE_MOTORS_LTD((int) 1559, (int) 1559, (String) "Future Motors Ltd."),
+  HIMEL_HONG_KONG_LIMITED((int) 1560, (int) 1560, (String) "Himel Hong Kong Limited"),
+  SHENZHEN_SUNRICHER_TECHNOLOGY_CO_LTD(
+      (int) 1561, (int) 1561, (String) "Shenzhen Sunricher Technology Co., Ltd."),
+  ACTILITYSA((int) 1562, (int) 1562, (String) "Actility S.A."),
+  OY_HALTON_GROUP_LTD((int) 1563, (int) 1563, (String) "Oy Halton Group Ltd."),
+  AVTECH_SOFTWARE_INC((int) 1564, (int) 1564, (String) "AVTECH Software, Inc."),
+  IN_CONTROL_ENGINEERINGLLC((int) 1565, (int) 1565, (String) "InControl Engineering LLC"),
+  SOUND_WATER_TECHNOLOGIESLLC((int) 1566, (int) 1566, (String) "SoundWater Technologies LLC"),
+  CIRCULAR_BV((int) 1567, (int) 1567, (String) "Circular Bv"),
+  NORMATICAS((int) 1568, (int) 1568, (String) "Normatic AS"),
+  DOCK_RD((int) 1569, (int) 1569, (String) "Dock Rd"),
+  SMARTD_TECHNOLOGIES_INC((int) 1570, (int) 1570, (String) "SmartD Technologies Inc."),
+  LINEOF_SIGHT_SERVICESLLC((int) 1571, (int) 1571, (String) "Line of Sight Services LLC"),
+  LAIIER_LTD((int) 1572, (int) 1572, (String) "LAIIER Ltd."),
+  ANTEC_CONTROLS((int) 1573, (int) 1573, (String) "Antec Controls"),
+  CG_CONCEPTION((int) 1574, (int) 1574, (String) "CG Conception"),
+  SHANGHAI_YUAN_KONG_AUTOMATION_TECHNOLOGY_CO_LTD(
+      (int) 1575, (int) 1575, (String) "Shanghai YuanKong Automation Technology Co., Ltd."),
+  ARMATURALLC((int) 1576, (int) 1576, (String) "Armatura LLC"),
+  INGYBV((int) 1577, (int) 1577, (String) "Ingy BV"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

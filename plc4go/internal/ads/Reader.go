@@ -266,7 +266,7 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 	if len(arrayInfo) > 0 {
 		// This is an Array/List type.
 		curArrayInfo := arrayInfo[0]
-		arrayItemTypeName := dataType.GetDataTypeName()[strings.Index(dataType.GetDataTypeName(), " OF ")+4:]
+		arrayItemTypeName := dataType.GetSecondaryName()[strings.Index(dataType.GetSecondaryName(), " OF ")+4:]
 		arrayItemType, ok := m.driverContext.dataTypeTable[arrayItemTypeName]
 		if !ok {
 			return nil, fmt.Errorf("couldn't resolve array item type %s", arrayItemTypeName)
@@ -287,10 +287,10 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 		startPos := uint32(rb.GetPos())
 		curPos := uint32(0)
 		for _, child := range dataType.GetChildren() {
-			childName := child.GetPropertyName()
-			childDataType, ok := m.driverContext.dataTypeTable[child.GetDataTypeName()]
+			childName := child.GetMainName()
+			childDataType, ok := m.driverContext.dataTypeTable[child.GetSecondaryName()]
 			if !ok {
-				return nil, fmt.Errorf("couldn't find data type named %s for property %s of type %s", child.GetDataTypeName(), childName, dataType.GetDataTypeName())
+				return nil, fmt.Errorf("couldn't find data type named %s for property %s of type %s", child.GetSecondaryName(), childName, dataType.GetSecondaryName())
 			}
 			if child.GetOffset() > curPos {
 				skipBytes := child.GetOffset() - curPos
@@ -300,7 +300,7 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 			}
 			childValue, err := m.parsePlcValue(childDataType, childDataType.GetArrayInfo(), rb, stringEncoding)
 			if err != nil {
-				return nil, errors.Wrap(err, fmt.Sprintf("error parsing propery %s of type %s", childName, dataType.GetDataTypeName()))
+				return nil, errors.Wrap(err, fmt.Sprintf("error parsing propery %s of type %s", childName, dataType.GetSecondaryName()))
 			}
 			plcValues[childName] = childValue
 			curPos = uint32(rb.GetPos()) - startPos
@@ -310,7 +310,7 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 		// This is a primitive type.
 		valueType, stringLength := m.getPlcValueForAdsDataTypeTableEntry(dataType)
 		if valueType == apiValues.NULL {
-			return nil, errors.New(fmt.Sprintf("error converting %s into plc4x plc-value type", dataType.GetDataTypeName()))
+			return nil, errors.New(fmt.Sprintf("error converting %s into plc4x plc-value type", dataType.GetSecondaryName()))
 		}
 
 		adsValueType, ok := apiValues.PlcValueTypeByName(valueType.String())
