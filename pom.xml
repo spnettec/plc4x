@@ -113,11 +113,11 @@
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.10.0</commons-cli.version>
-    <commons-codec.version>1.19.0</commons-codec.version>
+    <commons-codec.version>1.20.0</commons-codec.version>
     <commons-collections4.version>4.5.0</commons-collections4.version>
     <commons-compress.version>1.28.0</commons-compress.version>
     <commons-configuration2.version>2.12.0</commons-configuration2.version>
-    <commons-io.version>2.20.0</commons-io.version>
+    <commons-io.version>2.21.0</commons-io.version>
     <commons-lang3.version>3.19.0</commons-lang3.version>
     <commons-logging.version>1.3.5</commons-logging.version>
     <commons-math3.version>3.6.1</commons-math3.version>
@@ -126,22 +126,22 @@
     <commons-csv.version>1.14.1</commons-csv.version>
     <commons-pool2.version>2.12.1</commons-pool2.version>
     <dom4j.version>2.2.0</dom4j.version>
-    <equalsverifier.version>4.2</equalsverifier.version>
+    <equalsverifier.version>4.2.1</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
     <groovy.version>5.0.2</groovy.version>
     <guava.version>33.5.0-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <jackson.version>2.20.0</jackson.version>
+    <jackson.version>2.20.1</jackson.version>
     <jackson.broken.version>2.20</jackson.broken.version>
     <woodstox-core.version>7.1.1</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.4</jaxb.version>
     <jetty-util.version>12.1.0</jetty-util.version>
     <jna.version>5.18.1</jna.version>
-    <jserialcom.version>2.11.2</jserialcom.version>
-    <junit.jupiter.version>6.0.0</junit.jupiter.version>
+    <jserialcom.version>2.11.4</jserialcom.version>
+    <junit.jupiter.version>6.0.1</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.5.20</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
@@ -1171,7 +1171,7 @@
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>false</generateReports>
             <generateSitemap>false</generateSitemap>
-            <relativizeDecorationLinks>false</relativizeDecorationLinks>
+            <relativizeSiteLinks>false</relativizeSiteLinks>
             <locales>en</locales>
             <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
             <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>

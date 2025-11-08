@@ -2008,7 +2008,7 @@ public class StaticHelper {
         long tb = (short) (10 * Math.pow(10, ((t & 0xF000) >> 12)));
         long totalms = tv * tb;
         return (totalms <= 9990000)?totalms:9990000;
-    }
+    }    
 
     public static Short durationToS5Time(Duration duration) {
         short tv = 0;
