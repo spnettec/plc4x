@@ -21,6 +21,7 @@ package pool
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"time"
 
@@ -44,17 +45,30 @@ type Executor interface {
 
 func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, _options ...options.WithOption) Executor {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	_executor := newExecutor(queueDepth, numberOfWorkers, customLogger)
-	_executor.traceWorkers, _ = options.ExtractTracerWorkers(_options...)
+	var executorOpts []func(*executor)
+	if name, found := options.ExtractExecutorName(_options...); found && name != "" {
+		executorOpts = append(executorOpts, withExecutorName(name))
+	}
+	if traceWorkers, found := options.ExtractTracerWorkers(_options...); found {
+		executorOpts = append(executorOpts, withTraceWorkers(traceWorkers))
+	}
+	_executor := newExecutor(queueDepth, numberOfWorkers, customLogger, executorOpts...)
 	return _executor
 }
 
 func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.WithOption) Executor {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
-	_executor := newDynamicExecutor(queueDepth, maxNumberOfWorkers, customLogger)
-	_executor.traceWorkers, _ = options.ExtractTracerWorkers(_options...)
+	var executorOpts []func(*executor)
+	if name, found := options.ExtractExecutorName(_options...); found && name != "" {
+		executorOpts = append(executorOpts, withExecutorName(name))
+	}
+	if traceWorkers, found := options.ExtractTracerWorkers(_options...); found {
+		executorOpts = append(executorOpts, withTraceWorkers(traceWorkers))
+	}
+	_executor := newDynamicExecutor(queueDepth, maxNumberOfWorkers, customLogger, executorOpts...)
 	// We spawn one initial worker
-	w := newWorker(customLogger, 0, _executor)
+	workerId := fmt.Sprintf("%s-worker-%d", _executor.name, 0)
+	w := newWorker(customLogger, workerId, _executor)
 	w.lastReceived.Store(time.Now()) // We store the current timestamp so the worker isn't cut of instantly by the worker killer
 	_executor.worker = append(_executor.worker, w)
 	return _executor

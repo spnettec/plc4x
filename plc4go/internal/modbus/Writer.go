@@ -24,7 +24,6 @@ import (
 	"math"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -121,7 +120,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		requestAdu := readWriteModel.NewModbusTcpADU(uint16(transactionIdentifier), m.unitIdentifier, pdu)
 
 		// Send the ADU over the wire
-		err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {
+		if err = m.messageCodec.SendRequest(ctx, "write", requestAdu, func(message spi.Message) bool {
 			responseAdu := message.(readWriteModel.ModbusTcpADU)
 			return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
 				responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
@@ -149,7 +148,9 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				Err:     errors.New("got timeout while waiting for response"),
 			}
 			return nil
-		}, time.Second*1)
+		}); err != nil {
+			m.log.Debug().Err(err).Msg("error sending message")
+		}
 	})
 	return result
 }
@@ -194,7 +195,7 @@ func (m *Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, re
 		case readWriteModel.ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
 			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_ERROR
 		default:
-			m.log.Debug().Stringer("exceptionCode", resp.GetExceptionCode()).Msg("Unmapped exception code")
+			m.log.Debug().Interface("exceptionCode", resp.GetExceptionCode()).Msg("Unmapped exception code")
 		}
 	default:
 		return nil, errors.Errorf("unsupported response type %T", resp)

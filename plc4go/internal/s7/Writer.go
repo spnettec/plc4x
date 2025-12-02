@@ -106,12 +106,12 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 		)
 
 		// Start a new request-transaction (Is ended in the response-handler)
-		transaction := m.tm.StartTransaction()
-		transaction.Submit(func(transactionContext context.Context, transaction transactions.RequestTransaction) {
+		transaction := m.tm.StartTransaction("write")
+		transaction.Submit("writeOperation", func(transactionContext context.Context, transaction transactions.RequestTransaction) {
 			ctx, cancel := context.WithCancel(ctx)
 			context.AfterFunc(transactionContext, cancel)
-			// Send the  over the wire
-			if err := m.messageCodec.SendRequest(ctx, tpktPacket, func(message spi.Message) bool {
+			// Send the over the wire
+			if err := m.messageCodec.SendRequest(ctx, "write", tpktPacket, func(message spi.Message) bool {
 				tpktPacket, ok := message.(readWriteModel.TPKTPacket)
 				if !ok {
 					return false
@@ -153,7 +153,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 					Err:     errors.New("got timeout while waiting for response"),
 				}
 				return transaction.EndRequest()
-			}, time.Second*1); err != nil {
+			}); err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrap(err, "error sending message"))
 				if err := transaction.FailRequest(errors.Errorf("timeout after %s", 1*time.Second)); err != nil {
 					m.log.Debug().Err(err).Msg("Error failing request")

@@ -24,7 +24,6 @@ import (
 	"math"
 	"runtime/debug"
 	"strconv"
-	"time"
 
 	"github.com/pkg/errors"
 
@@ -50,18 +49,14 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-			if !timeout.Stop() {
-				<-timeout.C
-			}
-		case <-timeout.C:
-			timeout.Stop()
+		default:
+			m.log.Trace().Err(err).Msg("dropping read result")
 		}
 	}
 
@@ -97,7 +92,7 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 			datapointType = &defaultDatapointType
 		}
 		// Parse the value
-		plcValue, err := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, *datapointType)
+		plcValue, err := driverModel.KnxDatapointParseWithBuffer(ctx, rb, *datapointType)
 		if err != nil {
 			sendResponse(nil, 0, errors.Wrap(err, "error parsing group address response"))
 			return
@@ -114,17 +109,13 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 	result := make(chan KnxDeviceConnectResult, 1)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
-		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxDeviceConnectResult{
 			connection: connection,
 			err:        err,
 		}:
-			if !timeout.Stop() {
-				<-timeout.C
-			}
-		case <-timeout.C:
-			timeout.Stop()
+		default:
+			m.log.Trace().Err(err).Msg("dropping read result")
 		}
 	}
 
@@ -213,17 +204,13 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 	result := make(chan KnxDeviceDisconnectResult, 1)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
-		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxDeviceDisconnectResult{
 			connection: connection,
 			err:        err,
 		}:
-			if !timeout.Stop() {
-				<-timeout.C
-			}
-		case <-timeout.C:
-			timeout.Stop()
+		default:
+			m.log.Trace().Err(err).Msg("dropping read result")
 		}
 	}
 
@@ -255,16 +242,12 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 	result := make(chan KnxDeviceAuthenticateResult, 1)
 
 	sendResponse := func(err error) {
-		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxDeviceAuthenticateResult{
 			err: err,
 		}:
-			if !timeout.Stop() {
-				<-timeout.C
-			}
-		case <-timeout.C:
-			timeout.Stop()
+		default:
+			m.log.Trace().Err(err).Msg("dropping read result")
 		}
 	}
 
@@ -316,18 +299,14 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-			if !timeout.Stop() {
-				<-timeout.C
-			}
-		case <-timeout.C:
-			timeout.Stop()
+		default:
+			m.log.Trace().Err(err).Msg("dropping read result")
 		}
 	}
 
@@ -404,18 +383,14 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-			if !timeout.Stop() {
-				<-timeout.C
-			}
-		case <-timeout.C:
-			timeout.Stop()
+		default:
+			m.log.Trace().Err(err).Msg("dropping read result")
 		}
 	}
 
@@ -472,18 +447,14 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 	result := make(chan KnxReadResult, 1)
 
 	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-			if !timeout.Stop() {
-				<-timeout.C
-			}
-		case <-timeout.C:
-			timeout.Stop()
+		default:
+			m.log.Trace().Err(err).Msg("dropping read result")
 		}
 	}
 
@@ -553,7 +524,7 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 			// Parse the data according to the property type information
 			rb := utils.NewReadBufferByteBased(memoryReadResponse.GetData())
 			for rb.HasMore(datapointType.DatapointMainType().SizeInBits()) {
-				plcValue, err := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, *datapointType)
+				plcValue, err := driverModel.KnxDatapointParseWithBuffer(ctx, rb, *datapointType)
 				// Return the result
 				if err != nil {
 					sendResponse(nil, 0, err)

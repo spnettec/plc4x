@@ -64,6 +64,10 @@ type Connection struct {
 	_options       []options.WithOption // Used to pass them downstream
 }
 
+var (
+	_ spi.TransportInstanceExposer = (*Connection)(nil)
+)
+
 func NewConnection(messageCodec spi.MessageCodec, configuration model.Configuration, connectionOptions map[string][]string, _options ...options.WithOption) (*Connection, error) {
 	driverContext, err := NewDriverContext(configuration)
 	if err != nil {
@@ -113,34 +117,26 @@ func (m *Connection) GetConnection() plc4go.PlcConnection {
 	return m
 }
 
-func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+func (m *Connection) Connect(ctx context.Context) error {
 	m.log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 
 	// Reset the driver context (Actually this should not be required, but just to be on the safe side)
 	m.driverContext.clear()
-	m.wg.Go(func() {
-		defer func() {
-			if err := recover(); err != nil {
-				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
-			}
-		}()
-		err := m.messageCodec.ConnectWithContext(ctx)
-		if err != nil {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
-		}
+	if err := m.messageCodec.Connect(ctx); err != nil {
+		return errors.Wrap(err, "error connecting to message codec")
+	}
 
-		m.setupConnection(ctx, ch)
-	})
-	return ch
+	if err := m.setupConnection(ctx); err != nil {
+		return errors.Wrap(err, "error setting up connection")
+	}
+	return nil
 }
 
-func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
+func (m *Connection) setupConnection(ctx context.Context) error {
 	// First read the device info (Including TwinCat version and PLC name)
 	deviceInfoResponse, err := m.ExecuteAdsReadDeviceInfoRequest(ctx)
 	if err != nil {
-		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
-		return
+		return errors.Wrap(err, "error reading device info")
 	}
 	m.driverContext.adsVersion = fmt.Sprintf("%d.%d.%d", deviceInfoResponse.GetMajorVersion(), deviceInfoResponse.GetMinorVersion(), deviceInfoResponse.GetVersion())
 	m.driverContext.deviceName = GetZeroTerminatedString(deviceInfoResponse.GetDevice())
@@ -148,29 +144,25 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	// Read the symbol-version (offline changes)
 	symbolVersionResponse, err := m.ExecuteAdsReadRequest(ctx, uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VERSION), 0, 1)
 	if err != nil {
-		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
-		return
+		return errors.Wrap(err, "error reading symbol version")
 	}
 	m.driverContext.symbolVersion = symbolVersionResponse.GetData()[0]
 
 	// Read the online-version
 	onlineVersionResponse, err := m.ExecuteAdsReadWriteRequest(ctx, uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME), 0, 4, nil, []byte("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt"))
 	if err != nil {
-		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
-		return
+		return errors.Wrap(err, "error reading online version")
 	}
 	rb := utils.NewReadBufferByteBased(onlineVersionResponse.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	m.driverContext.onlineVersion, err = rb.ReadUint32("", 32)
 	if err != nil {
-		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
-		return
+		return errors.Wrap(err, "error reading online version")
 	}
 
 	// Read the data type and symbol table
 	err = m.readSymbolTableAndDatatypeTable(ctx)
 	if err != nil {
-		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
-		return
+		return errors.Wrap(err, "error reading symbol table and data type table")
 	}
 
 	// Start the worker for handling incoming messages
@@ -195,10 +187,10 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 					m.handleIncomingDeviceNotificationRequest(
 						amsTCPPacket.GetUserdata().(readWriteModel.AdsDeviceNotificationRequest))
 				default:
-					m.log.Warn().Stringer("message", message).Msg("Got unexpected type of incoming ADS message")
+					m.log.Warn().Interface("message", message).Msg("Got unexpected type of incoming ADS message")
 				}
 			default:
-				m.log.Warn().Stringer("message", message).Msg("Got unexpected type of incoming ADS message")
+				m.log.Warn().Interface("message", message).Msg("Got unexpected type of incoming ADS message")
 			}
 		}
 		m.log.Info().Msg("Done waiting for messages ...")
@@ -234,18 +226,15 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		}).
 		Build()
 	if err != nil {
-		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
-		return
+		return errors.Wrap(err, "error building subscription request")
 	}
-	subscriptionResultChan := versionChangeRequest.Execute()
+	subscriptionResultChan := versionChangeRequest.Execute(ctx)
 	subscriptionRequestResult := <-subscriptionResultChan
-	if subscriptionRequestResult.GetErr() != nil {
-		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, subscriptionRequestResult.GetErr())
-		return
+	if err := subscriptionRequestResult.GetErr(); err != nil {
+		return errors.Wrap(err, "error subscribing to version change")
 	}
 
-	// Return the finished connection
-	ch <- _default.NewDefaultPlcConnectionConnectResult(m, nil)
+	return nil
 }
 
 func (m *Connection) readSymbolTableAndDatatypeTable(ctx context.Context) error {
@@ -294,7 +283,7 @@ func (m *Connection) readDataTypeTable(ctx context.Context, dataTableSize uint32
 	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	dataTypes := map[string]readWriteModel.AdsDataTypeTableEntry{}
 	for i := uint32(0); i < numDataTypes; i++ {
-		dataType, err := readWriteModel.AdsDataTypeTableEntryParseWithBuffer(context.Background(), readBuffer)
+		dataType, err := readWriteModel.AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table: %v", err)
 		}
@@ -313,7 +302,7 @@ func (m *Connection) readSymbolTable(ctx context.Context, symbolTableSize uint32
 	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 	symbols := map[string]readWriteModel.AdsSymbolTableEntry{}
 	for i := uint32(0); i < numSymbols; i++ {
-		symbol, err := readWriteModel.AdsSymbolTableEntryParseWithBuffer(context.Background(), readBuffer)
+		symbol, err := readWriteModel.AdsSymbolTableEntryParseWithBuffer(ctx, readBuffer)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing table")
 		}

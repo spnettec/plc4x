@@ -25,7 +25,6 @@ import (
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -132,7 +131,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 		// Send the ADU over the wire
 		m.log.Trace().Msg("Send ADU")
-		if err = m.messageCodec.SendRequest(ctx, requestAdu, func(message spi.Message) bool {
+		if err = m.messageCodec.SendRequest(ctx, "read", requestAdu, func(message spi.Message) bool {
 			responseAdu := message.(readWriteModel.ModbusTcpADU)
 			return responseAdu.GetTransactionIdentifier() == uint16(transactionIdentifier) &&
 				responseAdu.GetUnitIdentifier() == requestAdu.UnitIdentifier
@@ -166,7 +165,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				errors.Wrap(err, "got timeout while waiting for response"),
 			)
 			return nil
-		}, time.Second*1); err != nil {
+		}); err != nil {
 			result <- spiModel.NewDefaultPlcReadRequestResult(
 				readRequest,
 				nil,
@@ -178,6 +177,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 }
 
 func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, readRequest apiModel.PlcReadRequest) (apiModel.PlcReadResponse, error) {
+	ctx := context.TODO()
 	var data []uint8
 	switch pdu := responseAdu.GetPdu().(type) {
 	case readWriteModel.ModbusPDUReadDiscreteInputsResponse:
@@ -207,7 +207,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 
 	// Decode the data according to the information from the request
 	m.log.Trace().Msg("decode data")
-	ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	value, err := readWriteModel.DataItemParse(ctxForModel, data, tag.Datatype, tag.Quantity, true)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")

@@ -26,6 +26,7 @@ import (
 	"net"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
@@ -37,10 +38,9 @@ import (
 )
 
 type TransportInstance struct {
-	LocalAddress   *net.UDPAddr
-	RemoteAddress  *net.UDPAddr
-	ConnectTimeout uint32
-	SoReUse        bool
+	LocalAddress  *net.UDPAddr
+	RemoteAddress *net.UDPAddr
+	SoReUse       bool
 
 	transport *Transport
 	udpConn   *net.UDPConn
@@ -52,24 +52,21 @@ type TransportInstance struct {
 	log zerolog.Logger
 }
 
-func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, connectTimeout uint32, soReUse bool, transport *Transport, _options ...options.WithOption) *TransportInstance {
+var _ transports.TransportInstance = (*TransportInstance)(nil)
+
+func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, soReUse bool, transport *Transport, _options ...options.WithOption) *TransportInstance {
 	logger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &TransportInstance{
-		LocalAddress:   localAddress,
-		RemoteAddress:  remoteAddress,
-		ConnectTimeout: connectTimeout,
-		SoReUse:        soReUse,
-		transport:      transport,
+		LocalAddress:  localAddress,
+		RemoteAddress: remoteAddress,
+		SoReUse:       soReUse,
+		transport:     transport,
 
 		log: logger,
 	}
 }
 
-func (m *TransportInstance) Connect() error {
-	return m.ConnectWithContext(context.Background())
-}
-
-func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
+func (m *TransportInstance) Connect(ctx context.Context) error {
 	if m.connected.Load() {
 		return errors.New("already connected")
 	}
@@ -125,6 +122,17 @@ func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
 	return nil
 }
 
+func (m *TransportInstance) Reset() {
+	if m.udpConn == nil {
+		m.log.Trace().Msg("No connection to reset")
+		return
+	}
+	_ = m.udpConn.SetReadDeadline(time.Now().Add(1))
+	_, _, _ = m.udpConn.ReadFromUDP(make([]byte, 4096))
+	m.reader = bufio.NewReader(m.udpConn)
+	m.log.Trace().Msg("Connection reset")
+}
+
 func (m *TransportInstance) Close() error {
 	defer utils.StopWarn(m.log)()
 	m.stateChangeMutex.Lock()
@@ -155,13 +163,13 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	return uint32(m.reader.Buffered()), nil
 }
 
-func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error {
+func (m *TransportInstance) FillBuffer(ctx context.Context, until func(pos uint, currentByte byte, reader transports.ExtendedReader) (keepGoing bool)) error {
 	if !m.IsConnected() {
 		return errors.New("working on a unconnected connection")
 	}
 	nBytes := uint32(1)
-	for {
-		_bytes, err := m.PeekReadableBytes(nBytes)
+	for ctx.Err() == nil {
+		_bytes, err := m.PeekReadableBytes(ctx, nBytes)
 		if err != nil {
 			return errors.Wrap(err, "Error while peeking")
 		}
@@ -170,20 +178,33 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 		}
 		nBytes++
 	}
+	return errors.Wrap(ctx.Err(), "Timeout while filling buffer")
 }
 
-func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
+func (m *TransportInstance) PeekReadableBytes(ctx context.Context, numBytes uint32) ([]byte, error) {
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
+	}
+	if deadline, ok := ctx.Deadline(); ok {
+		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
+		if err := m.udpConn.SetReadDeadline(deadline); err != nil {
+			return nil, errors.Wrap(err, "error setting read deadline")
+		}
 	}
 	return m.reader.Peek(int(numBytes))
 }
 
-func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
+func (m *TransportInstance) Read(ctx context.Context, numBytes uint32) ([]byte, error) {
 	if !m.IsConnected() {
 		return nil, errors.New("working on a unconnected connection")
 	}
 	data := make([]byte, numBytes)
+	if deadline, ok := ctx.Deadline(); ok {
+		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
+		if err := m.udpConn.SetReadDeadline(deadline); err != nil {
+			return nil, errors.Wrap(err, "error setting read deadline")
+		}
+	}
 	for i := uint32(0); i < numBytes; i++ {
 		val, err := m.reader.ReadByte()
 		if err != nil {
@@ -194,9 +215,15 @@ func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
 	return data, nil
 }
 
-func (m *TransportInstance) Write(data []byte) error {
+func (m *TransportInstance) Write(ctx context.Context, data []byte) error {
 	if !m.IsConnected() {
 		return errors.New("working on a unconnected connection")
+	}
+	if deadline, ok := ctx.Deadline(); ok {
+		m.log.Trace().Time("deadline", deadline).Msg("deadline set")
+		if err := m.udpConn.SetWriteDeadline(deadline); err != nil {
+			return errors.Wrap(err, "error setting read deadline")
+		}
 	}
 	var num int
 	var err error

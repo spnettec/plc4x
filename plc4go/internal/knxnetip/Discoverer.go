@@ -197,12 +197,12 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 			d.log.Error().Err(err).Msg("error creating transport instance")
 			return
 		}
-		err = transportInstance.ConnectWithContext(ctx)
+		err = transportInstance.Connect(ctx)
 		if err != nil {
 			d.log.Debug().Err(err).Msg("Error Connecting")
 			return
 		}
-		d.log.Debug().Stringer("transportInstance", transportInstance).Msg("Adding transport instance to scan %v")
+		d.log.Debug().Interface("transportInstance", transportInstance).Msg("Adding transport instance to scan %v")
 		transportInstances <- transportInstance
 	}
 }
@@ -211,7 +211,7 @@ func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTranspor
 	return func(workerCtx context.Context) {
 		ctx, cancel := context.WithCancel(ctx)
 		context.AfterFunc(workerCtx, cancel)
-		d.log.Debug().Stringer("udpTransportInstance", udpTransportInstance).Msg("Scanning")
+		d.log.Debug().Interface("udpTransportInstance", udpTransportInstance).Msg("Scanning")
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(
 			udpTransportInstance,
@@ -219,7 +219,7 @@ func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTranspor
 			append(d._options, options.WithCustomLogger(d.log))...,
 		)
 		// Explicitly start the worker
-		if err := codec.ConnectWithContext(ctx); err != nil {
+		if err := codec.Connect(ctx); err != nil {
 			d.log.Error().Err(err).Msg("Error connecting")
 			return
 		}
@@ -232,8 +232,8 @@ func (d *Discoverer) createDeviceScanDispatcher(ctx context.Context, udpTranspor
 			driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
 		searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
 		// Send the search request.
-		if err := codec.Send(searchRequestMessage); err != nil {
-			d.log.Debug().Err(err).Stringer("searchRequestMessage", searchRequestMessage).Msg("Error sending message")
+		if err := codec.Send(ctx, "device_scan_search_request", searchRequestMessage); err != nil {
+			d.log.Debug().Err(err).Interface("searchRequestMessage", searchRequestMessage).Msg("Error sending message")
 			return
 		}
 		// Keep on reading responses till the timeout is done.

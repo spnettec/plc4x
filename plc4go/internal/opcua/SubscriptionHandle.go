@@ -78,6 +78,7 @@ func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, connectio
 }
 
 func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWriteModel.CreateMonitoredItemsResponse, error) {
+	ctx := context.TODO()
 	requestList := make([]readWriteModel.MonitoredItemCreateRequest, len(h.tagNames))
 
 	for _, tagName := range h.tagNames {
@@ -149,8 +150,6 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		createMonitoredItemsRequest,
 	)
 
-	ctx, cancel := context.WithTimeout(context.Background(), REQUEST_TIMEOUT)
-	defer cancel()
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		return nil, errors.Wrapf(err, "Unable to serialise the ReadRequest")
@@ -354,6 +353,7 @@ func (h *SubscriptionHandle) startSubscriber() {
 
 // stopSubscriber stops the subscriber either on disconnect or on error
 func (h *SubscriptionHandle) stopSubscriber() {
+	ctx := context.TODO()
 	h.destroy.Store(true)
 
 	requestHandle := h.connection.channel.getRequestHandle()
@@ -386,8 +386,6 @@ func (h *SubscriptionHandle) stopSubscriber() {
 		deleteSubscriptionrequest,
 	)
 
-	ctx := context.Background()
-
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		h.log.Error().Err(err).Msg("Unable to serialise the ReadRequest")
@@ -413,7 +411,7 @@ func (h *SubscriptionHandle) stopSubscriber() {
 				Msg("Subscription ServiceFault returned from server with error code, ignoring as it is probably just a result of a Delete Subscription Request")
 			return
 		}
-		h.log.Debug().Stringer("responseMessage", responseMessage).Msg("Received response")
+		h.log.Debug().Interface("responseMessage", responseMessage).Msg("Received response")
 	}
 
 	errorDispatcher := func(err error) {

@@ -196,7 +196,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 			},
 			wantAssert: func(t *testing.T, requestTransaction RequestTransaction) bool {
 				assert.True(t, requestTransaction.IsCompleted())
-				assert.Error(t, requestTransaction.AwaitCompletion(context.Background()))
+				assert.Error(t, requestTransaction.AwaitCompletion(t.Context()))
 				return true
 			},
 		},
@@ -218,7 +218,7 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 			if tt.manipulator != nil {
 				tt.manipulator(t, r)
 			}
-			if got := r.StartTransaction(); !assert.True(t, tt.wantAssert(t, got)) {
+			if got := r.StartTransaction("defaultTransation"); !assert.True(t, tt.wantAssert(t, got)) {
 				t.Errorf("StartTransaction() = %v", got)
 			}
 		})
@@ -660,33 +660,36 @@ func Test_requestTransactionManager_String(t *testing.T) {
 					v.PushBack(nil)
 					return v
 				}(),
-				executor:                            pool.NewFixedSizeExecutor(1, 1),
+				executor:                            pool.NewFixedSizeExecutor(1, 1, options.WithExecutorOptionName(t.Name())),
 				traceTransactionManagerTransactions: true,
 			},
 			want: `
-╔═requestTransactionManager═══════════════════════════════════════════════════════════════════════════════════════════╗
-║╔═runningRequests/value/requestTransaction╗╔═numberOfConcurrentRequests╗╔═currentTransactionId╗                      ║
-║║      ╔═transactionId╗╔═completed╗       ║║   0x0000000000000003 3    ║║    0x00000004 4     ║                      ║
-║║      ║ 0x00000002 2 ║║ b0 false ║       ║╚═══════════════════════════╝╚═════════════════════╝                      ║
-║║      ╚══════════════╝╚══════════╝       ║                                                                          ║
-║╚═════════════════════════════════════════╝                                                                          ║
-║╔═executor/executor══════════════════════════════════════════════════════════════════════════════════════╗╔═shutdown╗║
-║║╔═running╗╔═shutdown╗                                                                                   ║║b0 false ║║
-║║║b0 false║║b0 false ║                                                                                   ║╚═════════╝║
-║║╚════════╝╚═════════╝                                                                                   ║           ║
-║║╔═worker/value/worker══════════════════════════════════════════════════════════════════════════════════╗║           ║
-║║║╔═id═════════════════╗╔═lastReceived════════════════╗╔═running╗╔═shutdown╗╔═interrupted╗╔═interrupter╗║║           ║
-║║║║0x0000000000000000 0║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║  b0 false  ║║0 element(s)║║║           ║
-║║║╚════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝╚════════════╝╚════════════╝║║           ║
-║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝║           ║
-║║╔═workItems══╗╔═traceWorkers╗                                                                           ║           ║
-║║║0 element(s)║║  b0 false   ║                                                                           ║           ║
-║║╚════════════╝╚═════════════╝                                                                           ║           ║
-║╚════════════════════════════════════════════════════════════════════════════════════════════════════════╝           ║
-║╔═traceTransactionManagerTransactions╗                                                                               ║
-║║              b1 true               ║                                                                               ║
-║╚════════════════════════════════════╝                                                                               ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
+╔═requestTransactionManager═════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═runningRequests/value/requestTransaction╗╔═numberOfConcurrentRequests╗╔═currentTransactionId╗                    ║
+║║      ╔═transactionId╗╔═completed╗       ║║   0x0000000000000003 3    ║║    0x00000004 4     ║                    ║
+║║      ║ 0x00000002 2 ║║ b0 false ║       ║╚═══════════════════════════╝╚═════════════════════╝                    ║
+║║      ╚══════════════╝╚══════════╝       ║                                                                        ║
+║╚═════════════════════════════════════════╝                                                                        ║
+║╔═executor/executor════════════════════════════════════════════════════════════════════════════════════╗╔═shutdown╗║
+║║╔═name════════════════════════════════╗╔═running╗╔═shutdown╗                                          ║║b0 false ║║
+║║║Test_requestTransactionManager_String║║b0 false║║b0 false ║                                          ║╚═════════╝║
+║║╚═════════════════════════════════════╝╚════════╝╚═════════╝                                          ║           ║
+║║╔═worker/value/worker════════════════════════════════════════════════════════════════════════════════╗║           ║
+║║║╔═id═══════════════════════════════════════════╗╔═lastReceived════════════════╗╔═running╗╔═shutdown╗║║           ║
+║║║║Test_requestTransactionManager_String-worker-0║║0001-01-01 00:00:00 +0000 UTC║║b0 false║║b0 false ║║║           ║
+║║║╚══════════════════════════════════════════════╝╚═════════════════════════════╝╚════════╝╚═════════╝║║           ║
+║║║╔═interrupted╗╔═interrupter╗                                                                        ║║           ║
+║║║║  b0 false  ║║0 element(s)║                                                                        ║║           ║
+║║║╚════════════╝╚════════════╝                                                                        ║║           ║
+║║╚════════════════════════════════════════════════════════════════════════════════════════════════════╝║           ║
+║║╔═workerNumber╗╔═workItems══╗╔═traceWorkers╗╔═ctx═════════════════════════╗                           ║           ║
+║║║0x00000000 0 ║║0 element(s)║║  b0 false   ║║context.Background.WithCancel║                           ║           ║
+║║╚═════════════╝╚════════════╝╚═════════════╝╚═════════════════════════════╝                           ║           ║
+║╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝           ║
+║╔═traceTransactionManagerTransactions╗                                                                             ║
+║║              b1 true               ║                                                                             ║
+║╚════════════════════════════════════╝                                                                             ║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}
 	for _, tt := range tests {

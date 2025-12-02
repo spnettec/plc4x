@@ -163,11 +163,11 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
         }
 
         /*
-        * This method receives a String that describes an S7Tag and the
+        * This method receives a String that describes an S7Tag and the 
         * interval required for its sampling.
-        * The value of the "pollingInterval" parameter is adapted to the
-        * cyclical subscription requirements of an S7-300/S7-400,
-        * for which multiples of the time base given by TimeBase
+        * The value of the "pollingInterval" parameter is adapted to the 
+        * cyclical subscription requirements of an S7-300/S7-400, 
+        * for which multiples of the time base given by TimeBase 
         * must be handled. To say:
         *
         * . B01SEC -> 100, 200, 300, 400, 500, 600, 700, 800, 900 msec
@@ -176,12 +176,12 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
         *
         * As you can see there are no intermediate values, for example 513 msec,
         * it will actually be 500 msec, or its nearest rounding.
-        *
+        * 
         * @param name Name of the subscription Tag.
         * @param tagAddress String representing an S7Tag
-        * @param pollingInterval Required sampling rate based on the "TimeBase"
-        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
-        *
+        * @param pollingInterval Required sampling rate based on the "TimeBase"  
+        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor        
+        * 
         */
         @Override
         public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
@@ -211,8 +211,8 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
         }
 
         /*
-        * This method receives an S7Tag built by the user, he is responsible
-        * for the construction of the object, so no additional verification
+        * This method receives an S7Tag built by the user, he is responsible 
+        * for the construction of the object, so no additional verification 
         * is included.
         *
         * @param name Name of the subscription Tag.
@@ -227,47 +227,61 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
             }
             if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException(CONST_INVALID_TYPE);
-            }
+            }                
             tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CYCLIC, pollingInterval, consumer));
             return this;
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
-            return addChangeOfStateTagAddress(name, tagAddress, (Duration) null);
+            return addChangeOfStateTagAddress(name, tagAddress, null, null);
         }
 
-        /*
-        *
-        */
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration minInterval) {
+            return addChangeOfStateTagAddress(name, tagAddress, null, minInterval);
+        }
+
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
+            return addChangeOfStateTagAddress(name, tagAddress, consumer, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer, Duration minInterval) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException(CONST_DUPLICATE_TAG + " '" + name + "'");
             }
             S7Tag[] s7tags = new S7Tag[]{S7Tag.of(tagAddress)};
             S7SubscriptionTag tag = new S7SubscriptionTag(S7SubscriptionType.CYCLIC_SUBSCRIPTION, s7tags, TimeBase.B01SEC, (short) 1);
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, consumer));
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, minInterval, consumer));
             return this;
         }
 
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
-            return addChangeOfStateTag(name, tag, null);
+            return addChangeOfStateTag(name, tag, null, null);
         }
 
-        /*
-        *
-        */
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Duration minInterval) {
+            return addChangeOfStateTag(name, tag, null, minInterval);
+        }
+
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
+            return addChangeOfStateTag(name, tag, consumer, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer, Duration minInterval) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException(CONST_DUPLICATE_TAG + " '" + name + "'");
             }
-            if (!(tag instanceof S7SubscriptionTag)){
+            if (!(tag instanceof S7SubscriptionTag)) {
                 throw new PlcRuntimeException(CONST_INVALID_TYPE);
             }
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, consumer));
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, minInterval, consumer));
             return this;
         }
 
@@ -277,11 +291,11 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
         }
 
         /*
-        * This method is responsible for the subscription to Events associated
-        * with the PLC as well as the preliminary version of cyclical
+        * This method is responsible for the subscription to Events associated 
+        * with the PLC as well as the preliminary version of cyclical 
         * subscription of values.
         *
-        * The type of function performed by the tag is given by the definition
+        * The type of function performed by the tag is given by the definition 
         * of the "tagAddress", for example:
         *
         * "ACK:16#12345678"
@@ -297,11 +311,11 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
         * . QUERY
         * . CYC
         * . CANCEL
-        *
+        * 
         * Go to the driver manual for a complete description.
-        *
+        * 
         * @param name Name of the subscription Tag.
-        * @param tag    Tag of S7SubscriptionTag type.
+        * @param tag    Tag of S7SubscriptionTag type.        
         * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
         */
         @Override
@@ -312,7 +326,7 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
             PlcTag tag = tagHandler.parseTag(tagAddress);
             if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException(CONST_INVALID_TYPE);
-            }
+            }              
             tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.EVENT, consumer));
             return this;
         }
@@ -323,13 +337,13 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
         }
 
         /*
-        * This method receives an S7Tag built by the user, he is responsible
-        * for the construction of the object, so no additional verification
+        * This method receives an S7Tag built by the user, he is responsible 
+        * for the construction of the object, so no additional verification 
         * is included.
         *
         * @param name Name of the subscription Tag.
         * @param tag    Tag of S7SubscriptionTag type.
-        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
+        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor        
         */
         @Override
         public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
@@ -338,7 +352,7 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
             }
             if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException(CONST_INVALID_TYPE);
-            }
+            }            
             tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.EVENT, consumer));
             return this;
         }
@@ -377,7 +391,7 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
             }
 
         }
-
+        
         private TimeBase getTimeBase(Duration duration)  {
             if (duration.equals(Duration.ZERO)) {
                 throw new PlcRuntimeException(CONST_TIME_CANNOT_BE_ZERO);
@@ -387,15 +401,15 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
                 return TimeBase.B01SEC;
             }
             if (millis < 10000) {
-                return TimeBase.B1SEC;
+                return TimeBase.B1SEC;                
             }
             if (millis < 100000) {
-                return TimeBase.B10SEC;
+                return TimeBase.B10SEC;  
             }
-
-            throw new PlcRuntimeException("The maximum subscription time is 90 sec.");
+            
+            throw new PlcRuntimeException("The maximum subscription time is 90 sec.");             
         }
-
+        
         //TODO: Check multiplier is 1-99 in BCD??
         private short getMultiplier(TimeBase timeBase, Duration duration)  {
             short multiplier = 1;
@@ -415,9 +429,9 @@ public class S7PlcSubscriptionRequest extends DefaultPlcSubscriptionRequest {
                 case B10SEC:
                     multiplier = (short) (millis / 10000);
                     break;
-            }
-            return multiplier;
-        }
+            }           
+            return multiplier;            
+        }        
 
     }
 

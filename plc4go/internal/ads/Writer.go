@@ -224,7 +224,8 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 }
 
 func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []apiModel.ArrayInfo,
-	plcValue apiValues.PlcValue, wb utils.WriteBufferByteBased, stringEncoding string) error {
+    plcValue apiValues.PlcValue, wb utils.WriteBufferByteBased, stringEncoding string) error {
+	ctx := context.TODO()
 	// Decode the data according to the information from the request
 	// Based on the AdsDataTypeTableEntry in tag.DataType() parse the data
 	if len(arrayInfo) > 0 {

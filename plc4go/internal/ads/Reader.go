@@ -256,7 +256,8 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 }
 
 func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo,
-	rb utils.ReadBufferByteBased, stringEncoding string) (apiValues.PlcValue, error) {
+    rb utils.ReadBufferByteBased, stringEncoding string) (apiValues.PlcValue, error) {
+	ctx := context.TODO()
 	// Decode the data according to the information from the request
 	// Based on the AdsDataTypeTableEntry in tag.DataType() parse the data
 	if len(arrayInfo) > 0 {

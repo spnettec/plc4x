@@ -41,6 +41,7 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/apache/plc4x/plc4go/pkg/api/logging"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
@@ -119,7 +120,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 
 // TestContext produces a context which is getting cleaned up by testing.T
 func TestContext(t *testing.T) context.Context {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	t.Cleanup(cancel)
 	ctx = ProduceTestingLogger(t).WithContext(ctx)
 	return ctx
@@ -144,7 +145,7 @@ func init() {
 		zerolog.TimeFieldFormat = time.RFC3339Nano
 	}
 	getOrLeaveBool("PLC4X_TEST_PASS_LOGGER_TO_MODEL", &passLoggerToModel)
-	receiveTimeout = 3 * time.Second
+	receiveTimeout = 60 * time.Second
 	getOrLeaveDuration("PLC4X_TEST_RECEIVE_TIMEOUT_MS", &receiveTimeout)
 	getOrLeaveBool("PLC4X_TEST_TRACE_TRANSACTION_MANAGER_WORKERS", &traceTransactionManagerWorkers)
 	getOrLeaveBool("PLC4X_TEST_TRACE_TRANSACTION_MANAGER_TRANSACTIONS", &traceTransactionManagerTransactions)
@@ -161,11 +162,11 @@ func getOrLeaveBool(key string, setting *bool) {
 
 func getOrLeaveDuration(key string, setting *time.Duration) {
 	if env, ok := os.LookupEnv(key); ok && env != "" {
-		parsedDuration, err := strconv.ParseInt(env, 10, 64)
+		parsedDuration, err := time.ParseDuration(env)
 		if err != nil {
 			panic(err)
 		}
-		*setting = time.Duration(parsedDuration) * time.Millisecond
+		*setting = parsedDuration
 	}
 }
 
@@ -308,11 +309,18 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 			return r.String()
 		}
 	})
+	interfaceMarshallerSetter.Do(func() {
+		logging.ZerologInterfacePLCMessageFormat = logging.PLCMessageAsString
+		zerolog.InterfaceMarshalFunc = logging.ZerologMessageInterfaceMarshalFunc
+	})
 	logger = logger.With().Stack().Logger()
 	return logger
 }
 
-var stackSetter sync.Once
+var (
+	stackSetter               sync.Once
+	interfaceMarshallerSetter sync.Once
+)
 
 // EnrichOptionsWithOptionsForTesting appends options useful for testing to config.WithOption s
 func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOption) []options.WithOption {

@@ -21,6 +21,7 @@ package pool
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"sync/atomic"
 
@@ -30,17 +31,23 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+// only used to avoid name collision when no custom name is used.
+var defaultExecutorNameUsage atomic.Uint64
+
 //go:generate go tool plc4xGenerator -type=executor
 type executor struct {
+	name string
+
 	running  bool
 	shutdown bool
 
 	worker       []*worker
+	workerNumber atomic.Uint32
 	workItems    chan workItem
 	traceWorkers bool
 
 	ctx       context.Context
-	ctxCancel context.CancelFunc
+	ctxCancel context.CancelFunc `ignore:"true"`
 
 	stateChange     sync.RWMutex
 	workerWaitGroup sync.WaitGroup
@@ -48,19 +55,35 @@ type executor struct {
 	log zerolog.Logger
 }
 
-func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolog.Logger) *executor {
+func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolog.Logger, opts ...func(*executor)) *executor {
 	e := &executor{
+		name:      fmt.Sprintf("executor-%d", defaultExecutorNameUsage.Add(1)),
 		workItems: make(chan workItem, queueDepth),
 		log:       customLogger,
 	}
 	e.ctx, e.ctxCancel = context.WithCancel(context.Background())
+	for _, opt := range opts {
+		opt(e)
+	}
 	workers := make([]*worker, numberOfInitialWorkers)
 	for i := 0; i < numberOfInitialWorkers; i++ {
-		w := newWorker(customLogger, i, e)
+		w := newWorker(customLogger, fmt.Sprintf("%s-worker-%d", e.name, i), e)
 		workers[i] = w
 	}
 	e.worker = workers
 	return e
+}
+
+func withExecutorName(name string) func(*executor) {
+	return func(e *executor) {
+		e.name = name
+	}
+}
+
+func withTraceWorkers(traceWorkers bool) func(*executor) {
+	return func(e *executor) {
+		e.traceWorkers = traceWorkers
+	}
 }
 
 func (e *executor) isTraceWorkers() bool {
@@ -125,7 +148,7 @@ func (e *executor) Start() {
 }
 
 func (e *executor) Stop() {
-	defer utils.StopWarn(e.log)()
+	defer utils.StopWarn(e.log, utils.WithStopWarnProcessId(e.name))()
 	e.log.Trace().Msg("stopping now")
 	e.stateChange.Lock()
 	defer e.stateChange.Unlock()
