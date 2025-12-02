@@ -1520,8 +1520,12 @@
     ['765' M_SPECIALCAVI_BALDASSARI_SRL ['826', '"SPECIALCAVI BALDASSARI SRL"']]
     ['766' M_OSPA_APPARATEBAU_PAUSER_GMBH_AND_CO__KG ['827', '"Ospa Apparatebau Pauser GmbH & Co. KG"']]
     ['767' M_PLH ['828', '"PLH"']]
-    ['768' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['769' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['768' M_HANGZHOU_ZION_COMMUNICATION_CO__LTD ['829', '"HANGZHOU ZION COMMUNICATION CO.,LTD"']]
+    ['769' M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD ['830', '"Weiyi Technology (Zhejiang) Co., Ltd"']]
+    ['770' M_AUTERAS ['831', '"AUTERAS"']]
+    ['771' M_OSUM_SMART ['832', '"OSUM Smart"']]
+    ['772' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['773' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

@@ -904,9 +904,15 @@ public enum KnxManufacturer {
   M_OSPA_APPARATEBAU_PAUSER_GMBH_AND_CO__KG(
       (int) 766, (int) 827, (String) "Ospa Apparatebau Pauser GmbH & Co. KG"),
   M_PLH((int) 767, (int) 828, (String) "PLH"),
-  M_ABB___RESERVED((int) 768, (int) 43954, (String) "ABB - reserved"),
+  M_HANGZHOU_ZION_COMMUNICATION_CO__LTD(
+      (int) 768, (int) 829, (String) "HANGZHOU ZION COMMUNICATION CO.,LTD"),
+  M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD(
+      (int) 769, (int) 830, (String) "Weiyi Technology (Zhejiang) Co., Ltd"),
+  M_AUTERAS((int) 770, (int) 831, (String) "AUTERAS"),
+  M_OSUM_SMART((int) 771, (int) 832, (String) "OSUM Smart"),
+  M_ABB___RESERVED((int) 772, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 769, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 773, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

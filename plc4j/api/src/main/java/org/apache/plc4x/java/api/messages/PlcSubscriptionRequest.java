@@ -73,8 +73,6 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionTagRequest {
          */
         PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval);
 
-        Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval);
-
         /**
          * Adds a new tag to the to be constructed request which should be polled cyclically.
          *

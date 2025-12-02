@@ -167,14 +167,6 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
             addCyclicTag(name, tag, pollingInterval, null);
             return this;
         }
-        @Override
-        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval) {
-            if (tags.containsKey(name)) {
-                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
-            }
-            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.CHANGE_OF_STATE, pollingInterval, consumer));
-            return this;
-        }
 
         @Override
         public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
