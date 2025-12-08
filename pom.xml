@@ -126,9 +126,9 @@
     <commons-csv.version>1.14.1</commons-csv.version>
     <commons-pool2.version>2.12.1</commons-pool2.version>
     <dom4j.version>2.2.0</dom4j.version>
-    <equalsverifier.version>4.2.4</equalsverifier.version>
+    <equalsverifier.version>4.2.5</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
-    <groovy.version>5.0.2</groovy.version>
+    <groovy.version>5.0.3</groovy.version>
     <guava.version>33.5.0-jre</guava.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
@@ -285,7 +285,7 @@
       <dependency>
         <groupId>com.google.googlejavaformat</groupId>
         <artifactId>google-java-format</artifactId>
-        <version>1.31.0</version>
+        <version>1.32.0</version>
       </dependency>
 
       <dependency>
@@ -1017,7 +1017,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.4.0</version>
         </plugin>
 
         <plugin>
@@ -1109,7 +1109,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.7.1</version>
+          <version>3.8.0</version>
           <configuration>
             <finalName>apache-plc4x-${project.version}</finalName>
           </configuration>
@@ -1226,7 +1226,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.0</version>
           <configuration>
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -1237,7 +1237,7 @@
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>5.3.0.6276</version>
+          <version>5.4.0.6343</version>
         </plugin>
 
         <plugin>
