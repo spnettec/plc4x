@@ -101,7 +101,7 @@ public enum BACnetVendorId {
   REGULATOR_AUSTRALIAPTY_LTD((int) 67, (int) 67, (String) "Regulator Australia PTY Ltd."),
   TOUCH_PLATE_LIGHTING_CONTROLS((int) 68, (int) 68, (String) "Touch-Plate Lighting Controls"),
   AMANN_GMBH((int) 69, (int) 69, (String) "Amann GmbH"),
-  RLE_TECHNOLOGIES((int) 70, (int) 70, (String) "RLE Technologies"),
+  PARAMETERLLC((int) 70, (int) 70, (String) "Parameter LLC"),
   CARDKEY_SYSTEMS((int) 71, (int) 71, (String) "Cardkey Systems"),
   SECOM_CO_LTD((int) 72, (int) 72, (String) "SECOM Co., Ltd."),
   ABB_GEBUDETECHNIKAG_BEREICH_NET_SERV(
@@ -1814,6 +1814,16 @@ public enum BACnetVendorId {
   SYSTEM_MART_LTD((int) 1579, (int) 1579, (String) "System Mart Ltd."),
   SPOT_GMBH((int) 1580, (int) 1580, (String) "Spot7 GmbH"),
   INTEMPCO_CONTROLS_LTD((int) 1581, (int) 1581, (String) "Intempco Controls Ltd."),
+  ROSEMONT_ENGINEERING_INC((int) 1582, (int) 1582, (String) "Rosemont Engineering, Inc."),
+  MINIVEIL_INDUSTRIES_LTD((int) 1583, (int) 1583, (String) "Miniveil Industries Ltd."),
+  PROFCONAB((int) 1584, (int) 1584, (String) "Profcon AB"),
+  KE_AUTOMASJONAS((int) 1585, (int) 1585, (String) "KE Automasjon AS"),
+  NORDOMATIC_PROPERTY_TECHNOLOGIESAB(
+      (int) 1586, (int) 1586, (String) "Nordomatic Property Technologies AB"),
+  RUNWISE((int) 1587, (int) 1587, (String) "Runwise"),
+  KARELAVOJSKY((int) 1588, (int) 1588, (String) "Karel Čavojsky"),
+  ABBLV_INSTALLATION_MATERIALS_CO_LTD_BEIJING(
+      (int) 1589, (int) 1589, (String) "ABB LV Installation Materials Co., Ltd. Beijing"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
