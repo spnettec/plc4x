@@ -1342,7 +1342,7 @@
     ['587' M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD ['643', '"Hefei Chuang Yue Intelligent Technology Co.,LTD"']]
     ['588' M_LARFE ['644', '"Larfe"']]
     ['589' M_DONGGUAN_MUHCCI_ELECTRICAL ['645', '"Dongguan Muhcci Electrical"']]
-    ['590' M_STEC ['646', '"STEC"']]
+    ['590' M_SDEKE ['646', '"Sdeke"']]
     ['591' M_ARIGO_SOFTWARE_GMBH ['647', '"ARIGO Software GmbH"']]
     ['592' M_FEISHELEC ['648', '"Feishelec"']]
     ['593' M_GORDIC ['649', '"GORDIC"']]
@@ -1524,8 +1524,9 @@
     ['769' M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD ['830', '"Weiyi Technology (Zhejiang) Co., Ltd"']]
     ['770' M_AUTERAS ['831', '"AUTERAS"']]
     ['771' M_OSUM_SMART ['832', '"OSUM Smart"']]
-    ['772' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['773' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['772' M_TEKNOLINE ['833', '"TEKNOLINE"']]
+    ['773' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['774' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
