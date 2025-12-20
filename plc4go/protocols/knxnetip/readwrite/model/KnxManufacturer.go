@@ -633,7 +633,7 @@ const (
 	KnxManufacturer_M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD    KnxManufacturer = 587
 	KnxManufacturer_M_LARFE                                              KnxManufacturer = 588
 	KnxManufacturer_M_DONGGUAN_MUHCCI_ELECTRICAL                         KnxManufacturer = 589
-	KnxManufacturer_M_STEC                                               KnxManufacturer = 590
+	KnxManufacturer_M_SDEKE                                              KnxManufacturer = 590
 	KnxManufacturer_M_ARIGO_SOFTWARE_GMBH                                KnxManufacturer = 591
 	KnxManufacturer_M_FEISHELEC                                          KnxManufacturer = 592
 	KnxManufacturer_M_GORDIC                                             KnxManufacturer = 593
@@ -811,8 +811,13 @@ const (
 	KnxManufacturer_M_SPECIALCAVI_BALDASSARI_SRL                         KnxManufacturer = 765
 	KnxManufacturer_M_OSPA_APPARATEBAU_PAUSER_GMBH_AND_CO__KG            KnxManufacturer = 766
 	KnxManufacturer_M_PLH                                                KnxManufacturer = 767
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 768
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 769
+	KnxManufacturer_M_HANGZHOU_ZION_COMMUNICATION_CO__LTD                KnxManufacturer = 768
+	KnxManufacturer_M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD                 KnxManufacturer = 769
+	KnxManufacturer_M_AUTERAS                                            KnxManufacturer = 770
+	KnxManufacturer_M_OSUM_SMART                                         KnxManufacturer = 771
+	KnxManufacturer_M_TEKNOLINE                                          KnxManufacturer = 772
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 773
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 774
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1410,7 +1415,7 @@ func init() {
 		KnxManufacturer_M_HEFEI_CHUANG_YUE_INTELLIGENT_TECHNOLOGY_CO__LTD,
 		KnxManufacturer_M_LARFE,
 		KnxManufacturer_M_DONGGUAN_MUHCCI_ELECTRICAL,
-		KnxManufacturer_M_STEC,
+		KnxManufacturer_M_SDEKE,
 		KnxManufacturer_M_ARIGO_SOFTWARE_GMBH,
 		KnxManufacturer_M_FEISHELEC,
 		KnxManufacturer_M_GORDIC,
@@ -1588,6 +1593,11 @@ func init() {
 		KnxManufacturer_M_SPECIALCAVI_BALDASSARI_SRL,
 		KnxManufacturer_M_OSPA_APPARATEBAU_PAUSER_GMBH_AND_CO__KG,
 		KnxManufacturer_M_PLH,
+		KnxManufacturer_M_HANGZHOU_ZION_COMMUNICATION_CO__LTD,
+		KnxManufacturer_M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD,
+		KnxManufacturer_M_AUTERAS,
+		KnxManufacturer_M_OSUM_SMART,
+		KnxManufacturer_M_TEKNOLINE,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4569,15 +4579,35 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 768:
 		{ /* '768' */
-			return 43954
+			return 829
 		}
 	case 769:
 		{ /* '769' */
-			return 43959
+			return 830
 		}
 	case 77:
 		{ /* '77' */
 			return 116
+		}
+	case 770:
+		{ /* '770' */
+			return 831
+		}
+	case 771:
+		{ /* '771' */
+			return 832
+		}
+	case 772:
+		{ /* '772' */
+			return 833
+		}
+	case 773:
+		{ /* '773' */
+			return 43954
+		}
+	case 774:
+		{ /* '774' */
+			return 43959
 		}
 	case 78:
 		{ /* '78' */
@@ -6879,7 +6909,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 590:
 		{ /* '590' */
-			return "STEC"
+			return "Sdeke"
 		}
 	case 591:
 		{ /* '591' */
@@ -7667,15 +7697,35 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 768:
 		{ /* '768' */
-			return "ABB - reserved"
+			return "HANGZHOU ZION COMMUNICATION CO.,LTD"
 		}
 	case 769:
 		{ /* '769' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "Weiyi Technology (Zhejiang) Co., Ltd"
 		}
 	case 77:
 		{ /* '77' */
 			return "Uponor"
+		}
+	case 770:
+		{ /* '770' */
+			return "AUTERAS"
+		}
+	case 771:
+		{ /* '771' */
+			return "OSUM Smart"
+		}
+	case 772:
+		{ /* '772' */
+			return "TEKNOLINE"
+		}
+	case 773:
+		{ /* '773' */
+			return "ABB - reserved"
+		}
+	case 774:
+		{ /* '774' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 78:
 		{ /* '78' */
@@ -8883,7 +8933,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 59:
 		return KnxManufacturer_M_DAETWYLER, true
 	case 590:
-		return KnxManufacturer_M_STEC, true
+		return KnxManufacturer_M_SDEKE, true
 	case 591:
 		return KnxManufacturer_M_ARIGO_SOFTWARE_GMBH, true
 	case 592:
@@ -9277,11 +9327,21 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 767:
 		return KnxManufacturer_M_PLH, true
 	case 768:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_HANGZHOU_ZION_COMMUNICATION_CO__LTD, true
 	case 769:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD, true
 	case 77:
 		return KnxManufacturer_M_UPONOR, true
+	case 770:
+		return KnxManufacturer_M_AUTERAS, true
+	case 771:
+		return KnxManufacturer_M_OSUM_SMART, true
+	case 772:
+		return KnxManufacturer_M_TEKNOLINE, true
+	case 773:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 774:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 78:
 		return KnxManufacturer_M_SE_LIGHTMANAGEMENT_AG, true
 	case 79:
@@ -10428,8 +10488,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_DONGGUAN_MUHCCI_ELECTRICAL, true
 	case "M_DAETWYLER":
 		return KnxManufacturer_M_DAETWYLER, true
-	case "M_STEC":
-		return KnxManufacturer_M_STEC, true
+	case "M_SDEKE":
+		return KnxManufacturer_M_SDEKE, true
 	case "M_ARIGO_SOFTWARE_GMBH":
 		return KnxManufacturer_M_ARIGO_SOFTWARE_GMBH, true
 	case "M_FEISHELEC":
@@ -10822,12 +10882,22 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_OSPA_APPARATEBAU_PAUSER_GMBH_AND_CO__KG, true
 	case "M_PLH":
 		return KnxManufacturer_M_PLH, true
+	case "M_HANGZHOU_ZION_COMMUNICATION_CO__LTD":
+		return KnxManufacturer_M_HANGZHOU_ZION_COMMUNICATION_CO__LTD, true
+	case "M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD":
+		return KnxManufacturer_M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD, true
+	case "M_UPONOR":
+		return KnxManufacturer_M_UPONOR, true
+	case "M_AUTERAS":
+		return KnxManufacturer_M_AUTERAS, true
+	case "M_OSUM_SMART":
+		return KnxManufacturer_M_OSUM_SMART, true
+	case "M_TEKNOLINE":
+		return KnxManufacturer_M_TEKNOLINE, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
-	case "M_UPONOR":
-		return KnxManufacturer_M_UPONOR, true
 	case "M_SE_LIGHTMANAGEMENT_AG":
 		return KnxManufacturer_M_SE_LIGHTMANAGEMENT_AG, true
 	case "M_ARCUS_EDS":
@@ -12046,8 +12116,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_DONGGUAN_MUHCCI_ELECTRICAL"
 	case KnxManufacturer_M_DAETWYLER:
 		return "M_DAETWYLER"
-	case KnxManufacturer_M_STEC:
-		return "M_STEC"
+	case KnxManufacturer_M_SDEKE:
+		return "M_SDEKE"
 	case KnxManufacturer_M_ARIGO_SOFTWARE_GMBH:
 		return "M_ARIGO_SOFTWARE_GMBH"
 	case KnxManufacturer_M_FEISHELEC:
@@ -12440,12 +12510,22 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_OSPA_APPARATEBAU_PAUSER_GMBH_AND_CO__KG"
 	case KnxManufacturer_M_PLH:
 		return "M_PLH"
+	case KnxManufacturer_M_HANGZHOU_ZION_COMMUNICATION_CO__LTD:
+		return "M_HANGZHOU_ZION_COMMUNICATION_CO__LTD"
+	case KnxManufacturer_M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD:
+		return "M_WEIYI_TECHNOLOGY_ZHEJIANG_CO___LTD"
+	case KnxManufacturer_M_UPONOR:
+		return "M_UPONOR"
+	case KnxManufacturer_M_AUTERAS:
+		return "M_AUTERAS"
+	case KnxManufacturer_M_OSUM_SMART:
+		return "M_OSUM_SMART"
+	case KnxManufacturer_M_TEKNOLINE:
+		return "M_TEKNOLINE"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
-	case KnxManufacturer_M_UPONOR:
-		return "M_UPONOR"
 	case KnxManufacturer_M_SE_LIGHTMANAGEMENT_AG:
 		return "M_SE_LIGHTMANAGEMENT_AG"
 	case KnxManufacturer_M_ARCUS_EDS:

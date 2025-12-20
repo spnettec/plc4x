@@ -43,7 +43,9 @@ func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	m.log.Trace().Msg("Writing")
 	result := make(chan apiModel.PlcWriteRequestResult, 1)
-	m.wg.Go(func() {
+	m.wg.Add(1)
+	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -54,7 +56,7 @@ func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRe
 		} else {
 			m.multiWrite(ctx, writeRequest, result)
 		}
-	})
+	}()
 	return result
 }
 
@@ -104,7 +106,9 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 	}
 	data := io.GetBytes()
 
-	m.wg.Go(func() {
+	m.wg.Add(1)
+	go func() {
+		defer m.wg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
@@ -129,7 +133,7 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 		}
 		// Return the response to the caller.
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil)
-	})
+	}()
 }
 
 func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWriteRequest, result chan apiModel.PlcWriteRequestResult) {
@@ -224,8 +228,7 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 }
 
 func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []apiModel.ArrayInfo,
-    plcValue apiValues.PlcValue, wb utils.WriteBufferByteBased, stringEncoding string) error {
-	ctx := context.TODO()
+	plcValue apiValues.PlcValue, wb utils.WriteBufferByteBased, stringEncoding string) error {
 	// Decode the data according to the information from the request
 	// Based on the AdsDataTypeTableEntry in tag.DataType() parse the data
 	if len(arrayInfo) > 0 {

@@ -414,6 +414,50 @@ func (_c *MockPlcTag_GetNumElements_Call) RunAndReturn(run func() uint16) *MockP
 	return _c
 }
 
+// GetStringEncoding provides a mock function for the type MockPlcTag
+func (_mock *MockPlcTag) GetStringEncoding() string {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetStringEncoding")
+	}
+
+	var r0 string
+	if returnFunc, ok := ret.Get(0).(func() string); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+	return r0
+}
+
+// MockPlcTag_GetStringEncoding_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetStringEncoding'
+type MockPlcTag_GetStringEncoding_Call struct {
+	*mock.Call
+}
+
+// GetStringEncoding is a helper method to define mock.On call
+func (_e *MockPlcTag_Expecter) GetStringEncoding() *MockPlcTag_GetStringEncoding_Call {
+	return &MockPlcTag_GetStringEncoding_Call{Call: _e.mock.On("GetStringEncoding")}
+}
+
+func (_c *MockPlcTag_GetStringEncoding_Call) Run(run func()) *MockPlcTag_GetStringEncoding_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPlcTag_GetStringEncoding_Call) Return(s string) *MockPlcTag_GetStringEncoding_Call {
+	_c.Call.Return(s)
+	return _c
+}
+
+func (_c *MockPlcTag_GetStringEncoding_Call) RunAndReturn(run func() string) *MockPlcTag_GetStringEncoding_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetValueType provides a mock function for the type MockPlcTag
 func (_mock *MockPlcTag) GetValueType() values.PlcValueType {
 	ret := _mock.Called()
