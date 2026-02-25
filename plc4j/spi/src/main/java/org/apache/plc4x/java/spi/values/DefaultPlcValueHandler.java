@@ -19,10 +19,8 @@
 package org.apache.plc4x.java.spi.values;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
-import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;

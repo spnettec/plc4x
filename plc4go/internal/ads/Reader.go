@@ -294,7 +294,7 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 			}
 			if child.GetOffset() > curPos {
 				skipBytes := child.GetOffset() - curPos
-				for i := uint32(0); i < skipBytes; i++ {
+				for range skipBytes {
 					_, _ = rb.ReadByte("")
 				}
 			}

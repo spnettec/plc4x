@@ -22,6 +22,8 @@ import io.netty.channel.*;
 import java.util.concurrent.RejectedExecutionException;
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.model.PlcConnectionStateChangedEvent;
+import org.apache.plc4x.java.api.types.ConnectionStateChangeType;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -64,7 +66,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected boolean connected;
     protected boolean detectedClosed;
     protected boolean closeExcuted;
-    //private final static TimeoutManager timeoutManager = new NettyHashTimerTimeoutManager();
 
     public DefaultNettyPlcConnection(boolean canPing,
                                      boolean canRead,
@@ -273,10 +274,14 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                             .map(ConnectionStateListener.class::cast);
                         if (evt instanceof ConnectedEvent) {
                             sessionSetupCompleteFuture.complete(null);
-                            eventListeners.forEach(ConnectionStateListener::connected);
+                            eventListeners.forEach(connectionStateListener ->
+                                connectionStateListener.onConnectionStateChanged(
+                                    new PlcConnectionStateChangedEvent(ConnectionStateChangeType.CONNECTED, "Connected")));
                         } else if (evt instanceof DisconnectedEvent) {
                             sessionDisconnectCompleteFuture.complete(null);
-                            eventListeners.forEach(ConnectionStateListener::disconnected);
+                            eventListeners.forEach(connectionStateListener ->
+                                connectionStateListener.onConnectionStateChanged(
+                                    new PlcConnectionStateChangedEvent(ConnectionStateChangeType.DISCONNECTED, "Disconnected")));
                             // Fix for https://github.com/apache/plc4x/issues/801
                             super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {

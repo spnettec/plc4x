@@ -372,7 +372,7 @@ const (
 	BACnetVendorId_CEMTREX_INC                                                                  BACnetVendorId = 326
 	BACnetVendorId_PERFORMANCE_TECHNOLOGIES_INC                                                 BACnetVendorId = 327
 	BACnetVendorId_XTRALIS_AUST_PTY_LTD                                                         BACnetVendorId = 328
-	BACnetVendorId_TROX_GMBH                                                                    BACnetVendorId = 329
+	BACnetVendorId_TROXSE                                                                       BACnetVendorId = 329
 	BACnetVendorId_BEIJING_HYSINE_TECHNOLOGY_CO_LTD                                             BACnetVendorId = 330
 	BACnetVendorId_RCK_CONTROLS_INC                                                             BACnetVendorId = 331
 	BACnetVendorId_DISTECH_CONTROLSSAS                                                          BACnetVendorId = 332
@@ -1623,6 +1623,11 @@ const (
 	BACnetVendorId_RUNWISE                                                                      BACnetVendorId = 1587
 	BACnetVendorId_KARELAVOJSKY                                                                 BACnetVendorId = 1588
 	BACnetVendorId_ABBLV_INSTALLATION_MATERIALS_CO_LTD_BEIJING                                  BACnetVendorId = 1589
+	BACnetVendorId_ENER_SEARCH_SOLAR_GMBH                                                       BACnetVendorId = 1590
+	BACnetVendorId_ZURN_ELKAY_WATER_SOLUTIONS                                                   BACnetVendorId = 1591
+	BACnetVendorId_ANDIVI                                                                       BACnetVendorId = 1592
+	BACnetVendorId_CHYI_LEE_INDUSTRY_CO_LTD                                                     BACnetVendorId = 1593
+	BACnetVendorId_ALLBEEBV                                                                     BACnetVendorId = 1594
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -1960,7 +1965,7 @@ func init() {
 		BACnetVendorId_CEMTREX_INC,
 		BACnetVendorId_PERFORMANCE_TECHNOLOGIES_INC,
 		BACnetVendorId_XTRALIS_AUST_PTY_LTD,
-		BACnetVendorId_TROX_GMBH,
+		BACnetVendorId_TROXSE,
 		BACnetVendorId_BEIJING_HYSINE_TECHNOLOGY_CO_LTD,
 		BACnetVendorId_RCK_CONTROLS_INC,
 		BACnetVendorId_DISTECH_CONTROLSSAS,
@@ -3211,6 +3216,11 @@ func init() {
 		BACnetVendorId_RUNWISE,
 		BACnetVendorId_KARELAVOJSKY,
 		BACnetVendorId_ABBLV_INSTALLATION_MATERIALS_CO_LTD_BEIJING,
+		BACnetVendorId_ENER_SEARCH_SOLAR_GMBH,
+		BACnetVendorId_ZURN_ELKAY_WATER_SOLUTIONS,
+		BACnetVendorId_ANDIVI,
+		BACnetVendorId_CHYI_LEE_INDUSTRY_CO_LTD,
+		BACnetVendorId_ALLBEEBV,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5836,6 +5846,26 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 159:
 		{ /* '159' */
 			return 159
+		}
+	case 1590:
+		{ /* '1590' */
+			return 1590
+		}
+	case 1591:
+		{ /* '1591' */
+			return 1591
+		}
+	case 1592:
+		{ /* '1592' */
+			return 1592
+		}
+	case 1593:
+		{ /* '1593' */
+			return 1593
+		}
+	case 1594:
+		{ /* '1594' */
+			return 1594
 		}
 	case 16:
 		{ /* '16' */
@@ -12179,6 +12209,26 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '159' */
 			return "SE-Elektronic GmbH"
 		}
+	case 1590:
+		{ /* '1590' */
+			return "EnerSearch Solar GmbH"
+		}
+	case 1591:
+		{ /* '1591' */
+			return "Zurn Elkay Water Solutions"
+		}
+	case 1592:
+		{ /* '1592' */
+			return "Andivi"
+		}
+	case 1593:
+		{ /* '1593' */
+			return "Chyi Lee Industry Co., Ltd."
+		}
+	case 1594:
+		{ /* '1594' */
+			return "Allbee B.V."
+		}
 	case 16:
 		{ /* '16' */
 			return "United Technologies Carrier"
@@ -12933,7 +12983,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 329:
 		{ /* '329' */
-			return "TROX GmbH"
+			return "TROX SE"
 		}
 	case 33:
 		{ /* '33' */
@@ -17210,6 +17260,16 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ABBLV_INSTALLATION_MATERIALS_CO_LTD_BEIJING, true
 	case 159:
 		return BACnetVendorId_SE_ELEKTRONIC_GMBH, true
+	case 1590:
+		return BACnetVendorId_ENER_SEARCH_SOLAR_GMBH, true
+	case 1591:
+		return BACnetVendorId_ZURN_ELKAY_WATER_SOLUTIONS, true
+	case 1592:
+		return BACnetVendorId_ANDIVI, true
+	case 1593:
+		return BACnetVendorId_CHYI_LEE_INDUSTRY_CO_LTD, true
+	case 1594:
+		return BACnetVendorId_ALLBEEBV, true
 	case 16:
 		return BACnetVendorId_UNITED_TECHNOLOGIES_CARRIER, true
 	case 160:
@@ -17587,7 +17647,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 328:
 		return BACnetVendorId_XTRALIS_AUST_PTY_LTD, true
 	case 329:
-		return BACnetVendorId_TROX_GMBH, true
+		return BACnetVendorId_TROXSE, true
 	case 33:
 		return BACnetVendorId_NORTH_BUILDING_TECHNOLOGIES_LIMITED, true
 	case 330:
@@ -20378,6 +20438,16 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ABBLV_INSTALLATION_MATERIALS_CO_LTD_BEIJING, true
 	case "SE_ELEKTRONIC_GMBH":
 		return BACnetVendorId_SE_ELEKTRONIC_GMBH, true
+	case "ENER_SEARCH_SOLAR_GMBH":
+		return BACnetVendorId_ENER_SEARCH_SOLAR_GMBH, true
+	case "ZURN_ELKAY_WATER_SOLUTIONS":
+		return BACnetVendorId_ZURN_ELKAY_WATER_SOLUTIONS, true
+	case "ANDIVI":
+		return BACnetVendorId_ANDIVI, true
+	case "CHYI_LEE_INDUSTRY_CO_LTD":
+		return BACnetVendorId_CHYI_LEE_INDUSTRY_CO_LTD, true
+	case "ALLBEEBV":
+		return BACnetVendorId_ALLBEEBV, true
 	case "UNITED_TECHNOLOGIES_CARRIER":
 		return BACnetVendorId_UNITED_TECHNOLOGIES_CARRIER, true
 	case "ROCKWELL_AUTOMATION":
@@ -20754,8 +20824,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_PERFORMANCE_TECHNOLOGIES_INC, true
 	case "XTRALIS_AUST_PTY_LTD":
 		return BACnetVendorId_XTRALIS_AUST_PTY_LTD, true
-	case "TROX_GMBH":
-		return BACnetVendorId_TROX_GMBH, true
+	case "TROXSE":
+		return BACnetVendorId_TROXSE, true
 	case "NORTH_BUILDING_TECHNOLOGIES_LIMITED":
 		return BACnetVendorId_NORTH_BUILDING_TECHNOLOGIES_LIMITED, true
 	case "BEIJING_HYSINE_TECHNOLOGY_CO_LTD":
@@ -23618,6 +23688,16 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "ABBLV_INSTALLATION_MATERIALS_CO_LTD_BEIJING"
 	case BACnetVendorId_SE_ELEKTRONIC_GMBH:
 		return "SE_ELEKTRONIC_GMBH"
+	case BACnetVendorId_ENER_SEARCH_SOLAR_GMBH:
+		return "ENER_SEARCH_SOLAR_GMBH"
+	case BACnetVendorId_ZURN_ELKAY_WATER_SOLUTIONS:
+		return "ZURN_ELKAY_WATER_SOLUTIONS"
+	case BACnetVendorId_ANDIVI:
+		return "ANDIVI"
+	case BACnetVendorId_CHYI_LEE_INDUSTRY_CO_LTD:
+		return "CHYI_LEE_INDUSTRY_CO_LTD"
+	case BACnetVendorId_ALLBEEBV:
+		return "ALLBEEBV"
 	case BACnetVendorId_UNITED_TECHNOLOGIES_CARRIER:
 		return "UNITED_TECHNOLOGIES_CARRIER"
 	case BACnetVendorId_ROCKWELL_AUTOMATION:
@@ -23994,8 +24074,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "PERFORMANCE_TECHNOLOGIES_INC"
 	case BACnetVendorId_XTRALIS_AUST_PTY_LTD:
 		return "XTRALIS_AUST_PTY_LTD"
-	case BACnetVendorId_TROX_GMBH:
-		return "TROX_GMBH"
+	case BACnetVendorId_TROXSE:
+		return "TROXSE"
 	case BACnetVendorId_NORTH_BUILDING_TECHNOLOGIES_LIMITED:
 		return "NORTH_BUILDING_TECHNOLOGIES_LIMITED"
 	case BACnetVendorId_BEIJING_HYSINE_TECHNOLOGY_CO_LTD:

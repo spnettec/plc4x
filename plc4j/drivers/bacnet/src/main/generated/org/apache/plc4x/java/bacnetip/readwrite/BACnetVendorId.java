@@ -404,7 +404,7 @@ public enum BACnetVendorId {
   CEMTREX_INC((int) 326, (int) 326, (String) "Cemtrex, Inc."),
   PERFORMANCE_TECHNOLOGIES_INC((int) 327, (int) 327, (String) "Performance Technologies, Inc."),
   XTRALIS_AUST_PTY_LTD((int) 328, (int) 328, (String) "Xtralis (Aust) Pty Ltd"),
-  TROX_GMBH((int) 329, (int) 329, (String) "TROX GmbH"),
+  TROXSE((int) 329, (int) 329, (String) "TROX SE"),
   BEIJING_HYSINE_TECHNOLOGY_CO_LTD(
       (int) 330, (int) 330, (String) "Beijing Hysine Technology Co., Ltd"),
   RCK_CONTROLS_INC((int) 331, (int) 331, (String) "RCK Controls, Inc."),
@@ -1824,6 +1824,11 @@ public enum BACnetVendorId {
   KARELAVOJSKY((int) 1588, (int) 1588, (String) "Karel Čavojsky"),
   ABBLV_INSTALLATION_MATERIALS_CO_LTD_BEIJING(
       (int) 1589, (int) 1589, (String) "ABB LV Installation Materials Co., Ltd. Beijing"),
+  ENER_SEARCH_SOLAR_GMBH((int) 1590, (int) 1590, (String) "EnerSearch Solar GmbH"),
+  ZURN_ELKAY_WATER_SOLUTIONS((int) 1591, (int) 1591, (String) "Zurn Elkay Water Solutions"),
+  ANDIVI((int) 1592, (int) 1592, (String) "Andivi"),
+  CHYI_LEE_INDUSTRY_CO_LTD((int) 1593, (int) 1593, (String) "Chyi Lee Industry Co., Ltd."),
+  ALLBEEBV((int) 1594, (int) 1594, (String) "Allbee B.V."),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
