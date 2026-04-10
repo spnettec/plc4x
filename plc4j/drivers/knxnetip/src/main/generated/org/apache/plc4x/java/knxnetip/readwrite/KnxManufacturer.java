@@ -938,9 +938,11 @@ public enum KnxManufacturer {
   M_HIKVISION((int) 791, (int) 852, (String) "HIKVISION"),
   M_WIREN_BOARD((int) 792, (int) 853, (String) "Wiren Board"),
   M_DEGSON_TECHNOLOGY_CO_LTD_((int) 793, (int) 854, (String) "DEGSON TECHNOLOGY CO LTD."),
-  M_ABB___RESERVED((int) 794, (int) 43954, (String) "ABB - reserved"),
+  M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_(
+      (int) 794, (int) 855, (String) "Shenzhen Hongshengxu Intelligent Tech Co., Ltd."),
+  M_ABB___RESERVED((int) 795, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 795, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 796, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

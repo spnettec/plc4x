@@ -955,7 +955,7 @@
   ['936' BREATHING_BUILDINGS ['936', '"Breathing Buildings"']]
   ['937' EWONSA ['937', '"eWON SA"']]
   ['938' CAV_UFF_GIACOMO_CIMBERIO_SPA ['938', '"Cav. Uff. Giacomo Cimberio S.p.A"']]
-  ['939' PKE_ELECTRONICSAG ['939', '"PKE Electronics AG"']]
+  ['939' PKE_SOFTWARE_SOLUTIONS_GMBH ['939', '"PKE Software Solutions GmbH"']]
   ['940' ALLEN ['940', '"Allen"']]
   ['941' KASTLE_SYSTEMS ['941', '"Kastle Systems"']]
   ['942' LOGICAL_ELECTRO_MECHANICALEM_SYSTEMS_INC ['942', '"Logical Electro-Mechanical (EM) Systems, Inc."']]
@@ -1623,6 +1623,8 @@
   ['1609' PENTAIR_RESIDENTIAL_FILTRATION ['1609', '"Pentair Residential Filtration"']]
   ['1610' VENAERA_INC ['1610', '"Venaera Inc."']]
   ['1611' HUMI_PURE ['1611', '"HumiPure"']]
+  ['1612' HUMBER_HORIZONS ['1612', '"Humber Horizons"']]
+  ['1613' AUTOMATED_FACILITY_SYSTEMS_INC ['1613', '"Automated Facility Systems, Inc."']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

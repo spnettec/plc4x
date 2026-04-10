@@ -35,7 +35,7 @@ public class EmbeddedBootstrap extends Bootstrap {
     }
 
     @Override
-    void init(Channel channel) {
+    void init(Channel channel) throws Throwable {
         if((group == null) && (channel instanceof EventLoopProvider)) {
             group = ((EventLoopProvider) channel).getEventLoop();
         }
