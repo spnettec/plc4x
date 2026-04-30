@@ -977,7 +977,7 @@ const (
 	BACnetVendorId_BREATHING_BUILDINGS                                                          BACnetVendorId = 936
 	BACnetVendorId_EWONSA                                                                       BACnetVendorId = 937
 	BACnetVendorId_CAV_UFF_GIACOMO_CIMBERIO_SPA                                                 BACnetVendorId = 938
-	BACnetVendorId_PKE_ELECTRONICSAG                                                            BACnetVendorId = 939
+	BACnetVendorId_PKE_SOFTWARE_SOLUTIONS_GMBH                                                  BACnetVendorId = 939
 	BACnetVendorId_ALLEN                                                                        BACnetVendorId = 940
 	BACnetVendorId_KASTLE_SYSTEMS                                                               BACnetVendorId = 941
 	BACnetVendorId_LOGICAL_ELECTRO_MECHANICALEM_SYSTEMS_INC                                     BACnetVendorId = 942
@@ -1645,6 +1645,8 @@ const (
 	BACnetVendorId_PENTAIR_RESIDENTIAL_FILTRATION                                               BACnetVendorId = 1609
 	BACnetVendorId_VENAERA_INC                                                                  BACnetVendorId = 1610
 	BACnetVendorId_HUMI_PURE                                                                    BACnetVendorId = 1611
+	BACnetVendorId_HUMBER_HORIZONS                                                              BACnetVendorId = 1612
+	BACnetVendorId_AUTOMATED_FACILITY_SYSTEMS_INC                                               BACnetVendorId = 1613
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2587,7 +2589,7 @@ func init() {
 		BACnetVendorId_BREATHING_BUILDINGS,
 		BACnetVendorId_EWONSA,
 		BACnetVendorId_CAV_UFF_GIACOMO_CIMBERIO_SPA,
-		BACnetVendorId_PKE_ELECTRONICSAG,
+		BACnetVendorId_PKE_SOFTWARE_SOLUTIONS_GMBH,
 		BACnetVendorId_ALLEN,
 		BACnetVendorId_KASTLE_SYSTEMS,
 		BACnetVendorId_LOGICAL_ELECTRO_MECHANICALEM_SYSTEMS_INC,
@@ -3255,6 +3257,8 @@ func init() {
 		BACnetVendorId_PENTAIR_RESIDENTIAL_FILTRATION,
 		BACnetVendorId_VENAERA_INC,
 		BACnetVendorId_HUMI_PURE,
+		BACnetVendorId_HUMBER_HORIZONS,
+		BACnetVendorId_AUTOMATED_FACILITY_SYSTEMS_INC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5980,6 +5984,14 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1611:
 		{ /* '1611' */
 			return 1611
+		}
+	case 1612:
+		{ /* '1612' */
+			return 1612
+		}
+	case 1613:
+		{ /* '1613' */
+			return 1613
 		}
 	case 162:
 		{ /* '162' */
@@ -12411,6 +12423,14 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1611' */
 			return "HumiPure"
 		}
+	case 1612:
+		{ /* '1612' */
+			return "Humber Horizons"
+		}
+	case 1613:
+		{ /* '1613' */
+			return "Automated Facility Systems, Inc."
+		}
 	case 162:
 		{ /* '162' */
 			return "ASI Controls"
@@ -15841,7 +15861,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 939:
 		{ /* '939' */
-			return "PKE Electronics AG"
+			return "PKE Software Solutions GmbH"
 		}
 	case 94:
 		{ /* '94' */
@@ -17480,6 +17500,10 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_VENAERA_INC, true
 	case 1611:
 		return BACnetVendorId_HUMI_PURE, true
+	case 1612:
+		return BACnetVendorId_HUMBER_HORIZONS, true
+	case 1613:
+		return BACnetVendorId_AUTOMATED_FACILITY_SYSTEMS_INC, true
 	case 162:
 		return BACnetVendorId_ASI_CONTROLS, true
 	case 163:
@@ -19195,7 +19219,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 938:
 		return BACnetVendorId_CAV_UFF_GIACOMO_CIMBERIO_SPA, true
 	case 939:
-		return BACnetVendorId_PKE_ELECTRONICSAG, true
+		return BACnetVendorId_PKE_SOFTWARE_SOLUTIONS_GMBH, true
 	case 94:
 		return BACnetVendorId_KYUKI_CORPORATION, true
 	case 940:
@@ -20692,6 +20716,10 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_VENAERA_INC, true
 	case "HUMI_PURE":
 		return BACnetVendorId_HUMI_PURE, true
+	case "HUMBER_HORIZONS":
+		return BACnetVendorId_HUMBER_HORIZONS, true
+	case "AUTOMATED_FACILITY_SYSTEMS_INC":
+		return BACnetVendorId_AUTOMATED_FACILITY_SYSTEMS_INC, true
 	case "ASI_CONTROLS":
 		return BACnetVendorId_ASI_CONTROLS, true
 	case "SYS_MIK_GMBH_DRESDEN":
@@ -22406,8 +22434,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EWONSA, true
 	case "CAV_UFF_GIACOMO_CIMBERIO_SPA":
 		return BACnetVendorId_CAV_UFF_GIACOMO_CIMBERIO_SPA, true
-	case "PKE_ELECTRONICSAG":
-		return BACnetVendorId_PKE_ELECTRONICSAG, true
+	case "PKE_SOFTWARE_SOLUTIONS_GMBH":
+		return BACnetVendorId_PKE_SOFTWARE_SOLUTIONS_GMBH, true
 	case "KYUKI_CORPORATION":
 		return BACnetVendorId_KYUKI_CORPORATION, true
 	case "ALLEN":
@@ -23976,6 +24004,10 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "VENAERA_INC"
 	case BACnetVendorId_HUMI_PURE:
 		return "HUMI_PURE"
+	case BACnetVendorId_HUMBER_HORIZONS:
+		return "HUMBER_HORIZONS"
+	case BACnetVendorId_AUTOMATED_FACILITY_SYSTEMS_INC:
+		return "AUTOMATED_FACILITY_SYSTEMS_INC"
 	case BACnetVendorId_ASI_CONTROLS:
 		return "ASI_CONTROLS"
 	case BACnetVendorId_SYS_MIK_GMBH_DRESDEN:
@@ -25690,8 +25722,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "EWONSA"
 	case BACnetVendorId_CAV_UFF_GIACOMO_CIMBERIO_SPA:
 		return "CAV_UFF_GIACOMO_CIMBERIO_SPA"
-	case BACnetVendorId_PKE_ELECTRONICSAG:
-		return "PKE_ELECTRONICSAG"
+	case BACnetVendorId_PKE_SOFTWARE_SOLUTIONS_GMBH:
+		return "PKE_SOFTWARE_SOLUTIONS_GMBH"
 	case BACnetVendorId_KYUKI_CORPORATION:
 		return "KYUKI_CORPORATION"
 	case BACnetVendorId_ALLEN:

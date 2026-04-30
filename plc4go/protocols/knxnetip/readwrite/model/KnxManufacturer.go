@@ -837,8 +837,12 @@ const (
 	KnxManufacturer_M_HIKVISION                                          KnxManufacturer = 791
 	KnxManufacturer_M_WIREN_BOARD                                        KnxManufacturer = 792
 	KnxManufacturer_M_DEGSON_TECHNOLOGY_CO_LTD_                          KnxManufacturer = 793
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 794
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 795
+	KnxManufacturer_M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_    KnxManufacturer = 794
+	KnxManufacturer_M_ITQAN_SMART                                        KnxManufacturer = 795
+	KnxManufacturer_M_YUNCH                                              KnxManufacturer = 796
+	KnxManufacturer_M_LUMI_VIETNAM                                       KnxManufacturer = 797
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 798
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 799
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1640,6 +1644,10 @@ func init() {
 		KnxManufacturer_M_HIKVISION,
 		KnxManufacturer_M_WIREN_BOARD,
 		KnxManufacturer_M_DEGSON_TECHNOLOGY_CO_LTD_,
+		KnxManufacturer_M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_,
+		KnxManufacturer_M_ITQAN_SMART,
+		KnxManufacturer_M_YUNCH,
+		KnxManufacturer_M_LUMI_VIETNAM,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4737,10 +4745,26 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 794:
 		{ /* '794' */
-			return 43954
+			return 855
 		}
 	case 795:
 		{ /* '795' */
+			return 856
+		}
+	case 796:
+		{ /* '796' */
+			return 857
+		}
+	case 797:
+		{ /* '797' */
+			return 858
+		}
+	case 798:
+		{ /* '798' */
+			return 43954
+		}
+	case 799:
+		{ /* '799' */
 			return 43959
 		}
 	case 8:
@@ -7939,10 +7963,26 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 794:
 		{ /* '794' */
-			return "ABB - reserved"
+			return "Shenzhen Hongshengxu Intelligent Tech Co., Ltd."
 		}
 	case 795:
 		{ /* '795' */
+			return "ITQAN SMART"
+		}
+	case 796:
+		{ /* '796' */
+			return "YUNCH"
+		}
+	case 797:
+		{ /* '797' */
+			return "Lumi Vietnam"
+		}
+	case 798:
+		{ /* '798' */
+			return "ABB - reserved"
+		}
+	case 799:
+		{ /* '799' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 8:
@@ -9595,8 +9635,16 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 793:
 		return KnxManufacturer_M_DEGSON_TECHNOLOGY_CO_LTD_, true
 	case 794:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_, true
 	case 795:
+		return KnxManufacturer_M_ITQAN_SMART, true
+	case 796:
+		return KnxManufacturer_M_YUNCH, true
+	case 797:
+		return KnxManufacturer_M_LUMI_VIETNAM, true
+	case 798:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 799:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 8:
 		return KnxManufacturer_M_HAGER_ELECTRO, true
@@ -11192,6 +11240,14 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_WIREN_BOARD, true
 	case "M_DEGSON_TECHNOLOGY_CO_LTD_":
 		return KnxManufacturer_M_DEGSON_TECHNOLOGY_CO_LTD_, true
+	case "M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_":
+		return KnxManufacturer_M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_, true
+	case "M_ITQAN_SMART":
+		return KnxManufacturer_M_ITQAN_SMART, true
+	case "M_YUNCH":
+		return KnxManufacturer_M_YUNCH, true
+	case "M_LUMI_VIETNAM":
+		return KnxManufacturer_M_LUMI_VIETNAM, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -12862,6 +12918,14 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_WIREN_BOARD"
 	case KnxManufacturer_M_DEGSON_TECHNOLOGY_CO_LTD_:
 		return "M_DEGSON_TECHNOLOGY_CO_LTD_"
+	case KnxManufacturer_M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_:
+		return "M_SHENZHEN_HONGSHENGXU_INTELLIGENT_TECH_CO___LTD_"
+	case KnxManufacturer_M_ITQAN_SMART:
+		return "M_ITQAN_SMART"
+	case KnxManufacturer_M_YUNCH:
+		return "M_YUNCH"
+	case KnxManufacturer_M_LUMI_VIETNAM:
+		return "M_LUMI_VIETNAM"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
