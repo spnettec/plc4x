@@ -209,10 +209,15 @@ public class OpcuaPlcDriverTest {
                     PlcSubscriptionResponse response = request.execute().get(60, TimeUnit.SECONDS);
                     assertThat(response.getResponseCode("Demo")).isEqualTo(PlcResponseCode.OK);
 
+                    // The .get() is required: connection.close() (triggered by leaving the
+                    // surrounding try-with-resources) hard-cancels in-flight transactions via
+                    // tm.shutdown(), so a fire-and-forget execute() races the close and produces
+                    // a ClosedChannelException once the unsubscribe transaction tries to write.
                     connection.unsubscriptionRequestBuilder()
                             .addHandles(response.getSubscriptionHandles())
                             .build()
-                            .execute();
+                            .execute()
+                            .get(60, TimeUnit.SECONDS);
                 }
             }
         }
@@ -253,10 +258,15 @@ public class OpcuaPlcDriverTest {
                 assertThat(events.size()).isEqualTo(numberOfSubscriptions);
 
                 for (PlcSubscriptionResponse response : plcSubscriptionResponses) {
+                    // The .get() is required: connection.close() (triggered by leaving the
+                    // surrounding try-with-resources) hard-cancels in-flight transactions via
+                    // tm.shutdown(), so a fire-and-forget execute() races the close and produces
+                    // a ClosedChannelException once the unsubscribe transaction tries to write.
                     connection.unsubscriptionRequestBuilder()
                             .addHandles(response.getSubscriptionHandles())
                             .build()
-                            .execute();
+                            .execute()
+                            .get(60, TimeUnit.SECONDS);
                 }
             }
         }
