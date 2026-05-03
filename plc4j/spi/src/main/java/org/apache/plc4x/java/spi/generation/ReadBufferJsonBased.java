@@ -18,7 +18,8 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
@@ -52,7 +53,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         ObjectMapper mapper = new ObjectMapper();
         try {
             rootElement = mapper.readValue(is, Map.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new PlcRuntimeException(e);
         }
     }

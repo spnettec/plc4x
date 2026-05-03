@@ -31,7 +31,7 @@
 
 package org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.api;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import tools.jackson.core.type.TypeReference;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiClient;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiException;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.Configuration;

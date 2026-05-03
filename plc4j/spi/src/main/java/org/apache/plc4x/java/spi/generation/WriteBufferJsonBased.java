@@ -18,9 +18,10 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonFactoryBuilder;
-import com.fasterxml.jackson.core.JsonGenerator;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.json.JsonFactory;
+import tools.jackson.core.json.JsonFactoryBuilder;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.io.ByteArrayOutputStream;
@@ -54,9 +55,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             .build();
         try {
             generator = jsonFactory.createGenerator(byteArrayOutputStream);
-            // Usually this is chained onto above creating of the generator but then sonar thinks this never gets closed
-            this.generator.useDefaultPrettyPrinter();
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new PlcRuntimeException(e);
         }
     }
@@ -86,14 +85,14 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
             }
             depth++;
             if (isToBeRenderedAsList(writerArgs)) {
-                generator.writeArrayFieldStart(sanitizedLogicalName);
+                generator.writeArrayPropertyStart(sanitizedLogicalName);
             } else {
-                if (generator.getOutputContext().inArray()) {
+                if (generator.streamWriteContext().inArray()) {
                     generator.writeStartObject();
                 }
-                generator.writeObjectFieldStart(sanitizedLogicalName);
+                generator.writeObjectPropertyStart(sanitizedLogicalName);
             }
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new PlcRuntimeException(e);
         }
     }
@@ -103,7 +102,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwBitKey, 1, writerArgs);
-            generator.writeBooleanField(sanitizedLogicalName, value);
+            generator.writeBooleanProperty(sanitizedLogicalName, value);
         });
         move(1);
     }
@@ -113,7 +112,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwByteKey, 8, writerArgs);
-            generator.writeStringField(sanitizedLogicalName, String.format("0x%02x", value));
+            generator.writeStringProperty(sanitizedLogicalName, String.format("0x%02x", value));
         });
         move(8);
     }
@@ -127,7 +126,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         }
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwByteKey, bytes.length * 8, writerArgs);
-            generator.writeStringField(sanitizedLogicalName, hexString.toString());
+            generator.writeStringProperty(sanitizedLogicalName, hexString.toString());
         });
         move(8 * bytes.length);
     }
@@ -137,7 +136,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -147,7 +146,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -157,7 +156,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -167,7 +166,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -177,7 +176,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -187,7 +186,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -197,7 +196,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -207,7 +206,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -217,7 +216,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -227,7 +226,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -237,7 +236,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
-            generator.writeNumberField(logicalName, value);
+            generator.writeNumberProperty(logicalName, value);
         });
         move(bitLength);
     }
@@ -247,7 +246,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -257,7 +256,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
-            generator.writeNumberField(sanitizedLogicalName, value);
+            generator.writeNumberProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -268,8 +267,8 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwStringKey, bitLength, writerArgs);
-            generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, sanitizedLogicalName, rwEncodingKey), encoding);
-            generator.writeStringField(sanitizedLogicalName, value);
+            generator.writeStringProperty(String.format(PLC4X_ATTRIBUTE_FORMAT, sanitizedLogicalName, rwEncodingKey), encoding);
+            generator.writeStringProperty(sanitizedLogicalName, value);
         });
         move(bitLength);
     }
@@ -281,7 +280,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
                 generator.writeEndArray();
             } else {
                 generator.writeEndObject();
-                if (generator.getOutputContext().getParent().inArray()) {
+                if (generator.streamWriteContext().getParent().inArray()) {
                     generator.writeEndObject();
                 }
             }
@@ -290,29 +289,29 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
                 generator.writeEndObject();
                 generator.flush();
             }
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new PlcRuntimeException(e);
         }
     }
 
     public void wrapIfNecessary(RunWrapped runnable) throws SerializationException {
-        boolean inArray = generator.getOutputContext().inArray();
+        boolean inArray = generator.streamWriteContext().inArray();
         if (inArray) {
             try {
                 generator.writeStartObject();
-            } catch (IOException e) {
+            } catch (JacksonException e) {
                 throw new SerializationException("Error opening wrap", e);
             }
         }
         try {
             runnable.run();
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new SerializationException("Error running wrap", e);
         }
         if (inArray) {
             try {
                 generator.writeEndObject();
-            } catch (IOException e) {
+            } catch (JacksonException e) {
                 throw new SerializationException("Error closing wrap", e);
             }
         }
@@ -325,22 +324,22 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
 
     @FunctionalInterface
     private interface RunWrapped {
-        void run() throws IOException;
+        void run();
     }
 
     public String getJsonString() {
         return byteArrayOutputStream.toString(StandardCharsets.UTF_8);
     }
 
-    private void writeAttr(String logicalName, String dataType, int bitLength, WithWriterArgs... writerArgs) throws IOException {
+    private void writeAttr(String logicalName, String dataType, int bitLength, WithWriterArgs... writerArgs) {
         if (!doRenderAttr) {
             return;
         }
-        generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwDataTypeKey), dataType);
-        generator.writeNumberField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwBitLengthKey), bitLength);
+        generator.writeStringProperty(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwDataTypeKey), dataType);
+        generator.writeNumberProperty(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwBitLengthKey), bitLength);
         Optional<String> stringRepresentation = extractAdditionalStringRepresentation(writerArgs);
         if (stringRepresentation.isPresent()) {
-            generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwStringRepresentationKey), stringRepresentation.get());
+            generator.writeStringProperty(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwStringRepresentationKey), stringRepresentation.get());
         }
     }
 

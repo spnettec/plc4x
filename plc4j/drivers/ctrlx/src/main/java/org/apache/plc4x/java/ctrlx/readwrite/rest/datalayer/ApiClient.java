@@ -32,12 +32,13 @@
 package org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.cfg.EnumFeature;
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -126,15 +127,15 @@ public class ApiClient extends JavaTimeFormatter {
   private static List<String> bodyMethods = Arrays.asList("POST", "PUT", "DELETE", "PATCH");
 
   public ApiClient(CloseableHttpClient httpClient) {
-    objectMapper = new ObjectMapper();
-    objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    objectMapper.configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
-    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
-    objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
-    objectMapper.registerModule(new JavaTimeModule());
-    objectMapper.setDateFormat(ApiClient.buildDefaultDateFormat());
+    objectMapper = JsonMapper.builder()
+        .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_NULL))
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
+        .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+        .enable(EnumFeature.WRITE_ENUMS_USING_TO_STRING)
+        .enable(EnumFeature.READ_ENUMS_USING_TO_STRING)
+        .defaultDateFormat(ApiClient.buildDefaultDateFormat())
+        .build();
 
     dateFormat = ApiClient.buildDefaultDateFormat();
 
@@ -438,7 +439,9 @@ public class ApiClient extends JavaTimeFormatter {
   public ApiClient setDateFormat(DateFormat dateFormat) {
     this.dateFormat = dateFormat;
     // Also set the date format for model (de)serialization with Date properties.
-    this.objectMapper.setDateFormat((DateFormat) dateFormat.clone());
+    this.objectMapper = this.objectMapper.rebuild()
+        .defaultDateFormat((DateFormat) dateFormat.clone())
+        .build();
     return this;
   }
 
@@ -688,7 +691,7 @@ public class ApiClient extends JavaTimeFormatter {
     if (isJsonMime(mimeType)) {
       try {
         return new StringEntity(objectMapper.writeValueAsString(obj), contentType);
-      } catch (JsonProcessingException e) {
+      } catch (JacksonException e) {
         throw new ApiException(e);
       }
     } else if (mimeType.equals(ContentType.MULTIPART_FORM_DATA.getMimeType())) {

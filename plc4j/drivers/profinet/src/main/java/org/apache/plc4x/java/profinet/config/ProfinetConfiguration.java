@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.profinet.config;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.profinet.device.GsdFileMap;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
@@ -157,7 +157,7 @@ public class ProfinetConfiguration implements PlcConnectionConfiguration {
                             String id = gsdFile.getProfileBody().getDeviceIdentity().getVendorId() + "-" + gsdFile.getProfileBody().getDeviceIdentity().getDeviceID();
                             gsdFiles.put(id, gsdFile);
                         }
-                    } catch (IOException ignored) {
+                    } catch (tools.jackson.core.JacksonException ignored) {
                     }
                 }
             } catch (IOException e) {

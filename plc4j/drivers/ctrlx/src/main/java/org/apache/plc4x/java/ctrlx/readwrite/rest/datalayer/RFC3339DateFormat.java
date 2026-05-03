@@ -31,7 +31,7 @@
 
 package org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer;
 
-import com.fasterxml.jackson.databind.util.StdDateFormat;
+import tools.jackson.databind.util.StdDateFormat;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;

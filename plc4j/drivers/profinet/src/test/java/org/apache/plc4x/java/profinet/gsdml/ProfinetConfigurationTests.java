@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.DummyMessageWrapper;
 import org.apache.plc4x.java.profinet.DummyNetworkInterface;

@@ -18,9 +18,9 @@
  */
 package org.apache.plc4x.java.scraper.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLFactory;
 import org.assertj.core.api.WithAssertions;
 
 import java.util.Arrays;
@@ -29,7 +29,7 @@ import java.util.List;
 class ScraperConfigurationBuilderTest implements WithAssertions {
 
     //ToDo test is failing idon't know why (Tim)
-    void builder_usage_example() throws JsonProcessingException {
+    void builder_usage_example() throws JacksonException {
         ScraperConfigurationClassicImplBuilder builder = new ScraperConfigurationClassicImplBuilder();
         List<String> sources = Arrays.asList("s1", "s2");
         List<String> jobs = Arrays.asList("j1", "j2");

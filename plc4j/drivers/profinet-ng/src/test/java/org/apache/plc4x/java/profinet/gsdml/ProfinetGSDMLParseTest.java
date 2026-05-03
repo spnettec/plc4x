@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -40,7 +40,7 @@ public class ProfinetGSDMLParseTest {
         try {
             XmlMapper xmlMapper = new XmlMapper();
             this.gsdml = xmlMapper.readValue(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("gsdml.xml"))), ProfinetISO15745Profile.class);
-        } catch(IOException e) {
+        } catch(tools.jackson.core.JacksonException e) {
             assert false;
         }
     }

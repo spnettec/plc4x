@@ -18,10 +18,11 @@
  */
 package org.apache.plc4x.java.scraper.config;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.json.JsonFactory;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.exc.MismatchedInputException;
+import tools.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.plc4x.java.scraper.ScrapeJob;
 import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
@@ -40,7 +41,7 @@ public interface ScraperConfiguration {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
             return mapper.readValue(yaml, clazz);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new ScraperConfigurationException("Unable to parse given yaml configuration!", e);
         }
     }
@@ -49,7 +50,7 @@ public interface ScraperConfiguration {
         ObjectMapper mapper = new ObjectMapper(new JsonFactory());
         try {
             return mapper.readValue(json, clazz);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new ScraperConfigurationException("Unable to parse given json configuration!", e);
         }
     }
@@ -63,10 +64,12 @@ public interface ScraperConfiguration {
         } else {
             throw new ScraperConfigurationException("Only files with extensions json, yml or yaml can be read");
         }
+        File file = new File(path);
+        if (!file.exists()) {
+            throw new ScraperConfigurationException("Unable to find configuration given configuration file at '" + path + "'");
+        }
         try {
-            return mapper.readValue(new File(path), clazz);
-        } catch (FileNotFoundException e) {
-            throw new ScraperConfigurationException("Unable to find configuration given configuration file at '" + path + "'", e);
+            return mapper.readValue(file, clazz);
         } catch (MismatchedInputException e) {
             throw new ScraperConfigurationException("Given configuration is in wrong format!", e);
         }
