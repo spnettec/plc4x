@@ -24,8 +24,8 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 
 import java.util.UUID;
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
-import org.eclipse.milo.opcua.sdk.server.model.nodes.objects.BaseEventTypeNode;
-import org.eclipse.milo.opcua.sdk.server.model.nodes.objects.ServerTypeNode;
+import org.eclipse.milo.opcua.sdk.server.model.objects.BaseEventTypeNode;
+import org.eclipse.milo.opcua.sdk.server.model.objects.ServerTypeNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaNode;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.types.builtin.ByteString;
@@ -77,7 +77,7 @@ public class EventNotifierTask implements Runnable {
             eventNode.setSeverity(ushort(2));
 
             logger.info("Posting event {}", eventNode.getEventId());
-            server.getEventBus().post(eventNode);
+            server.getInternalEventBus().post(eventNode);
 
             eventNode.delete();
           } catch (Throwable e) {
