@@ -404,7 +404,7 @@ public enum BACnetVendorId {
   CEMTREX_INC((int) 326, (int) 326, (String) "Cemtrex, Inc."),
   PERFORMANCE_TECHNOLOGIES_INC((int) 327, (int) 327, (String) "Performance Technologies, Inc."),
   XTRALIS_AUST_PTY_LTD((int) 328, (int) 328, (String) "Xtralis (Aust) Pty Ltd"),
-  TROXSE((int) 329, (int) 329, (String) "TROX SE"),
+  TROX_GMBH((int) 329, (int) 329, (String) "TROX GmbH"),
   BEIJING_HYSINE_TECHNOLOGY_CO_LTD(
       (int) 330, (int) 330, (String) "Beijing Hysine Technology Co., Ltd"),
   RCK_CONTROLS_INC((int) 331, (int) 331, (String) "RCK Controls, Inc."),
@@ -1082,7 +1082,7 @@ public enum BACnetVendorId {
   BREATHING_BUILDINGS((int) 936, (int) 936, (String) "Breathing Buildings"),
   EWONSA((int) 937, (int) 937, (String) "eWON SA"),
   CAV_UFF_GIACOMO_CIMBERIO_SPA((int) 938, (int) 938, (String) "Cav. Uff. Giacomo Cimberio S.p.A"),
-  PKE_SOFTWARE_SOLUTIONS_GMBH((int) 939, (int) 939, (String) "PKE Software Solutions GmbH"),
+  PKE_ELECTRONICSAG((int) 939, (int) 939, (String) "PKE Electronics AG"),
   ALLEN((int) 940, (int) 940, (String) "Allen"),
   KASTLE_SYSTEMS((int) 941, (int) 941, (String) "Kastle Systems"),
   LOGICAL_ELECTRO_MECHANICALEM_SYSTEMS_INC(
@@ -1824,40 +1824,6 @@ public enum BACnetVendorId {
   KARELAVOJSKY((int) 1588, (int) 1588, (String) "Karel Čavojsky"),
   ABBLV_INSTALLATION_MATERIALS_CO_LTD_BEIJING(
       (int) 1589, (int) 1589, (String) "ABB LV Installation Materials Co., Ltd. Beijing"),
-  ENER_SEARCH_SOLAR_GMBH((int) 1590, (int) 1590, (String) "EnerSearch Solar GmbH"),
-  ZURN_ELKAY_WATER_SOLUTIONS((int) 1591, (int) 1591, (String) "Zurn Elkay Water Solutions"),
-  ANDIVI((int) 1592, (int) 1592, (String) "Andivi"),
-  CHYI_LEE_INDUSTRY_CO_LTD((int) 1593, (int) 1593, (String) "Chyi Lee Industry Co., Ltd."),
-  ALLBEEBV((int) 1594, (int) 1594, (String) "Allbee B.V."),
-  KAMPMANN_GMBH_COKG((int) 1595, (int) 1595, (String) "Kampmann GmbH & Co. KG"),
-  COSEL_ELEKTRONIK_OTOMASYON_SISTEMLERI_SAN_TIC_LTD_STI(
-      (int) 1596, (int) 1596, (String) "Cosel Elektronik Otomasyon Sistemleri San. Tic. Ltd. Sti."),
-  RACTL_DESIGNS((int) 1597, (int) 1597, (String) "Ractl Designs"),
-  DATABRIDGE_DYNAMIC_PVT_LTD((int) 1598, (int) 1598, (String) "Databridge Dynamic Pvt Ltd"),
-  EVOLO_TECHNOLOGIESAS((int) 1599, (int) 1599, (String) "Evolo Technologies AS"),
-  ENERGY_PLUS_TEKNOLOJI_IMALAT_ITHALATVE_IHRACAT_SANAYIAS(
-      (int) 1600, (int) 1600, (String) "EnergyPlus Teknoloji Imalat Ithalat ve Ihracat Sanayi AS"),
-  GAIAMESH_INC((int) 1601, (int) 1601, (String) "Gaiamesh Inc."),
-  LOVATO_ELECTRICSPA((int) 1602, (int) 1602, (String) "Lovato Electric S.P.A."),
-  QPAC_SYSTEMS_INC((int) 1603, (int) 1603, (String) "Q-PAC Systems, Inc."),
-  YOBIIQ_INTELLIGENCEBV((int) 1604, (int) 1604, (String) "Yobiiq Intelligence B.V."),
-  CAMFILUSA_INC((int) 1605, (int) 1605, (String) "Camfil USA Inc."),
-  RADNOX((int) 1606, (int) 1606, (String) "Radnox"),
-  OPTOSPARK_SDN_BHD((int) 1607, (int) 1607, (String) "Optospark Sdn. Bhd."),
-  CONTROLBRIGHT((int) 1608, (int) 1608, (String) "Controlbright"),
-  PENTAIR_RESIDENTIAL_FILTRATION((int) 1609, (int) 1609, (String) "Pentair Residential Filtration"),
-  VENAERA_INC((int) 1610, (int) 1610, (String) "Venaera Inc."),
-  HUMI_PURE((int) 1611, (int) 1611, (String) "HumiPure"),
-  HUMBER_HORIZONS((int) 1612, (int) 1612, (String) "Humber Horizons"),
-  AUTOMATED_FACILITY_SYSTEMS_INC(
-      (int) 1613, (int) 1613, (String) "Automated Facility Systems, Inc."),
-  SITE_SENSEAS((int) 1614, (int) 1614, (String) "SiteSense AS"),
-  ECOIEURL((int) 1615, (int) 1615, (String) "Eco-2i EURL"),
-  DONIX_EMBEDDED_SYSTEMSCC((int) 1616, (int) 1616, (String) "Donix Embedded Systems CC"),
-  GPS_AIR((int) 1617, (int) 1617, (String) "GPS Air"),
-  QINGPING_TECHNOLOGY_BEIJING_CO_LTD(
-      (int) 1619, (int) 1619, (String) "Qingping Technology Beijing Co., Ltd."),
-  P_SSYSTEC_GMBH((int) 1620, (int) 1620, (String) "PSsystec GmbH"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
