@@ -1851,6 +1851,13 @@ public enum BACnetVendorId {
   HUMBER_HORIZONS((int) 1612, (int) 1612, (String) "Humber Horizons"),
   AUTOMATED_FACILITY_SYSTEMS_INC(
       (int) 1613, (int) 1613, (String) "Automated Facility Systems, Inc."),
+  SITE_SENSEAS((int) 1614, (int) 1614, (String) "SiteSense AS"),
+  ECOIEURL((int) 1615, (int) 1615, (String) "Eco-2i EURL"),
+  DONIX_EMBEDDED_SYSTEMSCC((int) 1616, (int) 1616, (String) "Donix Embedded Systems CC"),
+  GPS_AIR((int) 1617, (int) 1617, (String) "GPS Air"),
+  QINGPING_TECHNOLOGY_BEIJING_CO_LTD(
+      (int) 1619, (int) 1619, (String) "Qingping Technology Beijing Co., Ltd."),
+  P_SSYSTEC_GMBH((int) 1620, (int) 1620, (String) "PSsystec GmbH"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

@@ -1647,6 +1647,12 @@ const (
 	BACnetVendorId_HUMI_PURE                                                                    BACnetVendorId = 1611
 	BACnetVendorId_HUMBER_HORIZONS                                                              BACnetVendorId = 1612
 	BACnetVendorId_AUTOMATED_FACILITY_SYSTEMS_INC                                               BACnetVendorId = 1613
+	BACnetVendorId_SITE_SENSEAS                                                                 BACnetVendorId = 1614
+	BACnetVendorId_ECOIEURL                                                                     BACnetVendorId = 1615
+	BACnetVendorId_DONIX_EMBEDDED_SYSTEMSCC                                                     BACnetVendorId = 1616
+	BACnetVendorId_GPS_AIR                                                                      BACnetVendorId = 1617
+	BACnetVendorId_QINGPING_TECHNOLOGY_BEIJING_CO_LTD                                           BACnetVendorId = 1619
+	BACnetVendorId_P_SSYSTEC_GMBH                                                               BACnetVendorId = 1620
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -3259,6 +3265,12 @@ func init() {
 		BACnetVendorId_HUMI_PURE,
 		BACnetVendorId_HUMBER_HORIZONS,
 		BACnetVendorId_AUTOMATED_FACILITY_SYSTEMS_INC,
+		BACnetVendorId_SITE_SENSEAS,
+		BACnetVendorId_ECOIEURL,
+		BACnetVendorId_DONIX_EMBEDDED_SYSTEMSCC,
+		BACnetVendorId_GPS_AIR,
+		BACnetVendorId_QINGPING_TECHNOLOGY_BEIJING_CO_LTD,
+		BACnetVendorId_P_SSYSTEC_GMBH,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5993,9 +6005,33 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1613' */
 			return 1613
 		}
+	case 1614:
+		{ /* '1614' */
+			return 1614
+		}
+	case 1615:
+		{ /* '1615' */
+			return 1615
+		}
+	case 1616:
+		{ /* '1616' */
+			return 1616
+		}
+	case 1617:
+		{ /* '1617' */
+			return 1617
+		}
+	case 1619:
+		{ /* '1619' */
+			return 1619
+		}
 	case 162:
 		{ /* '162' */
 			return 162
+		}
+	case 1620:
+		{ /* '1620' */
+			return 1620
 		}
 	case 163:
 		{ /* '163' */
@@ -12431,9 +12467,33 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1613' */
 			return "Automated Facility Systems, Inc."
 		}
+	case 1614:
+		{ /* '1614' */
+			return "SiteSense AS"
+		}
+	case 1615:
+		{ /* '1615' */
+			return "Eco-2i EURL"
+		}
+	case 1616:
+		{ /* '1616' */
+			return "Donix Embedded Systems CC"
+		}
+	case 1617:
+		{ /* '1617' */
+			return "GPS Air"
+		}
+	case 1619:
+		{ /* '1619' */
+			return "Qingping Technology Beijing Co., Ltd."
+		}
 	case 162:
 		{ /* '162' */
 			return "ASI Controls"
+		}
+	case 1620:
+		{ /* '1620' */
+			return "PSsystec GmbH"
 		}
 	case 163:
 		{ /* '163' */
@@ -17504,8 +17564,20 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_HUMBER_HORIZONS, true
 	case 1613:
 		return BACnetVendorId_AUTOMATED_FACILITY_SYSTEMS_INC, true
+	case 1614:
+		return BACnetVendorId_SITE_SENSEAS, true
+	case 1615:
+		return BACnetVendorId_ECOIEURL, true
+	case 1616:
+		return BACnetVendorId_DONIX_EMBEDDED_SYSTEMSCC, true
+	case 1617:
+		return BACnetVendorId_GPS_AIR, true
+	case 1619:
+		return BACnetVendorId_QINGPING_TECHNOLOGY_BEIJING_CO_LTD, true
 	case 162:
 		return BACnetVendorId_ASI_CONTROLS, true
+	case 1620:
+		return BACnetVendorId_P_SSYSTEC_GMBH, true
 	case 163:
 		return BACnetVendorId_SYS_MIK_GMBH_DRESDEN, true
 	case 164:
@@ -20720,8 +20792,20 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_HUMBER_HORIZONS, true
 	case "AUTOMATED_FACILITY_SYSTEMS_INC":
 		return BACnetVendorId_AUTOMATED_FACILITY_SYSTEMS_INC, true
+	case "SITE_SENSEAS":
+		return BACnetVendorId_SITE_SENSEAS, true
+	case "ECOIEURL":
+		return BACnetVendorId_ECOIEURL, true
+	case "DONIX_EMBEDDED_SYSTEMSCC":
+		return BACnetVendorId_DONIX_EMBEDDED_SYSTEMSCC, true
+	case "GPS_AIR":
+		return BACnetVendorId_GPS_AIR, true
+	case "QINGPING_TECHNOLOGY_BEIJING_CO_LTD":
+		return BACnetVendorId_QINGPING_TECHNOLOGY_BEIJING_CO_LTD, true
 	case "ASI_CONTROLS":
 		return BACnetVendorId_ASI_CONTROLS, true
+	case "P_SSYSTEC_GMBH":
+		return BACnetVendorId_P_SSYSTEC_GMBH, true
 	case "SYS_MIK_GMBH_DRESDEN":
 		return BACnetVendorId_SYS_MIK_GMBH_DRESDEN, true
 	case "HSC_REGELUNGSTECHNIK_GMBH":
@@ -24008,8 +24092,20 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "HUMBER_HORIZONS"
 	case BACnetVendorId_AUTOMATED_FACILITY_SYSTEMS_INC:
 		return "AUTOMATED_FACILITY_SYSTEMS_INC"
+	case BACnetVendorId_SITE_SENSEAS:
+		return "SITE_SENSEAS"
+	case BACnetVendorId_ECOIEURL:
+		return "ECOIEURL"
+	case BACnetVendorId_DONIX_EMBEDDED_SYSTEMSCC:
+		return "DONIX_EMBEDDED_SYSTEMSCC"
+	case BACnetVendorId_GPS_AIR:
+		return "GPS_AIR"
+	case BACnetVendorId_QINGPING_TECHNOLOGY_BEIJING_CO_LTD:
+		return "QINGPING_TECHNOLOGY_BEIJING_CO_LTD"
 	case BACnetVendorId_ASI_CONTROLS:
 		return "ASI_CONTROLS"
+	case BACnetVendorId_P_SSYSTEC_GMBH:
+		return "P_SSYSTEC_GMBH"
 	case BACnetVendorId_SYS_MIK_GMBH_DRESDEN:
 		return "SYS_MIK_GMBH_DRESDEN"
 	case BACnetVendorId_HSC_REGELUNGSTECHNIK_GMBH:
