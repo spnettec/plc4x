@@ -33,9 +33,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 class ConnectionContainer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionContainer.class);
+    private static final long LEASE_WARN_THROTTLE_NANOS = TimeUnit.SECONDS.toNanos(30);
+
     private final PlcConnectionManager connectionManager;
     private final String connectionUrl;
     private final Duration maxLeaseTime;
@@ -43,6 +47,14 @@ class ConnectionContainer {
 
     private PlcConnection connection;
     private LeasedPlcConnection leasedConnection;
+
+    // First-failure WARN with full stack trace is the operationally useful signal
+    // ("PLC just went unreachable"); a wire-driven 100ms retry loop turns it into
+    // ~10/s with 30-line stack traces, which buries every other log. Keep the first
+    // event in each 30s window at WARN; demote the rest to DEBUG and report the
+    // suppressed count on the next WARN.
+    private final AtomicLong leaseWarnLastNanos = new AtomicLong(0L);
+    private final AtomicLong leaseWarnSuppressed = new AtomicLong(0L);
 
     public ConnectionContainer(PlcConnectionManager connectionManager, String connectionUrl,
                                Duration maxLeaseTime) {
@@ -87,7 +99,7 @@ class ConnectionContainer {
             try {
                 connection = connectionManager.getConnection(connectionUrl);
             } catch (PlcConnectionException e) {
-                LOGGER.warn("Exception while getting connection for lease", e);
+                logLeaseFailure(e);
                 connectionFuture.completeExceptionally(e);
                 return connectionFuture;
             }
@@ -154,6 +166,23 @@ class ConnectionContainer {
         }
     }
 
+
+    private void logLeaseFailure(PlcConnectionException e) {
+        long now = System.nanoTime();
+        long last = leaseWarnLastNanos.get();
+        if (now - last >= LEASE_WARN_THROTTLE_NANOS && leaseWarnLastNanos.compareAndSet(last, now)) {
+            long suppressed = leaseWarnSuppressed.getAndSet(0L);
+            if (suppressed == 0L) {
+                LOGGER.warn("Exception while getting connection for lease", e);
+            } else {
+                LOGGER.warn("Exception while getting connection for lease (suppressed {} similar in last {}s)",
+                    suppressed, TimeUnit.NANOSECONDS.toSeconds(LEASE_WARN_THROTTLE_NANOS), e);
+            }
+        } else {
+            leaseWarnSuppressed.incrementAndGet();
+            LOGGER.debug("Exception while getting connection for lease", e);
+        }
+    }
 
     public void addEventListener(EventListener listener) {
         if((connection != null) && (connection instanceof EventPlcConnection)) {
