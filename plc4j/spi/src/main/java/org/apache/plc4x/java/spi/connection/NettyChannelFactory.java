@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Adapter with sensible defaults for a Netty Based Channel Factory.
@@ -134,7 +135,11 @@ public abstract class NettyChannelFactory implements ChannelFactory {
                 if (!future.isSuccess()) {
                     logger.info("Unable to connect, shutting down worker thread.");
                     if (workerGroup != null) {
-                        workerGroup.shutdownGracefully();
+                        // No in-flight IO on a failed connect — skip the 2s quiet period
+                        // and 15s timeout that Netty's default shutdownGracefully() applies.
+                        // Under a 100ms retry storm those defaults pile dozens of groups
+                        // into the graceful-shutdown queue, each holding an IO thread + FD.
+                        workerGroup.shutdownGracefully(0, 0, TimeUnit.MILLISECONDS);
                     }
                 }
             });
