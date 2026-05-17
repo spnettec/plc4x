@@ -133,7 +133,10 @@ public abstract class NettyChannelFactory implements ChannelFactory {
                 bootstrap.connect(remoteAddress) : bootstrap.connect(remoteAddress, localAddress);
             f.addListener(future -> {
                 if (!future.isSuccess()) {
-                    logger.info("Unable to connect, shutting down worker thread.");
+                    // DEBUG: under a 100ms retry storm this fires ~10/s with no first-event
+                    // value — the operationally useful signal is the WARN at
+                    // ConnectionContainer.lease (first event per 30s window).
+                    logger.debug("Unable to connect, shutting down worker thread.");
                     if (workerGroup != null) {
                         // No in-flight IO on a failed connect — skip the 2s quiet period
                         // and 15s timeout that Netty's default shutdownGracefully() applies.

@@ -52,7 +52,9 @@ public class TcpChannelFactory extends NettyChannelFactory implements HasConfigu
     @Override
     public void configureBootstrap(Bootstrap bootstrap) {
         if(configuration != null) {
-            logger.info("Configuring Bootstrap with {}", configuration);
+            // DEBUG: fires once per createChannel; under retry-storm becomes spammy
+            // step-by-step tracing with no first-event value.
+            logger.debug("Configuring Bootstrap with {}", configuration);
             bootstrap.option(ChannelOption.SO_KEEPALIVE, configuration.isKeepAlive());
             bootstrap.option(ChannelOption.TCP_NODELAY, configuration.isNoDelay());
             bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, configuration.getConnectTimeout());
