@@ -944,9 +944,14 @@ public enum KnxManufacturer {
   M_YUNCH((int) 796, (int) 857, (String) "YUNCH"),
   M_LUMI_VIETNAM((int) 797, (int) 858, (String) "Lumi Vietnam"),
   M_ARCOLA_AI_LIMITED((int) 798, (int) 859, (String) "Arcola AI Limited"),
-  M_ABB___RESERVED((int) 799, (int) 43954, (String) "ABB - reserved"),
+  M_ZHEJIANG_DOOYA_INTELLIGENT_TECHNOLOGY_CO___LTD_(
+      (int) 799, (int) 860, (String) "Zhejiang Dooya Intelligent Technology Co., Ltd."),
+  M_HUARUI((int) 800, (int) 861, (String) "HUARUI"),
+  M_TECHNOVATION_ALLIANCE_ENTERPRISE_B_V(
+      (int) 801, (int) 862, (String) "Technovation Alliance Enterprise B.V"),
+  M_ABB___RESERVED((int) 802, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 800, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 803, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
