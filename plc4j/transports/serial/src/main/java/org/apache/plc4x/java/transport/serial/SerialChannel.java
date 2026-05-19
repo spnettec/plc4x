@@ -38,8 +38,10 @@ import java.lang.reflect.Method;
 import java.net.SocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
 import java.util.Optional;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SerialChannel extends AbstractNioByteChannel implements DuplexChannel {
 
@@ -361,6 +363,19 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
 
                 }
 
+                // Netty 4.2: AbstractNioChannel grew a `volatile IoRegistration registration` field;
+                // AbstractNioByteChannel.clearOpWrite() / removeAndSubmit() / addAndSubmit() all dereference
+                // it during writes. Our register() bypasses the normal IoEventLoop.register() path that
+                // would otherwise create one (a DefaultNioRegistration), so we have to populate the field
+                // ourselves or every flush() will NPE inside clearOpWrite().
+                try {
+                    final Field registrationField = AbstractNioChannel.class.getDeclaredField("registration");
+                    registrationField.setAccessible(true);
+                    registrationField.set(SerialChannel.this, new SerialIoRegistration(serialSelectionKey));
+                } catch (NoSuchFieldException e) {
+                    // Pre-4.2 Netty without registration field; nothing to do.
+                }
+
                 // Set event loop (again, via reflection)
                 final Field loop = AbstractChannel.class.getDeclaredField("eventLoop");
                 loop.setAccessible(true);
@@ -621,6 +636,70 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
         @Override
         public ChannelOutboundBuffer outboundBuffer() {
             return this.outboundBuffer;
+        }
+    }
+
+    /**
+     * Minimal {@link IoRegistration} populated into {@link AbstractNioChannel}'s {@code registration}
+     * field via reflection (Netty 4.2+). It only has to satisfy the contract that
+     * {@link AbstractNioByteChannel#clearOpWrite()} / {@code removeAndSubmit()} / {@code addAndSubmit()}
+     * rely on:
+     *   - {@code attachment()} must return the {@link SelectionKey} (callers cast it as such)
+     *   - {@code isValid()} must reflect whether the key is still usable
+     *   - {@code submit(IoOps)} updates the interest ops on the key
+     *
+     * SerialPollingSelector dispatches real read events directly to {@code unsafe.read()} on the
+     * channel's event loop (see SerialPollingSelector.addEvent), bypassing the
+     * NioIoHandler.processSelectedKey() path that would otherwise require a real
+     * DefaultNioRegistration here.
+     */
+    private static final class SerialIoRegistration implements IoRegistration {
+
+        private final SerialSelectionKey key;
+        private final AtomicBoolean canceled = new AtomicBoolean();
+
+        SerialIoRegistration(SerialSelectionKey key) {
+            this.key = key;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T> T attachment() {
+            return (T) key;
+        }
+
+        @Override
+        public boolean isValid() {
+            return !canceled.get() && key.isValid();
+        }
+
+        @Override
+        public long submit(IoOps ops) {
+            if (!isValid()) {
+                return -1L;
+            }
+            // IoOps is sealed in 4.2 to NioIoOps/EpollIoOps/etc. For NIO transports the value is the
+            // raw OP_* mask. We avoid a hard compile dep on NioIoOps by reflecting `value`; if the
+            // field isn't present (future Netty refactor) we just leave interestOps untouched —
+            // serial transport doesn't materially rely on OP_WRITE bookkeeping anyway.
+            try {
+                final Field valueField = ops.getClass().getDeclaredField("value");
+                valueField.setAccessible(true);
+                int interest = valueField.getInt(ops);
+                key.interestOps(interest);
+                return interest;
+            } catch (ReflectiveOperationException e) {
+                return -1L;
+            }
+        }
+
+        @Override
+        public boolean cancel() {
+            if (!canceled.compareAndSet(false, true)) {
+                return false;
+            }
+            key.cancel();
+            return true;
         }
     }
 }

@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.transport.serial;
 
+import io.netty.channel.Channel;
+import io.netty.channel.nio.AbstractNioChannel.NioUnsafe;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultPromise;
 import org.slf4j.Logger;
@@ -29,6 +31,7 @@ import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -76,27 +79,29 @@ class SerialPollingSelector extends AbstractSelector {
     }
 
     /**
-     * Returns all keys that are in the events queue
-     * @return
+     * Always returns an empty set.
+     *
+     * Netty 4.2's {@code NioIoHandler.processSelectedKey()} unconditionally casts the key's
+     * attachment to its package-private {@code DefaultNioRegistration} and crashes on anything
+     * else. Since we register the SerialChannel itself as the attachment (4.1 contract), we have
+     * to make sure the NioIoHandler never iterates our selected keys. Dispatch happens directly
+     * from {@link #addEvent} via {@code eventLoop.execute(unsafe::read)} on the channel's event
+     * loop instead.
      */
     @Override
     public Set<SelectionKey> selectedKeys() {
-        return events.stream().map(SelectorEvent::getKey).collect(Collectors.toSet());
+        return Collections.emptySet();
     }
 
     @Override
     public int selectNow() {
-        // throw new NotImplementedException("");
         logger.debug("selectNow()");
-        // check if one channel is active
-        return events.size();
+        // Reads are dispatched directly from addEvent(); never report selected keys to NioIoHandler.
+        return 0;
     }
 
     @Override
     public int select(long timeout) {
-        if (!events.isEmpty()) {
-            return events.size();
-        }
         this.selectPromise = new DefaultPromise<>(executor);
         try {
             if(timeout == 0) {
@@ -108,9 +113,11 @@ class SerialPollingSelector extends AbstractSelector {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Was interrupted", e);
         }
-        final int eventCount = events.size();
-        logger.debug("returning from select with {} events", eventCount);
-        return eventCount;
+        logger.debug("returning from select");
+        // Reads are dispatched directly via addEvent(); never report selected keys to NioIoHandler.
+        // Returning 0 also lets the event loop fall through to its queued-task processing where our
+        // direct unsafe.read() lives.
+        return 0;
     }
 
     @Override
@@ -129,15 +136,38 @@ class SerialPollingSelector extends AbstractSelector {
     }
 
     public void addEvent(SelectorEvent event) {
-        logger.debug("Adding Event to Selector, canceling Promise...");
-        this.events.add(event);
-        // Add the OP to the SelectionKey
+        logger.debug("Adding Event to Selector, dispatching directly...");
+        // Add the OP to the SelectionKey for any code that still polls interestOps via the key.
         ((SerialSelectionKey) event.key).addReadyOp(event.event);
-        // Close the future so that the select is fired immediately
-        if (!selectPromise.isDone()) {
+
+        // Netty 4.2: NioIoHandler.processSelectedKey() requires SelectionKey.attachment() to be a
+        // DefaultNioRegistration (package-private final). Since we register SerialChannel itself as
+        // the attachment, we can't go through the standard NioIoHandler dispatch path without
+        // ClassCastException. Instead, push the read directly onto the channel's event loop here.
+        if ((event.event & SelectionKey.OP_READ) != 0) {
+            Object attachment = event.key.attachment();
+            if (attachment instanceof Channel) {
+                Channel channel = (Channel) attachment;
+                try {
+                    channel.eventLoop().execute(() -> {
+                        try {
+                            ((NioUnsafe) channel.unsafe()).read();
+                        } catch (Throwable t) {
+                            logger.warn("SerialChannel read dispatch failed", t);
+                        }
+                    });
+                } catch (Throwable t) {
+                    logger.warn("Failed to schedule SerialChannel read on event loop", t);
+                }
+            }
+        }
+
+        // Wake any pending select() so the NioEventLoop returns to its task loop (where our
+        // queued read() task lives). Also keep the historical events bookkeeping for now in case
+        // anything else inspects it.
+        this.events.add(event);
+        if (selectPromise != null && !selectPromise.isDone()) {
             selectPromise.setSuccess(null);
-        } else {
-            logger.debug("Promise is already cancelled, skipping that.");
         }
     }
 
