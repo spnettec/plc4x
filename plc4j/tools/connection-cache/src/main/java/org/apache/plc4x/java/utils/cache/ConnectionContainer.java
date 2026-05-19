@@ -124,9 +124,12 @@ class ConnectionContainer {
             throw new PlcRuntimeException("Error trying to return lease from invalid connection");
         }
 
-        // If something happened while using the connection, invalidate this one and create a new connection.
+        // If something happened while using the connection, invalidate this one. Reconnect
+        // lazily — only when someone is actually waiting in the queue. Serial transports in
+        // particular need the kernel to release the underlying fd before reopen succeeds;
+        // eagerly reopening here racing with our own async close() yields a flood of
+        // "Unable to open the com port" failures under wire-driven 100ms poll loops.
         if(invalidateConnection) {
-            // Close the old connection.
             if (connection != null) {
                 try {
                     connection.close();
@@ -135,27 +138,31 @@ class ConnectionContainer {
                     // Nevertheless, it is polite to say something in logs about this situation.
                     LOGGER.warn("Exception while closing connection", e);
                 }
+                connection = null;
             }
             if(returnedLeasedConnection == null){
-                connection = null;
                 return;
-            }
-            // Try to get a new connection.
-            try {
-                connection = connectionManager.getConnection(connectionUrl);
-            } catch (PlcConnectionException e) {
-                // If something goes wrong, close all waiting futures exceptionally.
-                LOGGER.warn("Can't get connection for {} complete queue items exceptionally", connectionUrl, e);
-                queue.forEach(future -> future.completeExceptionally(e));
-                queue.clear();
-                connection = null;
             }
         }
 
-        // If the queue is empty, simply return.
+        // If the queue is empty, defer any reconnect to the next lease() call.
         if(queue.isEmpty()) {
             leasedConnection = null;
             return;
+        }
+
+        // Someone is waiting — (re)establish the connection now if needed.
+        if(connection == null || !connection.isConnected()) {
+            try {
+                connection = connectionManager.getConnection(connectionUrl);
+            } catch (PlcConnectionException e) {
+                logLeaseFailure(e);
+                queue.forEach(future -> future.completeExceptionally(e));
+                queue.clear();
+                leasedConnection = null;
+                connection = null;
+                return;
+            }
         }
 
         // Create a new lease and complete the next future in the queue with this.
