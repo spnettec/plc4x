@@ -28,6 +28,8 @@ import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionManagerClosedEx
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -70,16 +72,25 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
             throw new PlcConnectionManagerClosedException();
         }
 
+        // For serial transports, two different URLs (e.g. /dev/ttyUSB0 vs /dev/serial/by-path/...)
+        // can resolve to the same underlying device. Without normalization the cache would create
+        // two ConnectionContainers each trying to grab the same exclusive serial fd, and the second
+        // open fails with EBUSY (manifesting as "Error creating channel"). Normalize the path
+        // portion via toRealPath() so symlink and canonical-path variants share one container.
+        String cacheKey = normalizeCacheKey(url);
+
         // Get a connection container for the given url.
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
-            connectionContainer = connectionContainers.get(url);
+            connectionContainer = connectionContainers.get(cacheKey);
             if (connectionContainer == null) {
                 LOG.debug("Creating new connection");
 
-                // Crate a connection container to manage handling this connection
+                // Crate a connection container to manage handling this connection.
+                // Keep the user-supplied URL inside the container so error messages and downstream
+                // driver logs preserve the literal string the caller wrote.
                 connectionContainer = new ConnectionContainer(connectionManager, url, maxLeaseTime);
-                connectionContainers.put(url, connectionContainer);
+                connectionContainers.put(cacheKey, connectionContainer);
             } else {
                 LOG.debug("Reusing exising connection");
             }
@@ -96,6 +107,37 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PlcConnectionException("Error acquiring lease for connection cause InterruptedException", e);
+        }
+    }
+
+    /**
+     * Normalize a serial transport URL so symlink and canonical-path forms collapse to the same
+     * cache key. For non-serial transports (or any error resolving the path) the original URL is
+     * returned unchanged.
+     */
+    static String normalizeCacheKey(String url) {
+        if (url == null) {
+            return url;
+        }
+        int sep = url.indexOf("://");
+        if (sep < 0) {
+            return url;
+        }
+        // Scheme is "<protocol>" or "<protocol>:<transport>"; only canonicalize when transport == serial.
+        String scheme = url.substring(0, sep);
+        if (!scheme.endsWith(":serial") && !scheme.equals("serial")) {
+            return url;
+        }
+        int q = url.indexOf('?', sep + 3);
+        String path = (q < 0) ? url.substring(sep + 3) : url.substring(sep + 3, q);
+        String tail = (q < 0) ? "" : url.substring(q);
+        try {
+            String canonical = Paths.get(path).toRealPath().toString();
+            return url.substring(0, sep + 3) + canonical + tail;
+        } catch (IOException | RuntimeException e) {
+            // Device not yet present, no permission, or path invalid — leave key as-is so the
+            // downstream open() can produce its own error.
+            return url;
         }
     }
 

@@ -27,6 +27,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -295,5 +298,41 @@ public class CachedPlcConnectionManagerTest {
                 Assertions.fail("Expected PlcConnectionManagerClosedException");
             }
         }
+    }
+
+    @Test
+    public void testNormalizeCacheKey_nonSerialPassThrough() {
+        Assertions.assertEquals(
+            "modbus-tcp://192.168.0.25:502",
+            CachedPlcConnectionManager.normalizeCacheKey("modbus-tcp://192.168.0.25:502"));
+        Assertions.assertEquals(
+            "s7://10.0.0.1?rack=0",
+            CachedPlcConnectionManager.normalizeCacheKey("s7://10.0.0.1?rack=0"));
+    }
+
+    @Test
+    public void testNormalizeCacheKey_missingPathReturnsUnchanged() {
+        // toRealPath() on a non-existent file should fall back to the original URL.
+        String url = "modbus-rtu:serial:///definitely/does/not/exist?baud=9600";
+        Assertions.assertEquals(url, CachedPlcConnectionManager.normalizeCacheKey(url));
+    }
+
+    @Test
+    public void testNormalizeCacheKey_serialSymlinkCollapsesToCanonical(@org.junit.jupiter.api.io.TempDir Path tempDir) throws IOException {
+        Path target = Files.createFile(tempDir.resolve("ttyUSB0"));
+        Path symlink = tempDir.resolve("by-path-link");
+        try {
+            Files.createSymbolicLink(symlink, target);
+        } catch (UnsupportedOperationException | IOException e) {
+            // Filesystem doesn't support symlinks (e.g. Windows without privileges) — skip.
+            org.junit.jupiter.api.Assumptions.assumeTrue(false, "symlink not supported: " + e.getMessage());
+            return;
+        }
+        String canonical = target.toRealPath().toString();
+        String viaSymlink = "modbus-rtu:serial://" + symlink + "?baud=9600";
+        String viaTarget = "modbus-rtu:serial://" + target + "?baud=9600";
+        String expected = "modbus-rtu:serial://" + canonical + "?baud=9600";
+        Assertions.assertEquals(expected, CachedPlcConnectionManager.normalizeCacheKey(viaSymlink));
+        Assertions.assertEquals(expected, CachedPlcConnectionManager.normalizeCacheKey(viaTarget));
     }
 }
