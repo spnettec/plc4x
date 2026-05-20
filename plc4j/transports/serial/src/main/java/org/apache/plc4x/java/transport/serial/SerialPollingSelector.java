@@ -73,9 +73,21 @@ class SerialPollingSelector extends AbstractSelector {
         registeredChannels = new ArrayList<>();
     }
 
+    /**
+     * Always returns an empty set.
+     *
+     * <p>Netty 4.2's {@code NioIoHandler.prepareToDestroy()} iterates {@code selector.keys()} when
+     * the event loop is shutting down and unconditionally casts each key's attachment to its
+     * package-private {@code DefaultNioRegistration} — which throws {@link ClassCastException} on
+     * the {@link SerialChannel} we attach (4.1 contract). Hiding our keys from {@code keys()} is
+     * symmetric with what we already do in {@link #selectedKeys()} for {@code processSelectedKey()}.
+     *
+     * <p>SerialChannel teardown happens via {@code unsafe.close()} → {@code SerialChannel.doClose()}
+     * → {@code comPort.closePort()}, which doesn't depend on Netty walking the selector.
+     */
     @Override
     public Set<SelectionKey> keys() {
-        return new HashSet<>(registeredChannels);
+        return Collections.emptySet();
     }
 
     /**
