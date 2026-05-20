@@ -301,6 +301,40 @@ public class CachedPlcConnectionManagerTest {
     }
 
     @Test
+    public void testInvalidate_closesContainerAndRemovesFromCache() throws Exception {
+        PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
+        PlcConnection mockConnection = Mockito.mock(PlcConnection.class);
+        Mockito.when(mockConnection.isConnected()).thenReturn(true);
+        Mockito.when(mockConnectionManager.getConnection(Mockito.anyString())).thenReturn(mockConnection);
+
+        CachedPlcConnectionManager mgr = CachedPlcConnectionManager.getBuilder(mockConnectionManager).build();
+
+        // Prime the cache.
+        try (PlcConnection c1 = mgr.getConnection("modbus-tcp://1.2.3.4")) {
+            Assertions.assertInstanceOf(LeasedPlcConnection.class, c1);
+        }
+        Mockito.verify(mockConnectionManager, Mockito.times(1)).getConnection("modbus-tcp://1.2.3.4");
+
+        // Invalidate — should close the underlying connection and drop the cache entry.
+        mgr.invalidate("modbus-tcp://1.2.3.4");
+        Mockito.verify(mockConnection, Mockito.times(1)).close();
+
+        // Next lookup must construct a fresh connection.
+        try (PlcConnection c2 = mgr.getConnection("modbus-tcp://1.2.3.4")) {
+            Assertions.assertInstanceOf(LeasedPlcConnection.class, c2);
+        }
+        Mockito.verify(mockConnectionManager, Mockito.times(2)).getConnection("modbus-tcp://1.2.3.4");
+    }
+
+    @Test
+    public void testInvalidate_unknownUrlIsNoop() {
+        PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
+        CachedPlcConnectionManager mgr = CachedPlcConnectionManager.getBuilder(mockConnectionManager).build();
+        Assertions.assertDoesNotThrow(() -> mgr.invalidate("never-cached://nowhere"));
+        Assertions.assertDoesNotThrow(() -> mgr.invalidate(null));
+    }
+
+    @Test
     public void testNormalizeCacheKey_nonSerialPassThrough() {
         Assertions.assertEquals(
             "modbus-tcp://192.168.0.25:502",

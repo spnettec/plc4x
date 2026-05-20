@@ -151,6 +151,35 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         throw new PlcConnectionException("the cached driver manager currently doesn't support authentication");
     }
 
+    /**
+     * Drop the cached container for {@code url} and close its underlying connection.
+     *
+     * <p>Use this when a caller knows a connection-string is no longer in use (typically on OSGi
+     * config change or component deactivate). Without an explicit drop the container stays in the
+     * map holding the underlying fd until either a read errors (invalidating it through
+     * {@link ConnectionContainer#returnConnection}) or the whole manager is closed.
+     *
+     * <p>If a lease is currently outstanding on the container, its underlying connection is closed
+     * synchronously; the lease holder will observe a closed connection on its next operation. This
+     * is intentional — invalidation is the caller's signal that the URL must be released now.
+     *
+     * <p>No-op if {@code url} was never cached.
+     */
+    public void invalidate(String url) {
+        if (closed.get() || url == null) {
+            return;
+        }
+        String cacheKey = normalizeCacheKey(url);
+        ConnectionContainer container;
+        synchronized (connectionContainers) {
+            container = connectionContainers.remove(cacheKey);
+        }
+        if (container != null) {
+            LOG.debug("Invalidating cached connection for {}", url);
+            container.close();
+        }
+    }
+
     @Override
     public void close() throws Exception {
         // Set the cache to "closed" so no new connections can be requested.
