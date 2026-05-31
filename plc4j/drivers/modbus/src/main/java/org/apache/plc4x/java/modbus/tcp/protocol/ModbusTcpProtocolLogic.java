@@ -237,4 +237,9 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
         return future;
     }
 
+    @Override
+    public void channelInactive(ConversationContext<ModbusTcpADU> context) {
+        tm.shutdown();
+    }
+
 }

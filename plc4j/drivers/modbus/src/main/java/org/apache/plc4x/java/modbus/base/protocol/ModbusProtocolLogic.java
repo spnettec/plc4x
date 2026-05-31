@@ -418,4 +418,9 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
         return out;
     }
 
+    @Override
+    public void channelInactive(ConversationContext<T> context) {
+        // Nothing to do here ...
+    }
+
 }

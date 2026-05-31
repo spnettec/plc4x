@@ -202,6 +202,11 @@ class DefaultNettyPlcConnectionTest {
             close.reportExit();
         }
 
+        @Override
+        public void channelInactive(ConversationContext<Message> context) {
+            logger.info("On ChannelInactive");
+        }
+
         private void awaitIn(GateKeeper signal) {
             try {
                 if (!signal.awaitIn()) {

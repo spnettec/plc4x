@@ -18,19 +18,15 @@
  */
 package org.apache.plc4x.java.spi.transaction;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 /**
  * This is a limited Queue of Requests, a Protocol can use.
@@ -46,7 +42,7 @@ public class RequestTransactionManager {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestTransactionManager.class);
 
-    /** Executor that performs all operations */
+    /** Shared executor that performs all operations — never shut down per-connection */
     private final ExecutorService executor;
     private final Set<RequestTransaction> runningRequests;
     /** How many Transactions are allowed to run at the same time? */
@@ -59,15 +55,7 @@ public class RequestTransactionManager {
     public RequestTransactionManager(int numberOfConcurrentRequests, String name) {
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
         // Immutable Map
-        executor = new ThreadPoolExecutor(numberOfConcurrentRequests, numberOfConcurrentRequests,
-            0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>(10),
-            new BasicThreadFactory.Builder()
-                    .namingPattern("RequestTransactionManager-pool-" + (new SimpleDateFormat("yyMMddHHmmss")).format(new Date()) + (StringUtils.isEmpty(name)?"":"-" + name) + "-%d")
-                    .daemon(true)
-                    .priority(Thread.MAX_PRIORITY)
-                    .build(),
-            new ThreadPoolExecutor.AbortPolicy());
+        executor = SharedExecutor.getTmExecutor();
         runningRequests = ConcurrentHashMap.newKeySet();
 
     }
@@ -98,12 +86,12 @@ public class RequestTransactionManager {
     }
     
     /*
-    * It allows the sequential shutdown of the associated driver.
-    */
+     * Cancels all in-flight requests for this connection.
+     * Does NOT shut down the shared executor — that pool is JVM-scoped.
+     */
     public synchronized void shutdown(){
-        runningRequests.forEach(requestTransaction->requestTransaction.getCompletionFuture().cancel(true));
+        runningRequests.forEach(requestTransaction -> requestTransaction.getCompletionFuture().cancel(true));
         runningRequests.clear();
-        executor.shutdownNow();
         processWorkLog();
     }
 

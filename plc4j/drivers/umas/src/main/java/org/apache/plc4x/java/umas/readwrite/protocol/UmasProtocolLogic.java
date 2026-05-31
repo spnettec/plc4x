@@ -85,7 +85,7 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
         this.configuration = configuration;
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
         this.unitIdentifier = (short) configuration.getUnitIdentifier();
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1, "UmasProtocolLogic");
     }
 
     @Override
@@ -1093,6 +1093,11 @@ public class UmasProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> implement
             throw new PlcConnectionException(stepName + " received unexpected PDU type: " + pdu.getClass().getSimpleName());
         }
         return umasPdu.getItem();
+    }
+
+    @Override
+    public void channelInactive(ConversationContext<ModbusTcpADU> context) {
+        tm.shutdown();
     }
 
 }

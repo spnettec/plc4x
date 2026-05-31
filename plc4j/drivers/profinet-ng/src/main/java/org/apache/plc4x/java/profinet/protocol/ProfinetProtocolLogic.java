@@ -862,6 +862,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         }
     }
 
+    @Override
+    public void channelInactive(ConversationContext<Ethernet_Frame> context) {
+        context.getChannel().close();
+    }
+
     protected int getDataTypeLengthInBytes(PlcValueType dataType) {
         switch (dataType) {
             case NULL:

@@ -840,71 +840,76 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
             ByteBuf buffer = Unpooled.directBuffer(items.getItems().length * 2);
             ByteBuf rxBuffer = Unpooled.directBuffer(items.getItems().length * 2);
-            buffer.writeBytes(items.getItems());
-
-            if (itemparameter.getLastDataUnit() == 1) {
-                short loop = 0xff;
-                CompletableFuture<S7MessageUserData> loopFuture;
-                S7MessageUserData msg;
-                S7ParameterUserDataItemCPUFunctions loopParameter;
-                S7PayloadUserDataItemCpuFunctionAlarmQueryResponse loopPayload = null;
-
-                do {
-                    loopFuture = reassembledAlarmEvents(itemparameter.getSequenceNumber());
-
-                    try {
-                        msg = loopFuture.get();
-                        if (msg != null) {
-                            loopParameter = (S7ParameterUserDataItemCPUFunctions) ((S7ParameterUserData) msg.getParameter()).getItems()
-                                    .get(0);
-                            loopPayload = (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) ((S7PayloadUserData) msg.getPayload()).getItems()
-                                    .get(0);
-                            buffer.writeBytes(loopPayload.getItems());
-                            loop = loopParameter.getLastDataUnit();
-                        } else {
-                            loop = 0x00;
-                        }
-                    } catch (Exception ex) {
-                        logger.warn(ex.toString());
-                    }
-                } while (loop > 0x00);
-
-                rxBuffer.writeByte(loopPayload.getReturnCode().getValue());
-                rxBuffer.writeByte(loopPayload.getTransportSize().getValue());
-                rxBuffer.writeShort(loopPayload.getDataLength());
-                rxBuffer.writeBytes(buffer);
-
-            } else {
-                rxBuffer.writeByte(payloadItems.get(0).getReturnCode().getValue());
-                rxBuffer.writeByte(payloadItems.get(0).getTransportSize().getValue());
-                rxBuffer.writeShort(payloadItems.get(0).getDataLength());
-                rxBuffer.writeBytes(buffer);
-            }
-
-            ReadBuffer readBuffer = new ReadBufferByteBased(ByteBufUtil.getBytes(rxBuffer));
-
             try {
-                short cpuSubFunction;
-                if (s7DriverContext.getControllerType() == ControllerType.S7_300) {
-                    cpuSubFunction = 0x13;
+                buffer.writeBytes(items.getItems());
+
+                if (itemparameter.getLastDataUnit() == 1) {
+                    short loop = 0xff;
+                    CompletableFuture<S7MessageUserData> loopFuture;
+                    S7MessageUserData msg;
+                    S7ParameterUserDataItemCPUFunctions loopParameter;
+                    S7PayloadUserDataItemCpuFunctionAlarmQueryResponse loopPayload = null;
+
+                    do {
+                        loopFuture = reassembledAlarmEvents(itemparameter.getSequenceNumber());
+
+                        try {
+                            msg = loopFuture.get();
+                            if (msg != null) {
+                                loopParameter = (S7ParameterUserDataItemCPUFunctions) ((S7ParameterUserData) msg.getParameter()).getItems()
+                                        .get(0);
+                                loopPayload = (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) ((S7PayloadUserData) msg.getPayload()).getItems()
+                                        .get(0);
+                                buffer.writeBytes(loopPayload.getItems());
+                                loop = loopParameter.getLastDataUnit();
+                            } else {
+                                loop = 0x00;
+                            }
+                        } catch (Exception ex) {
+                            logger.warn(ex.toString());
+                        }
+                    } while (loop > 0x00);
+
+                    rxBuffer.writeByte(loopPayload.getReturnCode().getValue());
+                    rxBuffer.writeByte(loopPayload.getTransportSize().getValue());
+                    rxBuffer.writeShort(loopPayload.getDataLength());
+                    rxBuffer.writeBytes(buffer);
+
                 } else {
-                    cpuSubFunction = 0xf0;
+                    rxBuffer.writeByte(payloadItems.get(0).getReturnCode().getValue());
+                    rxBuffer.writeByte(payloadItems.get(0).getTransportSize().getValue());
+                    rxBuffer.writeShort(payloadItems.get(0).getDataLength());
+                    rxBuffer.writeBytes(buffer);
                 }
 
-                S7PayloadUserDataItem payloadItem = S7PayloadUserDataItem.staticParse(readBuffer, (byte) 0x04,
-                        (byte) 0x00, cpuSubFunction);
+                ReadBuffer readBuffer = new ReadBufferByteBased(ByteBufUtil.getBytes(rxBuffer));
 
-                // TODO: The eventQueue is only drained in the S7ProtocolEventLogic.ObjectProcessor and here only messages of type S7Event are processed, so S7PayloadUserDataItem elements will just be ignored.
-                //eventQueue.add(payloadItem);
-            } catch (Exception ex) {
-                logger.info(ex.toString());
+                try {
+                    short cpuSubFunction;
+                    if (s7DriverContext.getControllerType() == ControllerType.S7_300) {
+                        cpuSubFunction = 0x13;
+                    } else {
+                        cpuSubFunction = 0xf0;
+                    }
+
+                    S7PayloadUserDataItem payloadItem = S7PayloadUserDataItem.staticParse(readBuffer, (byte) 0x04,
+                            (byte) 0x00, cpuSubFunction);
+
+                    // TODO: The eventQueue is only drained in the S7ProtocolEventLogic.ObjectProcessor and here only messages of type S7Event are processed, so S7PayloadUserDataItem elements will just be ignored.
+                    //eventQueue.add(payloadItem);
+                } catch (Exception ex) {
+                    logger.info(ex.toString());
+                }
+
+                PlcResponseCode resCode = (items.getReturnCode() == DataTransportErrorCode.OK)
+                        ? PlcResponseCode.OK
+                        : PlcResponseCode.INTERNAL_ERROR;
+                values.put(strTagName, new DefaultPlcResponseItem<>(resCode, null));
+                return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
+            } finally {
+                buffer.release();
+                rxBuffer.release();
             }
-
-            PlcResponseCode resCode = (items.getReturnCode() == DataTransportErrorCode.OK)
-                    ? PlcResponseCode.OK
-                    : PlcResponseCode.INTERNAL_ERROR;
-            values.put(strTagName, new DefaultPlcResponseItem<>(resCode, null));
-            return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 
         } else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCyclicServicesErrorResponse) {
             //S7ParameterUserData parameter = (S7ParameterUserData) responseMessage.getParameter();
@@ -1497,63 +1502,67 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
         String tagName = plcReadRequest.getTagName();
         S7Tag tag = (S7Tag) plcReadRequest.getTag();
         ByteBuf data = Unpooled.buffer();
-        PlcResponseCode responseCode = null;
-        for (S7Message responseMessage : responseMessages) {
-            if (responseMessage instanceof S7MessageResponseData) {
-                S7MessageResponseData messageResponseData = (S7MessageResponseData) responseMessage;
-                errorClass = messageResponseData.getErrorClass();
-                errorCode = messageResponseData.getErrorCode();
-            } else if (responseMessage instanceof S7MessageResponse) {
-                S7MessageResponse messageResponse = (S7MessageResponse) responseMessage;
-                errorClass = messageResponse.getErrorClass();
-                errorCode = messageResponse.getErrorCode();
-            } else if (responseMessage instanceof S7MessageUserData) {
-                S7MessageUserData messageResponse = (S7MessageUserData) responseMessage;
-                S7ParameterUserData parameters = (S7ParameterUserData) messageResponse.getParameter();
-                parameteritem = (S7ParameterUserDataItemCPUFunctions) parameters.getItems().get(0);
-                errorClass = 0;
-                errorCode = parameteritem.getErrorCode().shortValue();
-            } else {
-                throw new PlcProtocolException("Unsupported message type " + responseMessage.getClass().getName());
-            }
-            if ((errorClass != 0) || (errorCode != 0)) {
-                if ((errorClass == 129) && (errorCode == 4)) {
-                    logger.warn("Got an error response from the PLC. This particular response code usually indicates "
-                            + "that PUT/GET is not enabled on the PLC.");
-                    PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.ACCESS_DENIED,
-                            new PlcNull());
-                    values.put(tagName, result);
-                    return new DefaultPlcReadResponse(plcReadRequest, values);
+        try {
+            PlcResponseCode responseCode = null;
+            for (S7Message responseMessage : responseMessages) {
+                if (responseMessage instanceof S7MessageResponseData) {
+                    S7MessageResponseData messageResponseData = (S7MessageResponseData) responseMessage;
+                    errorClass = messageResponseData.getErrorClass();
+                    errorCode = messageResponseData.getErrorCode();
+                } else if (responseMessage instanceof S7MessageResponse) {
+                    S7MessageResponse messageResponse = (S7MessageResponse) responseMessage;
+                    errorClass = messageResponse.getErrorClass();
+                    errorCode = messageResponse.getErrorCode();
+                } else if (responseMessage instanceof S7MessageUserData) {
+                    S7MessageUserData messageResponse = (S7MessageUserData) responseMessage;
+                    S7ParameterUserData parameters = (S7ParameterUserData) messageResponse.getParameter();
+                    parameteritem = (S7ParameterUserDataItemCPUFunctions) parameters.getItems().get(0);
+                    errorClass = 0;
+                    errorCode = parameteritem.getErrorCode().shortValue();
                 } else {
-                    logger.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. "
-                            + "We probably need to implement explicit handling for this, so please file a bug-report "
-                            + "on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "
-                            + "containing a capture of the communication.", errorClass, errorCode);
-                    PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR,
-                            new PlcNull());
-                    values.put(tagName, result);
-                    return new DefaultPlcReadResponse(plcReadRequest, values);
+                    throw new PlcProtocolException("Unsupported message type " + responseMessage.getClass().getName());
+                }
+                if ((errorClass != 0) || (errorCode != 0)) {
+                    if ((errorClass == 129) && (errorCode == 4)) {
+                        logger.warn("Got an error response from the PLC. This particular response code usually indicates "
+                                + "that PUT/GET is not enabled on the PLC.");
+                        PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.ACCESS_DENIED,
+                                new PlcNull());
+                        values.put(tagName, result);
+                        return new DefaultPlcReadResponse(plcReadRequest, values);
+                    } else {
+                        logger.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. "
+                                + "We probably need to implement explicit handling for this, so please file a bug-report "
+                                + "on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "
+                                + "containing a capture of the communication.", errorClass, errorCode);
+                        PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR,
+                                new PlcNull());
+                        values.put(tagName, result);
+                        return new DefaultPlcReadResponse(plcReadRequest, values);
+                    }
+                }
+                S7PayloadReadVarResponse payload = (S7PayloadReadVarResponse) responseMessage.getPayload();
+
+                S7VarPayloadDataItem payloadItem = payload.getItems().get(0);
+
+                responseCode = decodeResponseCode(payloadItem.getReturnCode());
+                data.writeBytes(payloadItem.getData());
+                if (responseCode != PlcResponseCode.OK) {
+                    break;
                 }
             }
-            S7PayloadReadVarResponse payload = (S7PayloadReadVarResponse) responseMessage.getPayload();
-
-            S7VarPayloadDataItem payloadItem = payload.getItems().get(0);
-
-            responseCode = decodeResponseCode(payloadItem.getReturnCode());
-            data.writeBytes(payloadItem.getData());
-            if (responseCode != PlcResponseCode.OK) {
-                break;
+            PlcValue plcValue;
+            try {
+                plcValue = parsePlcValue(tag, data.array());
+            } catch (Exception e) {
+                throw new PlcProtocolException("Error decoding PlcValue", e);
             }
+            PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(responseCode, plcValue);
+            values.put(tagName, result);
+            return new DefaultPlcReadResponse(plcReadRequest, values);
+        } finally {
+            data.release();
         }
-        PlcValue plcValue;
-        try {
-            plcValue = parsePlcValue(tag, data.array());
-        } catch (Exception e) {
-            throw new PlcProtocolException("Error decoding PlcValue", e);
-        }
-        PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(responseCode, plcValue);
-        values.put(tagName, result);
-        return new DefaultPlcReadResponse(plcReadRequest, values);
     }
 
     private PlcResponse decodeLargeWriteResponse(List<S7Message> responseMessages,
@@ -2141,5 +2150,10 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
             tpduGenerator.compareAndExchange(0xFFFF, 1);
         }
         return tpduId;
+    }
+
+    @Override
+    public void channelInactive(ConversationContext<TPKTPacket> context) {
+        tm.shutdown();
     }
 }

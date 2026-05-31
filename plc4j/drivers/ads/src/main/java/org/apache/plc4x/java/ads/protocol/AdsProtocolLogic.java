@@ -1985,4 +1985,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         return nullTerminatedBytes;
     }
 
+    @Override
+    public void channelInactive(ConversationContext<AmsTCPPacket> context) {
+        tm.shutdown();
+    }
+
 }

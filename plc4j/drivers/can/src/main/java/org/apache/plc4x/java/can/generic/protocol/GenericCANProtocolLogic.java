@@ -235,4 +235,9 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     public void unregister(PlcConsumerRegistration registration) {
         consumers.remove(registration);
     }
+
+    @Override
+    public void channelInactive(ConversationContext<GenericFrame> context) {
+        tm.shutdown();
+    }
 }
