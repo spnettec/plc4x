@@ -690,12 +690,30 @@
             <!--
               Files licensed under other compatible licenses.
             -->
-            <excinputExcludelude>**/Expression.g4</excinputExcludelude>
+            <inputExclude>**/Expression.g4</inputExclude>
 
             <!-- Maven related files -->
             <inputExclude>**/target/**</inputExclude>
             <inputExclude>target/**</inputExclude>
             <inputExclude>out/**</inputExclude>
+
+            <!--
+              Develocity build-cache + Maven build-output artifacts. These all live under
+              target/ (already excluded above), so these globs are defense-in-depth. The
+              actual cause of the random per-module license-check failures under a parallel
+              reactor (mvn -T 1C) was the local Develocity build cache restoring stale target/
+              outputs mid-build; that is fixed by disabling the local cache in
+              .mvn/develocity.xml. Keeping these name/dir excludes too so a direct
+              apache-rat:check on a populated target/ never trips regardless of cache state.
+            -->
+            <inputExclude>**/.plxarc</inputExclude>
+            <inputExclude>**/.develocity/**</inputExclude>
+            <inputExclude>**/develocity/**</inputExclude>
+            <inputExclude>**/maven-status/**</inputExclude>
+            <inputExclude>**/maven-archiver/**</inputExclude>
+            <inputExclude>**/surefire-reports/**</inputExclude>
+            <inputExclude>**/failsafe-reports/**</inputExclude>
+            <inputExclude>**/rat.txt</inputExclude>
 
             <!-- Python related files -->
             <inputExclude>**/.pytest_cache/**</inputExclude>

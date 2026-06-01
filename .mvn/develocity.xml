@@ -37,8 +37,18 @@
     </obfuscation>
   </buildScan>
   <buildCache>
+    <!--
+      YOFC: local build cache disabled. Upstream enables it for local (non-CI) builds,
+      but under a parallel reactor (mvn -T 1C) the build-cache restoration of target/
+      outputs races with apache-rat:check, which then scans restored build artifacts
+      (.plxarc, maven-status, surefire-reports, ...) and fails the license check on a
+      random module each run. Upstream CI never hits this because the cache is already
+      off there (GITHUB_ACTIONS). Disabling it locally too makes -T 1C builds correct
+      and reproducible; the rat inputExcludes below are still correct (single-module
+      scans pass), this just removes the nondeterministic restoration source.
+    -->
     <local>
-      <enabled>#{isFalse(env['GITHUB_ACTIONS'])}</enabled>
+      <enabled>false</enabled>
     </local>
     <remote>
       <enabled>false</enabled>
