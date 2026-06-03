@@ -661,10 +661,14 @@
           <execution>
             <id>license-check</id>
             <!--
-              Moved from the default validate phase to the test phase, as there are issues with newer
-              shade-plugin versions seem to interfere with the rat plugin.
+              Moved from the default validate phase to the verify phase.
+              Running in the test phase races with surefire under parallel builds
+              (-T 1C): surefire writes TEST-*.xml/txt reports without license
+              headers into target/surefire-reports/ while RAT is scanning, causing
+              random "UNAPPROVED" failures. Running in verify ensures surefire has
+              finished writing all reports before the license check runs.
             -->
-            <phase>test</phase>
+            <phase>verify</phase>
             <goals>
               <goal>check</goal>
             </goals>
