@@ -122,6 +122,8 @@ public class S7Tag implements PlcTag, Serializable {
                 return PlcValueType.DATE_AND_LTIME;
             case "COUNTER":
                 return PlcValueType.WORD;
+            case "BIT":
+                return PlcValueType.BOOL;
             default:
                 return PlcValueType.valueOf(dataType.name());
         }

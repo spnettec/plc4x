@@ -568,6 +568,89 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
     }
 
     private CompletableFuture<S7Message> performOrdinaryWriteRequest(PlcWriteRequest request) {
+        // Collect tags that need read-modify-write (BIT/BOOL arrays where bits
+        // don't fill the last byte completely — unused bits must be preserved).
+        Map<String, S7Tag> rmwTags = new LinkedHashMap<>();
+        for (String tagName : request.getTagNames()) {
+            final S7Tag tag = (S7Tag) request.getTag(tagName);
+            if (needsReadModifyWrite(tag)) {
+                rmwTags.put(tagName, tag);
+            }
+        }
+
+        if (rmwTags.isEmpty()) {
+            return buildOrdinaryWriteMessage(request, Collections.emptyMap());
+        }
+
+        // Build a pre-read request for the raw bytes of each RMW tag.
+        List<S7VarRequestParameterItem> readItems = new ArrayList<>(rmwTags.size());
+        for (S7Tag tag : rmwTags.values()) {
+            int numBytes = (tag.getNumberOfElements() + 7) / 8;
+            S7Address readAddr = new S7AddressAny(TransportSize.BYTE, numBytes,
+                    tag.getBlockNumber(), tag.getMemoryArea(),
+                    tag.getByteOffset(), tag.getBitOffset());
+            readItems.add(new S7VarRequestParameterItemAddress(readAddr));
+        }
+        S7Message readMsg = new S7MessageRequest(getTpduId(),
+                new S7ParameterReadVarRequest(readItems), null);
+
+        return sendInternal(readMsg).thenCompose(responseMsg -> {
+            Map<String, byte[]> rmwData = new LinkedHashMap<>();
+            try {
+                S7PayloadReadVarResponse payload =
+                        (S7PayloadReadVarResponse) ((S7MessageResponseData) responseMsg).getPayload();
+                List<S7VarPayloadDataItem> items = payload.getItems();
+                int i = 0;
+                for (Map.Entry<String, S7Tag> entry : rmwTags.entrySet()) {
+                    S7VarPayloadDataItem item = items.get(i++);
+                    if (item.getReturnCode() == DataTransportErrorCode.OK) {
+                        S7Tag tag = entry.getValue();
+                        PlcValue writeValue = request.getPlcValue(entry.getKey());
+                        rmwData.put(entry.getKey(), mergeBits(item.getData(), tag, writeValue));
+                    } else {
+                        logger.warn("RMW pre-read failed for tag '{}': {}", entry.getKey(), item.getReturnCode());
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("RMW pre-read failed, falling back to direct write", e);
+            }
+            return buildOrdinaryWriteMessage(request, rmwData);
+        });
+    }
+
+    /**
+     * Returns {@code true} for BIT/BOOL arrays where the number of elements is not a multiple
+     * of 8 — i.e. the last byte contains unused bits that must be preserved during writes.
+     */
+    private static boolean needsReadModifyWrite(S7Tag tag) {
+        int n = tag.getNumberOfElements();
+        return n > 1 && (n % 8) != 0
+                && (tag.getDataType() == TransportSize.BIT || tag.getDataType() == TransportSize.BOOL);
+    }
+
+    /**
+     * Merges write values into a copy of the current raw bytes. Only the bits covered by
+     * {@code tag.getNumberOfElements()} are modified; the remaining bits in the last byte are
+     * preserved from {@code currentBytes} unchanged.
+     */
+    private static byte[] mergeBits(byte[] currentBytes, S7Tag tag, PlcValue plcValue) {
+        byte[] merged = currentBytes.clone();
+        int numElements = tag.getNumberOfElements();
+        for (int i = 0; i < numElements; i++) {
+            PlcValue bitValue = plcValue.getIndex(i);
+            int byteIdx = i / 8;
+            int bitIdx = i % 8;
+            if (bitValue.getBoolean()) {
+                merged[byteIdx] |= (byte) (1 << bitIdx);
+            } else {
+                merged[byteIdx] &= (byte) ~(1 << bitIdx);
+            }
+        }
+        return merged;
+    }
+
+    private CompletableFuture<S7Message> buildOrdinaryWriteMessage(PlcWriteRequest request,
+                                                                    Map<String, byte[]> rmwData) {
         List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
         List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
 
@@ -575,7 +658,13 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
             final S7Tag tag = (S7Tag) request.getTag(tagName);
             final PlcValue plcValue = request.getPlcValue(tagName);
             parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
-            payloadItems.add(serializePlcValue(tag, plcValue));
+
+            if (rmwData.containsKey(tagName)) {
+                payloadItems.add(new S7VarPayloadDataItem(DataTransportErrorCode.OK,
+                        DataTransportSize.BYTE_WORD_DWORD, rmwData.get(tagName)));
+            } else {
+                payloadItems.add(serializePlcValue(tag, plcValue));
+            }
         }
 
         return sendInternal(new S7MessageRequest(getTpduId(), new S7ParameterWriteVarRequest(parameterItems),
@@ -1200,6 +1289,26 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
         DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
 
+        // For BIT/BOOL arrays, pack bits into bytes (mirrors original S7ProtocolLogic)
+        if ((tag.getDataType() == TransportSize.BIT || tag.getDataType() == TransportSize.BOOL)
+                && tag.getNumberOfElements() > 1) {
+            if (!(plcValue instanceof PlcList)) {
+                throw new PlcRuntimeException(String.format(
+                        "Expected a PlcList with %d elements for BIT/BOOL array write",
+                        tag.getNumberOfElements()));
+            }
+            PlcList plcList = (PlcList) plcValue;
+            int numBytes = (tag.getNumberOfElements() + 7) / 8;
+            byte[] packedBytes = new byte[numBytes];
+            for (int i = 0; i < tag.getNumberOfElements(); i++) {
+                if (plcList.getIndex(i).getBoolean()) {
+                    packedBytes[i / 8] |= (byte) (1 << (i % 8));
+                }
+            }
+            return new S7VarPayloadDataItem(DataTransportErrorCode.OK,
+                    DataTransportSize.BYTE_WORD_DWORD, packedBytes);
+        }
+
         final WriteBufferByteBased writeBuffer = serializePlcValueToWriteBuffer(tag, plcValue);
         if (writeBuffer == null) {
             return null;
@@ -1251,6 +1360,19 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
                 // probably expecting to process the read raw data.
                 if (tag.getDataType() == TransportSize.BYTE) {
                     return new PlcRawByteArray(data);
+                } else if (tag.getDataType() == TransportSize.BOOL
+                        || tag.getDataType() == TransportSize.BIT) {
+                    // Unpack bits from bytes (mirrors original S7ProtocolLogic)
+                    final PlcValue[] resultItems = new PlcValue[tag.getNumberOfElements()];
+                    for (int i = 0; i < tag.getNumberOfElements(); i++) {
+                        int byteOffset = i / 8;
+                        int bitOffset = i % 8;
+                        boolean bitValue = ((data[byteOffset] >> bitOffset) & 0x01) != 0;
+                        resultItems[i] = tag.getDataType() == TransportSize.BIT
+                                ? new PlcBIT(bitValue)
+                                : PlcBOOL.of(bitValue);
+                    }
+                    return DefaultPlcValueHandler.of(resultItems);
                 } else {
                     // Fetch all
                     final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
@@ -1352,10 +1474,10 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
             int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2) * 2;
         } else if (transportSize == TransportSize.BOOL && s7Tag.getNumberOfElements() > 1) {
-            //numElements = (int) Math.ceil((double) numElements / 8);
+            numElements = (numElements + 7) / 8;
             transportSize = TransportSize.BYTE;
         } else if (transportSize == TransportSize.BIT && s7Tag.getNumberOfElements() > 1) {
-            //numElements = (int) Math.ceil((double) numElements / 8);
+            numElements = (numElements + 7) / 8;
             transportSize = TransportSize.BYTE;
         }
         if (transportSize.getCode() == 0x00) {
