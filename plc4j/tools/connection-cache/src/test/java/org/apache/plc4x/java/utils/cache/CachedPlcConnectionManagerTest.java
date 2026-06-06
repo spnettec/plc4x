@@ -241,23 +241,20 @@ public class CachedPlcConnectionManagerTest {
         Mockito.verify(mockConnection, Mockito.times(0)).close();
 
         // Close the connection manager.
-        connectionManager.close();
+        connectionManager.destroy();
 
         // Interrupt the first thread, that is just wasting our time waiting.
         thread.interrupt();
 
-        // Borrowing after the connectionManager is closed, should result in exceptions.
+        // After destroy() the cache is empty and a new getConnection() creates a fresh
+        // container — it should NOT throw.
         try {
             connectionManager.getConnection("test");
-            Assertions.fail("This should have failed");
         } catch (PlcConnectionException e) {
-            if(!(e instanceof PlcConnectionManagerClosedException)) {
-                e.printStackTrace();
-                Assertions.fail("Expected PlcConnectionManagerClosedException");
-            }
+            Assertions.fail("getConnection after destroy should succeed (fresh container)");
         }
 
-        // Check that the connection borrowed from the Mocked ConnectionManager has been closed.
+        // Check that the original cached connection was closed during destroy().
         Mockito.verify(mockConnection, Mockito.times(1)).close();
 
         try {
@@ -293,9 +290,14 @@ public class CachedPlcConnectionManagerTest {
                 e.printStackTrace();
                 Assertions.fail("Expected PlcConnectionException");
             }
-            if(!(e.getCause().getCause().getCause() instanceof PlcConnectionManagerClosedException)) {
+            // destroy() → ConnectionContainer.close() completes queued futures with
+            // PlcRuntimeException("Container closed"), wrapped in ExecutionException (from
+            // leaseFuture.get()), wrapped in PlcConnectionException (from getConnection catch),
+            // wrapped in ExecutionException (from ExecutorService.submit).
+            Throwable root = e.getCause().getCause().getCause();
+            if(!(root instanceof PlcRuntimeException && root.getMessage().contains("Container closed"))) {
                 e.printStackTrace();
-                Assertions.fail("Expected PlcConnectionManagerClosedException");
+                Assertions.fail("Expected PlcRuntimeException (Container closed), got: " + root);
             }
         }
     }

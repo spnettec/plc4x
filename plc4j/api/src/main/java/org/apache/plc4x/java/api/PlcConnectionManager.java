@@ -41,6 +41,22 @@ public interface PlcConnectionManager {
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException;
+
     PlcDriverManager getDriverManager();
+
+    /**
+     * Releases any cached connection associated with {@code url} so the underlying
+     * transport (fd / socket / Netty EventLoopGroup) can be reclaimed. Typical use:
+     * a driver's {@code deactivate()} or {@code updated()} signals that a connection
+     * string is no longer in use.
+     * <p>
+     * The default implementation is a no-op — connection managers that do not cache
+     * connections (e.g. {@code DefaultPlcDriverManager}) need no special cleanup.
+     *
+     * @param url connection string previously passed to {@link #getConnection(String)}.
+     */
+    default void invalidate(String url) {
+        // no-op by default
+    }
 
 }

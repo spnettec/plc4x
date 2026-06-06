@@ -20,17 +20,13 @@ package org.apache.plc4x.java.utils.cache;
 
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.listener.EventListener;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
-import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +37,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 public class LeasedPlcConnection implements EventPlcConnection {
 
@@ -155,72 +150,7 @@ public class LeasedPlcConnection implements EventPlcConnection {
         if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcReadRequest.Builder innerBuilder = plcConnection.readRequestBuilder();
-        return new PlcReadRequest.Builder() {
-            @Override
-            public PlcReadRequest build() {
-                final PlcReadRequest innerPlcReadRequest = innerBuilder.build();
-                return new PlcReadRequest() {
-                    @Override
-                    public CompletableFuture<? extends PlcReadResponse> execute() {
-                        CompletableFuture<? extends PlcReadResponse> future = innerPlcReadRequest.execute();
-                        final CompletableFuture<PlcReadResponse> responseFuture = new CompletableFuture<>();
-                        if (future != null) {
-                            future.handle((plcReadResponse, throwable) -> {
-                                if (throwable == null) {
-                                    responseFuture.complete(plcReadResponse);
-                                } else {
-                                    // Mark the connection as invalid.
-                                    invalidateConnection = true;
-                                    responseFuture.completeExceptionally(throwable);
-                                }
-                                return plcReadResponse;
-                            });
-                        } else {
-                            responseFuture.complete(null);
-                        }
-                        return responseFuture;
-                    }
-
-                    @Override
-                    public int getNumberOfTags() {
-                        return innerPlcReadRequest.getNumberOfTags();
-                    }
-
-                    @Override
-                    public LinkedHashSet<String> getTagNames() {
-                        return innerPlcReadRequest.getTagNames();
-                    }
-
-                    @Override
-                    public PlcResponseCode getTagResponseCode(String tagName) {
-                        return innerPlcReadRequest.getTagResponseCode(tagName);
-                    }
-
-                    @Override
-                    public PlcTag getTag(String name) {
-                        return innerPlcReadRequest.getTag(name);
-                    }
-
-                    @Override
-                    public List<PlcTag> getTags() {
-                        return innerPlcReadRequest.getTags();
-                    }
-                };
-            }
-
-            @Override
-            public PlcReadRequest.Builder addTagAddress(String name, String tagAddress) {
-                innerBuilder.addTagAddress(name, tagAddress);
-                return this;
-            }
-
-            @Override
-            public PlcReadRequest.Builder addTag(String name, PlcTag tag) {
-                innerBuilder.addTag(name, tag);
-                return this;
-            }
-        };
+        return LeasedRequest.read(plcConnection.readRequestBuilder(), v -> invalidateConnection = true);
     }
 
     @Override
@@ -229,82 +159,7 @@ public class LeasedPlcConnection implements EventPlcConnection {
         if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcWriteRequest.Builder innerBuilder = plcConnection.writeRequestBuilder();
-        return new PlcWriteRequest.Builder() {
-            @Override
-            public PlcWriteRequest build() {
-                PlcWriteRequest innerPlcWriteRequest = innerBuilder.build();
-                return new PlcWriteRequest() {
-                    @Override
-                    public CompletableFuture<? extends PlcWriteResponse> execute() {
-                        CompletableFuture<? extends PlcWriteResponse> future = innerPlcWriteRequest.execute();
-                        final CompletableFuture<PlcWriteResponse> responseFuture = new CompletableFuture<>();
-                        if (future != null) {
-                            future.handle((plcWriteResponse, throwable) -> {
-                                if (throwable == null) {
-                                    responseFuture.complete(plcWriteResponse);
-                                } else {
-                                    // Mark the connection as invalid.
-                                    invalidateConnection = true;
-                                    responseFuture.completeExceptionally(throwable);
-                                }
-                                return plcWriteResponse;
-                            });
-                        } else {
-                            responseFuture.complete(null);
-                        }
-                        return responseFuture;
-                    }
-
-                    @Override
-                    public int getNumberOfValues(String name) {
-                        return innerPlcWriteRequest.getNumberOfValues(name);
-                    }
-
-                    @Override
-                    public PlcValue getPlcValue(String name) {
-                        return innerPlcWriteRequest.getPlcValue(name);
-                    }
-
-                    @Override
-                    public int getNumberOfTags() {
-                        return innerPlcWriteRequest.getNumberOfTags();
-                    }
-
-                    @Override
-                    public LinkedHashSet<String> getTagNames() {
-                        return innerPlcWriteRequest.getTagNames();
-                    }
-
-                    @Override
-                    public PlcResponseCode getTagResponseCode(String tagName) {
-                        return innerPlcWriteRequest.getTagResponseCode(tagName);
-                    }
-
-                    @Override
-                    public PlcTag getTag(String name) {
-                        return innerPlcWriteRequest.getTag(name);
-                    }
-
-                    @Override
-                    public List<PlcTag> getTags() {
-                        return innerPlcWriteRequest.getTags();
-                    }
-                };
-            }
-
-            @Override
-            public PlcWriteRequest.Builder addTagAddress(String name, String tagAddress, Object... values) {
-                innerBuilder.addTagAddress(name, tagAddress, values);
-                return this;
-            }
-
-            @Override
-            public PlcWriteRequest.Builder addTag(String name, PlcTag tag, Object... values) {
-                innerBuilder.addTag(name, tag, values);
-                return this;
-            }
-        };
+        return LeasedRequest.write(plcConnection.writeRequestBuilder(), v -> invalidateConnection = true);
     }
 
     @Override
@@ -313,172 +168,7 @@ public class LeasedPlcConnection implements EventPlcConnection {
         if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcSubscriptionRequest.Builder innerBuilder = plcConnection.subscriptionRequestBuilder();
-        return new PlcSubscriptionRequest.Builder() {
-            @Override
-            public PlcSubscriptionRequest build() {
-                PlcSubscriptionRequest innerPlcSubscriptionRequest = innerBuilder.build();
-                return new PlcSubscriptionRequest() {
-                    @Override
-                    public CompletableFuture<? extends PlcSubscriptionResponse> execute() {
-                        CompletableFuture<? extends PlcSubscriptionResponse> future = innerPlcSubscriptionRequest.execute();
-                        final CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
-                        if (future != null) {
-                            future.handle((plcSubscriptionResponse, throwable) -> {
-                                if (throwable == null) {
-                                    responseFuture.complete(plcSubscriptionResponse);
-                                } else {
-                                    // Mark the connection as invalid.
-                                    invalidateConnection = true;
-                                    responseFuture.completeExceptionally(throwable);
-                                }
-                                return plcSubscriptionResponse;
-                            });
-                        } else {
-                            responseFuture.complete(null);
-                        }
-                        return responseFuture;
-                    }
-
-                    @Override
-                    public int getNumberOfTags() {
-                        return innerPlcSubscriptionRequest.getNumberOfTags();
-                    }
-
-                    @Override
-                    public LinkedHashSet<String> getTagNames() {
-                        return innerPlcSubscriptionRequest.getTagNames();
-                    }
-
-                    @Override
-                    public PlcSubscriptionTag getTag(String name) {
-                        return innerPlcSubscriptionRequest.getTag(name);
-                    }
-
-                    @Override
-                    public PlcResponseCode getTagResponseCode(String tagName) {
-                        return innerPlcSubscriptionRequest.getTagResponseCode(tagName);
-                    }
-
-                    @Override
-                    public List<PlcSubscriptionTag> getTags() {
-                        return innerPlcSubscriptionRequest.getTags();
-                    }
-
-                    @Override
-                    public Consumer<PlcSubscriptionEvent> getConsumer() {
-                        return innerPlcSubscriptionRequest.getConsumer();
-                    }
-
-                    @Override
-                    public Consumer<PlcSubscriptionEvent> getTagConsumer(String name) {
-                        return innerPlcSubscriptionRequest.getTagConsumer(name);
-                    }
-                };
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder setConsumer(Consumer<PlcSubscriptionEvent> consumer) {
-                innerBuilder.setConsumer(consumer);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval) {
-                innerBuilder.addCyclicTagAddress(name, tagAddress, pollingInterval);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
-                innerBuilder.addCyclicTagAddress(name, tagAddress, pollingInterval, consumer);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval) {
-                innerBuilder.addCyclicTag(name, tag, pollingInterval);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval) {
-                innerBuilder.addChangeOfStateTagAddress(name, tagAddress, pollingInterval);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
-                innerBuilder.addCyclicTag(name, tag, pollingInterval, consumer);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
-                innerBuilder.addChangeOfStateTagAddress(name, tagAddress);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
-                innerBuilder.addChangeOfStateTagAddress(name, tagAddress, consumer);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer, Duration minInterval) {
-                innerBuilder.addChangeOfStateTagAddress(name, tagAddress, consumer, minInterval);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
-                innerBuilder.addChangeOfStateTag(name, tag);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
-                innerBuilder.addChangeOfStateTag(name, tag, consumer);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Duration minInterval) {
-                innerBuilder.addChangeOfStateTag(name, tag, minInterval);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer, Duration minInterval) {
-                innerBuilder.addChangeOfStateTag(name, tag, consumer, minInterval);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress) {
-                innerBuilder.addEventTagAddress(name, tagAddress);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
-                innerBuilder.addEventTagAddress(name, tagAddress, consumer);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag) {
-                innerBuilder.addEventTag(name, tag);
-                return this;
-            }
-
-            @Override
-            public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
-                innerBuilder.addEventTag(name, tag, consumer);
-                return this;
-            }
-        };
+        return LeasedRequest.subscription(plcConnection.subscriptionRequestBuilder(), v -> invalidateConnection = true);
     }
 
     @Override
@@ -487,58 +177,7 @@ public class LeasedPlcConnection implements EventPlcConnection {
         if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcUnsubscriptionRequest.Builder innerBuilder = plcConnection.unsubscriptionRequestBuilder();
-        return new PlcUnsubscriptionRequest.Builder() {
-            @Override
-            public PlcUnsubscriptionRequest build() {
-                PlcUnsubscriptionRequest innerPlcUnsubscriptionRequest = innerBuilder.build();
-                return new PlcUnsubscriptionRequest() {
-                    @Override
-                    public CompletableFuture<PlcUnsubscriptionResponse> execute() {
-                        CompletableFuture<? extends PlcUnsubscriptionResponse> future = innerPlcUnsubscriptionRequest.execute();
-                        final CompletableFuture<PlcUnsubscriptionResponse> responseFuture = new CompletableFuture<>();
-                        if (future != null) {
-                            future.handle((plcUnsubscriptionResponse, throwable) -> {
-                                if (throwable == null) {
-                                    responseFuture.complete(plcUnsubscriptionResponse);
-                                } else {
-                                    // Mark the connection as invalid.
-                                    invalidateConnection = true;
-                                    responseFuture.completeExceptionally(throwable);
-                                }
-                                return plcUnsubscriptionResponse;
-                            });
-                        } else {
-                            responseFuture.complete(null);
-                        }
-                        return responseFuture;
-                    }
-
-                    @Override
-                    public List<PlcSubscriptionHandle> getSubscriptionHandles() {
-                        return innerPlcUnsubscriptionRequest.getSubscriptionHandles();
-                    }
-                };
-            }
-
-            @Override
-            public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle) {
-                innerBuilder.addHandles(plcSubscriptionHandle);
-                return this;
-            }
-
-            @Override
-            public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles) {
-                innerBuilder.addHandles(plcSubscriptionHandle1, plcSubscriptionHandles);
-                return this;
-            }
-
-            @Override
-            public PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandle) {
-                innerBuilder.addHandles(plcSubscriptionHandle);
-                return this;
-            }
-        };
+        return LeasedRequest.unsubscription(plcConnection.unsubscriptionRequestBuilder(), v -> invalidateConnection = true);
     }
 
     @Override
@@ -547,72 +186,7 @@ public class LeasedPlcConnection implements EventPlcConnection {
         if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcBrowseRequest.Builder innerBuilder = plcConnection.browseRequestBuilder();
-        return new PlcBrowseRequest.Builder() {
-            @Override
-            public PlcBrowseRequest build() {
-                PlcBrowseRequest innerPlcBrowseRequest = innerBuilder.build();
-                return new PlcBrowseRequest() {
-                    @Override
-                    public CompletableFuture<? extends PlcBrowseResponse> execute() {
-                        CompletableFuture<? extends PlcBrowseResponse> future = innerPlcBrowseRequest.execute();
-                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<>();
-                        if (future != null) {
-                            future.handle((plcBrowseResponse, throwable) -> {
-                                if (throwable == null) {
-                                    responseFuture.complete(plcBrowseResponse);
-                                } else {
-                                    // Mark the connection as invalid.
-                                    invalidateConnection = true;
-                                    responseFuture.completeExceptionally(throwable);
-                                }
-                                return plcBrowseResponse;
-                            });
-                        } else {
-                            responseFuture.complete(null);
-                        }
-                        return responseFuture;
-                    }
-
-                    @Override
-                    public CompletableFuture<? extends PlcBrowseResponse> executeWithInterceptor(PlcBrowseRequestInterceptor interceptor) {
-                        CompletableFuture<? extends PlcBrowseResponse> future = innerPlcBrowseRequest.executeWithInterceptor(interceptor);
-                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<>();
-                        if (future != null) {
-                            future.handle((plcBrowseResponse, throwable) -> {
-                                if (throwable == null) {
-                                    responseFuture.complete(plcBrowseResponse);
-                                } else {
-                                    // Mark the connection as invalid.
-                                    invalidateConnection = true;
-                                    responseFuture.completeExceptionally(throwable);
-                                }
-                                return plcBrowseResponse;
-                            });
-                        } else {
-                            responseFuture.complete(null);
-                        }
-                        return responseFuture;
-                    }
-
-                    @Override
-                    public LinkedHashSet<String> getQueryNames() {
-                        return innerPlcBrowseRequest.getQueryNames();
-                    }
-
-                    @Override
-                    public PlcQuery getQuery(String name) {
-                        return innerPlcBrowseRequest.getQuery(name);
-                    }
-                };
-            }
-
-            @Override
-            public PlcBrowseRequest.Builder addQuery(String name, String query) {
-                innerBuilder.addQuery(name, query);
-                return this;
-            }
-        };
+        return LeasedRequest.browse(plcConnection.browseRequestBuilder(), v -> invalidateConnection = true);
     }
 
     @Override

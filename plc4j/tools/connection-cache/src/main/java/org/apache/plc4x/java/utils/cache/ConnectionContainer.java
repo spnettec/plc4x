@@ -20,187 +20,133 @@ package org.apache.plc4x.java.utils.cache;
 
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.listener.EventListener;
-import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionManagerClosedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * Pure lease manager — wraps a single {@link PlcConnection} and serializes
+ * concurrent access through a {@link LeasedPlcConnection}. Connection lifecycle
+ * (creation, health check, teardown) is handled by {@link CachedPlcConnectionManager}.
+ */
 class ConnectionContainer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionContainer.class);
-    private static final long LEASE_WARN_THROTTLE_NANOS = TimeUnit.SECONDS.toNanos(30);
 
-    private final PlcConnectionManager connectionManager;
-    private final String connectionUrl;
+    private PlcConnection connection;
     private final Duration maxLeaseTime;
     private final Queue<CompletableFuture<PlcConnection>> queue;
 
-    private PlcConnection connection;
     private LeasedPlcConnection leasedConnection;
+    private boolean closed;
 
-    // First-failure WARN with full stack trace is the operationally useful signal
-    // ("PLC just went unreachable"); a wire-driven 100ms retry loop turns it into
-    // ~10/s with 30-line stack traces, which buries every other log. Keep the first
-    // event in each 30s window at WARN; demote the rest to DEBUG and report the
-    // suppressed count on the next WARN.
-    private final AtomicLong leaseWarnLastNanos = new AtomicLong(0L);
-    private final AtomicLong leaseWarnSuppressed = new AtomicLong(0L);
-
-    public ConnectionContainer(PlcConnectionManager connectionManager, String connectionUrl,
-                               Duration maxLeaseTime) {
-        this.connectionManager = connectionManager;
-        this.connectionUrl = connectionUrl;
+    ConnectionContainer(PlcConnection connection, Duration maxLeaseTime) {
+        this.connection = connection;
         this.maxLeaseTime = maxLeaseTime;
         this.queue = new LinkedList<>();
-        this.connection = null;
-        this.leasedConnection = null;
     }
 
-    public synchronized void close() {
-        // Close all waiting clients exceptionally.
-        queue.forEach(plcConnectionCompletableFuture ->
-            plcConnectionCompletableFuture.completeExceptionally(new PlcConnectionManagerClosedException()));
+    PlcConnection getRawConnection() {
+        return connection;
+    }
 
-        // Clear the queue.
+    boolean isClosed() {
+        return closed;
+    }
+
+    /**
+     * Close the container and the underlying connection. Pending lease futures
+     * are completed exceptionally.
+     */
+    synchronized void close() {
+        if (closed) {
+            return;
+        }
+        closed = true;
+        queue.forEach(f -> f.completeExceptionally(new PlcRuntimeException("Container closed")));
         queue.clear();
-
-        // If the connection is currently used, close it.
-        if(leasedConnection != null) {
+        if (leasedConnection != null) {
             try {
                 leasedConnection.closeConnection();
                 leasedConnection = null;
-            } catch (Exception e) {
-                // Ignore this ...
+            } catch (Exception ignored) {
             }
         } else {
             try {
                 connection.close();
-            } catch (Exception e) {
-                // Ignore this ...
+            } catch (Exception ignored) {
             }
         }
     }
 
-    public synchronized Future<PlcConnection> lease() {
-        CompletableFuture<PlcConnection> connectionFuture = new CompletableFuture<>();
-
-        // Try to get a new connection, if we haven't got one yet.
-        if(connection == null || !connection.isConnected()) {
-            try {
-                connection = connectionManager.getConnection(connectionUrl);
-            } catch (PlcConnectionException e) {
-                logLeaseFailure(e);
-                connectionFuture.completeExceptionally(e);
-                return connectionFuture;
-            }
+    synchronized Future<PlcConnection> lease() {
+        if (closed) {
+            CompletableFuture<PlcConnection> future = new CompletableFuture<>();
+            future.completeExceptionally(new PlcRuntimeException("Container closed"));
+            return future;
         }
 
-        // If the connection is currently idle, return the connection immediately.
+        CompletableFuture<PlcConnection> connectionFuture = new CompletableFuture<>();
+
         if (leasedConnection == null) {
             leasedConnection = new LeasedPlcConnection(this, connection, maxLeaseTime);
             connectionFuture.complete(leasedConnection);
-        }
-        // Otherwise queue the future up for completion as soon as the connection is returned.
-        else {
+        } else {
             queue.add(connectionFuture);
         }
         return connectionFuture;
     }
 
-    public synchronized void returnConnection(LeasedPlcConnection returnedLeasedConnection, boolean invalidateConnection) {
-        if(returnedLeasedConnection != leasedConnection) {
-            LOGGER.error("Error trying to return lease from invalid connection: returned={} leased={}",
-                returnedLeasedConnection, leasedConnection);
-            throw new PlcRuntimeException("Error trying to return lease from invalid connection");
-        }
-
-        // If something happened while using the connection, invalidate this one. Reconnect
-        // lazily — only when someone is actually waiting in the queue. Serial transports in
-        // particular need the kernel to release the underlying fd before reopen succeeds;
-        // eagerly reopening here racing with our own async close() yields a flood of
-        // "Unable to open the com port" failures under wire-driven 100ms poll loops.
-        if(invalidateConnection) {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                    // We're ignoring this as we have no idea, what state the connection is in.
-                    // Nevertheless, it is polite to say something in logs about this situation.
-                    LOGGER.warn("Exception while closing connection", e);
-                }
-                connection = null;
-            }
-            if(returnedLeasedConnection == null){
-                return;
-            }
-        }
-
-        // If the queue is empty, defer any reconnect to the next lease() call.
-        if(queue.isEmpty()) {
-            leasedConnection = null;
-            return;
-        }
-
-        // Someone is waiting — (re)establish the connection now if needed.
-        if(connection == null || !connection.isConnected()) {
-            try {
-                connection = connectionManager.getConnection(connectionUrl);
-            } catch (PlcConnectionException e) {
-                logLeaseFailure(e);
-                queue.forEach(future -> future.completeExceptionally(e));
-                queue.clear();
-                leasedConnection = null;
-                connection = null;
-                return;
-            }
-        }
-
-        // Create a new lease and complete the next future in the queue with this.
-        leasedConnection = new LeasedPlcConnection(this, connection, maxLeaseTime);
-        CompletableFuture<PlcConnection> leaseFuture = queue.poll();
-        if(leaseFuture != null) {
-            leaseFuture.complete(leasedConnection);
-        }
-    }
-
-
-    private void logLeaseFailure(PlcConnectionException e) {
-        long now = System.nanoTime();
-        long last = leaseWarnLastNanos.get();
-        if (now - last >= LEASE_WARN_THROTTLE_NANOS && leaseWarnLastNanos.compareAndSet(last, now)) {
-            long suppressed = leaseWarnSuppressed.getAndSet(0L);
-            if (suppressed == 0L) {
-                LOGGER.warn("Exception while getting connection for lease", e);
-            } else {
-                LOGGER.warn("Exception while getting connection for lease (suppressed {} similar in last {}s)",
-                    suppressed, TimeUnit.NANOSECONDS.toSeconds(LEASE_WARN_THROTTLE_NANOS), e);
-            }
-        } else {
-            leaseWarnSuppressed.incrementAndGet();
-            LOGGER.debug("Exception while getting connection for lease", e);
-        }
-    }
-
-    public void addEventListener(EventListener listener) {
-        if((connection != null) && (connection instanceof EventPlcConnection)) {
+    void addEventListener(EventListener listener) {
+        if (connection instanceof EventPlcConnection) {
             ((EventPlcConnection) connection).addEventListener(listener);
         }
     }
 
-    public void removeEventListener(EventListener listener) {
-        if((connection != null) && (connection instanceof EventPlcConnection)) {
+    void removeEventListener(EventListener listener) {
+        if (connection instanceof EventPlcConnection) {
             ((EventPlcConnection) connection).removeEventListener(listener);
         }
     }
 
+    synchronized void returnConnection(LeasedPlcConnection returnedLeasedConnection, boolean connectionError) {
+        if (returnedLeasedConnection != leasedConnection) {
+            throw new PlcRuntimeException("Error trying to return lease from invalid connection");
+        }
+
+        // If an I/O error occurred while using the connection, close it now so
+        // CachedPlcConnectionManager.getConnection() creates a fresh one next time.
+        if (connectionError) {
+            try {
+                connection.close();
+            } catch (Exception ignored) {
+            }
+            connection = null;
+        }
+
+        if (queue.isEmpty()) {
+            leasedConnection = null;
+            return;
+        }
+
+        if (connection == null) {
+            // Connection is gone — fail all waiting futures.
+            CompletableFuture<PlcConnection> f = queue.poll();
+            while (f != null) {
+                f.completeExceptionally(new PlcRuntimeException("Connection invalidated due to I/O error"));
+                f = queue.poll();
+            }
+            leasedConnection = null;
+            return;
+        }
+
+        leasedConnection = new LeasedPlcConnection(this, connection, maxLeaseTime);
+        CompletableFuture<PlcConnection> leaseFuture = queue.poll();
+        if (leaseFuture != null) {
+            leaseFuture.complete(leasedConnection);
+        }
+    }
 }

@@ -24,7 +24,6 @@ import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionManagerClosedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +35,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CachedPlcConnectionManager implements PlcConnectionManager, AutoCloseable {
+/**
+ * Caching {@link PlcConnectionManager} — establishes a single underlying connection
+ * per URL and leases it to concurrent callers via {@link ConnectionContainer}.
+ * Connection lifecycle (creation, health check, teardown) is managed here;
+ * {@link ConnectionContainer} is a pure lease wrapper.
+ */
+public class CachedPlcConnectionManager implements PlcConnectionManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(CachedPlcConnectionManager.class);
 
@@ -47,8 +51,6 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
     private final Duration maxWaitTime;
 
     private final Map<String, ConnectionContainer> connectionContainers;
-
-    private final AtomicBoolean closed = new AtomicBoolean(false);
 
     public static Builder getBuilder() {
         return new Builder(new DefaultPlcDriverManager());
@@ -67,45 +69,44 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
 
     @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
-        // If the connection manager is already closed, abort.
-        if(closed.get()) {
-            throw new PlcConnectionManagerClosedException();
-        }
-
-        // For serial transports, two different URLs (e.g. /dev/ttyUSB0 vs /dev/serial/by-path/...)
-        // can resolve to the same underlying device. Without normalization the cache would create
-        // two ConnectionContainers each trying to grab the same exclusive serial fd, and the second
-        // open fails with EBUSY (manifesting as "Error creating channel"). Normalize the path
-        // portion via toRealPath() so symlink and canonical-path variants share one container.
+        // For serial transports, normalize symlink/canonical-path variants to share one container.
         String cacheKey = normalizeCacheKey(url);
 
-        // Get a connection container for the given url.
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
             connectionContainer = connectionContainers.get(cacheKey);
-            if (connectionContainer == null) {
-                LOG.debug("Creating new connection");
-
-                // Crate a connection container to manage handling this connection.
-                // Keep the user-supplied URL inside the container so error messages and downstream
-                // driver logs preserve the literal string the caller wrote.
-                connectionContainer = new ConnectionContainer(connectionManager, url, maxLeaseTime);
+            if (connectionContainer == null || connectionContainer.isClosed()) {
+                LOG.debug("Creating new cached connection for {}", url);
+                PlcConnection connection = connectionManager.getConnection(url);
+                connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
+                connectionContainers.put(cacheKey, connectionContainer);
+            } else if (connectionContainer.getRawConnection() == null
+                    || !connectionContainer.getRawConnection().isConnected()) {
+                LOG.debug("Cached connection for {} is dead, recreating...", url);
+                connectionContainer.close();
+                PlcConnection connection = connectionManager.getConnection(url);
+                connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
                 connectionContainers.put(cacheKey, connectionContainer);
             } else {
-                LOG.debug("Reusing exising connection");
+                LOG.debug("Reusing existing cached connection for {}", url);
             }
         }
 
-        // Get a lease (a future for a connection)
         Future<PlcConnection> leaseFuture = connectionContainer.lease();
         try {
             return leaseFuture.get(this.maxWaitTime.toMillis(), TimeUnit.MILLISECONDS);
         } catch (ExecutionException e) {
+            connectionContainer.close();
+            connectionContainers.remove(cacheKey);
             throw new PlcConnectionException(e);
-        } catch ( TimeoutException e) {
+        } catch (TimeoutException e) {
+            connectionContainer.close();
+            connectionContainers.remove(cacheKey);
             throw new PlcConnectionException("Error acquiring lease for connection cause TimeoutException", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            connectionContainer.close();
+            connectionContainers.remove(cacheKey);
             throw new PlcConnectionException("Error acquiring lease for connection cause InterruptedException", e);
         }
     }
@@ -123,7 +124,6 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         if (sep < 0) {
             return url;
         }
-        // Scheme is "<protocol>" or "<protocol>:<transport>"; only canonicalize when transport == serial.
         String scheme = url.substring(0, sep);
         if (!scheme.endsWith(":serial") && !scheme.equals("serial")) {
             return url;
@@ -135,8 +135,6 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
             String canonical = Paths.get(path).toRealPath().toString();
             return url.substring(0, sep + 3) + canonical + tail;
         } catch (IOException | RuntimeException e) {
-            // Device not yet present, no permission, or path invalid — leave key as-is so the
-            // downstream open() can produce its own error.
             return url;
         }
     }
@@ -152,21 +150,12 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
     }
 
     /**
-     * Drop the cached container for {@code url} and close its underlying connection.
-     *
-     * <p>Use this when a caller knows a connection-string is no longer in use (typically on OSGi
-     * config change or component deactivate). Without an explicit drop the container stays in the
-     * map holding the underlying fd until either a read errors (invalidating it through
-     * {@link ConnectionContainer#returnConnection}) or the whole manager is closed.
-     *
-     * <p>If a lease is currently outstanding on the container, its underlying connection is closed
-     * synchronously; the lease holder will observe a closed connection on its next operation. This
-     * is intentional — invalidation is the caller's signal that the URL must be released now.
-     *
-     * <p>No-op if {@code url} was never cached.
+     * Drop the cached container for {@code url} and close its underlying connection
+     * (fd / socket / Netty EventLoopGroup are reclaimed).
      */
+    @Override
     public void invalidate(String url) {
-        if (closed.get() || url == null) {
+        if (url == null) {
             return;
         }
         String cacheKey = normalizeCacheKey(url);
@@ -180,15 +169,16 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         }
     }
 
-    @Override
-    public void close() throws Exception {
-        // Set the cache to "closed" so no new connections can be requested.
-        closed.set(true);
-
-        // Tell all connections to close themselves.
-        connectionContainers.forEach((connectionString, connectionContainer) -> {
-            connectionContainer.close();
-        });
+    /**
+     * Close all cached connections and clear the container map. After this call the
+     * manager is still usable — the next {@link #getConnection(String)} creates fresh
+     * connections.
+     */
+    public void destroy() {
+        synchronized (connectionContainers) {
+            connectionContainers.values().forEach(ConnectionContainer::close);
+            connectionContainers.clear();
+        }
     }
 
     public static class Builder {
@@ -216,6 +206,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         public CachedPlcConnectionManager.Builder withMaxWaitTime(Duration maxWaitTime) {
             this.maxWaitTime = maxWaitTime;
             return this;
-        }}
+        }
+    }
 
 }
