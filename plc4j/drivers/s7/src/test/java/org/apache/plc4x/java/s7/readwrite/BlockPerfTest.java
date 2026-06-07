@@ -27,29 +27,42 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Performance comparison: gap=0 (original, no merge) vs gap=N (block merge enabled).
+ * Performance comparison: no block merge vs fixed gap block merge vs automatic cost-based block merge.
  * <p>
  * Reads the same set of adjacent/mixed tags N times with each configuration
  * and reports the average wall-clock time.
  */
 public class BlockPerfTest {
 
-    // Adjacent groups — with gap=16 these should merge from ~14 items → ~5 blocks
+    // Same dataset as DatatypesTest.
     private static final String[][] TAGS = {
-        {"byte-val",   "%DB1:4:BYTE"},
-        {"byte-arr",   "%DB1:6:BYTE[2]"},
-        {"word-val",   "%DB1:8:WORD"},
-        {"word-arr",   "%DB1:10:WORD[2]"},
-        {"dword-val",  "%DB1:14:DWORD"},
-        {"dword-arr",  "%DB1:18:DWORD[2]"},
-        {"int-val",    "%DB1:26:INT"},
-        {"int-arr",    "%DB1:28:INT[2]"},
-        {"dint-val",   "%DB1:32:DINT"},
-        {"dint-arr",   "%DB1:36:DINT[2]"},
-        {"real-val",   "%DB1:44:REAL"},
-        {"real-arr",   "%DB1:48:REAL[2]"},
-        {"date-val",   "%DB1:836:DATE"},
-        {"date-arr",   "%DB1:838:DATE[2]"},
+        {"bool-value-1", "%DB1:0.0:BOOL"},
+        {"bool-value-2", "%DB1:0.1:BOOL"},
+        {"bool-array", "%DB1:2:BIT[10]"},
+        {"byte-value", "%DB1:4:BYTE"},
+        {"byte-array", "%DB1:6:BYTE[2]"},
+        {"word-value", "%DB1:8:WORD"},
+        {"word-array", "%DB1:10:WORD[2]"},
+        {"dword-value", "%DB1:14:DWORD"},
+        {"dword-array", "%DB1:18:DWORD[2]"},
+        {"int-value", "%DB1:26:INT"},
+        {"int-array", "%DB1:28:INT[2]"},
+        {"dint-value", "%DB1:32:DINT"},
+        {"dint-array", "%DB1:36:DINT[2]"},
+        {"real-value", "%DB1:44:REAL"},
+        {"real-array", "%DB1:48:REAL[2]"},
+        {"string-value", "%DB1:56:STRING"},
+        {"string-array", "%DB1:312:STRING[2]"},
+        {"time-value", "%DB1:824:TIME"},
+        {"time-array", "%DB1:828:TIME[2]"},
+        {"date-value", "%DB1:836:DATE"},
+        {"date-array", "%DB1:838:DATE[2]"},
+        {"time-of-day-value", "%DB1:842:TIME_OF_DAY"},
+        {"time-of-day-array", "%DB1:846:TIME_OF_DAY[2]"},
+        {"date-and-time-value", "%DB1:854:DTL"},
+        {"date-and-time-array", "%DB1:866:DTL[2]"},
+        {"char-value", "%DB1:890:CHAR"},
+        {"char-array", "%DB1:892:CHAR[2]"},
     };
 
     private static final int WARMUP = 20;
@@ -57,29 +70,41 @@ public class BlockPerfTest {
 
     public static void main(String[] args) throws Exception {
         String host = args.length > 0 ? args[0] : "10.80.41.57";
-        String baselineUrl = "s7://" + host + "?block-merge-min-gap=0";
-        String mergedUrl  = "s7://" + host + "?block-merge-min-gap=16";
+        String noMergeUrl = "s7://" + host + "?gap=0";
+        String fixedGapUrl = "s7://" + host + "?gap=16";
+        String autoUrl = "s7://" + host + "?gap=-1";
 
-        // ── Baseline: gap=0 (original behaviour) ─────────────────────
+        // ── No merge: baseline ───────────────────────────────────────
         CachedPlcConnectionManager mgr0 = CachedPlcConnectionManager.getBuilder().build();
-        System.out.println("=== Baseline: gap=0 (no merge) ===");
-        double baseline = benchmark(mgr0, baselineUrl, "gap=0");
+        System.out.println("=== No merge: gap=0 ===");
+        double noMerge = benchmark(mgr0, noMergeUrl, "gap=0");
         mgr0.destroy();
 
-        // ── Optimized: gap=16 ────────────────────────────────────────
+        // ── Fixed gap: gap=16 ────────────────────────────────────────
         CachedPlcConnectionManager mgr1 = CachedPlcConnectionManager.getBuilder().build();
-        System.out.println("\n=== Optimized: gap=16 (block merge) ===");
-        double merged = benchmark(mgr1, mergedUrl, "gap=16");
+        System.out.println("\n=== Fixed gap: gap=16 ===");
+        double fixedGap = benchmark(mgr1, fixedGapUrl, "gap=16");
         mgr1.destroy();
+
+        // ── Auto: cost-based merge ───────────────────────────────────
+        CachedPlcConnectionManager mgr2 = CachedPlcConnectionManager.getBuilder().build();
+        System.out.println("\n=== Auto: cost-based block merge ===");
+        double auto = benchmark(mgr2, autoUrl, "auto");
+        mgr2.destroy();
 
         // ── Report ────────────────────────────────────────────────────
         System.out.println("\n==============================================");
         System.out.printf("Tags per request : %d%n", TAGS.length);
         System.out.printf("Iterations       : %d (after %d warmup)%n", ITERATIONS, WARMUP);
-        System.out.printf("Baseline (gap=0) : %.2f ms avg%n", baseline);
-        System.out.printf("Merged  (gap=16): %.2f ms avg%n", merged);
-        double pct = (baseline - merged) / baseline * 100;
-        System.out.printf("Improvement      : %.1f%% %s%n", pct, pct > 0 ? "faster" : "slower");
+        System.out.printf("No merge (gap=0): %.2f ms avg%n", noMerge);
+        System.out.printf("Fixed   (gap=16): %.2f ms avg%n", fixedGap);
+        System.out.printf("Auto            : %.2f ms avg%n", auto);
+        double fixedPct = (noMerge - fixedGap) / noMerge * 100;
+        double autoPct = (noMerge - auto) / noMerge * 100;
+        double autoVsFixedPct = (fixedGap - auto) / fixedGap * 100;
+        System.out.printf("gap=16 vs gap=0 : %.1f%% %s%n", fixedPct, fixedPct > 0 ? "faster" : "slower");
+        System.out.printf("Auto vs gap=0   : %.1f%% %s%n", autoPct, autoPct > 0 ? "faster" : "slower");
+        System.out.printf("Auto vs gap=16  : %.1f%% %s%n", autoVsFixedPct, autoVsFixedPct > 0 ? "faster" : "slower");
         System.out.println("==============================================");
     }
 

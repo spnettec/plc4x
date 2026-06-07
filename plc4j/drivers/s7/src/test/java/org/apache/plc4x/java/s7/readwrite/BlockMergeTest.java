@@ -26,16 +26,16 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Verifies block-merge optimization: adjacent tags in the same DB are merged
- * into a single BYTE-range S7 item when {@code block-merge-min-gap} is set.
+ * into a single BYTE-range S7 item when {@code gap} is set.
  * <p>
  * Run with:
- * <pre>s7://10.80.41.57?block-merge-min-gap=16</pre>
+ * <pre>s7://10.80.41.57?gap=16</pre>
  */
 public class BlockMergeTest {
 
     public static void main(String[] args) throws Exception {
         String url = args.length > 0 ? args[0]
-                : "s7://10.80.41.57?block-merge-min-gap=16";
+                : "s7://10.80.41.57?gap=16";
 
         CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
         int failures = 0;
@@ -126,7 +126,7 @@ public class BlockMergeTest {
 
         // ── Test 5: Gap=0 (disable)──────────────no merge ───────────────
         System.out.println("--- Test 5: gap=0 (no merge, baseline) ---");
-        String noGapUrl = url.replaceAll("\\?.*", "") + "?block-merge-min-gap=0";
+        String noGapUrl = url.replaceAll("\\?.*", "") + "?gap=0";
         try (PlcConnection conn = plcConnectionManager.getConnection(noGapUrl)) {
             PlcReadResponse resp = conn.readRequestBuilder()
                     .addTagAddress("dint0", "%DB1:32:DINT")

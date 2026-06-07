@@ -130,12 +130,14 @@ public class S7Configuration implements PlcConnectionConfiguration {
     @Description("Time for supervision of TCP channels. If the channel is not active, a safe stop of the EventLoop must be performed, to ensure that no additional tasks are created.")
     public int retryTime = 0;
 
-    @ConfigurationParameter("block-merge-min-gap")
-    @IntDefaultValue(0)
-    @Description("Minimum byte gap between adjacent tags in the same DB to trigger block merging. "
-               + "Tags whose byte distance is less than this value are merged into a single byte-range "
-               + "S7 item to reduce protocol overhead. 0 (default) disables merging.")
-    public int blockMergeMinGap = 0;
+    @ConfigurationParameter("gap")
+    @IntDefaultValue(-1)
+    @Description("Byte gap mode for block merging adjacent byte-aligned fixed-size DB tags. "
+               + "-1 (default) automatically merges when the merged byte-range request is cheaper "
+               + "than reading the tags individually and still fits the negotiated PDU; "
+               + "0 disables block merging; values >0 use fixed-gap merging where adjacent tags "
+               + "whose byte distance is less than this value are merged.")
+    public int gap = -1;
 
     public int getLocalRack() {
         return localRack;
@@ -297,12 +299,12 @@ public class S7Configuration implements PlcConnectionConfiguration {
         this.retryTime = retryTime;
     }
 
-    public int getBlockMergeMinGap() {
-        return blockMergeMinGap;
+    public int getGap() {
+        return gap;
     }
 
-    public void setBlockMergeMinGap(int blockMergeMinGap) {
-        this.blockMergeMinGap = blockMergeMinGap;
+    public void setGap(int gap) {
+        this.gap = gap;
     }
 
     @Override
@@ -325,9 +327,9 @@ public class S7Configuration implements PlcConnectionConfiguration {
             ", ping='" + ping +
             ", pingTime='" + pingTime +
             ", retryTime='" + retryTime +
+            ", gap='" + gap +
             '\'' +
             '}';
     }
             
 }
-

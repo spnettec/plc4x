@@ -233,6 +233,136 @@ class BlockMergeLogicTest {
         }
     }
 
+    // ── computeMergedReadResponseItemSize ─────────────────────────────
+
+    @Nested
+    @DisplayName("computeMergedReadResponseItemSize")
+    class MergedResponseItemSize {
+
+        @Test
+        @DisplayName("zero-byte block → 4 header bytes")
+        void zeroByteBlock() {
+            assertEquals(4, S7NonHProtocolLogic.computeMergedReadResponseItemSize(0));
+        }
+
+        @Test
+        @DisplayName("one-byte block → 6 (4 header + 1 data, padded even)")
+        void oneByteBlockPadded() {
+            assertEquals(6, S7NonHProtocolLogic.computeMergedReadResponseItemSize(1));
+        }
+
+        @Test
+        @DisplayName("two-byte block → 6 (4 header + 2 data)")
+        void twoByteBlock() {
+            assertEquals(6, S7NonHProtocolLogic.computeMergedReadResponseItemSize(2));
+        }
+
+        @Test
+        @DisplayName("twelve-byte block → 16 (4 header + 12 data)")
+        void twelveByteBlock() {
+            assertEquals(16, S7NonHProtocolLogic.computeMergedReadResponseItemSize(12));
+        }
+
+        @Test
+        @DisplayName("thirteen-byte block → 18 (4 header + 13 data, padded even)")
+        void thirteenByteBlockPadded() {
+            assertEquals(18, S7NonHProtocolLogic.computeMergedReadResponseItemSize(13));
+        }
+    }
+
+    // ── Block-merge group building ────────────────────────────────────
+
+    @Nested
+    @DisplayName("buildFixedGapMergeGroups")
+    class FixedGapMergeGroups {
+
+        @Test
+        @DisplayName("groups adjacent tags when byte gap is less than minGap")
+        void groupsGapLessThanMinGap() {
+            List<S7Tag> tags = List.of(
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 0, (byte) 0, 1, "UTF-8"),
+                    new S7Tag(TransportSize.WORD, MemoryArea.DATA_BLOCKS, 1, 10, (byte) 0, 1, "UTF-8"),
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 40, (byte) 0, 1, "UTF-8"));
+
+            List<List<Integer>> groups = S7NonHProtocolLogic.buildFixedGapMergeGroups(
+                    List.of(0, 1, 2), tags, 16);
+
+            assertEquals(List.of(List.of(0, 1), List.of(2)), groups);
+        }
+
+        @Test
+        @DisplayName("does not group when byte gap is equal to minGap")
+        void equalGapDoesNotMerge() {
+            List<S7Tag> tags = List.of(
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 0, (byte) 0, 1, "UTF-8"),
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 20, (byte) 0, 1, "UTF-8"));
+
+            List<List<Integer>> groups = S7NonHProtocolLogic.buildFixedGapMergeGroups(
+                    List.of(0, 1), tags, 16);
+
+            assertEquals(List.of(List.of(0), List.of(1)), groups);
+        }
+    }
+
+    @Nested
+    @DisplayName("buildAutoMergeGroups")
+    class AutoMergeGroups {
+
+        @Test
+        @DisplayName("groups adjacent DINTs when merged item is cheaper")
+        void groupsAdjacentDints() {
+            List<S7Tag> tags = List.of(
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 32, (byte) 0, 1, "UTF-8"),
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 36, (byte) 0, 1, "UTF-8"),
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 40, (byte) 0, 1, "UTF-8"));
+
+            List<List<Integer>> groups = S7NonHProtocolLogic.buildAutoMergeGroups(
+                    List.of(0, 1, 2), tags);
+
+            assertEquals(List.of(List.of(0, 1, 2)), groups);
+        }
+
+        @Test
+        @DisplayName("rejects large gap when merged item is more expensive")
+        void rejectsLargeGap() {
+            List<S7Tag> tags = List.of(
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 0, (byte) 0, 1, "UTF-8"),
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 100, (byte) 0, 1, "UTF-8"));
+
+            List<List<Integer>> groups = S7NonHProtocolLogic.buildAutoMergeGroups(
+                    List.of(0, 1), tags);
+
+            assertEquals(List.of(List.of(0), List.of(1)), groups);
+        }
+
+        @Test
+        @DisplayName("accepts moderate gap when item overhead saving wins")
+        void acceptsCostEffectiveGap() {
+            List<S7Tag> tags = List.of(
+                    new S7Tag(TransportSize.WORD, MemoryArea.DATA_BLOCKS, 1, 8, (byte) 0, 1, "UTF-8"),
+                    new S7Tag(TransportSize.WORD, MemoryArea.DATA_BLOCKS, 1, 20, (byte) 0, 1, "UTF-8"));
+
+            List<List<Integer>> groups = S7NonHProtocolLogic.buildAutoMergeGroups(
+                    List.of(0, 1), tags);
+
+            assertEquals(List.of(List.of(0, 1)), groups);
+        }
+
+        @Test
+        @DisplayName("starts a new candidate group after rejecting an expensive gap")
+        void startsNewGroupAfterRejectedGap() {
+            List<S7Tag> tags = List.of(
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 0, (byte) 0, 1, "UTF-8"),
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 100, (byte) 0, 1, "UTF-8"),
+                    new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 104, (byte) 0, 1, "UTF-8"));
+
+            List<List<Integer>> groups = S7NonHProtocolLogic.buildAutoMergeGroups(
+                    List.of(0, 1, 2), tags);
+
+            assertEquals(List.of(List.of(0), List.of(1, 2)), groups);
+        }
+    }
+
     // ── BlockMergeMapping ──────────────────────────────────────────────
 
     @Nested

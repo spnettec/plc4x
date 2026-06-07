@@ -571,8 +571,9 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
     ReadRequestContext performOrdinaryReadRequest(DefaultPlcReadRequest request) {
         int tpduId = getTpduId();
 
-        int minGap = configuration != null ? configuration.getBlockMergeMinGap() : 0;
-        if (minGap <= 0) {
+        int gap = configuration != null ? configuration.getGap() : 0;
+        boolean autoMerge = gap < 0;
+        if (gap == 0) {
             return new ReadRequestContext(
                     sendReadMessage(request, buildPlainReadItems(request), tpduId), null);
         }
@@ -603,31 +604,19 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
         int pduSize = s7DriverContext != null ? s7DriverContext.getPduSize() : 240;
 
         // ── Build merge groups per DB ────────────────────────────────────
-        // Each group is a List<Integer> of tag indices that should be merged
-        // (gap between adjacent tags < minGap).
+        // Fixed mode: group adjacent tags whose gap is < minGap.
+        // Auto mode: group adjacent tags while the merged byte-range item is
+        // cheaper than reading the same tags individually.
         Map<Integer, List<List<Integer>>> groupsByDB = new LinkedHashMap<>();
         for (Map.Entry<Integer, List<Integer>> entry : byDB.entrySet()) {
             int db = entry.getKey();
             List<Integer> indices = entry.getValue();
             if (indices.size() < 2) continue;
             indices.sort(Comparator.comparingInt(i -> s7Tags.get(i).getByteOffset()));
-            List<List<Integer>> groups = new ArrayList<>();
-            List<Integer> cur = new ArrayList<>();
-            int curEnd = -1;
-            for (int idx : indices) {
-                S7Tag tag = s7Tags.get(idx);
-                int ts = tag.getByteOffset();
-                int te = ts + s7TagByteSize(tag);
-                if (cur.isEmpty()) {
-                    cur.add(idx); curEnd = te;
-                } else if (ts - curEnd < minGap) {
-                    cur.add(idx); curEnd = Math.max(curEnd, te);
-                } else {
-                    groups.add(cur);
-                    cur = new ArrayList<>(); cur.add(idx); curEnd = te;
-                }
-            }
-            if (!cur.isEmpty()) groups.add(cur);
+
+            List<List<Integer>> groups = autoMerge
+                    ? buildAutoMergeGroups(indices, s7Tags)
+                    : buildFixedGapMergeGroups(indices, s7Tags, gap);
             groupsByDB.put(db, groups);
         }
 
@@ -651,8 +640,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
                 }
                 int blockSize = blockEnd - blockStart;
                 int requestItemSize = S7_ADDRESS_ANY_SIZE;
-                int responseItemSize = 4 + blockSize;
-                if (responseItemSize % 2 == 1) responseItemSize++;   // even-byte padding
+                int responseItemSize = computeMergedReadResponseItemSize(blockSize);
                 candidateBlocks.add(new MergedBlock(db, blockStart, blockSize,
                         group, requestItemSize, responseItemSize));
             }
@@ -763,6 +751,87 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
         return sendInternal(requestMessage);
     }
 
+    static List<List<Integer>> buildFixedGapMergeGroups(List<Integer> indices, List<S7Tag> s7Tags, int minGap) {
+        List<List<Integer>> groups = new ArrayList<>();
+        List<Integer> current = new ArrayList<>();
+        int currentEnd = -1;
+
+        for (int idx : indices) {
+            S7Tag tag = s7Tags.get(idx);
+            int tagStart = tag.getByteOffset();
+            int tagEnd = tagStart + s7TagByteSize(tag);
+
+            if (current.isEmpty()) {
+                current.add(idx);
+                currentEnd = tagEnd;
+            } else if (tagStart - currentEnd < minGap) {
+                current.add(idx);
+                currentEnd = Math.max(currentEnd, tagEnd);
+            } else {
+                groups.add(current);
+                current = new ArrayList<>();
+                current.add(idx);
+                currentEnd = tagEnd;
+            }
+        }
+
+        if (!current.isEmpty()) {
+            groups.add(current);
+        }
+        return groups;
+    }
+
+    static List<List<Integer>> buildAutoMergeGroups(List<Integer> indices, List<S7Tag> s7Tags) {
+        List<List<Integer>> groups = new ArrayList<>();
+        List<Integer> current = new ArrayList<>();
+        int currentStart = -1;
+        int currentEnd = -1;
+        int currentIndividualCost = 0;
+
+        for (int idx : indices) {
+            S7Tag tag = s7Tags.get(idx);
+            int tagStart = tag.getByteOffset();
+            int tagEnd = tagStart + s7TagByteSize(tag);
+            int tagIndividualCost = S7_ADDRESS_ANY_SIZE + computeReadResponseItemSize(tag);
+
+            if (current.isEmpty()) {
+                current.add(idx);
+                currentStart = tagStart;
+                currentEnd = tagEnd;
+                currentIndividualCost = tagIndividualCost;
+                continue;
+            }
+
+            int candidateStart = Math.min(currentStart, tagStart);
+            int candidateEnd = Math.max(currentEnd, tagEnd);
+            int candidateBlockSize = candidateEnd - candidateStart;
+            int candidateIndividualCost = currentIndividualCost + tagIndividualCost;
+            int candidateMergedCost = S7_ADDRESS_ANY_SIZE + computeMergedReadResponseItemSize(candidateBlockSize);
+
+            // Conservative greedy pass: once the next tag makes the merged range
+            // more expensive than individual reads, close the current group instead
+            // of speculating that later tags may amortize those gap bytes.
+            if (candidateMergedCost < candidateIndividualCost) {
+                current.add(idx);
+                currentStart = candidateStart;
+                currentEnd = candidateEnd;
+                currentIndividualCost = candidateIndividualCost;
+            } else {
+                groups.add(current);
+                current = new ArrayList<>();
+                current.add(idx);
+                currentStart = tagStart;
+                currentEnd = tagEnd;
+                currentIndividualCost = tagIndividualCost;
+            }
+        }
+
+        if (!current.isEmpty()) {
+            groups.add(current);
+        }
+        return groups;
+    }
+
     /** Returns the total byte size of a fixed-size S7 tag on the wire, or -1 if
      *  variable / packed / unknown — tags that should not participate in byte-range
      *  block merging.  BIT and BOOL arrays are packed (encodeS7Address converts them
@@ -801,6 +870,18 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
             numElements = (numElements + 7) / 8;
         }
         int size = 4 + (numElements * tag.getDataType().getSizeInBytes() * length);
+        if (size % 2 == 1) size++;   // even-byte padding
+        return size;
+    }
+
+    /**
+     * Compute the S7 read-response item size (in bytes) for one merged BYTE-range
+     * item. The returned value includes the 4-byte item header and is padded to
+     * an even byte count, matching the per-item response sizing used for PDU
+     * budget checks.
+     */
+    static int computeMergedReadResponseItemSize(int blockSize) {
+        int size = 4 + blockSize;
         if (size % 2 == 1) size++;   // even-byte padding
         return size;
     }

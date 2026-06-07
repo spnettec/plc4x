@@ -36,7 +36,7 @@ public class DatatypesTest {
         boolean lastError = false;
         while (true) {
             loop++;
-            try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.57?block-merge-min-gap=16")) {
+            try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.57?gap=16")) {
                 final PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL"); // true
                 builder.addTagAddress("bool-value-2", "%DB1:0.1:BOOL"); // false

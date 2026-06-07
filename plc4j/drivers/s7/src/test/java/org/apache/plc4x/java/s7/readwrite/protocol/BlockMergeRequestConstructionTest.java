@@ -65,7 +65,7 @@ class BlockMergeRequestConstructionTest {
         when(driverCtx.getPduSize()).thenReturn(240);
 
         config = new S7Configuration();
-        config.blockMergeMinGap = 16;
+        config.gap = 16;
 
         // spy() calls the real constructor → tpduGenerator is initialized
         logic = spy(new S7NonHProtocolLogic());
@@ -263,13 +263,13 @@ class BlockMergeRequestConstructionTest {
     }
 
     @Nested
-    @DisplayName("gap=0 (no merge)")
+    @DisplayName("Block merge disabled")
     class GapDisabled {
 
         @Test
         @DisplayName("gap=0 returns null blockMapping")
         void gapZeroNoMerge() {
-            config.blockMergeMinGap = 0;
+            config.gap = 0;
             logic.setConfiguration(config);
 
             Map<String, S7Tag> tags = new LinkedHashMap<>();
@@ -283,7 +283,98 @@ class BlockMergeRequestConstructionTest {
             List<S7VarRequestParameterItem> items = itemsCaptor.getValue();
             assertEquals(3, items.size(), "gap=0 → 3 individual items, no merge");
 
-            assertNull(ctx.blockMapping(), "blockMapping should be null when gap=0");
+            assertNull(ctx.blockMapping(), "blockMapping should be null when block merging is disabled");
+        }
+    }
+
+    @Nested
+    @DisplayName("Block merge: automatic gap detection")
+    class AutoGapDetection {
+
+        @Test
+        @DisplayName("gap=-1 auto mode merges adjacent tags")
+        void autoMergeWorksWithGapMinusOne() {
+            config.gap = -1;
+            logic.setConfiguration(config);
+
+            Map<String, S7Tag> tags = new LinkedHashMap<>();
+            tags.put("dint0", new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 32, (byte) 0, 1, "UTF-8"));
+            tags.put("dint1", new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 36, (byte) 0, 1, "UTF-8"));
+            tags.put("dint2", new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 40, (byte) 0, 1, "UTF-8"));
+            DefaultPlcReadRequest request = readRequest(tags);
+
+            S7NonHProtocolLogic.ReadRequestContext ctx = logic.performOrdinaryReadRequest(request);
+
+            List<S7VarRequestParameterItem> items = itemsCaptor.getValue();
+            assertEquals(1, items.size(), "auto mode should merge adjacent DINTs with gap=-1");
+
+            S7AddressAny addr = asAny(items.get(0));
+            assertEquals(TransportSize.BYTE, addr.getTransportSize());
+            assertEquals(12, addr.getNumberOfElements());
+            assertNotNull(ctx.blockMapping());
+            assertTrue(ctx.blockMapping().get(0).isMerged());
+        }
+
+        @Test
+        @DisplayName("auto mode rejects a gap when reading gap bytes is not cheaper")
+        void autoMergeRejectsTooLargeGap() {
+            config.gap = -1;
+            logic.setConfiguration(config);
+
+            Map<String, S7Tag> tags = new LinkedHashMap<>();
+            tags.put("d0", new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 0, (byte) 0, 1, "UTF-8"));
+            tags.put("d1", new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 100, (byte) 0, 1, "UTF-8"));
+            DefaultPlcReadRequest request = readRequest(tags);
+
+            S7NonHProtocolLogic.ReadRequestContext ctx = logic.performOrdinaryReadRequest(request);
+
+            List<S7VarRequestParameterItem> items = itemsCaptor.getValue();
+            assertEquals(2, items.size(), "auto mode should not merge when the BYTE range is more expensive");
+            assertEquals(2, ctx.blockMapping().size());
+            assertFalse(ctx.blockMapping().get(0).isMerged());
+            assertFalse(ctx.blockMapping().get(1).isMerged());
+        }
+
+        @Test
+        @DisplayName("auto mode accepts a moderate gap when protocol overhead saving wins")
+        void autoMergeAcceptsCostEffectiveGap() {
+            config.gap = -1;
+            logic.setConfiguration(config);
+
+            Map<String, S7Tag> tags = new LinkedHashMap<>();
+            tags.put("w0", new S7Tag(TransportSize.WORD, MemoryArea.DATA_BLOCKS, 1, 8, (byte) 0, 1, "UTF-8"));
+            tags.put("w1", new S7Tag(TransportSize.WORD, MemoryArea.DATA_BLOCKS, 1, 20, (byte) 0, 1, "UTF-8"));
+            DefaultPlcReadRequest request = readRequest(tags);
+
+            S7NonHProtocolLogic.ReadRequestContext ctx = logic.performOrdinaryReadRequest(request);
+
+            List<S7VarRequestParameterItem> items = itemsCaptor.getValue();
+            assertEquals(1, items.size(), "auto mode should merge when gap bytes cost less than item overhead");
+
+            S7AddressAny addr = asAny(items.get(0));
+            assertEquals(TransportSize.BYTE, addr.getTransportSize());
+            assertEquals(14, addr.getNumberOfElements());
+            assertTrue(ctx.blockMapping().get(0).isMerged());
+        }
+
+        @Test
+        @DisplayName("auto mode still rejects a cost-effective group when it exceeds PDU")
+        void autoMergeStillRespectsPduBudget() {
+            config.gap = -1;
+            logic.setConfiguration(config);
+            when(driverCtx.getPduSize()).thenReturn(28);
+
+            Map<String, S7Tag> tags = new LinkedHashMap<>();
+            tags.put("w0", new S7Tag(TransportSize.WORD, MemoryArea.DATA_BLOCKS, 1, 8, (byte) 0, 1, "UTF-8"));
+            tags.put("w1", new S7Tag(TransportSize.WORD, MemoryArea.DATA_BLOCKS, 1, 20, (byte) 0, 1, "UTF-8"));
+            DefaultPlcReadRequest request = readRequest(tags);
+
+            logic.performOrdinaryReadRequest(request);
+
+            List<S7VarRequestParameterItem> items = itemsCaptor.getValue();
+            assertEquals(2, items.size(), "auto-detected merge should be skipped when total PDU would overflow");
+            assertEquals(TransportSize.WORD, asAny(items.get(0)).getTransportSize());
+            assertEquals(TransportSize.WORD, asAny(items.get(1)).getTransportSize());
         }
     }
 
@@ -353,7 +444,7 @@ class BlockMergeRequestConstructionTest {
             tags.put("d0", new S7Tag(TransportSize.DINT, MemoryArea.DATA_BLOCKS, 1, 32, (byte) 0, 1, "UTF-8"));
             DefaultPlcReadRequest request = readRequest(tags);
 
-            config.blockMergeMinGap = 16;
+            config.gap = 16;
             logic.setConfiguration(config);
 
             S7NonHProtocolLogic.ReadRequestContext ctx = logic.performOrdinaryReadRequest(request);
