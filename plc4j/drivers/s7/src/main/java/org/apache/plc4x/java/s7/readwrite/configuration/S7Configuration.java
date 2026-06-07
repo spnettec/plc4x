@@ -130,6 +130,13 @@ public class S7Configuration implements PlcConnectionConfiguration {
     @Description("Time for supervision of TCP channels. If the channel is not active, a safe stop of the EventLoop must be performed, to ensure that no additional tasks are created.")
     public int retryTime = 0;
 
+    @ConfigurationParameter("block-merge-min-gap")
+    @IntDefaultValue(0)
+    @Description("Minimum byte gap between adjacent tags in the same DB to trigger block merging. "
+               + "Tags whose byte distance is less than this value are merged into a single byte-range "
+               + "S7 item to reduce protocol overhead. 0 (default) disables merging.")
+    public int blockMergeMinGap = 0;
+
     public int getLocalRack() {
         return localRack;
     }
@@ -288,6 +295,14 @@ public class S7Configuration implements PlcConnectionConfiguration {
 
     public void setRetryTime(int retryTime) {
         this.retryTime = retryTime;
+    }
+
+    public int getBlockMergeMinGap() {
+        return blockMergeMinGap;
+    }
+
+    public void setBlockMergeMinGap(int blockMergeMinGap) {
+        this.blockMergeMinGap = blockMergeMinGap;
     }
 
     @Override

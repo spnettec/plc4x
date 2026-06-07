@@ -57,6 +57,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -76,6 +77,15 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
     private final AtomicInteger tpduGenerator = new AtomicInteger(1);
 
     private S7Configuration configuration;
+
+    /**
+     * Returned by {@link #performOrdinaryReadRequest} so the block-merge mapping
+     * travels with the response future via Java closure — no shared mutable state,
+     * no TPDU-key collisions (S7-200 always returns 0), and no cleanup needed on
+     * timeout/error paths.
+     */
+    record ReadRequestContext(CompletableFuture<S7Message> future,
+                              Map<Integer, BlockMergeMapping> blockMapping) {}
 
     private S7DriverContext s7DriverContext;
     private RequestTransactionManager tm;
@@ -214,6 +224,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
         }
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         CompletableFuture<S7Message> responseFuture;
+        Map<Integer, BlockMergeMapping> blockMapping = null;
         if (request.getTagNames().stream().anyMatch(t -> request.getTag(t) instanceof S7SzlTag)) {
             // TODO: Is it correct, that there can only be one szl tag?
             S7SzlTag szlTag = (S7SzlTag) request.getTags().get(0);
@@ -238,11 +249,13 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
         // This is a "normal" read request.
         else {
-            responseFuture = performOrdinaryReadRequest(request);
+            ReadRequestContext ctx = performOrdinaryReadRequest(request);
+            responseFuture = ctx.future();
+            blockMapping = ctx.blockMapping();
         }
 
         // Just send a single response and chain it as Response
-        return toPlcReadResponse(readRequest, responseFuture);
+        return toPlcReadResponse(readRequest, responseFuture, blockMapping);
     }
 
     public <T> CompletableFuture<List<T>> allOf(List<CompletableFuture<T>> futuresList) {
@@ -278,7 +291,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
      * Maps the S7ReadResponse of a PlcReadRequest to a PlcReadResponse
      */
     private CompletableFuture<PlcReadResponse> toPlcReadResponse(PlcReadRequest readRequest,
-            CompletableFuture<S7Message> responseFuture) {
+            CompletableFuture<S7Message> responseFuture,
+            Map<Integer, BlockMergeMapping> blockMapping) {
         CompletableFuture<PlcReadResponse> clientFuture = new CompletableFuture<>();
 
         responseFuture.whenComplete((s7Message, throwable) -> {
@@ -286,7 +300,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
                 clientFuture.completeExceptionally(new PlcProtocolException("Error reading", throwable));
             } else {
                 try {
-                    PlcReadResponse response = (PlcReadResponse) decodeReadResponse(s7Message, readRequest);
+                    PlcReadResponse response = (PlcReadResponse)
+                            decodeReadResponse(s7Message, readRequest, blockMapping);
                     clientFuture.complete(response);
                 } catch (Exception ex) {
                     logger.info(ex.toString());
@@ -553,18 +568,272 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
                 new S7PayloadUserData(payloadItems)));
     }
 
-    private CompletableFuture<S7Message> performOrdinaryReadRequest(DefaultPlcReadRequest request) {
-        // Convert each tag in the request into a corresponding item used in the S7 protocol.
-        List<S7VarRequestParameterItem> requestItems = new ArrayList<>(request.getNumberOfTags());
-        for (PlcTag tag : request.getTags()) {
-            requestItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
+    ReadRequestContext performOrdinaryReadRequest(DefaultPlcReadRequest request) {
+        int tpduId = getTpduId();
+
+        int minGap = configuration != null ? configuration.getBlockMergeMinGap() : 0;
+        if (minGap <= 0) {
+            return new ReadRequestContext(
+                    sendReadMessage(request, buildPlainReadItems(request), tpduId), null);
         }
 
-        // Create a read request template.
-        // tpuId will be inserted before sending in #readInternal, so we insert -1 as dummy here
-        S7Message requestMessage = new S7MessageRequest(getTpduId(), new S7ParameterReadVarRequest(requestItems), null);
+        // ── Block-merge optimization ──────────────────────────────────────
+        List<String> tagNames = new ArrayList<>();
+        List<S7Tag> s7Tags = new ArrayList<>();
+        for (String name : request.getTagNames()) {
+            PlcTag tag = request.getTag(name);
+            tagNames.add(name);
+            s7Tags.add(tag instanceof S7Tag ? (S7Tag) tag : null);
+        }
 
+        // Group DATA_BLOCKS tags by DB — only byte-aligned, fixed-size types
+        Map<Integer, List<Integer>> byDB = new LinkedHashMap<>();
+        for (int i = 0; i < s7Tags.size(); i++) {
+            S7Tag tag = s7Tags.get(i);
+            if (tag == null) continue;
+            int byteSize = s7TagByteSize(tag);
+            if (byteSize <= 0) continue;                     // BOOL, BIT, unknown
+            if (tag.getMemoryArea() != MemoryArea.DATA_BLOCKS) continue;
+            if (tag.getBitOffset() != 0) continue;            // bit-addressed
+            if (tag.getDataType() == TransportSize.STRING
+                    || tag.getDataType() == TransportSize.WSTRING) continue;
+            byDB.computeIfAbsent(tag.getBlockNumber(), k -> new ArrayList<>()).add(i);
+        }
+
+        int pduSize = s7DriverContext != null ? s7DriverContext.getPduSize() : 240;
+
+        // ── Build merge groups per DB ────────────────────────────────────
+        // Each group is a List<Integer> of tag indices that should be merged
+        // (gap between adjacent tags < minGap).
+        Map<Integer, List<List<Integer>>> groupsByDB = new LinkedHashMap<>();
+        for (Map.Entry<Integer, List<Integer>> entry : byDB.entrySet()) {
+            int db = entry.getKey();
+            List<Integer> indices = entry.getValue();
+            if (indices.size() < 2) continue;
+            indices.sort(Comparator.comparingInt(i -> s7Tags.get(i).getByteOffset()));
+            List<List<Integer>> groups = new ArrayList<>();
+            List<Integer> cur = new ArrayList<>();
+            int curEnd = -1;
+            for (int idx : indices) {
+                S7Tag tag = s7Tags.get(idx);
+                int ts = tag.getByteOffset();
+                int te = ts + s7TagByteSize(tag);
+                if (cur.isEmpty()) {
+                    cur.add(idx); curEnd = te;
+                } else if (ts - curEnd < minGap) {
+                    cur.add(idx); curEnd = Math.max(curEnd, te);
+                } else {
+                    groups.add(cur);
+                    cur = new ArrayList<>(); cur.add(idx); curEnd = te;
+                }
+            }
+            if (!cur.isEmpty()) groups.add(cur);
+            groupsByDB.put(db, groups);
+        }
+
+        // ── Compute per-item PDU costs (same formula as S7Optimizer) ────
+        // For each merged group compute its block size and PDU cost.
+        // For individual tags compute their PDU cost from the S7 data type.
+        record MergedBlock(int db, int blockStart, int blockSize,
+                           List<Integer> indices,
+                           int requestSize, int responseSize) {}
+        List<MergedBlock> candidateBlocks = new ArrayList<>();
+
+        for (Map.Entry<Integer, List<List<Integer>>> entry : groupsByDB.entrySet()) {
+            int db = entry.getKey();
+            for (List<Integer> group : entry.getValue()) {
+                if (group.size() < 2) continue;
+                int blockStart = Integer.MAX_VALUE, blockEnd = 0;
+                for (int idx : group) {
+                    S7Tag tag = s7Tags.get(idx);
+                    blockStart = Math.min(blockStart, tag.getByteOffset());
+                    blockEnd = Math.max(blockEnd, tag.getByteOffset() + s7TagByteSize(tag));
+                }
+                int blockSize = blockEnd - blockStart;
+                int requestItemSize = S7_ADDRESS_ANY_SIZE;
+                int responseItemSize = 4 + blockSize;
+                if (responseItemSize % 2 == 1) responseItemSize++;   // even-byte padding
+                candidateBlocks.add(new MergedBlock(db, blockStart, blockSize,
+                        group, requestItemSize, responseItemSize));
+            }
+        }
+
+        // ── Compute per-tag individual costs (baseline) ──────────────────
+        int[] tagReqSize = new int[s7Tags.size()];
+        int[] tagRespSize = new int[s7Tags.size()];
+        for (int i = 0; i < s7Tags.size(); i++) {
+            S7Tag tag = s7Tags.get(i);
+            if (tag == null) continue;
+            tagReqSize[i] = S7_ADDRESS_ANY_SIZE;
+            tagRespSize[i] = computeReadResponseItemSize(tag);
+        }
+
+        // Baseline: all tags as individual items (guaranteed to fit)
+        int currentReq = EMPTY_READ_REQUEST_SIZE;
+        int currentResp = EMPTY_READ_RESPONSE_SIZE;
+        for (int i = 0; i < s7Tags.size(); i++) {
+            if (s7Tags.get(i) != null) {
+                currentReq += tagReqSize[i];
+                currentResp += tagRespSize[i];
+            }
+        }
+
+        // ── Try merges: replace N individual items with 1 merged item ────
+        // Sort by block size descending to maximize merge benefit.
+        // Each merge reduces request overhead (N→1 items) but may increase
+        // response size (gap bytes).  Only apply if the result fits in PDU.
+        Set<Integer> merged = new HashSet<>();
+        Map<Integer, BlockMergeMapping> mapping = new LinkedHashMap<>();
+        List<S7VarRequestParameterItem> requestItems = new ArrayList<>();
+
+        candidateBlocks.sort((a, b) -> Integer.compare(b.blockSize, a.blockSize));
+        for (MergedBlock block : candidateBlocks) {
+            // Sum of individual costs for tags being replaced
+            int indReq = 0, indResp = 0;
+            for (int idx : block.indices) {
+                indReq += tagReqSize[idx];
+                indResp += tagRespSize[idx];
+            }
+            int candidateReq = currentReq - indReq + block.requestSize;
+            int candidateResp = currentResp - indResp + block.responseSize;
+
+            if (candidateReq <= pduSize && candidateResp <= pduSize) {
+                // Merge fits — apply it
+                currentReq = candidateReq;
+                currentResp = candidateResp;
+                merged.addAll(block.indices);
+
+                // Build tag slices for level-2 distribution
+                List<BlockMergeMapping.TagSlice> tagSlices = new ArrayList<>(block.indices.size());
+                for (int idx : block.indices) {
+                    S7Tag tag = s7Tags.get(idx);
+                    tagSlices.add(new BlockMergeMapping.TagSlice(tagNames.get(idx),
+                            tag.getByteOffset() - block.blockStart, s7TagByteSize(tag)));
+                }
+
+                int itemIdx = requestItems.size();
+                List<BlockMergeMapping.Chunk> chunks = List.of(
+                        new BlockMergeMapping.Chunk(itemIdx, 0, block.blockSize));
+                requestItems.add(new S7VarRequestParameterItemAddress(
+                        new S7AddressAny(TransportSize.BYTE, block.blockSize,
+                                block.db, MemoryArea.DATA_BLOCKS, block.blockStart, (byte) 0)));
+
+                mapping.put(itemIdx,
+                        new BlockMergeMapping(block.blockSize, chunks, tagSlices));
+            }
+            // else: merge doesn't fit — these tags stay as individual items
+        }
+
+        // Remaining (non-merged or non-mergeable) tags → individual items
+        // These ALWAYS fit because the optimizer verified the baseline and we
+        // only applied merges that keep the total within PDU.
+        for (int i = 0; i < s7Tags.size(); i++) {
+            if (merged.contains(i)) continue;
+            S7Tag tag = s7Tags.get(i);
+            if (tag == null) continue;
+
+            int itemIdx = requestItems.size();
+            requestItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
+            List<BlockMergeMapping.Chunk> chunks = List.of(
+                    new BlockMergeMapping.Chunk(itemIdx, 0, 0));
+            List<BlockMergeMapping.TagSlice> tagSlices = List.of(
+                    new BlockMergeMapping.TagSlice(tagNames.get(i), 0, 0));
+            mapping.put(itemIdx, new BlockMergeMapping(0, chunks, tagSlices));
+        }
+
+        // Return the mapping inside a ReadRequestContext so it travels with the
+        // response future via Java closure — no shared mutable state needed.
+        return new ReadRequestContext(
+                sendReadMessage(request, requestItems, tpduId), mapping);
+    }
+
+    private List<S7VarRequestParameterItem> buildPlainReadItems(DefaultPlcReadRequest request) {
+        List<S7VarRequestParameterItem> items = new ArrayList<>(request.getNumberOfTags());
+        for (PlcTag tag : request.getTags()) {
+            items.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
+        }
+        return items;
+    }
+
+    CompletableFuture<S7Message> sendReadMessage(DefaultPlcReadRequest request,
+                                                          List<S7VarRequestParameterItem> requestItems,
+                                                          int tpduId) {
+        S7Message requestMessage = new S7MessageRequest(tpduId,
+                new S7ParameterReadVarRequest(requestItems), null);
         return sendInternal(requestMessage);
+    }
+
+    /** Returns the total byte size of a fixed-size S7 tag on the wire, or -1 if
+     *  variable / packed / unknown — tags that should not participate in byte-range
+     *  block merging.  BIT and BOOL arrays are packed (encodeS7Address converts them
+     *  to BYTE[(n+7)/8]) so their raw DataType size does not reflect the wire size. */
+    static int s7TagByteSize(S7Tag tag) {
+        int size = tag.getDataType().getSizeInBytes();
+        if (size <= 0) return -1;
+        if (tag.getDataType() == TransportSize.BOOL) return -1; // packed bits
+        if (tag.getDataType() == TransportSize.BIT) return -1;  // packed bits
+        return size * tag.getNumberOfElements();
+    }
+
+    /**
+     * Compute the S7 read-response item size (in bytes) for a single tag, matching
+     * the formula in {@code S7Optimizer.processReadRequest}.  The returned value
+     * includes the 4-byte item header and is padded to an even byte count.
+     * <p>
+     * This is used by the block-merge PDU budget check to keep the baseline
+     * consistent with what the optimizer already verified.
+     */
+    static int computeReadResponseItemSize(S7Tag tag) {
+        int length = 1;
+        if (tag instanceof S7StringTag) {
+            length = ((S7StringTag) tag).getStringLength() + 2;
+        } else if (tag.getDataType() == TransportSize.STRING) {
+            // %DB1:56:STRING without explicit (length) creates a plain S7Tag —
+            // encodeS7Address defaults stringLength to 254.
+            length = 254 + 2;
+        } else if (tag.getDataType() == TransportSize.WSTRING) {
+            length = 254 + 2;
+        }
+        int numElements = tag.getNumberOfElements();
+        // BIT/BOOL arrays with n>1 are encoded as BYTE[(n+7)/8] by encodeS7Address
+        if ((tag.getDataType() == TransportSize.BIT
+                || tag.getDataType() == TransportSize.BOOL) && numElements > 1) {
+            numElements = (numElements + 7) / 8;
+        }
+        int size = 4 + (numElements * tag.getDataType().getSizeInBytes() * length);
+        if (size % 2 == 1) size++;   // even-byte padding
+        return size;
+    }
+
+    // ── Block-merge mapping ───────────────────────────────────────────────
+
+    /**
+     * Describes how response data is reassembled and distributed to original tags.
+     * <p>
+     * Two-level recovery:
+     * <ol>
+     *   <li><b>Chunk assembly</b> — if the merged block was split across multiple PDU-sized
+     *       S7 items ({@link #chunks} size &gt; 1), concatenate the chunk bytes into one
+     *       continuous byte array of {@link #blockSize} bytes.</li>
+     *   <li><b>Tag distribution</b> — for each {@link TagSlice}, extract the relevant
+     *       byte range from the assembled block and feed it to {@link #parsePlcValue}.</li>
+     * </ol>
+     */
+    static class BlockMergeMapping {
+        final int blockSize;            // total byte size of the merged block (or 0 for individual)
+        final List<Chunk> chunks;       // response item index → byte range in the block
+        final List<TagSlice> tagSlices; // how to distribute bytes to original tags
+
+        BlockMergeMapping(int blockSize, List<Chunk> chunks, List<TagSlice> tagSlices) {
+            this.blockSize = blockSize;
+            this.chunks = chunks;
+            this.tagSlices = tagSlices;
+        }
+
+        boolean isMerged() { return tagSlices.size() > 1; }
+
+        record Chunk(int responseItemIndex, int offsetInBlock, int size) {}
+        record TagSlice(String tagName, int offsetInBlock, int byteSize) {}
     }
 
     private CompletableFuture<S7Message> performOrdinaryWriteRequest(PlcWriteRequest request) {
@@ -1009,8 +1278,10 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
         return new DefaultPlcWriteResponse(plcWriteRequest, values);
     }
 
-    private PlcResponse decodeReadResponse(S7Message responseMessage, PlcReadRequest plcReadRequest)
+    private PlcResponse decodeReadResponse(S7Message responseMessage, PlcReadRequest plcReadRequest,
+                                           Map<Integer, BlockMergeMapping> blockMapping)
             throws PlcProtocolException {
+
         Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
         short errorClass;
         short errorCode;
@@ -1182,35 +1453,95 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
         // In all other cases all went well.
         S7PayloadReadVarResponse payload = (S7PayloadReadVarResponse) responseMessage.getPayload();
 
-        // If the numbers of items don't match, we're in big trouble as the only
-        // way to know how to interpret the responses is by aligning them with the
-        // items from the request as this information is not returned by the PLC.
-        if (plcReadRequest.getNumberOfTags() != payload.getItems().size()) {
-            throw new PlcProtocolException("The number of requested items doesn't match the number of returned items");
+        final int responseItemCount = payload.getItems().size();
+        if (blockMapping != null) {
+            // Block-merge mode: count total chunks across all mappings.
+            int totalChunks = 0;
+            for (BlockMergeMapping bm : blockMapping.values()) {
+                totalChunks += bm.chunks.size();
+            }
+            if (totalChunks != responseItemCount) {
+                throw new PlcProtocolException(
+                        "Block-merge total chunks " + totalChunks
+                        + " doesn't match response items " + responseItemCount);
+            }
+        } else {
+            if (plcReadRequest.getNumberOfTags() != responseItemCount) {
+                throw new PlcProtocolException(
+                        "The number of requested items doesn't match the number of returned items");
+            }
         }
 
         List<S7VarPayloadDataItem> payloadItems = payload.getItems();
-        int index = 0;
-        PlcResponseCode responseCode;
-        PlcValue plcValue;
-        for (String tagName : plcReadRequest.getTagNames()) {
-            S7Tag tag = (S7Tag) plcReadRequest.getTag(tagName);
-            S7VarPayloadDataItem payloadItem = payloadItems.get(index);
 
-            responseCode = decodeResponseCode(payloadItem.getReturnCode());
-            plcValue = null;
+        if (blockMapping != null) {
+            // ── Two-level recovery ──────────────────────────────────────
+            // Level 1: Reassemble chunks → full block bytes.
+            // Level 2: Distribute block bytes → individual tag values.
+            for (BlockMergeMapping bm : blockMapping.values()) {
+                PlcResponseCode responseCode = PlcResponseCode.OK;
+                byte[] blockBytes;
 
-            if (responseCode == PlcResponseCode.OK) {
-                try {
-                    plcValue = parsePlcValue(tag, payloadItem.getData());
-                } catch (Exception e) {
-                    throw new PlcProtocolException("Error decoding PlcValue", e);
+                if (bm.blockSize > 0 && bm.isMerged()) {
+                    // Merged block: assemble chunks → byte[blockSize]
+                    blockBytes = new byte[bm.blockSize];
+                    for (BlockMergeMapping.Chunk chunk : bm.chunks) {
+                        S7VarPayloadDataItem item = payloadItems.get(chunk.responseItemIndex);
+                        if (item.getReturnCode() != DataTransportErrorCode.OK) {
+                            responseCode = decodeResponseCode(item.getReturnCode());
+                        }
+                        if (responseCode == PlcResponseCode.OK && item.getData() != null) {
+                            System.arraycopy(item.getData(), 0, blockBytes,
+                                    chunk.offsetInBlock,
+                                    Math.min(chunk.size, item.getData().length));
+                        }
+                    }
+                } else {
+                    // Individual tag: just get the single chunk's data
+                    S7VarPayloadDataItem item = payloadItems.get(bm.chunks.get(0).responseItemIndex);
+                    responseCode = decodeResponseCode(item.getReturnCode());
+                    blockBytes = item.getData();
+                }
+
+                // Level 2: Distribute to individual tags
+                for (BlockMergeMapping.TagSlice slice : bm.tagSlices) {
+                    PlcValue plcValue = null;
+                    if (responseCode == PlcResponseCode.OK && blockBytes != null) {
+                        try {
+                            byte[] sliceData;
+                            if (bm.isMerged()) {
+                                sliceData = Arrays.copyOfRange(blockBytes,
+                                        slice.offsetInBlock, slice.offsetInBlock + slice.byteSize);
+                            } else {
+                                sliceData = blockBytes;
+                            }
+                            S7Tag tag = (S7Tag) plcReadRequest.getTag(slice.tagName);
+                            plcValue = parsePlcValue(tag, sliceData);
+                        } catch (Exception e) {
+                            throw new PlcProtocolException("Error decoding " + slice.tagName, e);
+                        }
+                    }
+                    values.put(slice.tagName, new DefaultPlcResponseItem<>(responseCode, plcValue));
                 }
             }
-
-            PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(responseCode, plcValue);
-            values.put(tagName, result);
-            index++;
+        } else {
+            // Classic 1:1 iteration.
+            int index = 0;
+            for (String tagName : plcReadRequest.getTagNames()) {
+                S7Tag tag = (S7Tag) plcReadRequest.getTag(tagName);
+                S7VarPayloadDataItem payloadItem = payloadItems.get(index);
+                PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
+                PlcValue plcValue = null;
+                if (responseCode == PlcResponseCode.OK) {
+                    try {
+                        plcValue = parsePlcValue(tag, payloadItem.getData());
+                    } catch (Exception e) {
+                        throw new PlcProtocolException("Error decoding PlcValue", e);
+                    }
+                }
+                values.put(tagName, new DefaultPlcResponseItem<>(responseCode, plcValue));
+                index++;
+            }
         }
 
         return new DefaultPlcReadResponse(plcReadRequest, values);

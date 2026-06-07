@@ -181,6 +181,15 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         }
     }
 
+    /**
+     * Alias for {@link #destroy()} — follows the conventional Java resource-release
+     * naming so callers that expect {@code close()} (e.g. OSGi deactivate) work
+     * without special-casing.
+     */
+    public void close() {
+        destroy();
+    }
+
     public static class Builder {
 
         private final PlcConnectionManager connectionManager;
