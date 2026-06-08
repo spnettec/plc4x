@@ -719,6 +719,12 @@
             <inputExclude>**/failsafe-reports/**</inputExclude>
             <inputExclude>**/rat.txt</inputExclude>
 
+            <!-- Maven shade plugin generates this at the module root -->
+            <inputExclude>**/dependency-reduced-pom.xml</inputExclude>
+
+            <!-- Jacoco / site reports -->
+            <inputExclude>**/site/**</inputExclude>
+
             <!-- Python related files -->
             <inputExclude>**/.pytest_cache/**</inputExclude>
             <inputExclude>**/.mypy_cache/**</inputExclude>
