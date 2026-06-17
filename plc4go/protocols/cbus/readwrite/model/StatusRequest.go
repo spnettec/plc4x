@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -140,7 +143,7 @@ func (b *_StatusRequestBuilder) WithStatusType(statusType byte) StatusRequestBui
 }
 
 func (b *_StatusRequestBuilder) PartialBuild() (StatusRequestContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._StatusRequest.deepCopy(), nil
@@ -252,7 +255,7 @@ func CastStatusRequest(structType any) StatusRequest {
 	return nil
 }
 
-func (m *_StatusRequest) GetTypeName() string {
+func (m *_StatusRequest) GetPlx4xTypeName() string {
 	return "StatusRequest"
 }
 
@@ -271,7 +274,7 @@ func (m *_StatusRequest) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func StatusRequestParse[T StatusRequest](ctx context.Context, theBytes []byte) (T, error) {
-	return StatusRequestParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes))
+	return StatusRequestParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func StatusRequestParseWithBufferProducer[T StatusRequest]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -308,7 +311,7 @@ func (m *_StatusRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	statusType, err := ReadPeekField[byte](ctx, "statusType", ReadByte(readBuffer, 8), 0)
+	statusType, err := ReadPeekField[byte](ctx, "statusType", ReadByte(readBuffer, 8), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusType' field"))
 	}

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) WithNegativeAccessRul
 }
 
 func (b *_BACnetConstructedDataNegativeAccessRulesBuilder) Build() (BACnetConstructedDataNegativeAccessRules, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataNegativeAccessRules.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataNegativeAccessRules(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataNegativeAccessRules) GetTypeName() string {
+func (m *_BACnetConstructedDataNegativeAccessRules) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNegativeAccessRules"
 }
 

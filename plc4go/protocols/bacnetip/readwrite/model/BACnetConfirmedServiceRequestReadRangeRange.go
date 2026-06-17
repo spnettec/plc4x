@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -216,7 +217,7 @@ func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) PartialBuild() (BA
 	if b.ClosingTag == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestReadRangeRange.deepCopy(), nil
@@ -352,7 +353,7 @@ func CastBACnetConfirmedServiceRequestReadRangeRange(structType any) BACnetConfi
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReadRangeRange"
 }
 

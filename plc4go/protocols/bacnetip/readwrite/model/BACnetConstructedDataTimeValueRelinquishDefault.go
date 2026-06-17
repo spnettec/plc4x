@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataTimeValueRelinquishDefaultBuilder) Build() (BACne
 	if b.RelinquishDefault == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'relinquishDefault' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataTimeValueRelinquishDefault.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataTimeValueRelinquishDefault(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataTimeValueRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataTimeValueRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTimeValueRelinquishDefault"
 }
 

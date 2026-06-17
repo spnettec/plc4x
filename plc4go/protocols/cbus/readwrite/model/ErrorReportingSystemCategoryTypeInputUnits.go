@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) WithCategoryForType
 }
 
 func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) Build() (ErrorReportingSystemCategoryTypeInputUnits, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ErrorReportingSystemCategoryTypeInputUnits.deepCopy(), nil
@@ -206,7 +207,7 @@ func CastErrorReportingSystemCategoryTypeInputUnits(structType any) ErrorReporti
 	return nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetTypeName() string {
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetPlx4xTypeName() string {
 	return "ErrorReportingSystemCategoryTypeInputUnits"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -112,7 +113,7 @@ func (b *_XmlElementBuilder) WithValue(value ...string) XmlElementBuilder {
 }
 
 func (b *_XmlElementBuilder) Build() (XmlElement, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._XmlElement.deepCopy(), nil
@@ -176,7 +177,7 @@ func CastXmlElement(structType any) XmlElement {
 	return nil
 }
 
-func (m *_XmlElement) GetTypeName() string {
+func (m *_XmlElement) GetPlx4xTypeName() string {
 	return "XmlElement"
 }
 

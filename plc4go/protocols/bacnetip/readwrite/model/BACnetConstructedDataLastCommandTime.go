@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataLastCommandTimeBuilder) Build() (BACnetConstructe
 	if b.LastCommandTime == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'lastCommandTime' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataLastCommandTime.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataLastCommandTime(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataLastCommandTime) GetTypeName() string {
+func (m *_BACnetConstructedDataLastCommandTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLastCommandTime"
 }
 

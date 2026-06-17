@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -181,7 +182,7 @@ func (b *_BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder) Build(
 	if b.EnableDisable == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'enableDisable' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestDeviceCommunicationControl.deepCopy(), nil
@@ -278,7 +279,7 @@ func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType any)
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestDeviceCommunicationControl"
 }
 

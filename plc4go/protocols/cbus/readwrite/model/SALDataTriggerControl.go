@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -135,7 +138,7 @@ func (b *_SALDataTriggerControlBuilder) Build() (SALDataTriggerControl, error) {
 	if b.TriggerControlData == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'triggerControlData' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataTriggerControl.deepCopy(), nil
@@ -224,7 +227,7 @@ func CastSALDataTriggerControl(structType any) SALDataTriggerControl {
 	return nil
 }
 
-func (m *_SALDataTriggerControl) GetTypeName() string {
+func (m *_SALDataTriggerControl) GetPlx4xTypeName() string {
 	return "SALDataTriggerControl"
 }
 
@@ -252,7 +255,7 @@ func (m *_SALDataTriggerControl) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	triggerControlData, err := ReadSimpleField[TriggerControlData](ctx, "triggerControlData", ReadComplex[TriggerControlData](TriggerControlDataParseWithBuffer, readBuffer))
+	triggerControlData, err := ReadSimpleField[TriggerControlData](ctx, "triggerControlData", ReadComplex[TriggerControlData](TriggerControlDataParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'triggerControlData' field"))
 	}
@@ -266,7 +269,7 @@ func (m *_SALDataTriggerControl) parse(ctx context.Context, readBuffer utils.Rea
 }
 
 func (m *_SALDataTriggerControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -283,7 +286,7 @@ func (m *_SALDataTriggerControl) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for SALDataTriggerControl")
 		}
 
-		if err := WriteSimpleField[TriggerControlData](ctx, "triggerControlData", m.GetTriggerControlData(), WriteComplex[TriggerControlData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[TriggerControlData](ctx, "triggerControlData", m.GetTriggerControlData(), WriteComplex[TriggerControlData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'triggerControlData' field")
 		}
 

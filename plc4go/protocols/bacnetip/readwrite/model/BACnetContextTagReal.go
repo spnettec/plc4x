@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetContextTagRealBuilder) Build() (BACnetContextTagReal, error) {
 	if b.Payload == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'payload' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetContextTagReal.deepCopy(), nil
@@ -241,7 +242,7 @@ func CastBACnetContextTagReal(structType any) BACnetContextTagReal {
 	return nil
 }
 
-func (m *_BACnetContextTagReal) GetTypeName() string {
+func (m *_BACnetContextTagReal) GetPlx4xTypeName() string {
 	return "BACnetContextTagReal"
 }
 

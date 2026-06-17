@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataInputReferenceBuilder) Build() (BACnetConstructed
 	if b.InputReference == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'inputReference' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataInputReference.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataInputReference(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataInputReference) GetTypeName() string {
+func (m *_BACnetConstructedDataInputReference) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataInputReference"
 }
 

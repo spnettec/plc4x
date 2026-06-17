@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetPriorityValueUnsignedBuilder) Build() (BACnetPriorityValueUnsign
 	if b.UnsignedValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'unsignedValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPriorityValueUnsigned.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetPriorityValueUnsigned(structType any) BACnetPriorityValueUnsigned
 	return nil
 }
 
-func (m *_BACnetPriorityValueUnsigned) GetTypeName() string {
+func (m *_BACnetPriorityValueUnsigned) GetPlx4xTypeName() string {
 	return "BACnetPriorityValueUnsigned"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -183,7 +184,7 @@ func (b *_GroupObjectDescriptorRealisationTypeBBuilder) WithValueType(valueType 
 }
 
 func (b *_GroupObjectDescriptorRealisationTypeBBuilder) Build() (GroupObjectDescriptorRealisationTypeB, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._GroupObjectDescriptorRealisationTypeB.deepCopy(), nil
@@ -271,7 +272,7 @@ func CastGroupObjectDescriptorRealisationTypeB(structType any) GroupObjectDescri
 	return nil
 }
 
-func (m *_GroupObjectDescriptorRealisationTypeB) GetTypeName() string {
+func (m *_GroupObjectDescriptorRealisationTypeB) GetPlx4xTypeName() string {
 	return "GroupObjectDescriptorRealisationTypeB"
 }
 

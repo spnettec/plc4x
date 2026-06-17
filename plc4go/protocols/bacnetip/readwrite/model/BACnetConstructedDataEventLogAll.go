@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_BACnetConstructedDataEventLogAllBuilder) WithMandatoryFields() BACnetC
 }
 
 func (b *_BACnetConstructedDataEventLogAllBuilder) Build() (BACnetConstructedDataEventLogAll, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataEventLogAll.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastBACnetConstructedDataEventLogAll(structType any) BACnetConstructedDataE
 	return nil
 }
 
-func (m *_BACnetConstructedDataEventLogAll) GetTypeName() string {
+func (m *_BACnetConstructedDataEventLogAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEventLogAll"
 }
 

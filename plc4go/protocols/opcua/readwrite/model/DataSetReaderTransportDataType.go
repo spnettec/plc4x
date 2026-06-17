@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_DataSetReaderTransportDataTypeBuilder) WithMandatoryFields() DataSetRe
 }
 
 func (b *_DataSetReaderTransportDataTypeBuilder) Build() (DataSetReaderTransportDataType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DataSetReaderTransportDataType.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastDataSetReaderTransportDataType(structType any) DataSetReaderTransportDa
 	return nil
 }
 
-func (m *_DataSetReaderTransportDataType) GetTypeName() string {
+func (m *_DataSetReaderTransportDataType) GetPlx4xTypeName() string {
 	return "DataSetReaderTransportDataType"
 }
 

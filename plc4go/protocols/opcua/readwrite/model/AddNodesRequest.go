@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -146,7 +148,7 @@ func (b *_AddNodesRequestBuilder) Build() (AddNodesRequest, error) {
 	if b.RequestHeader == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'requestHeader' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AddNodesRequest.deepCopy(), nil
@@ -239,7 +241,7 @@ func CastAddNodesRequest(structType any) AddNodesRequest {
 	return nil
 }
 
-func (m *_AddNodesRequest) GetTypeName() string {
+func (m *_AddNodesRequest) GetPlx4xTypeName() string {
 	return "AddNodesRequest"
 }
 
@@ -278,19 +280,19 @@ func (m *_AddNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfNodesToAdd, err := ReadImplicitField[int32](ctx, "noOfNodesToAdd", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToAdd, err := ReadImplicitField[int32](ctx, "noOfNodesToAdd", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToAdd' field"))
 	}
 	_ = noOfNodesToAdd
 
-	nodesToAdd, err := ReadCountArrayField[AddNodesItem](ctx, "nodesToAdd", ReadComplex[AddNodesItem](ExtensionObjectDefinitionParseWithBufferProducer[AddNodesItem]((int32)(int32(378))), readBuffer), uint64(noOfNodesToAdd))
+	nodesToAdd, err := ReadCountArrayField[AddNodesItem](ctx, "nodesToAdd", ReadComplex[AddNodesItem](ExtensionObjectDefinitionParseWithBufferProducer[AddNodesItem]((int32)(int32(378))), readBuffer), uint64(noOfNodesToAdd), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToAdd' field"))
 	}
@@ -321,15 +323,15 @@ func (m *_AddNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for AddNodesRequest")
 		}
 
-		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 		noOfNodesToAdd := int32(utils.InlineIf(bool((m.GetNodesToAdd()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToAdd()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfNodesToAdd", noOfNodesToAdd, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfNodesToAdd", noOfNodesToAdd, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToAdd' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "nodesToAdd", m.GetNodesToAdd(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "nodesToAdd", m.GetNodesToAdd(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodesToAdd' field")
 		}
 

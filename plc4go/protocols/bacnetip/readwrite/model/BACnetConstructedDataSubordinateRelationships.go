@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataSubordinateRelationshipsBuilder) WithSubordinateR
 }
 
 func (b *_BACnetConstructedDataSubordinateRelationshipsBuilder) Build() (BACnetConstructedDataSubordinateRelationships, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataSubordinateRelationships.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataSubordinateRelationships(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataSubordinateRelationships) GetTypeName() string {
+func (m *_BACnetConstructedDataSubordinateRelationships) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSubordinateRelationships"
 }
 

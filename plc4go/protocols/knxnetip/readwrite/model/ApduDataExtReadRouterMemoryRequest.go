@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_ApduDataExtReadRouterMemoryRequestBuilder) WithMandatoryFields() ApduD
 }
 
 func (b *_ApduDataExtReadRouterMemoryRequestBuilder) Build() (ApduDataExtReadRouterMemoryRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtReadRouterMemoryRequest.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastApduDataExtReadRouterMemoryRequest(structType any) ApduDataExtReadRoute
 	return nil
 }
 
-func (m *_ApduDataExtReadRouterMemoryRequest) GetTypeName() string {
+func (m *_ApduDataExtReadRouterMemoryRequest) GetPlx4xTypeName() string {
 	return "ApduDataExtReadRouterMemoryRequest"
 }
 

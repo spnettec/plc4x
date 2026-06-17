@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -120,7 +121,7 @@ func (b *_AdsDiscoveryBlockStatusBuilder) WithStatus(status Status) AdsDiscovery
 }
 
 func (b *_AdsDiscoveryBlockStatusBuilder) Build() (AdsDiscoveryBlockStatus, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsDiscoveryBlockStatus.deepCopy(), nil
@@ -222,7 +223,7 @@ func CastAdsDiscoveryBlockStatus(structType any) AdsDiscoveryBlockStatus {
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockStatus) GetTypeName() string {
+func (m *_AdsDiscoveryBlockStatus) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockStatus"
 }
 

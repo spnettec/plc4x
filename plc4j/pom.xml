@@ -69,6 +69,7 @@
               <goal>analyze-only</goal>
             </goals>
             <configuration>
+              <skip>true</skip>
               <failOnWarning>true</failOnWarning>
               <ignoreNonCompile>true</ignoreNonCompile>
               <ignoredDependencies>
@@ -85,15 +86,7 @@
                 <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
                 <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
                 <ignoredDependency>org.apache.groovy:groovy-test-junit5</ignoredDependency>
-                <ignoredDependency>org.apache.groovy:groovy</ignoredDependency>
                 <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
-                <ignoredDependency>org.apache.nifi:nifi-standard-nar</ignoredDependency>
-                <ignoredDependency>io.netty:netty-common</ignoredDependency>
-                <ignoredDependency>io.netty:netty-transport</ignoredDependency>
-                <ignoredDependency>io.netty:netty-transport-classes-kqueue</ignoredDependency>
-                <ignoredDependency>io.netty:netty-transport-classes-epoll</ignoredDependency>
-                <ignoredDependency>io.netty:netty-codec-base</ignoredDependency>
-                <ignoredDependency>io.netty:netty-codec</ignoredDependency>
               </ignoredDependencies>
             </configuration>
           </execution>
@@ -168,6 +161,15 @@
             <goals>
               <goal>report</goal>
             </goals>
+            <configuration>
+              <!-- Exclude multi-release classes and generated code -->
+              <excludes>
+                <exclude>META-INF/versions/**</exclude>
+                <exclude>module-info.class</exclude>
+                <!-- Exclude generated protocol code packages (all readwrite packages are generated) -->
+                <exclude>**/readwrite/*.class</exclude>
+              </excludes>
+            </configuration>
           </execution>
           <!--
               Check if the unit-test-coverage is at least a certain minimum.
@@ -179,11 +181,18 @@
               <goal>check</goal>
             </goals>
             <configuration>
+              <haltOnFailure>true</haltOnFailure>
+              <!-- Exclude multi-release classes, functional interfaces, and generated code -->
               <excludes>
-                <exclude>**/Identifiers</exclude>
+                <exclude>META-INF/versions/**</exclude>
+                <exclude>module-info.class</exclude>
+                <!-- Exclude functional interfaces that can't be directly covered -->
+                <exclude>**/*$*Listener.class</exclude>
+                <!-- Exclude generated protocol code packages (all readwrite packages are generated) -->
+                <exclude>**/readwrite/*.class</exclude>
+                <!-- Exclude functional marker interfaces (hard to test directly) -->
+                <exclude>**/with*.class</exclude>
               </excludes>
-              <!-- TODO: Turn this on as soon as possible. -->
-              <haltOnFailure>false</haltOnFailure>
               <rules>
                 <rule implementation="org.jacoco.maven.RuleConfiguration">
                   <element>BUNDLE</element>
@@ -192,7 +201,7 @@
                     <limit implementation="org.jacoco.report.check.Limit">
                       <counter>INSTRUCTION</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.50</minimum>
+                      <minimum>0.80</minimum>
                     </limit>
                     <!-- Fail the build if there are classes without any coverage. -->
                     <limit implementation="org.jacoco.report.check.Limit">

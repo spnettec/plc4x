@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetOptionalUnsignedValueBuilder) Build() (BACnetOptionalUnsignedVal
 	if b.UnsignedValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'unsignedValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetOptionalUnsignedValue.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetOptionalUnsignedValue(structType any) BACnetOptionalUnsignedValue
 	return nil
 }
 
-func (m *_BACnetOptionalUnsignedValue) GetTypeName() string {
+func (m *_BACnetOptionalUnsignedValue) GetPlx4xTypeName() string {
 	return "BACnetOptionalUnsignedValue"
 }
 

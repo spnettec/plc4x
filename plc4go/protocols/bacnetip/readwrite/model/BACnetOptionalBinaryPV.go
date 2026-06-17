@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -158,7 +159,7 @@ func (b *_BACnetOptionalBinaryPVBuilder) PartialBuild() (BACnetOptionalBinaryPVC
 	if b.PeekedTagHeader == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'peekedTagHeader' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetOptionalBinaryPV.deepCopy(), nil
@@ -276,7 +277,7 @@ func CastBACnetOptionalBinaryPV(structType any) BACnetOptionalBinaryPV {
 	return nil
 }
 
-func (m *_BACnetOptionalBinaryPV) GetTypeName() string {
+func (m *_BACnetOptionalBinaryPV) GetPlx4xTypeName() string {
 	return "BACnetOptionalBinaryPV"
 }
 

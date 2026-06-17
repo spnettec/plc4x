@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) Build() (BACn
 	if b.OccupancyLowerLimitEnforced == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'occupancyLowerLimitEnforced' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataOccupancyLowerLimitEnforced.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataOccupancyLowerLimitEnforced(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) GetTypeName() string {
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOccupancyLowerLimitEnforced"
 }
 

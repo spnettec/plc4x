@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -130,7 +131,7 @@ func (b *_CIPAttributesBuilder) WithData(data ...byte) CIPAttributesBuilder {
 }
 
 func (b *_CIPAttributesBuilder) Build() (CIPAttributes, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CIPAttributes.deepCopy(), nil
@@ -202,7 +203,7 @@ func CastCIPAttributes(structType any) CIPAttributes {
 	return nil
 }
 
-func (m *_CIPAttributes) GetTypeName() string {
+func (m *_CIPAttributes) GetPlx4xTypeName() string {
 	return "CIPAttributes"
 }
 

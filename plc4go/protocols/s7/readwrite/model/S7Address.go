@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -126,7 +127,7 @@ func (b *_S7AddressBuilder) WithMandatoryFields() S7AddressBuilder {
 }
 
 func (b *_S7AddressBuilder) PartialBuild() (S7AddressContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7Address.deepCopy(), nil
@@ -204,7 +205,7 @@ func CastS7Address(structType any) S7Address {
 	return nil
 }
 
-func (m *_S7Address) GetTypeName() string {
+func (m *_S7Address) GetPlx4xTypeName() string {
 	return "S7Address"
 }
 

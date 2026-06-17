@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_BACnetConstructedDataAccessZoneAllBuilder) WithMandatoryFields() BACne
 }
 
 func (b *_BACnetConstructedDataAccessZoneAllBuilder) Build() (BACnetConstructedDataAccessZoneAll, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataAccessZoneAll.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastBACnetConstructedDataAccessZoneAll(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccessZoneAll) GetTypeName() string {
+func (m *_BACnetConstructedDataAccessZoneAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccessZoneAll"
 }
 

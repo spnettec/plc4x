@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -88,7 +89,7 @@ func (b *_IndexBuilder) WithMandatoryFields() IndexBuilder {
 }
 
 func (b *_IndexBuilder) Build() (Index, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Index.deepCopy(), nil
@@ -134,7 +135,7 @@ func CastIndex(structType any) Index {
 	return nil
 }
 
-func (m *_Index) GetTypeName() string {
+func (m *_Index) GetPlx4xTypeName() string {
 	return "Index"
 }
 

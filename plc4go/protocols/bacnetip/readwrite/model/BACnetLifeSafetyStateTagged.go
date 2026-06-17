@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -140,7 +141,7 @@ func (b *_BACnetLifeSafetyStateTaggedBuilder) Build() (BACnetLifeSafetyStateTagg
 	if b.Header == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'header' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLifeSafetyStateTagged.deepCopy(), nil
@@ -223,7 +224,7 @@ func CastBACnetLifeSafetyStateTagged(structType any) BACnetLifeSafetyStateTagged
 	return nil
 }
 
-func (m *_BACnetLifeSafetyStateTagged) GetTypeName() string {
+func (m *_BACnetLifeSafetyStateTagged) GetPlx4xTypeName() string {
 	return "BACnetLifeSafetyStateTagged"
 }
 

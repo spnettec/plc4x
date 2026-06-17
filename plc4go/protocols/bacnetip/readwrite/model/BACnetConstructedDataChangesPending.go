@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataChangesPendingBuilder) Build() (BACnetConstructed
 	if b.ChangesPending == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'changesPending' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataChangesPending.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataChangesPending(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataChangesPending) GetTypeName() string {
+func (m *_BACnetConstructedDataChangesPending) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataChangesPending"
 }
 

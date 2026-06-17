@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -100,7 +101,7 @@ func (b *_MACAddressBuilder) WithAddr(addr ...byte) MACAddressBuilder {
 }
 
 func (b *_MACAddressBuilder) Build() (MACAddress, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MACAddress.deepCopy(), nil
@@ -160,7 +161,7 @@ func CastMACAddress(structType any) MACAddress {
 	return nil
 }
 
-func (m *_MACAddress) GetTypeName() string {
+func (m *_MACAddress) GetPlx4xTypeName() string {
 	return "MACAddress"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SecurityDataPanicActivatedBuilder) WithMandatoryFields() SecurityDataP
 }
 
 func (b *_SecurityDataPanicActivatedBuilder) Build() (SecurityDataPanicActivated, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataPanicActivated.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastSecurityDataPanicActivated(structType any) SecurityDataPanicActivated {
 	return nil
 }
 
-func (m *_SecurityDataPanicActivated) GetTypeName() string {
+func (m *_SecurityDataPanicActivated) GetPlx4xTypeName() string {
 	return "SecurityDataPanicActivated"
 }
 

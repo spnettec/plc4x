@@ -21,6 +21,8 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -158,7 +160,7 @@ func (b *_IdentifyReplyCommandBuilder) WithMandatoryFields() IdentifyReplyComman
 }
 
 func (b *_IdentifyReplyCommandBuilder) PartialBuild() (IdentifyReplyCommandContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._IdentifyReplyCommand.deepCopy(), nil
@@ -406,7 +408,7 @@ func CastIdentifyReplyCommand(structType any) IdentifyReplyCommand {
 	return nil
 }
 
-func (m *_IdentifyReplyCommand) GetTypeName() string {
+func (m *_IdentifyReplyCommand) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommand"
 }
 
@@ -425,7 +427,7 @@ func (m *_IdentifyReplyCommand) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func IdentifyReplyCommandParse[T IdentifyReplyCommand](ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (T, error) {
-	return IdentifyReplyCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes)
 }
 
 func IdentifyReplyCommandParseWithBufferProducer[T IdentifyReplyCommand](attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {

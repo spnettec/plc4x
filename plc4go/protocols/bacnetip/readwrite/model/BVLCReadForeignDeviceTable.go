@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -105,7 +106,7 @@ func (b *_BVLCReadForeignDeviceTableBuilder) WithMandatoryFields() BVLCReadForei
 }
 
 func (b *_BVLCReadForeignDeviceTableBuilder) Build() (BVLCReadForeignDeviceTable, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCReadForeignDeviceTable.deepCopy(), nil
@@ -180,7 +181,7 @@ func CastBVLCReadForeignDeviceTable(structType any) BVLCReadForeignDeviceTable {
 	return nil
 }
 
-func (m *_BVLCReadForeignDeviceTable) GetTypeName() string {
+func (m *_BVLCReadForeignDeviceTable) GetPlx4xTypeName() string {
 	return "BVLCReadForeignDeviceTable"
 }
 

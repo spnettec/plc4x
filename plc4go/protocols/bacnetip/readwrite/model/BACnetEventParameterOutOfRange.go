@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -280,7 +281,7 @@ func (b *_BACnetEventParameterOutOfRangeBuilder) Build() (BACnetEventParameterOu
 	if b.ClosingTag == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetEventParameterOutOfRange.deepCopy(), nil
@@ -385,7 +386,7 @@ func CastBACnetEventParameterOutOfRange(structType any) BACnetEventParameterOutO
 	return nil
 }
 
-func (m *_BACnetEventParameterOutOfRange) GetTypeName() string {
+func (m *_BACnetEventParameterOutOfRange) GetPlx4xTypeName() string {
 	return "BACnetEventParameterOutOfRange"
 }
 

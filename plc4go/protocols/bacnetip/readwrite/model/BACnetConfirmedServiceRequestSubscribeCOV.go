@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -210,7 +211,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) Build() (BACnetConfi
 	if b.MonitoredObjectIdentifier == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestSubscribeCOV.deepCopy(), nil
@@ -311,7 +312,7 @@ func CastBACnetConfirmedServiceRequestSubscribeCOV(structType any) BACnetConfirm
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestSubscribeCOV"
 }
 

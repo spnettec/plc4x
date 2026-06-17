@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -174,7 +175,7 @@ func (b *_BACnetSpecialEventBuilder) Build() (BACnetSpecialEvent, error) {
 	if b.EventPriority == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'eventPriority' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetSpecialEvent.deepCopy(), nil
@@ -242,7 +243,7 @@ func CastBACnetSpecialEvent(structType any) BACnetSpecialEvent {
 	return nil
 }
 
-func (m *_BACnetSpecialEvent) GetTypeName() string {
+func (m *_BACnetSpecialEvent) GetPlx4xTypeName() string {
 	return "BACnetSpecialEvent"
 }
 

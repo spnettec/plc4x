@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_ModbusPDUReadFifoQueueResponseBuilder) WithFifoValue(fifoValue ...uint
 }
 
 func (b *_ModbusPDUReadFifoQueueResponseBuilder) Build() (ModbusPDUReadFifoQueueResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUReadFifoQueueResponse.deepCopy(), nil
@@ -214,7 +215,7 @@ func CastModbusPDUReadFifoQueueResponse(structType any) ModbusPDUReadFifoQueueRe
 	return nil
 }
 
-func (m *_ModbusPDUReadFifoQueueResponse) GetTypeName() string {
+func (m *_ModbusPDUReadFifoQueueResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUReadFifoQueueResponse"
 }
 

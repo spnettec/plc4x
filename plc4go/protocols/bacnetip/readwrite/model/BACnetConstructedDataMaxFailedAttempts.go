@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataMaxFailedAttemptsBuilder) Build() (BACnetConstruc
 	if b.MaxFailedAttempts == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'maxFailedAttempts' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataMaxFailedAttempts.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataMaxFailedAttempts(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttempts) GetTypeName() string {
+func (m *_BACnetConstructedDataMaxFailedAttempts) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaxFailedAttempts"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataBitStringValueRelinquishDefaultBuilder) Build() (
 	if b.RelinquishDefault == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'relinquishDefault' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataBitStringValueRelinquishDefault.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataBitStringValueRelinquishDefault(structType any) BA
 	return nil
 }
 
-func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) GetTypeName() string {
+func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBitStringValueRelinquishDefault"
 }
 

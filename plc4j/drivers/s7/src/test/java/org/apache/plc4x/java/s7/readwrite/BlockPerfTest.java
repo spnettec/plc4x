@@ -38,7 +38,7 @@ public class BlockPerfTest {
     private static final String[][] TAGS = {
         {"bool-value-1", "%DB1:0.0:BOOL"},
         {"bool-value-2", "%DB1:0.1:BOOL"},
-        {"bool-array", "%DB1:2:BIT[10]"},
+        {"bool-array", "%DB1:2:BOOL[10]"},
         {"byte-value", "%DB1:4:BYTE"},
         {"byte-array", "%DB1:6:BYTE[2]"},
         {"word-value", "%DB1:8:WORD"},

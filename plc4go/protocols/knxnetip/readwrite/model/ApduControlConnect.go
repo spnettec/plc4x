@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_ApduControlConnectBuilder) WithMandatoryFields() ApduControlConnectBui
 }
 
 func (b *_ApduControlConnectBuilder) Build() (ApduControlConnect, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduControlConnect.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastApduControlConnect(structType any) ApduControlConnect {
 	return nil
 }
 
-func (m *_ApduControlConnect) GetTypeName() string {
+func (m *_ApduControlConnect) GetPlx4xTypeName() string {
 	return "ApduControlConnect"
 }
 

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -161,7 +162,7 @@ func (b *_KnxNetIpMessageBuilder) WithMandatoryFields() KnxNetIpMessageBuilder {
 }
 
 func (b *_KnxNetIpMessageBuilder) PartialBuild() (KnxNetIpMessageContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._KnxNetIpMessage.deepCopy(), nil
@@ -403,7 +404,7 @@ func CastKnxNetIpMessage(structType any) KnxNetIpMessage {
 	return nil
 }
 
-func (m *_KnxNetIpMessage) GetTypeName() string {
+func (m *_KnxNetIpMessage) GetPlx4xTypeName() string {
 	return "KnxNetIpMessage"
 }
 
@@ -470,24 +471,24 @@ func (m *_KnxNetIpMessage) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'headerLength' field"))
 	}
 	_ = headerLength
 
-	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, uint8(8)), KnxNetIpMessage_PROTOCOLVERSION, codegen.WithByteOrder(binary.BigEndian))
+	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, uint8(8)), KnxNetIpMessage_PROTOCOLVERSION, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolVersion' field"))
 	}
 	_ = protocolVersion
 
-	msgType, err := ReadDiscriminatorField[uint16](ctx, "msgType", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	msgType, err := ReadDiscriminatorField[uint16](ctx, "msgType", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'msgType' field"))
 	}
 
-	totalLength, err := ReadImplicitField[uint16](ctx, "totalLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	totalLength, err := ReadImplicitField[uint16](ctx, "totalLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalLength' field"))
 	}
@@ -583,19 +584,19 @@ func (pm *_KnxNetIpMessage) serializeParent(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for KnxNetIpMessage")
 	}
 	headerLength := uint8(uint8(6))
-	if err := WriteImplicitField(ctx, "headerLength", headerLength, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "headerLength", headerLength, WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'headerLength' field")
 	}
 
-	if err := WriteConstField(ctx, "protocolVersion", KnxNetIpMessage_PROTOCOLVERSION, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteConstField(ctx, "protocolVersion", KnxNetIpMessage_PROTOCOLVERSION, WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'protocolVersion' field")
 	}
 
-	if err := WriteDiscriminatorField(ctx, "msgType", m.GetMsgType(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteDiscriminatorField(ctx, "msgType", m.GetMsgType(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'msgType' field")
 	}
 	totalLength := uint16(uint16(m.GetLengthInBytes(ctx)))
-	if err := WriteImplicitField(ctx, "totalLength", totalLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteImplicitField(ctx, "totalLength", totalLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'totalLength' field")
 	}
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -88,7 +89,7 @@ func (b *_ApplicationInstanceCertificateBuilder) WithMandatoryFields() Applicati
 }
 
 func (b *_ApplicationInstanceCertificateBuilder) Build() (ApplicationInstanceCertificate, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApplicationInstanceCertificate.deepCopy(), nil
@@ -134,7 +135,7 @@ func CastApplicationInstanceCertificate(structType any) ApplicationInstanceCerti
 	return nil
 }
 
-func (m *_ApplicationInstanceCertificate) GetTypeName() string {
+func (m *_ApplicationInstanceCertificate) GetPlx4xTypeName() string {
 	return "ApplicationInstanceCertificate"
 }
 

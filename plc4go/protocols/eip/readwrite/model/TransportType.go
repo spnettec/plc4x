@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -120,7 +121,7 @@ func (b *_TransportTypeBuilder) WithClassTransport(classTransport uint8) Transpo
 }
 
 func (b *_TransportTypeBuilder) Build() (TransportType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TransportType.deepCopy(), nil
@@ -188,7 +189,7 @@ func CastTransportType(structType any) TransportType {
 	return nil
 }
 
-func (m *_TransportType) GetTypeName() string {
+func (m *_TransportType) GetPlx4xTypeName() string {
 	return "TransportType"
 }
 

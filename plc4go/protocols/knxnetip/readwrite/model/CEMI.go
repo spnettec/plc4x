@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -175,7 +176,7 @@ func (b *_CEMIBuilder) WithMandatoryFields() CEMIBuilder {
 }
 
 func (b *_CEMIBuilder) PartialBuild() (CEMIContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CEMI.deepCopy(), nil
@@ -473,7 +474,7 @@ func CastCEMI(structType any) CEMI {
 	return nil
 }
 
-func (m *_CEMI) GetTypeName() string {
+func (m *_CEMI) GetPlx4xTypeName() string {
 	return "CEMI"
 }
 

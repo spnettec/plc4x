@@ -33,13 +33,39 @@ import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcRawByteArray;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
+
+    /**
+     * Pre-built map: PlcValue class simple name (minus "Plc" prefix) → Plc4xValueType.
+     * Excludes types that the generated Plc4xValue serializer doesn't handle
+     * (STRING, WSTRING, RAW_BYTE_ARRAY) — those map to NULL so the optional
+     * value field is skipped on the wire.
+     */
+    private static final Map<String, Plc4xValueType> VALUE_TYPE_MAP;
+    static {
+        Map<String, Plc4xValueType> m = new HashMap<>();
+        for (Plc4xValueType v : Plc4xValueType.values()) {
+            m.put(v.name(), v);
+        }
+        // RAW_BYTE_ARRAY and NULL have no serialization in Plc4xValue dataIo
+        m.remove("RAW_BYTE_ARRAY");
+        m.remove("NULL");
+        // PlcValue class names that differ from Plc4xValueType enum names
+        m.put("DATE_AND_LTIME", Plc4xValueType.LDATE_AND_TIME);
+        VALUE_TYPE_MAP = m;
+    }
 
     private final Logger logger = LoggerFactory.getLogger(Plc4xServerAdapter.class);
 
@@ -100,9 +126,48 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                             if(responseCode == PlcResponseCode.OK) {
                                 resCode = Plc4xResponseCode.OK;
                                 value = apiReadResponse.getPlcValue(plc4xRequestTag.getTag().getName());
-                                final String valueTypeName = value.getClass().getSimpleName();
-                                // Cut off the "Plc" prefix to get the name of the PlcValueType.
-                                valueType = Plc4xValueType.valueOf(valueTypeName.substring(3));
+                                // PlcRawByteArray → JSON array of unsigned byte values
+                                if (value instanceof PlcRawByteArray rawBytes) {
+                                    byte[] data = rawBytes.getRaw();
+                                    StringBuilder sb = new StringBuilder("[");
+                                    for (int i = 0; i < data.length; i++) {
+                                        if (i > 0) sb.append(",");
+                                        sb.append(data[i] & 0xFF);
+                                    }
+                                    sb.append("]");
+                                    value = new PlcSTRING(sb.toString());
+                                    valueType = Plc4xValueType.STRING;
+                                }
+                                // Unwrap single-element PlcList to its scalar element.
+                                if (value instanceof PlcList && value.getList().size() == 1) {
+                                    value = value.getList().get(0);
+                                }
+                                // PlcList (arrays): serialize to JSON string, transmit as STRING.
+                                // Client can reconstruct from tagQuery + JSON.
+                                if (value instanceof PlcList) {
+                                    StringBuilder sb = new StringBuilder("[");
+                                    List<? extends PlcValue> items = value.getList();
+                                    for (int i = 0; i < items.size(); i++) {
+                                        if (i > 0) sb.append(",");
+                                        PlcValue item = items.get(i);
+                                        String s = item.getString();
+                                        // Quote strings, leave numbers/booleans unquoted
+                                        if (item.isString()) {
+                                            sb.append('"').append(s.replace("\"", "\\\"")).append('"');
+                                        } else {
+                                            sb.append(s);
+                                        }
+                                    }
+                                    sb.append("]");
+                                    value = new PlcSTRING(sb.toString());
+                                    valueType = Plc4xValueType.STRING;
+                                } else {
+                                    valueType = resolveValueType(value);
+                                    if (value == null || valueType == Plc4xValueType.RAW_BYTE_ARRAY) {
+                                        valueType = Plc4xValueType.NULL;
+                                        value = null;
+                                    }
+                                }
                             } else {
                                 resCode = Plc4xResponseCode.INVALID_ADDRESS;
                                 value = null;
@@ -174,6 +239,25 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                     logger.error("Error executing plc4xRequestType: {}", plc4xRequestType);
             }
         }
+    }
+
+    /**
+     * Map a PlcValue to the corresponding Plc4xValueType for wire serialization.
+     * For PlcList (arrays), resolves from the first element's type.
+     */
+    private Plc4xValueType resolveValueType(PlcValue value) {
+        if (value instanceof PlcList) {
+            List<? extends PlcValue> list = value.getList();
+            if (!list.isEmpty()) {
+                return resolveValueType(list.get(0));
+            }
+            return Plc4xValueType.NULL;
+        }
+        String typeName = value.getClass().getSimpleName();
+        if (typeName.startsWith("Plc")) {
+            return VALUE_TYPE_MAP.getOrDefault(typeName.substring(3), Plc4xValueType.RAW_BYTE_ARRAY);
+        }
+        return Plc4xValueType.RAW_BYTE_ARRAY;
     }
 
 }

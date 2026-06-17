@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_ApduDataGroupValueResponseBuilder) WithData(data ...byte) ApduDataGrou
 }
 
 func (b *_ApduDataGroupValueResponseBuilder) Build() (ApduDataGroupValueResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataGroupValueResponse.deepCopy(), nil
@@ -221,7 +222,7 @@ func CastApduDataGroupValueResponse(structType any) ApduDataGroupValueResponse {
 	return nil
 }
 
-func (m *_ApduDataGroupValueResponse) GetTypeName() string {
+func (m *_ApduDataGroupValueResponse) GetPlx4xTypeName() string {
 	return "ApduDataGroupValueResponse"
 }
 

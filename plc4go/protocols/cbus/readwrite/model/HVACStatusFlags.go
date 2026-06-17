@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -166,7 +167,7 @@ func (b *_HVACStatusFlagsBuilder) WithCoolingPlant(coolingPlant bool) HVACStatus
 }
 
 func (b *_HVACStatusFlagsBuilder) Build() (HVACStatusFlags, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._HVACStatusFlags.deepCopy(), nil
@@ -271,7 +272,7 @@ func CastHVACStatusFlags(structType any) HVACStatusFlags {
 	return nil
 }
 
-func (m *_HVACStatusFlags) GetTypeName() string {
+func (m *_HVACStatusFlags) GetPlx4xTypeName() string {
 	return "HVACStatusFlags"
 }
 

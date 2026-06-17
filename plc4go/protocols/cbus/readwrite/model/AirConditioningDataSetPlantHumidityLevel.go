@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -255,7 +256,7 @@ func (b *_AirConditioningDataSetPlantHumidityLevelBuilder) Build() (AirCondition
 	if b.HumidityModeAndFlags == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'humidityModeAndFlags' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AirConditioningDataSetPlantHumidityLevel.deepCopy(), nil
@@ -364,7 +365,7 @@ func CastAirConditioningDataSetPlantHumidityLevel(structType any) AirConditionin
 	return nil
 }
 
-func (m *_AirConditioningDataSetPlantHumidityLevel) GetTypeName() string {
+func (m *_AirConditioningDataSetPlantHumidityLevel) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetPlantHumidityLevel"
 }
 

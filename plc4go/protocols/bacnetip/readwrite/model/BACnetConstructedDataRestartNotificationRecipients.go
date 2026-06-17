@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataRestartNotificationRecipientsBuilder) WithRestart
 }
 
 func (b *_BACnetConstructedDataRestartNotificationRecipientsBuilder) Build() (BACnetConstructedDataRestartNotificationRecipients, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataRestartNotificationRecipients.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataRestartNotificationRecipients(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataRestartNotificationRecipients) GetTypeName() string {
+func (m *_BACnetConstructedDataRestartNotificationRecipients) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataRestartNotificationRecipients"
 }
 

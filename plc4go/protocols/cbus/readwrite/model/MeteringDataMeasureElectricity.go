@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_MeteringDataMeasureElectricityBuilder) WithMandatoryFields() MeteringD
 }
 
 func (b *_MeteringDataMeasureElectricityBuilder) Build() (MeteringDataMeasureElectricity, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MeteringDataMeasureElectricity.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastMeteringDataMeasureElectricity(structType any) MeteringDataMeasureElect
 	return nil
 }
 
-func (m *_MeteringDataMeasureElectricity) GetTypeName() string {
+func (m *_MeteringDataMeasureElectricity) GetPlx4xTypeName() string {
 	return "MeteringDataMeasureElectricity"
 }
 

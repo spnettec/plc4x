@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataReasonForDisableBuilder) WithReasonForDisable(rea
 }
 
 func (b *_BACnetConstructedDataReasonForDisableBuilder) Build() (BACnetConstructedDataReasonForDisable, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataReasonForDisable.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataReasonForDisable(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataReasonForDisable) GetTypeName() string {
+func (m *_BACnetConstructedDataReasonForDisable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataReasonForDisable"
 }
 

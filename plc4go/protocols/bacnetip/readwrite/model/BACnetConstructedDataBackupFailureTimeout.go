@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataBackupFailureTimeoutBuilder) Build() (BACnetConst
 	if b.BackupFailureTimeout == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'backupFailureTimeout' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataBackupFailureTimeout.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataBackupFailureTimeout(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataBackupFailureTimeout) GetTypeName() string {
+func (m *_BACnetConstructedDataBackupFailureTimeout) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBackupFailureTimeout"
 }
 

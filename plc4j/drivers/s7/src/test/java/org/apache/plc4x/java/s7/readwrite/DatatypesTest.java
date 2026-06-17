@@ -40,7 +40,7 @@ public class DatatypesTest {
                 final PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL"); // true
                 builder.addTagAddress("bool-value-2", "%DB1:0.1:BOOL"); // false
-                builder.addTagAddress("bool-array", "%DB1:2:BIT[10]");
+                builder.addTagAddress("bool-array", "%DB1:2:BOOL[10]");
                 builder.addTagAddress("byte-value", "%DB1:4:BYTE");
                 builder.addTagAddress("byte-array", "%DB1:6:BYTE[2]");
                 builder.addTagAddress("word-value", "%DB1:8:WORD");

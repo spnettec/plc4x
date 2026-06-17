@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -204,7 +205,7 @@ func (b *_AirConditioningDataSetHvacUpperGuardLimitBuilder) Build() (AirConditio
 	if b.HvacModeAndFlags == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'hvacModeAndFlags' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AirConditioningDataSetHvacUpperGuardLimit.deepCopy(), nil
@@ -301,7 +302,7 @@ func CastAirConditioningDataSetHvacUpperGuardLimit(structType any) AirConditioni
 	return nil
 }
 
-func (m *_AirConditioningDataSetHvacUpperGuardLimit) GetTypeName() string {
+func (m *_AirConditioningDataSetHvacUpperGuardLimit) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetHvacUpperGuardLimit"
 }
 

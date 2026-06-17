@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -150,7 +152,7 @@ func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithDisabledMonitoredItemC
 }
 
 func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) Build() (SamplingIntervalDiagnosticsDataType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SamplingIntervalDiagnosticsDataType.deepCopy(), nil
@@ -251,7 +253,7 @@ func CastSamplingIntervalDiagnosticsDataType(structType any) SamplingIntervalDia
 	return nil
 }
 
-func (m *_SamplingIntervalDiagnosticsDataType) GetTypeName() string {
+func (m *_SamplingIntervalDiagnosticsDataType) GetPlx4xTypeName() string {
 	return "SamplingIntervalDiagnosticsDataType"
 }
 
@@ -288,25 +290,25 @@ func (m *_SamplingIntervalDiagnosticsDataType) parse(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	samplingInterval, err := ReadSimpleField(ctx, "samplingInterval", ReadDouble(readBuffer, uint8(64)))
+	samplingInterval, err := ReadSimpleField(ctx, "samplingInterval", ReadDouble(readBuffer, uint8(64)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'samplingInterval' field"))
 	}
 	m.SamplingInterval = samplingInterval
 
-	monitoredItemCount, err := ReadSimpleField(ctx, "monitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	monitoredItemCount, err := ReadSimpleField(ctx, "monitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItemCount' field"))
 	}
 	m.MonitoredItemCount = monitoredItemCount
 
-	maxMonitoredItemCount, err := ReadSimpleField(ctx, "maxMonitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	maxMonitoredItemCount, err := ReadSimpleField(ctx, "maxMonitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxMonitoredItemCount' field"))
 	}
 	m.MaxMonitoredItemCount = maxMonitoredItemCount
 
-	disabledMonitoredItemCount, err := ReadSimpleField(ctx, "disabledMonitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	disabledMonitoredItemCount, err := ReadSimpleField(ctx, "disabledMonitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'disabledMonitoredItemCount' field"))
 	}
@@ -337,19 +339,19 @@ func (m *_SamplingIntervalDiagnosticsDataType) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for SamplingIntervalDiagnosticsDataType")
 		}
 
-		if err := WriteSimpleField[float64](ctx, "samplingInterval", m.GetSamplingInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[float64](ctx, "samplingInterval", m.GetSamplingInterval(), WriteDouble(writeBuffer, 64), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'samplingInterval' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "monitoredItemCount", m.GetMonitoredItemCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "monitoredItemCount", m.GetMonitoredItemCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'monitoredItemCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "maxMonitoredItemCount", m.GetMaxMonitoredItemCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "maxMonitoredItemCount", m.GetMaxMonitoredItemCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxMonitoredItemCount' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "disabledMonitoredItemCount", m.GetDisabledMonitoredItemCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "disabledMonitoredItemCount", m.GetDisabledMonitoredItemCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'disabledMonitoredItemCount' field")
 		}
 

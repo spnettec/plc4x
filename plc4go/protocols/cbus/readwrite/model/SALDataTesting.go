@@ -21,6 +21,8 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +106,7 @@ func (b *_SALDataTestingBuilder) WithMandatoryFields() SALDataTestingBuilder {
 }
 
 func (b *_SALDataTestingBuilder) Build() (SALDataTesting, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataTesting.deepCopy(), nil
@@ -179,7 +181,7 @@ func CastSALDataTesting(structType any) SALDataTesting {
 	return nil
 }
 
-func (m *_SALDataTesting) GetTypeName() string {
+func (m *_SALDataTesting) GetPlx4xTypeName() string {
 	return "SALDataTesting"
 }
 
@@ -217,7 +219,7 @@ func (m *_SALDataTesting) parse(ctx context.Context, readBuffer utils.ReadBuffer
 }
 
 func (m *_SALDataTesting) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

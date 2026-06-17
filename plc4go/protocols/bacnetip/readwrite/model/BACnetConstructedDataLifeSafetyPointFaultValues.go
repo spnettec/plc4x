@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataLifeSafetyPointFaultValuesBuilder) WithFaultValue
 }
 
 func (b *_BACnetConstructedDataLifeSafetyPointFaultValuesBuilder) Build() (BACnetConstructedDataLifeSafetyPointFaultValues, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataLifeSafetyPointFaultValues.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataLifeSafetyPointFaultValues(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) GetTypeName() string {
+func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLifeSafetyPointFaultValues"
 }
 

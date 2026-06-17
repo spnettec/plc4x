@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) WithItems(i
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCpuFunctionAlarmQueryResponse.deepCopy(), nil
@@ -214,7 +215,7 @@ func CastS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(structType any) S7Pa
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"
 }
 

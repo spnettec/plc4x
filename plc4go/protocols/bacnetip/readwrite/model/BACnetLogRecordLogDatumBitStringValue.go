@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetLogRecordLogDatumBitStringValueBuilder) Build() (BACnetLogRecord
 	if b.BitStringValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'bitStringValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLogRecordLogDatumBitStringValue.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetLogRecordLogDatumBitStringValue(structType any) BACnetLogRecordLo
 	return nil
 }
 
-func (m *_BACnetLogRecordLogDatumBitStringValue) GetTypeName() string {
+func (m *_BACnetLogRecordLogDatumBitStringValue) GetPlx4xTypeName() string {
 	return "BACnetLogRecordLogDatumBitStringValue"
 }
 

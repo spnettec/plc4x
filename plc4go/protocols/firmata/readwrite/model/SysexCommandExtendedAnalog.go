@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SysexCommandExtendedAnalogBuilder) WithMandatoryFields() SysexCommandE
 }
 
 func (b *_SysexCommandExtendedAnalogBuilder) Build() (SysexCommandExtendedAnalog, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SysexCommandExtendedAnalog.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastSysexCommandExtendedAnalog(structType any) SysexCommandExtendedAnalog {
 	return nil
 }
 
-func (m *_SysexCommandExtendedAnalog) GetTypeName() string {
+func (m *_SysexCommandExtendedAnalog) GetPlx4xTypeName() string {
 	return "SysexCommandExtendedAnalog"
 }
 

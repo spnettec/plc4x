@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataExpirationTimeBuilder) Build() (BACnetConstructed
 	if b.ExpirationTime == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'expirationTime' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataExpirationTime.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataExpirationTime(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataExpirationTime) GetTypeName() string {
+func (m *_BACnetConstructedDataExpirationTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExpirationTime"
 }
 

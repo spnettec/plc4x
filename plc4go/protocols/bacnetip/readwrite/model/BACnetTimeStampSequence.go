@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetTimeStampSequenceBuilder) Build() (BACnetTimeStampSequence, erro
 	if b.SequenceNumber == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sequenceNumber' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTimeStampSequence.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetTimeStampSequence(structType any) BACnetTimeStampSequence {
 	return nil
 }
 
-func (m *_BACnetTimeStampSequence) GetTypeName() string {
+func (m *_BACnetTimeStampSequence) GetPlx4xTypeName() string {
 	return "BACnetTimeStampSequence"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataActiveAuthenticationPolicyBuilder) Build() (BACne
 	if b.ActiveAuthenticationPolicy == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'activeAuthenticationPolicy' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataActiveAuthenticationPolicy.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataActiveAuthenticationPolicy(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataActiveAuthenticationPolicy) GetTypeName() string {
+func (m *_BACnetConstructedDataActiveAuthenticationPolicy) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataActiveAuthenticationPolicy"
 }
 

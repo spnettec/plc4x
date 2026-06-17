@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataExecutionDelayBuilder) WithExecutionDelay(executi
 }
 
 func (b *_BACnetConstructedDataExecutionDelayBuilder) Build() (BACnetConstructedDataExecutionDelay, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataExecutionDelay.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataExecutionDelay(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataExecutionDelay) GetTypeName() string {
+func (m *_BACnetConstructedDataExecutionDelay) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataExecutionDelay"
 }
 

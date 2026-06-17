@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -106,7 +107,7 @@ func (b *_PanicStatusBuilder) WithStatus(status uint8) PanicStatusBuilder {
 }
 
 func (b *_PanicStatusBuilder) Build() (PanicStatus, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PanicStatus.deepCopy(), nil
@@ -193,7 +194,7 @@ func CastPanicStatus(structType any) PanicStatus {
 	return nil
 }
 
-func (m *_PanicStatus) GetTypeName() string {
+func (m *_PanicStatus) GetPlx4xTypeName() string {
 	return "PanicStatus"
 }
 

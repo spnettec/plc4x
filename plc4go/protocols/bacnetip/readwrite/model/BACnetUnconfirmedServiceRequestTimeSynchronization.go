@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -164,7 +165,7 @@ func (b *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) Build() (BA
 	if b.SynchronizedTime == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'synchronizedTime' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetUnconfirmedServiceRequestTimeSynchronization.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestTimeSynchronization"
 }
 

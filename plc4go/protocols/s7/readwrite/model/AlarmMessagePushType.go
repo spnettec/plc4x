@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -148,7 +149,7 @@ func (b *_AlarmMessagePushTypeBuilder) Build() (AlarmMessagePushType, error) {
 	if b.TimeStamp == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeStamp' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AlarmMessagePushType.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastAlarmMessagePushType(structType any) AlarmMessagePushType {
 	return nil
 }
 
-func (m *_AlarmMessagePushType) GetTypeName() string {
+func (m *_AlarmMessagePushType) GetPlx4xTypeName() string {
 	return "AlarmMessagePushType"
 }
 

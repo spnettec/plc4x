@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -188,7 +189,7 @@ func (b *_MediaTransportControlDataBuilder) WithMediaLinkGroup(mediaLinkGroup by
 }
 
 func (b *_MediaTransportControlDataBuilder) PartialBuild() (MediaTransportControlDataContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MediaTransportControlData.deepCopy(), nil
@@ -500,7 +501,7 @@ func CastMediaTransportControlData(structType any) MediaTransportControlData {
 	return nil
 }
 
-func (m *_MediaTransportControlData) GetTypeName() string {
+func (m *_MediaTransportControlData) GetPlx4xTypeName() string {
 	return "MediaTransportControlData"
 }
 

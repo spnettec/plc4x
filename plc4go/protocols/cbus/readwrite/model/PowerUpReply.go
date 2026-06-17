@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -136,7 +139,7 @@ func (b *_PowerUpReplyBuilder) Build() (PowerUpReply, error) {
 	if b.PowerUpIndicator == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'powerUpIndicator' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PowerUpReply.deepCopy(), nil
@@ -221,7 +224,7 @@ func CastPowerUpReply(structType any) PowerUpReply {
 	return nil
 }
 
-func (m *_PowerUpReply) GetTypeName() string {
+func (m *_PowerUpReply) GetPlx4xTypeName() string {
 	return "PowerUpReply"
 }
 
@@ -249,7 +252,7 @@ func (m *_PowerUpReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	powerUpIndicator, err := ReadSimpleField[PowerUp](ctx, "powerUpIndicator", ReadComplex[PowerUp](PowerUpParseWithBuffer, readBuffer))
+	powerUpIndicator, err := ReadSimpleField[PowerUp](ctx, "powerUpIndicator", ReadComplex[PowerUp](PowerUpParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'powerUpIndicator' field"))
 	}
@@ -263,7 +266,7 @@ func (m *_PowerUpReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 }
 
 func (m *_PowerUpReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -280,7 +283,7 @@ func (m *_PowerUpReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for PowerUpReply")
 		}
 
-		if err := WriteSimpleField[PowerUp](ctx, "powerUpIndicator", m.GetPowerUpIndicator(), WriteComplex[PowerUp](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PowerUp](ctx, "powerUpIndicator", m.GetPowerUpIndicator(), WriteComplex[PowerUp](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'powerUpIndicator' field")
 		}
 

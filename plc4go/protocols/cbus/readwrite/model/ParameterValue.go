@@ -21,6 +21,8 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -144,7 +146,7 @@ func (b *_ParameterValueBuilder) WithMandatoryFields() ParameterValueBuilder {
 }
 
 func (b *_ParameterValueBuilder) PartialBuild() (ParameterValueContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ParameterValue.deepCopy(), nil
@@ -322,7 +324,7 @@ func CastParameterValue(structType any) ParameterValue {
 	return nil
 }
 
-func (m *_ParameterValue) GetTypeName() string {
+func (m *_ParameterValue) GetPlx4xTypeName() string {
 	return "ParameterValue"
 }
 
@@ -341,7 +343,7 @@ func (m *_ParameterValue) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func ParameterValueParse[T ParameterValue](ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (T, error) {
-	return ParameterValueParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+	return ParameterValueParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), parameterType, numBytes)
 }
 
 func ParameterValueParseWithBufferProducer[T ParameterValue](parameterType ParameterType, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {

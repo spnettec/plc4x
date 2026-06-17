@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -142,7 +143,7 @@ func (b *_ComObjectTableRealisationType1Builder) WithComObjectDescriptors(comObj
 }
 
 func (b *_ComObjectTableRealisationType1Builder) Build() (ComObjectTableRealisationType1, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ComObjectTableRealisationType1.deepCopy(), nil
@@ -239,7 +240,7 @@ func CastComObjectTableRealisationType1(structType any) ComObjectTableRealisatio
 	return nil
 }
 
-func (m *_ComObjectTableRealisationType1) GetTypeName() string {
+func (m *_ComObjectTableRealisationType1) GetPlx4xTypeName() string {
 	return "ComObjectTableRealisationType1"
 }
 

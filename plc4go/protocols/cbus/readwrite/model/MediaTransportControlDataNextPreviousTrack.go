@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -121,7 +122,7 @@ func (b *_MediaTransportControlDataNextPreviousTrackBuilder) WithOperation(opera
 }
 
 func (b *_MediaTransportControlDataNextPreviousTrackBuilder) Build() (MediaTransportControlDataNextPreviousTrack, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MediaTransportControlDataNextPreviousTrack.deepCopy(), nil
@@ -227,7 +228,7 @@ func CastMediaTransportControlDataNextPreviousTrack(structType any) MediaTranspo
 	return nil
 }
 
-func (m *_MediaTransportControlDataNextPreviousTrack) GetTypeName() string {
+func (m *_MediaTransportControlDataNextPreviousTrack) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataNextPreviousTrack"
 }
 

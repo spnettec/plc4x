@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) WithBbmdBr
 }
 
 func (b *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) Build() (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataBBMDBroadcastDistributionTable.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataBBMDBroadcastDistributionTable(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetTypeName() string {
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBBMDBroadcastDistributionTable"
 }
 

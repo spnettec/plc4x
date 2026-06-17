@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_OpcuaVectorBuilder) WithMandatoryFields() OpcuaVectorBuilder {
 }
 
 func (b *_OpcuaVectorBuilder) Build() (OpcuaVector, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpcuaVector.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastOpcuaVector(structType any) OpcuaVector {
 	return nil
 }
 
-func (m *_OpcuaVector) GetTypeName() string {
+func (m *_OpcuaVector) GetPlx4xTypeName() string {
 	return "OpcuaVector"
 }
 

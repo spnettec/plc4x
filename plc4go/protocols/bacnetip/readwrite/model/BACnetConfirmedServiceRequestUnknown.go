@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConfirmedServiceRequestUnknownBuilder) WithUnknownBytes(unknownB
 }
 
 func (b *_BACnetConfirmedServiceRequestUnknownBuilder) Build() (BACnetConfirmedServiceRequestUnknown, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestUnknown.deepCopy(), nil
@@ -206,7 +207,7 @@ func CastBACnetConfirmedServiceRequestUnknown(structType any) BACnetConfirmedSer
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestUnknown) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestUnknown) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestUnknown"
 }
 

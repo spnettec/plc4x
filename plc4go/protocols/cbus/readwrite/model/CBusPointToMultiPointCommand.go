@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -138,7 +141,7 @@ func (b *_CBusPointToMultiPointCommandBuilder) WithPeekedApplication(peekedAppli
 }
 
 func (b *_CBusPointToMultiPointCommandBuilder) PartialBuild() (CBusPointToMultiPointCommandContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusPointToMultiPointCommand.deepCopy(), nil
@@ -240,7 +243,7 @@ func CastCBusPointToMultiPointCommand(structType any) CBusPointToMultiPointComma
 	return nil
 }
 
-func (m *_CBusPointToMultiPointCommand) GetTypeName() string {
+func (m *_CBusPointToMultiPointCommand) GetPlx4xTypeName() string {
 	return "CBusPointToMultiPointCommand"
 }
 
@@ -259,7 +262,7 @@ func (m *_CBusPointToMultiPointCommand) GetLengthInBytes(ctx context.Context) ui
 }
 
 func CBusPointToMultiPointCommandParse[T CBusPointToMultiPointCommand](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {
-	return CBusPointToMultiPointCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusPointToMultiPointCommandParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions)
 }
 
 func CBusPointToMultiPointCommandParseWithBufferProducer[T CBusPointToMultiPointCommand](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -296,7 +299,7 @@ func (m *_CBusPointToMultiPointCommand) parse(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	peekedApplication, err := ReadPeekField[byte](ctx, "peekedApplication", ReadByte(readBuffer, 8), 0)
+	peekedApplication, err := ReadPeekField[byte](ctx, "peekedApplication", ReadByte(readBuffer, 8), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedApplication' field"))
 	}

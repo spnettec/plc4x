@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_SecurityDataOnBuilder) WithData(data ...byte) SecurityDataOnBuilder {
 }
 
 func (b *_SecurityDataOnBuilder) Build() (SecurityDataOn, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataOn.deepCopy(), nil
@@ -202,7 +203,7 @@ func CastSecurityDataOn(structType any) SecurityDataOn {
 	return nil
 }
 
-func (m *_SecurityDataOn) GetTypeName() string {
+func (m *_SecurityDataOn) GetPlx4xTypeName() string {
 	return "SecurityDataOn"
 }
 

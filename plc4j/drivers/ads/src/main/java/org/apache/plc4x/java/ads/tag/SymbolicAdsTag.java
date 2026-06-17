@@ -21,9 +21,9 @@ package org.apache.plc4x.java.ads.tag;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -36,21 +36,26 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsTag implements AdsTag {
 
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^([\\w_]+)(\"[\"\\d*]\")*(\\.(\\w+)(\"[\"\\d*]\")*)*");
+    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile(
+        "^(?<symbolicAddress>[a-zA-Z_]\\w*(\\[\\d+\\])*(\\.[a-zA-Z_]\\w*(\\[\\d+\\])*)*)(\\|(?<stringEncoding>[a-zA-Z0-9_-]+))?$");
 
     private final String symbolicAddress;
 
-    private String stringEncoding;
+    private final String stringEncoding;
 
     private final PlcValueType dataType;
 
     private final List<ArrayInfo> arrayInfo;
 
-    public SymbolicAdsTag(String symbolicAddress, PlcValueType dataType, List<ArrayInfo> arrayInfo,String stringEncoding) {
+    public SymbolicAdsTag(String symbolicAddress, PlcValueType dataType, List<ArrayInfo> arrayInfo, String stringEncoding) {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
         this.dataType = dataType;
         this.arrayInfo = arrayInfo;
         this.stringEncoding = stringEncoding;
+    }
+
+    public SymbolicAdsTag(String symbolicAddress, PlcValueType dataType, List<ArrayInfo> arrayInfo) {
+        this(symbolicAddress, dataType, arrayInfo, null);
     }
 
     public static SymbolicAdsTag of(String address) {
@@ -61,7 +66,7 @@ public class SymbolicAdsTag implements AdsTag {
         String stringEncoding = matcher.group("stringEncoding");
         String symbolicAddress = matcher.group("symbolicAddress");
 
-        return new SymbolicAdsTag(symbolicAddress, null, null,stringEncoding);
+        return new SymbolicAdsTag(symbolicAddress, null, List.of(), stringEncoding);
     }
 
     public static boolean matches(String address) {
@@ -73,20 +78,21 @@ public class SymbolicAdsTag implements AdsTag {
     }
 
     public String getStringEncoding(String adsDataTypeName) {
-        if (stringEncoding == null || "".equals(stringEncoding))
-        {
-            stringEncoding = "AUTO";
-            if ("WSTRING".equalsIgnoreCase(adsDataTypeName) || "WCHAR".equalsIgnoreCase(adsDataTypeName))
-            {
-                stringEncoding = "UTF-16";
-            }
+        if (stringEncoding != null && !stringEncoding.isEmpty()) {
+            return stringEncoding;
         }
-        return stringEncoding;
+        if ("WSTRING".equalsIgnoreCase(adsDataTypeName) || "WCHAR".equalsIgnoreCase(adsDataTypeName)) {
+            return "UTF-16";
+        }
+        return "AUTO";
     }
 
     @Override
     public String getAddressString() {
-        return symbolicAddress;
+        if (stringEncoding == null || stringEncoding.isEmpty()) {
+            return symbolicAddress;
+        }
+        return symbolicAddress + "|" + stringEncoding;
     }
 
     @Override
@@ -104,10 +110,9 @@ public class SymbolicAdsTag implements AdsTag {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SymbolicAdsTag)) {
+        if (!(o instanceof SymbolicAdsTag that)) {
             return false;
         }
-        SymbolicAdsTag that = (SymbolicAdsTag) o;
         return Objects.equals(symbolicAddress, that.symbolicAddress);
     }
 
@@ -124,14 +129,23 @@ public class SymbolicAdsTag implements AdsTag {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
+    public void serialize(WriteBuffer writeBuffer) throws BufferException {
+        writeBuffer.pushContext(WithOption.WithName(getClass().getSimpleName()));
 
         String symbolicAddress = getSymbolicAddress();
-        writeBuffer.writeString("symbolicAddress",
+        writeBuffer.writeString(
             symbolicAddress.getBytes(StandardCharsets.UTF_8).length * 8,
-            symbolicAddress, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+            symbolicAddress,
+            WithOption.WithName("symbolicAddress"),
+            WithOption.WithEncoding("UTF8"));
+        if (stringEncoding != null && !stringEncoding.isEmpty()) {
+            writeBuffer.writeString(
+                stringEncoding.getBytes(StandardCharsets.UTF_8).length * 8,
+                stringEncoding,
+                WithOption.WithName("stringEncoding"),
+                WithOption.WithEncoding("UTF8"));
+        }
 
-        writeBuffer.popContext(getClass().getSimpleName());
+        writeBuffer.popContext(WithOption.WithName(getClass().getSimpleName()));
     }
 }

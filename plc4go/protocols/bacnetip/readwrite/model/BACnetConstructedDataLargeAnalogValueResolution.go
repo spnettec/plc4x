@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) Build() (BACne
 	if b.Resolution == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'resolution' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataLargeAnalogValueResolution.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataLargeAnalogValueResolution(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueResolution"
 }
 

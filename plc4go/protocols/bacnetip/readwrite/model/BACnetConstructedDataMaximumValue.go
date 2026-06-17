@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataMaximumValueBuilder) Build() (BACnetConstructedDa
 	if b.MaximumValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'maximumValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataMaximumValue.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataMaximumValue(structType any) BACnetConstructedData
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaximumValue) GetTypeName() string {
+func (m *_BACnetConstructedDataMaximumValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaximumValue"
 }
 

@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -135,7 +137,7 @@ func (b *_DatagramConnectionTransportDataTypeBuilder) Build() (DatagramConnectio
 	if b.DiscoveryAddress == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'discoveryAddress' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DatagramConnectionTransportDataType.deepCopy(), nil
@@ -224,7 +226,7 @@ func CastDatagramConnectionTransportDataType(structType any) DatagramConnectionT
 	return nil
 }
 
-func (m *_DatagramConnectionTransportDataType) GetTypeName() string {
+func (m *_DatagramConnectionTransportDataType) GetPlx4xTypeName() string {
 	return "DatagramConnectionTransportDataType"
 }
 
@@ -252,7 +254,7 @@ func (m *_DatagramConnectionTransportDataType) parse(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	discoveryAddress, err := ReadSimpleField[ExtensionObject](ctx, "discoveryAddress", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
+	discoveryAddress, err := ReadSimpleField[ExtensionObject](ctx, "discoveryAddress", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryAddress' field"))
 	}
@@ -283,7 +285,7 @@ func (m *_DatagramConnectionTransportDataType) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for DatagramConnectionTransportDataType")
 		}
 
-		if err := WriteSimpleField[ExtensionObject](ctx, "discoveryAddress", m.GetDiscoveryAddress(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ExtensionObject](ctx, "discoveryAddress", m.GetDiscoveryAddress(), WriteComplex[ExtensionObject](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'discoveryAddress' field")
 		}
 

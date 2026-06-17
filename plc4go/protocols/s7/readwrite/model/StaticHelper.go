@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"strconv"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -134,42 +133,33 @@ func serializeTiaDate(ctx context.Context, io utils.WriteBuffer, value values.Pl
 	return nil
 }
 
-func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32, encoding string, stringEncoding string) (string, error) {
+func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
 	var multiplier int32
 	switch encoding {
-	case "UTF-8":
-		totalStringLength, _ := io.ReadUint8("", 8)
-		length, _ := io.ReadUint8("", 8)
-		if totalStringLength < length {
-			length = totalStringLength
-		}
-		if stringLength < int32(length) {
-			length = uint8(stringLength)
-		}
+	case "UTF8":
 		multiplier = 8
-	case "UTF-16":
+	case "UTF16":
 		multiplier = 16
 	}
 	return io.ReadString("", uint32(stringLength*multiplier), utils.WithEncoding(encoding))
 }
 
-func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string, stringEncoding string) error {
+func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
 	var multiplier int32
 	switch encoding {
-	case "UTF-8":
+	case "UTF8":
 		multiplier = 8
-	case "UTF-16":
+	case "UTF16":
 		multiplier = 16
 	}
 	return io.WriteString("", uint32(stringLength*multiplier), value.GetString(), utils.WithEncoding(encoding))
 }
 
-func ParseS7Char(ctx context.Context, io utils.ReadBuffer, encoding string, stringEncoding string) (string, error) {
-	result, _ := io.ReadUint8("", 8)
-	return strconv.Itoa(int(result)), nil
+func ParseS7Char(ctx context.Context, io utils.ReadBuffer, encoding string) (uint8, error) {
+	return io.ReadUint8("", 8)
 }
 
-func SerializeS7Char(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, encoding string, stringEncoding string) error {
+func SerializeS7Char(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, encoding string) error {
 	return io.WriteUint8("", 8, value.GetUint8())
 }
 

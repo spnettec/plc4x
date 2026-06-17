@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_TriggerControlDataIndicatorKillBuilder) WithMandatoryFields() TriggerC
 }
 
 func (b *_TriggerControlDataIndicatorKillBuilder) Build() (TriggerControlDataIndicatorKill, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TriggerControlDataIndicatorKill.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastTriggerControlDataIndicatorKill(structType any) TriggerControlDataIndic
 	return nil
 }
 
-func (m *_TriggerControlDataIndicatorKill) GetTypeName() string {
+func (m *_TriggerControlDataIndicatorKill) GetPlx4xTypeName() string {
 	return "TriggerControlDataIndicatorKill"
 }
 

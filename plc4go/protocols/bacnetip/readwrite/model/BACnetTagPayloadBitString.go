@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -120,7 +121,7 @@ func (b *_BACnetTagPayloadBitStringBuilder) WithUnused(unused ...bool) BACnetTag
 }
 
 func (b *_BACnetTagPayloadBitStringBuilder) Build() (BACnetTagPayloadBitString, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTagPayloadBitString.deepCopy(), nil
@@ -188,7 +189,7 @@ func CastBACnetTagPayloadBitString(structType any) BACnetTagPayloadBitString {
 	return nil
 }
 
-func (m *_BACnetTagPayloadBitString) GetTypeName() string {
+func (m *_BACnetTagPayloadBitString) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadBitString"
 }
 

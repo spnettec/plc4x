@@ -21,7 +21,7 @@
     [const          uint 16     plc4xTcpDefaultPort 59837] // Hex of CAFE
 ]
 
-[discriminatedType Plc4xMessage byteOrder='BIG_ENDIAN'
+[discriminatedType Plc4xMessage byteOrder='"BIG_ENDIAN"'
     [const         uint 8           version      0x01           ]
     [implicit      uint 16          packetLength 'lengthInBytes']
     [simple        uint 16          requestId                   ]
@@ -173,13 +173,13 @@
             [simple   string 8                   value                           ]
         ]
         ['WCHAR'         STRING
-            [simple   string 16                  value        encoding='"UTF-16"']
+            [simple   string 16                  value        encoding='"UTF16"']
         ]
         ['STRING'        STRING
-            [manual vstring value  'STATIC_CALL("parseString", readBuffer, _type.encoding)' 'STATIC_CALL("serializeString", writeBuffer, _value, _type.encoding)' '(STR_LEN(_value) + 1) * 8']
+            [manual vstring value 'STATIC_CALL("parseString", readBuffer, "UTF-8")' 'STATIC_CALL("serializeString", writeBuffer, _value, "UTF-8")' 'STATIC_CALL("stringLengthInBits", _value, "UTF-8")' encoding='"UTF8"']
         ]
         ['WSTRING'       STRING
-            [manual vstring value  'STATIC_CALL("parseString", readBuffer, _type.encoding)' 'STATIC_CALL("serializeString", writeBuffer, _value, _type.encoding)' '(STR_LEN(_value) + 1) * 16' encoding='"UTF-16"']
+            [manual vstring value 'STATIC_CALL("parseString", readBuffer, "UTF-16")' 'STATIC_CALL("serializeString", writeBuffer, _value, "UTF-16")' 'STATIC_CALL("stringLengthInBits", _value, "UTF-16")' encoding='"UTF16"']
         ]
 
         // Times and Dates
@@ -203,9 +203,6 @@
         ]
         ['DATE_AND_TIME'  DATE_AND_TIME
             [simple uint 32 secondsSinceEpoch]
-        ]
-        ['DATE_AND_LTIME' DATE_AND_LTIME
-            [simple uint 64 nanosecondsSinceEpoch]
         ]
         ['LDATE_AND_TIME' LDATE_AND_TIME
             [simple uint 64 nanosecondsSinceEpoch]
@@ -286,8 +283,7 @@
     ['0x55' TIME_OF_DAY   ]
     ['0x56' LTIME_OF_DAY  ]
     ['0x57' DATE_AND_TIME ]
-    ['0x58' DATE_AND_LTIME]
-    ['0x59' LDATE_AND_TIME]
+    ['0x58' LDATE_AND_TIME]
 
     // Complex types
     ['0x61' Struct        ]

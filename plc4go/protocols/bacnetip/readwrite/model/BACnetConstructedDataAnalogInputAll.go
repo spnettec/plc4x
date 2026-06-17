@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_BACnetConstructedDataAnalogInputAllBuilder) WithMandatoryFields() BACn
 }
 
 func (b *_BACnetConstructedDataAnalogInputAllBuilder) Build() (BACnetConstructedDataAnalogInputAll, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataAnalogInputAll.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastBACnetConstructedDataAnalogInputAll(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataAnalogInputAll) GetTypeName() string {
+func (m *_BACnetConstructedDataAnalogInputAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAnalogInputAll"
 }
 

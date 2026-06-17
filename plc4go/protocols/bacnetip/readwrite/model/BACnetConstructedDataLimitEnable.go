@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataLimitEnableBuilder) Build() (BACnetConstructedDat
 	if b.LimitEnable == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'limitEnable' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataLimitEnable.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataLimitEnable(structType any) BACnetConstructedDataL
 	return nil
 }
 
-func (m *_BACnetConstructedDataLimitEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataLimitEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLimitEnable"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -146,7 +147,7 @@ func (b *_OpcuaAcknowledgeResponseBuilder) Build() (OpcuaAcknowledgeResponse, er
 	if b.Limits == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'limits' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpcuaAcknowledgeResponse.deepCopy(), nil
@@ -243,7 +244,7 @@ func CastOpcuaAcknowledgeResponse(structType any) OpcuaAcknowledgeResponse {
 	return nil
 }
 
-func (m *_OpcuaAcknowledgeResponse) GetTypeName() string {
+func (m *_OpcuaAcknowledgeResponse) GetPlx4xTypeName() string {
 	return "OpcuaAcknowledgeResponse"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -100,7 +101,7 @@ func (b *_ZoneStatusBuilder) WithValue(value ZoneStatusTemp) ZoneStatusBuilder {
 }
 
 func (b *_ZoneStatusBuilder) Build() (ZoneStatus, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ZoneStatus.deepCopy(), nil
@@ -160,7 +161,7 @@ func CastZoneStatus(structType any) ZoneStatus {
 	return nil
 }
 
-func (m *_ZoneStatus) GetTypeName() string {
+func (m *_ZoneStatus) GetPlx4xTypeName() string {
 	return "ZoneStatus"
 }
 

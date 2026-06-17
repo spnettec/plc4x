@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -174,7 +175,7 @@ func (b *_BACnetRecipientProcessEnclosedBuilder) Build() (BACnetRecipientProcess
 	if b.ClosingTag == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetRecipientProcessEnclosed.deepCopy(), nil
@@ -242,7 +243,7 @@ func CastBACnetRecipientProcessEnclosed(structType any) BACnetRecipientProcessEn
 	return nil
 }
 
-func (m *_BACnetRecipientProcessEnclosed) GetTypeName() string {
+func (m *_BACnetRecipientProcessEnclosed) GetPlx4xTypeName() string {
 	return "BACnetRecipientProcessEnclosed"
 }
 

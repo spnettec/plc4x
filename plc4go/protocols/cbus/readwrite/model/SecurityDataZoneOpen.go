@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_SecurityDataZoneOpenBuilder) WithZoneNumber(zoneNumber uint8) Security
 }
 
 func (b *_SecurityDataZoneOpenBuilder) Build() (SecurityDataZoneOpen, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataZoneOpen.deepCopy(), nil
@@ -202,7 +203,7 @@ func CastSecurityDataZoneOpen(structType any) SecurityDataZoneOpen {
 	return nil
 }
 
-func (m *_SecurityDataZoneOpen) GetTypeName() string {
+func (m *_SecurityDataZoneOpen) GetPlx4xTypeName() string {
 	return "SecurityDataZoneOpen"
 }
 

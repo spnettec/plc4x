@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilde
 }
 
 func (b *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseBuilder) Build() (S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse.deepCopy(), nil
@@ -229,7 +230,7 @@ func CastS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse(struct
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse"
 }
 

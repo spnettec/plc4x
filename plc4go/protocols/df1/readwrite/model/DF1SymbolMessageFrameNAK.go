@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -105,7 +106,7 @@ func (b *_DF1SymbolMessageFrameNAKBuilder) WithMandatoryFields() DF1SymbolMessag
 }
 
 func (b *_DF1SymbolMessageFrameNAKBuilder) Build() (DF1SymbolMessageFrameNAK, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DF1SymbolMessageFrameNAK.deepCopy(), nil
@@ -180,7 +181,7 @@ func CastDF1SymbolMessageFrameNAK(structType any) DF1SymbolMessageFrameNAK {
 	return nil
 }
 
-func (m *_DF1SymbolMessageFrameNAK) GetTypeName() string {
+func (m *_DF1SymbolMessageFrameNAK) GetPlx4xTypeName() string {
 	return "DF1SymbolMessageFrameNAK"
 }
 

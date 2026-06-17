@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetPropertyStatesMaintenanceBuilder) Build() (BACnetPropertyStatesM
 	if b.Maintenance == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'maintenance' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesMaintenance.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetPropertyStatesMaintenance(structType any) BACnetPropertyStatesMai
 	return nil
 }
 
-func (m *_BACnetPropertyStatesMaintenance) GetTypeName() string {
+func (m *_BACnetPropertyStatesMaintenance) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesMaintenance"
 }
 

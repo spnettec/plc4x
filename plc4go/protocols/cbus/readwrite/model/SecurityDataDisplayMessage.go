@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_SecurityDataDisplayMessageBuilder) WithMessage(message string) Securit
 }
 
 func (b *_SecurityDataDisplayMessageBuilder) Build() (SecurityDataDisplayMessage, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataDisplayMessage.deepCopy(), nil
@@ -202,7 +203,7 @@ func CastSecurityDataDisplayMessage(structType any) SecurityDataDisplayMessage {
 	return nil
 }
 
-func (m *_SecurityDataDisplayMessage) GetTypeName() string {
+func (m *_SecurityDataDisplayMessage) GetPlx4xTypeName() string {
 	return "SecurityDataDisplayMessage"
 }
 

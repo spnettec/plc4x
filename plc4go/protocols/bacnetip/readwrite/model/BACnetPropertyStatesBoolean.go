@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetPropertyStatesBooleanBuilder) Build() (BACnetPropertyStatesBoole
 	if b.BooleanValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'booleanValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesBoolean.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetPropertyStatesBoolean(structType any) BACnetPropertyStatesBoolean
 	return nil
 }
 
-func (m *_BACnetPropertyStatesBoolean) GetTypeName() string {
+func (m *_BACnetPropertyStatesBoolean) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesBoolean"
 }
 

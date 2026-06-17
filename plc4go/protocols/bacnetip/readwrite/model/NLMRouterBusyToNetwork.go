@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_NLMRouterBusyToNetworkBuilder) WithDestinationNetworkAddresses(destina
 }
 
 func (b *_NLMRouterBusyToNetworkBuilder) Build() (NLMRouterBusyToNetwork, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMRouterBusyToNetwork.deepCopy(), nil
@@ -206,7 +207,7 @@ func CastNLMRouterBusyToNetwork(structType any) NLMRouterBusyToNetwork {
 	return nil
 }
 
-func (m *_NLMRouterBusyToNetwork) GetTypeName() string {
+func (m *_NLMRouterBusyToNetwork) GetPlx4xTypeName() string {
 	return "NLMRouterBusyToNetwork"
 }
 

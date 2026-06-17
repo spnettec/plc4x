@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataAccompanimentTimeBuilder) Build() (BACnetConstruc
 	if b.AccompanimentTime == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'accompanimentTime' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataAccompanimentTime.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataAccompanimentTime(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccompanimentTime) GetTypeName() string {
+func (m *_BACnetConstructedDataAccompanimentTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccompanimentTime"
 }
 

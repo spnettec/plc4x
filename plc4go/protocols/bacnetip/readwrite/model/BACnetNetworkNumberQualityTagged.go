@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_BACnetNetworkNumberQualityTaggedBuilder) Build() (BACnetNetworkNumberQ
 	if b.Header == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'header' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetNetworkNumberQualityTagged.deepCopy(), nil
@@ -192,7 +193,7 @@ func CastBACnetNetworkNumberQualityTagged(structType any) BACnetNetworkNumberQua
 	return nil
 }
 
-func (m *_BACnetNetworkNumberQualityTagged) GetTypeName() string {
+func (m *_BACnetNetworkNumberQualityTagged) GetPlx4xTypeName() string {
 	return "BACnetNetworkNumberQualityTagged"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_VariantStatusCodeBuilder) WithValue(value ...StatusCode) VariantStatus
 }
 
 func (b *_VariantStatusCodeBuilder) Build() (VariantStatusCode, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantStatusCode.deepCopy(), nil
@@ -221,7 +222,7 @@ func CastVariantStatusCode(structType any) VariantStatusCode {
 	return nil
 }
 
-func (m *_VariantStatusCode) GetTypeName() string {
+func (m *_VariantStatusCode) GetPlx4xTypeName() string {
 	return "VariantStatusCode"
 }
 

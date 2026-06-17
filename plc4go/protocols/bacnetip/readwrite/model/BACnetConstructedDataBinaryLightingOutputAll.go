@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_BACnetConstructedDataBinaryLightingOutputAllBuilder) WithMandatoryFiel
 }
 
 func (b *_BACnetConstructedDataBinaryLightingOutputAllBuilder) Build() (BACnetConstructedDataBinaryLightingOutputAll, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataBinaryLightingOutputAll.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastBACnetConstructedDataBinaryLightingOutputAll(structType any) BACnetCons
 	return nil
 }
 
-func (m *_BACnetConstructedDataBinaryLightingOutputAll) GetTypeName() string {
+func (m *_BACnetConstructedDataBinaryLightingOutputAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBinaryLightingOutputAll"
 }
 

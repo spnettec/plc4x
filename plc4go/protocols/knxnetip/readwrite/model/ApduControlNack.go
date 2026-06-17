@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_ApduControlNackBuilder) WithMandatoryFields() ApduControlNackBuilder {
 }
 
 func (b *_ApduControlNackBuilder) Build() (ApduControlNack, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduControlNack.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastApduControlNack(structType any) ApduControlNack {
 	return nil
 }
 
-func (m *_ApduControlNack) GetTypeName() string {
+func (m *_ApduControlNack) GetPlx4xTypeName() string {
 	return "ApduControlNack"
 }
 

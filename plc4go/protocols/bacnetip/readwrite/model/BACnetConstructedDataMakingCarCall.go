@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataMakingCarCallBuilder) WithMakingCarCall(makingCar
 }
 
 func (b *_BACnetConstructedDataMakingCarCallBuilder) Build() (BACnetConstructedDataMakingCarCall, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataMakingCarCall.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataMakingCarCall(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataMakingCarCall) GetTypeName() string {
+func (m *_BACnetConstructedDataMakingCarCall) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMakingCarCall"
 }
 

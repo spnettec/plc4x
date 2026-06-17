@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -132,7 +133,7 @@ func (b *_S7PayloadBuilder) WithMandatoryFields() S7PayloadBuilder {
 }
 
 func (b *_S7PayloadBuilder) PartialBuild() (S7PayloadContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7Payload.deepCopy(), nil
@@ -240,7 +241,7 @@ func CastS7Payload(structType any) S7Payload {
 	return nil
 }
 
-func (m *_S7Payload) GetTypeName() string {
+func (m *_S7Payload) GetPlx4xTypeName() string {
 	return "S7Payload"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -140,7 +141,7 @@ func (b *_SzlDataTreeItemBuilder) WithAusbe(ausbe uint16) SzlDataTreeItemBuilder
 }
 
 func (b *_SzlDataTreeItemBuilder) Build() (SzlDataTreeItem, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SzlDataTreeItem.deepCopy(), nil
@@ -216,7 +217,7 @@ func CastSzlDataTreeItem(structType any) SzlDataTreeItem {
 	return nil
 }
 
-func (m *_SzlDataTreeItem) GetTypeName() string {
+func (m *_SzlDataTreeItem) GetPlx4xTypeName() string {
 	return "SzlDataTreeItem"
 }
 

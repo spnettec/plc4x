@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -105,7 +106,7 @@ func (b *_ModbusPDUReadExceptionStatusRequestBuilder) WithMandatoryFields() Modb
 }
 
 func (b *_ModbusPDUReadExceptionStatusRequestBuilder) Build() (ModbusPDUReadExceptionStatusRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUReadExceptionStatusRequest.deepCopy(), nil
@@ -188,7 +189,7 @@ func CastModbusPDUReadExceptionStatusRequest(structType any) ModbusPDUReadExcept
 	return nil
 }
 
-func (m *_ModbusPDUReadExceptionStatusRequest) GetTypeName() string {
+func (m *_ModbusPDUReadExceptionStatusRequest) GetPlx4xTypeName() string {
 	return "ModbusPDUReadExceptionStatusRequest"
 }
 

@@ -62,7 +62,7 @@
     <profile>
       <id>with-java</id>
       <modules>
-        <module>java</module>
+        <module>java-jp</module>
       </modules>
     </profile>
 

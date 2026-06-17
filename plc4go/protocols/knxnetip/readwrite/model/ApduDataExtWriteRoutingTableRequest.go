@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_ApduDataExtWriteRoutingTableRequestBuilder) WithMandatoryFields() Apdu
 }
 
 func (b *_ApduDataExtWriteRoutingTableRequestBuilder) Build() (ApduDataExtWriteRoutingTableRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtWriteRoutingTableRequest.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastApduDataExtWriteRoutingTableRequest(structType any) ApduDataExtWriteRou
 	return nil
 }
 
-func (m *_ApduDataExtWriteRoutingTableRequest) GetTypeName() string {
+func (m *_ApduDataExtWriteRoutingTableRequest) GetPlx4xTypeName() string {
 	return "ApduDataExtWriteRoutingTableRequest"
 }
 

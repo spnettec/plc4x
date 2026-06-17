@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_VariantDoubleBuilder) WithValue(value ...float64) VariantDoubleBuilder
 }
 
 func (b *_VariantDoubleBuilder) Build() (VariantDouble, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantDouble.deepCopy(), nil
@@ -221,7 +222,7 @@ func CastVariantDouble(structType any) VariantDouble {
 	return nil
 }
 
-func (m *_VariantDouble) GetTypeName() string {
+func (m *_VariantDouble) GetPlx4xTypeName() string {
 	return "VariantDouble"
 }
 

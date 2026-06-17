@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -130,7 +131,7 @@ func (b *_BVLCForeignDeviceTableEntryBuilder) WithSecondRemainingBeforePurge(sec
 }
 
 func (b *_BVLCForeignDeviceTableEntryBuilder) Build() (BVLCForeignDeviceTableEntry, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCForeignDeviceTableEntry.deepCopy(), nil
@@ -202,7 +203,7 @@ func CastBVLCForeignDeviceTableEntry(structType any) BVLCForeignDeviceTableEntry
 	return nil
 }
 
-func (m *_BVLCForeignDeviceTableEntry) GetTypeName() string {
+func (m *_BVLCForeignDeviceTableEntry) GetPlx4xTypeName() string {
 	return "BVLCForeignDeviceTableEntry"
 }
 

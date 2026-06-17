@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) Build() (BA
 	if b.FeedbackValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'feedbackValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataMultiStateOutputFeedbackValue.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataMultiStateOutputFeedbackValue(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateOutputFeedbackValue"
 }
 

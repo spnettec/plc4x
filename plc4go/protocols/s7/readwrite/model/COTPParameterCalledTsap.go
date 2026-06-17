@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_COTPParameterCalledTsapBuilder) WithTsapId(tsapId uint16) COTPParamete
 }
 
 func (b *_COTPParameterCalledTsapBuilder) Build() (COTPParameterCalledTsap, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._COTPParameterCalledTsap.deepCopy(), nil
@@ -206,7 +207,7 @@ func CastCOTPParameterCalledTsap(structType any) COTPParameterCalledTsap {
 	return nil
 }
 
-func (m *_COTPParameterCalledTsap) GetTypeName() string {
+func (m *_COTPParameterCalledTsap) GetPlx4xTypeName() string {
 	return "COTPParameterCalledTsap"
 }
 

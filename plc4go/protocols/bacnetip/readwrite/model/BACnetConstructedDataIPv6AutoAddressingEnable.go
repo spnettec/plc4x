@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataIPv6AutoAddressingEnableBuilder) Build() (BACnetC
 	if b.AutoAddressingEnable == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'autoAddressingEnable' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataIPv6AutoAddressingEnable.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataIPv6AutoAddressingEnable(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6AutoAddressingEnable"
 }
 

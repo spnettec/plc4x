@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataHigherDeckBuilder) Build() (BACnetConstructedData
 	if b.HigherDeck == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'higherDeck' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataHigherDeck.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataHigherDeck(structType any) BACnetConstructedDataHi
 	return nil
 }
 
-func (m *_BACnetConstructedDataHigherDeck) GetTypeName() string {
+func (m *_BACnetConstructedDataHigherDeck) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataHigherDeck"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataLocationBuilder) Build() (BACnetConstructedDataLo
 	if b.Location == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'location' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataLocation.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataLocation(structType any) BACnetConstructedDataLoca
 	return nil
 }
 
-func (m *_BACnetConstructedDataLocation) GetTypeName() string {
+func (m *_BACnetConstructedDataLocation) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLocation"
 }
 

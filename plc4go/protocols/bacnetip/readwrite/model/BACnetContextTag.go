@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -184,7 +185,7 @@ func (b *_BACnetContextTagBuilder) PartialBuild() (BACnetContextTagContract, err
 	if b.Header == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'header' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetContextTag.deepCopy(), nil
@@ -429,7 +430,7 @@ func CastBACnetContextTag(structType any) BACnetContextTag {
 	return nil
 }
 
-func (m *_BACnetContextTag) GetTypeName() string {
+func (m *_BACnetContextTag) GetPlx4xTypeName() string {
 	return "BACnetContextTag"
 }
 

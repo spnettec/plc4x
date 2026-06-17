@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -178,7 +179,7 @@ func (b *_CipServiceBuilder) WithMandatoryFields() CipServiceBuilder {
 }
 
 func (b *_CipServiceBuilder) PartialBuild() (CipServiceContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipService.deepCopy(), nil
@@ -496,7 +497,7 @@ func CastCipService(structType any) CipService {
 	return nil
 }
 
-func (m *_CipService) GetTypeName() string {
+func (m *_CipService) GetPlx4xTypeName() string {
 	return "CipService"
 }
 

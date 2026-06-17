@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BVLCOriginalBroadcastNPDUBuilder) Build() (BVLCOriginalBroadcastNPDU, 
 	if b.Npdu == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'npdu' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCOriginalBroadcastNPDU.deepCopy(), nil
@@ -226,7 +227,7 @@ func CastBVLCOriginalBroadcastNPDU(structType any) BVLCOriginalBroadcastNPDU {
 	return nil
 }
 
-func (m *_BVLCOriginalBroadcastNPDU) GetTypeName() string {
+func (m *_BVLCOriginalBroadcastNPDU) GetPlx4xTypeName() string {
 	return "BVLCOriginalBroadcastNPDU"
 }
 
@@ -254,7 +255,7 @@ func (m *_BVLCOriginalBroadcastNPDU) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	npdu, err := ReadSimpleField[NPDU](ctx, "npdu", ReadComplex[NPDU](NPDUParseWithBufferProducer((uint16)(bvlcPayloadLength)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	npdu, err := ReadSimpleField[NPDU](ctx, "npdu", ReadComplex[NPDU](NPDUParseWithBufferProducer((uint16)(bvlcPayloadLength)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'npdu' field"))
 	}
@@ -285,7 +286,7 @@ func (m *_BVLCOriginalBroadcastNPDU) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BVLCOriginalBroadcastNPDU")
 		}
 
-		if err := WriteSimpleField[NPDU](ctx, "npdu", m.GetNpdu(), WriteComplex[NPDU](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleField[NPDU](ctx, "npdu", m.GetNpdu(), WriteComplex[NPDU](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'npdu' field")
 		}
 

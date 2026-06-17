@@ -21,6 +21,8 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +106,7 @@ func (b *_SALDataRoomControlSystemBuilder) WithMandatoryFields() SALDataRoomCont
 }
 
 func (b *_SALDataRoomControlSystemBuilder) Build() (SALDataRoomControlSystem, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataRoomControlSystem.deepCopy(), nil
@@ -179,7 +181,7 @@ func CastSALDataRoomControlSystem(structType any) SALDataRoomControlSystem {
 	return nil
 }
 
-func (m *_SALDataRoomControlSystem) GetTypeName() string {
+func (m *_SALDataRoomControlSystem) GetPlx4xTypeName() string {
 	return "SALDataRoomControlSystem"
 }
 
@@ -217,7 +219,7 @@ func (m *_SALDataRoomControlSystem) parse(ctx context.Context, readBuffer utils.
 }
 
 func (m *_SALDataRoomControlSystem) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

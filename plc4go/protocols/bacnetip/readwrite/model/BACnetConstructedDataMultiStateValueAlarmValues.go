@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataMultiStateValueAlarmValuesBuilder) WithAlarmValue
 }
 
 func (b *_BACnetConstructedDataMultiStateValueAlarmValuesBuilder) Build() (BACnetConstructedDataMultiStateValueAlarmValues, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataMultiStateValueAlarmValues.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataMultiStateValueAlarmValues(structType any) BACnetC
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateValueAlarmValues) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateValueAlarmValues) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateValueAlarmValues"
 }
 

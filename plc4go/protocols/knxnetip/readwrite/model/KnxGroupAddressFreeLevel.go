@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_KnxGroupAddressFreeLevelBuilder) WithSubGroup(subGroup uint16) KnxGrou
 }
 
 func (b *_KnxGroupAddressFreeLevelBuilder) Build() (KnxGroupAddressFreeLevel, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._KnxGroupAddressFreeLevel.deepCopy(), nil
@@ -206,7 +207,7 @@ func CastKnxGroupAddressFreeLevel(structType any) KnxGroupAddressFreeLevel {
 	return nil
 }
 
-func (m *_KnxGroupAddressFreeLevel) GetTypeName() string {
+func (m *_KnxGroupAddressFreeLevel) GetPlx4xTypeName() string {
 	return "KnxGroupAddressFreeLevel"
 }
 

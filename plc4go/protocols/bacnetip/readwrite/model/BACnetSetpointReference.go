@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -112,7 +113,7 @@ func (b *_BACnetSetpointReferenceBuilder) WithOptionalSetPointReferenceBuilder(b
 }
 
 func (b *_BACnetSetpointReferenceBuilder) Build() (BACnetSetpointReference, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetSetpointReference.deepCopy(), nil
@@ -172,7 +173,7 @@ func CastBACnetSetpointReference(structType any) BACnetSetpointReference {
 	return nil
 }
 
-func (m *_BACnetSetpointReference) GetTypeName() string {
+func (m *_BACnetSetpointReference) GetPlx4xTypeName() string {
 	return "BACnetSetpointReference"
 }
 

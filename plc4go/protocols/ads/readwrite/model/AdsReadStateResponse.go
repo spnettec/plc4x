@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -67,7 +68,7 @@ var _ AdsReadStateResponse = (*_AdsReadStateResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsReadStateResponse)(nil)
 
 // NewAdsReadStateResponse factory function for _AdsReadStateResponse
-func NewAdsReadStateResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, adsState uint16, deviceState uint16) *_AdsReadStateResponse {
+func NewAdsReadStateResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, result ReturnCode, adsState uint16, deviceState uint16) *_AdsReadStateResponse {
 	_result := &_AdsReadStateResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,
@@ -142,7 +143,7 @@ func (b *_AdsReadStateResponseBuilder) WithDeviceState(deviceState uint16) AdsRe
 }
 
 func (b *_AdsReadStateResponseBuilder) Build() (AdsReadStateResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsReadStateResponse.deepCopy(), nil
@@ -243,7 +244,7 @@ func CastAdsReadStateResponse(structType any) AdsReadStateResponse {
 	return nil
 }
 
-func (m *_AdsReadStateResponse) GetTypeName() string {
+func (m *_AdsReadStateResponse) GetPlx4xTypeName() string {
 	return "AdsReadStateResponse"
 }
 

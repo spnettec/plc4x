@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -146,7 +148,7 @@ func (b *_BrowsePathResultBuilder) Build() (BrowsePathResult, error) {
 	if b.StatusCode == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'statusCode' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BrowsePathResult.deepCopy(), nil
@@ -239,7 +241,7 @@ func CastBrowsePathResult(structType any) BrowsePathResult {
 	return nil
 }
 
-func (m *_BrowsePathResult) GetTypeName() string {
+func (m *_BrowsePathResult) GetPlx4xTypeName() string {
 	return "BrowsePathResult"
 }
 
@@ -278,19 +280,19 @@ func (m *_BrowsePathResult) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 	m.StatusCode = statusCode
 
-	noOfTargets, err := ReadImplicitField[int32](ctx, "noOfTargets", ReadSignedInt(readBuffer, uint8(32)))
+	noOfTargets, err := ReadImplicitField[int32](ctx, "noOfTargets", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfTargets' field"))
 	}
 	_ = noOfTargets
 
-	targets, err := ReadCountArrayField[BrowsePathTarget](ctx, "targets", ReadComplex[BrowsePathTarget](ExtensionObjectDefinitionParseWithBufferProducer[BrowsePathTarget]((int32)(int32(548))), readBuffer), uint64(noOfTargets))
+	targets, err := ReadCountArrayField[BrowsePathTarget](ctx, "targets", ReadComplex[BrowsePathTarget](ExtensionObjectDefinitionParseWithBufferProducer[BrowsePathTarget]((int32)(int32(548))), readBuffer), uint64(noOfTargets), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targets' field"))
 	}
@@ -321,15 +323,15 @@ func (m *_BrowsePathResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for BrowsePathResult")
 		}
 
-		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 		noOfTargets := int32(utils.InlineIf(bool((m.GetTargets()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetTargets()))) }).(int32))
-		if err := WriteImplicitField(ctx, "noOfTargets", noOfTargets, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "noOfTargets", noOfTargets, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfTargets' field")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "targets", m.GetTargets(), writeBuffer); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "targets", m.GetTargets(), writeBuffer, codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'targets' field")
 		}
 

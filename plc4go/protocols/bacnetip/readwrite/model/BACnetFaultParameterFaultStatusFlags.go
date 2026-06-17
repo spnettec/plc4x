@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -193,7 +194,7 @@ func (b *_BACnetFaultParameterFaultStatusFlagsBuilder) Build() (BACnetFaultParam
 	if b.ClosingTag == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetFaultParameterFaultStatusFlags.deepCopy(), nil
@@ -286,7 +287,7 @@ func CastBACnetFaultParameterFaultStatusFlags(structType any) BACnetFaultParamet
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultStatusFlags) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultStatusFlags) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultStatusFlags"
 }
 

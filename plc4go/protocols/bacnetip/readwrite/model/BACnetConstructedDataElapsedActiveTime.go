@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) Build() (BACnetConstruc
 	if b.ElapsedActiveTime == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'elapsedActiveTime' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataElapsedActiveTime.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataElapsedActiveTime(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataElapsedActiveTime) GetTypeName() string {
+func (m *_BACnetConstructedDataElapsedActiveTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataElapsedActiveTime"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetOptionalCharacterStringValueBuilder) Build() (BACnetOptionalChar
 	if b.Characterstring == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'characterstring' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetOptionalCharacterStringValue.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetOptionalCharacterStringValue(structType any) BACnetOptionalCharac
 	return nil
 }
 
-func (m *_BACnetOptionalCharacterStringValue) GetTypeName() string {
+func (m *_BACnetOptionalCharacterStringValue) GetPlx4xTypeName() string {
 	return "BACnetOptionalCharacterStringValue"
 }
 

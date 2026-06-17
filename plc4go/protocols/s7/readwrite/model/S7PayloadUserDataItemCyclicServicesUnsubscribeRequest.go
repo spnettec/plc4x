@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) WithJobI
 }
 
 func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCyclicServicesUnsubscribeRequest.deepCopy(), nil
@@ -229,7 +230,7 @@ func CastS7PayloadUserDataItemCyclicServicesUnsubscribeRequest(structType any) S
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCyclicServicesUnsubscribeRequest"
 }
 

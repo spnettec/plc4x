@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SecurityDataLineCutAlarmClearedBuilder) WithMandatoryFields() Security
 }
 
 func (b *_SecurityDataLineCutAlarmClearedBuilder) Build() (SecurityDataLineCutAlarmCleared, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataLineCutAlarmCleared.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastSecurityDataLineCutAlarmCleared(structType any) SecurityDataLineCutAlar
 	return nil
 }
 
-func (m *_SecurityDataLineCutAlarmCleared) GetTypeName() string {
+func (m *_SecurityDataLineCutAlarmCleared) GetPlx4xTypeName() string {
 	return "SecurityDataLineCutAlarmCleared"
 }
 

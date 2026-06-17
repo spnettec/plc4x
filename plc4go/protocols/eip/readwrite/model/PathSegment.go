@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -130,7 +131,7 @@ func (b *_PathSegmentBuilder) WithMandatoryFields() PathSegmentBuilder {
 }
 
 func (b *_PathSegmentBuilder) PartialBuild() (PathSegmentContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._PathSegment.deepCopy(), nil
@@ -228,7 +229,7 @@ func CastPathSegment(structType any) PathSegment {
 	return nil
 }
 
-func (m *_PathSegment) GetTypeName() string {
+func (m *_PathSegment) GetPlx4xTypeName() string {
 	return "PathSegment"
 }
 

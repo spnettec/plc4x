@@ -22,8 +22,8 @@
 
   <name>Beckhoff ADS/AMS</name>
 
-  <protocolName>ads</protocolName>
-  <outputFlavor>read-write</outputFlavor>
+  <protocol-name>ads</protocol-name>
+  <output-flavor>read-write</output-flavor>
 
   <driver-name>ads</driver-name>
   <driver-parameters>
@@ -89,7 +89,9 @@
             <broadcast dataType="bit" bitLength="1">false</broadcast>
             <reserved dataType="int" bitLength="7">0</reserved>
             <length dataType="uint" bitLength="32">0</length>
-            <errorCode dataType="uint" bitLength="32">0</errorCode>
+            <errorCode>
+              <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+            </errorCode>
             <invokeId dataType="uint" bitLength="32">1</invokeId>
             <AdsReadDeviceInfoRequest>
             </AdsReadDeviceInfoRequest>
@@ -218,7 +220,7 @@
     <incoming-plc-message name="Read 'online version-number' Response">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
-        <length dataType="uint" bitLength="32">48</length>
+        <length dataType="uint" bitLength="32">44</length>
         <userdata>
           <AmsPacket>
             <targetAmsNetId>
@@ -1038,7 +1040,7 @@
       <outgoing-plc-message name="Send Ads Read Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">48</length>
+          <length dataType="uint" bitLength="32">44</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -1064,7 +1066,7 @@
               </sourceAmsNetId>
               <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
               <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
+                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
               <initCommand dataType="bit" bitLength="1">false</initCommand>
               <updCommand dataType="bit" bitLength="1">false</updCommand>
@@ -1076,18 +1078,16 @@
               <response dataType="bit" bitLength="1">false</response>
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
-              <length dataType="uint" bitLength="32">16</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
-              <invokeId dataType="uint" bitLength="32">9</invokeId>
-              <AdsReadWriteRequest>
-                <indexGroup dataType="uint" bitLength="32">61568</indexGroup>
-                <indexOffset dataType="uint" bitLength="32">0</indexOffset>
-                <readLength dataType="uint" bitLength="32">0</readLength>
-                <writeLength dataType="uint" bitLength="32">0</writeLength>
-                <items isList="true">
-                </items>
-                <data dataType="byte" bitLength="0">0x</data>
-              </AdsReadWriteRequest>
+              <length dataType="uint" bitLength="32">12</length>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
+              <invokeId dataType="uint" bitLength="32">1</invokeId>
+              <AdsReadRequest>
+                <indexGroup dataType="uint" bitLength="32">16448</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">417176</indexOffset>
+                <length dataType="uint" bitLength="32">336</length>
+              </AdsReadRequest>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
@@ -1134,8 +1134,10 @@
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">344</length>
-              <errorCode dataType="uint" bitLength="32">0</errorCode>
-              <invokeId dataType="uint" bitLength="32">9</invokeId>
+              <errorCode>
+                <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+              </errorCode>
+              <invokeId dataType="uint" bitLength="32">1</invokeId>
               <AdsReadResponse>
                 <result>
                   <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
@@ -1346,7 +1348,7 @@
       <outgoing-plc-message name="Send Ads Write Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">48</length>
+          <length dataType="uint" bitLength="32">380</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -1372,7 +1374,7 @@
               </sourceAmsNetId>
               <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
               <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
+                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_WRITE">3</CommandId>
               </commandId>
               <initCommand dataType="bit" bitLength="1">false</initCommand>
               <updCommand dataType="bit" bitLength="1">false</updCommand>
@@ -1384,18 +1386,15 @@
               <response dataType="bit" bitLength="1">false</response>
               <broadcast dataType="bit" bitLength="1">false</broadcast>
               <reserved dataType="int" bitLength="7">0</reserved>
-              <length dataType="uint" bitLength="32">16</length>
+              <length dataType="uint" bitLength="32">348</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">9</invokeId>
-              <AdsReadWriteRequest>
-                <indexGroup dataType="uint" bitLength="32">61569</indexGroup>
-                <indexOffset dataType="uint" bitLength="32">0</indexOffset>
-                <readLength dataType="uint" bitLength="32">0</readLength>
-                <writeLength dataType="uint" bitLength="32">0</writeLength>
-                <items isList="true">
-                </items>
-                <data dataType="byte" bitLength="0">0x</data>
-              </AdsReadWriteRequest>
+              <AdsWriteRequest>
+                <indexGroup dataType="uint" bitLength="32">16448</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">417176</indexOffset>
+                <length dataType="uint" bitLength="32">336</length>
+                <data dataType="byte" bitLength="2688">0x010102000300000004000000000000000506070008000000090000000a0000000b000000000000000c0000000000000000005041000000000000000000002c40d2040000000000007c941a93b826330100a07d0fab6459037e1c8e316875727a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000077006f006c00660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</data>
+              </AdsWriteRequest>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>

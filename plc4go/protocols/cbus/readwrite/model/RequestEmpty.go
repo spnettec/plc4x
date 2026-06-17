@@ -21,6 +21,8 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +106,7 @@ func (b *_RequestEmptyBuilder) WithMandatoryFields() RequestEmptyBuilder {
 }
 
 func (b *_RequestEmptyBuilder) Build() (RequestEmpty, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RequestEmpty.deepCopy(), nil
@@ -175,7 +177,7 @@ func CastRequestEmpty(structType any) RequestEmpty {
 	return nil
 }
 
-func (m *_RequestEmpty) GetTypeName() string {
+func (m *_RequestEmpty) GetPlx4xTypeName() string {
 	return "RequestEmpty"
 }
 
@@ -208,7 +210,7 @@ func (m *_RequestEmpty) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 }
 
 func (m *_RequestEmpty) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

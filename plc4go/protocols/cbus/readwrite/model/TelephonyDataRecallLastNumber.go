@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -132,7 +133,7 @@ func (b *_TelephonyDataRecallLastNumberBuilder) WithNumber(number string) Teleph
 }
 
 func (b *_TelephonyDataRecallLastNumberBuilder) Build() (TelephonyDataRecallLastNumber, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TelephonyDataRecallLastNumber.deepCopy(), nil
@@ -242,7 +243,7 @@ func CastTelephonyDataRecallLastNumber(structType any) TelephonyDataRecallLastNu
 	return nil
 }
 
-func (m *_TelephonyDataRecallLastNumber) GetTypeName() string {
+func (m *_TelephonyDataRecallLastNumber) GetPlx4xTypeName() string {
 	return "TelephonyDataRecallLastNumber"
 }
 

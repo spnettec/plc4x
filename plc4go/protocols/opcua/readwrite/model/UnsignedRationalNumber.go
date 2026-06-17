@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -128,7 +130,7 @@ func (b *_UnsignedRationalNumberBuilder) WithDenominator(denominator uint32) Uns
 }
 
 func (b *_UnsignedRationalNumberBuilder) Build() (UnsignedRationalNumber, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._UnsignedRationalNumber.deepCopy(), nil
@@ -221,7 +223,7 @@ func CastUnsignedRationalNumber(structType any) UnsignedRationalNumber {
 	return nil
 }
 
-func (m *_UnsignedRationalNumber) GetTypeName() string {
+func (m *_UnsignedRationalNumber) GetPlx4xTypeName() string {
 	return "UnsignedRationalNumber"
 }
 
@@ -252,13 +254,13 @@ func (m *_UnsignedRationalNumber) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	numerator, err := ReadSimpleField(ctx, "numerator", ReadUnsignedInt(readBuffer, uint8(32)))
+	numerator, err := ReadSimpleField(ctx, "numerator", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numerator' field"))
 	}
 	m.Numerator = numerator
 
-	denominator, err := ReadSimpleField(ctx, "denominator", ReadUnsignedInt(readBuffer, uint8(32)))
+	denominator, err := ReadSimpleField(ctx, "denominator", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'denominator' field"))
 	}
@@ -289,11 +291,11 @@ func (m *_UnsignedRationalNumber) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for UnsignedRationalNumber")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "numerator", m.GetNumerator(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "numerator", m.GetNumerator(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'numerator' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "denominator", m.GetDenominator(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "denominator", m.GetDenominator(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'denominator' field")
 		}
 

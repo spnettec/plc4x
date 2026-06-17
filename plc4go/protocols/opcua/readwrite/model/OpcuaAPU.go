@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -120,7 +121,7 @@ func (b *_OpcuaAPUBuilder) Build() (OpcuaAPU, error) {
 	if b.Message == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'message' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpcuaAPU.deepCopy(), nil
@@ -180,7 +181,7 @@ func CastOpcuaAPU(structType any) OpcuaAPU {
 	return nil
 }
 
-func (m *_OpcuaAPU) GetTypeName() string {
+func (m *_OpcuaAPU) GetPlx4xTypeName() string {
 	return "OpcuaAPU"
 }
 

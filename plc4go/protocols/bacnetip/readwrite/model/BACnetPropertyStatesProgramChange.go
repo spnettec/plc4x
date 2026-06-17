@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetPropertyStatesProgramChangeBuilder) Build() (BACnetPropertyState
 	if b.ProgramChange == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'programChange' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesProgramChange.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetPropertyStatesProgramChange(structType any) BACnetPropertyStatesP
 	return nil
 }
 
-func (m *_BACnetPropertyStatesProgramChange) GetTypeName() string {
+func (m *_BACnetPropertyStatesProgramChange) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesProgramChange"
 }
 

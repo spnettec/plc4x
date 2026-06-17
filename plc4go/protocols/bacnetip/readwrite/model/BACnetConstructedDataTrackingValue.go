@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataTrackingValueBuilder) Build() (BACnetConstructedD
 	if b.TrackingValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'trackingValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataTrackingValue.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataTrackingValue(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataTrackingValue) GetTypeName() string {
+func (m *_BACnetConstructedDataTrackingValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrackingValue"
 }
 

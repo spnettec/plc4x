@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_MeteringDataMeasureOtherWaterBuilder) WithMandatoryFields() MeteringDa
 }
 
 func (b *_MeteringDataMeasureOtherWaterBuilder) Build() (MeteringDataMeasureOtherWater, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MeteringDataMeasureOtherWater.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastMeteringDataMeasureOtherWater(structType any) MeteringDataMeasureOtherW
 	return nil
 }
 
-func (m *_MeteringDataMeasureOtherWater) GetTypeName() string {
+func (m *_MeteringDataMeasureOtherWater) GetPlx4xTypeName() string {
 	return "MeteringDataMeasureOtherWater"
 }
 

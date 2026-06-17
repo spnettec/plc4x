@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -130,7 +131,7 @@ func (b *_NLMInitializeRoutingTablePortMappingBuilder) WithPortInfo(portInfo ...
 }
 
 func (b *_NLMInitializeRoutingTablePortMappingBuilder) Build() (NLMInitializeRoutingTablePortMapping, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMInitializeRoutingTablePortMapping.deepCopy(), nil
@@ -202,7 +203,7 @@ func CastNLMInitializeRoutingTablePortMapping(structType any) NLMInitializeRouti
 	return nil
 }
 
-func (m *_NLMInitializeRoutingTablePortMapping) GetTypeName() string {
+func (m *_NLMInitializeRoutingTablePortMapping) GetPlx4xTypeName() string {
 	return "NLMInitializeRoutingTablePortMapping"
 }
 

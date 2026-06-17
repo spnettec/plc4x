@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -140,7 +141,7 @@ func (b *_BACnetRestartReasonTaggedBuilder) Build() (BACnetRestartReasonTagged, 
 	if b.Header == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'header' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetRestartReasonTagged.deepCopy(), nil
@@ -223,7 +224,7 @@ func CastBACnetRestartReasonTagged(structType any) BACnetRestartReasonTagged {
 	return nil
 }
 
-func (m *_BACnetRestartReasonTagged) GetTypeName() string {
+func (m *_BACnetRestartReasonTagged) GetPlx4xTypeName() string {
 	return "BACnetRestartReasonTagged"
 }
 

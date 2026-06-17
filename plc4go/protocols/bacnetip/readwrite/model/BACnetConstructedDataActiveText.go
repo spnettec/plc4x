@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataActiveTextBuilder) Build() (BACnetConstructedData
 	if b.ActiveText == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'activeText' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataActiveText.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataActiveText(structType any) BACnetConstructedDataAc
 	return nil
 }
 
-func (m *_BACnetConstructedDataActiveText) GetTypeName() string {
+func (m *_BACnetConstructedDataActiveText) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataActiveText"
 }
 

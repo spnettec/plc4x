@@ -40,10 +40,8 @@ import java.util.concurrent.Future;
 import java.util.function.ToIntFunction;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.plc4x.readwrite.Constants;
-import org.apache.plc4x.java.plc4x.readwrite.Plc4xMessage;
-import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.tools.plc4xserver.protocol.Plc4xServerAdapter;
+import org.apache.plc4x.java.tools.plc4xserver.protocol.Plc4xServerCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,15 +136,7 @@ public class Plc4xServer {
         @Override
         public void initChannel(SocketChannel channel) {
             ChannelPipeline pipeline = channel.pipeline();
-            pipeline.addLast(
-                    new GeneratedProtocolMessageCodec<>(
-                            Plc4xMessage.class,
-                            Plc4xMessage::staticParse,
-                            ByteOrder.BIG_ENDIAN,
-                            new ByteLengthEstimator(),
-                            null
-                    )
-            );
+            pipeline.addLast(new Plc4xServerCodec());
             pipeline.addLast(new Plc4xServerAdapter());
         }
     }

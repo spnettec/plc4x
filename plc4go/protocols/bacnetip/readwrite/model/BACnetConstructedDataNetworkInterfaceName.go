@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) Build() (BACnetConst
 	if b.NetworkInterfaceName == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'networkInterfaceName' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataNetworkInterfaceName.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataNetworkInterfaceName(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataNetworkInterfaceName) GetTypeName() string {
+func (m *_BACnetConstructedDataNetworkInterfaceName) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNetworkInterfaceName"
 }
 

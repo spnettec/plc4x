@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataUnitsBuilder) Build() (BACnetConstructedDataUnits
 	if b.Units == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'units' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataUnits.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataUnits(structType any) BACnetConstructedDataUnits {
 	return nil
 }
 
-func (m *_BACnetConstructedDataUnits) GetTypeName() string {
+func (m *_BACnetConstructedDataUnits) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUnits"
 }
 

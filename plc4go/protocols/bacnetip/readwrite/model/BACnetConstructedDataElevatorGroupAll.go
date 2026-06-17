@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_BACnetConstructedDataElevatorGroupAllBuilder) WithMandatoryFields() BA
 }
 
 func (b *_BACnetConstructedDataElevatorGroupAllBuilder) Build() (BACnetConstructedDataElevatorGroupAll, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataElevatorGroupAll.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastBACnetConstructedDataElevatorGroupAll(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataElevatorGroupAll) GetTypeName() string {
+func (m *_BACnetConstructedDataElevatorGroupAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataElevatorGroupAll"
 }
 

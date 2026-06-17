@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -125,7 +126,7 @@ func (b *_BACnetTagPayloadCharacterStringBuilder) WithValue(value string) BACnet
 }
 
 func (b *_BACnetTagPayloadCharacterStringBuilder) Build() (BACnetTagPayloadCharacterString, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTagPayloadCharacterString.deepCopy(), nil
@@ -208,7 +209,7 @@ func CastBACnetTagPayloadCharacterString(structType any) BACnetTagPayloadCharact
 	return nil
 }
 
-func (m *_BACnetTagPayloadCharacterString) GetTypeName() string {
+func (m *_BACnetTagPayloadCharacterString) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadCharacterString"
 }
 
@@ -270,7 +271,7 @@ func (m *_BACnetTagPayloadCharacterString) parse(ctx context.Context, readBuffer
 	}
 	_ = actualLengthInBit
 
-	value, err := ReadSimpleField(ctx, "value", ReadString(readBuffer, uint32(actualLengthInBit)), codegen.WithEncoding("UTF-8"))
+	value, err := ReadSimpleField(ctx, "value", ReadString(readBuffer, uint32(actualLengthInBit)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -310,7 +311,7 @@ func (m *_BACnetTagPayloadCharacterString) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
 	}
 
-	if err := WriteSimpleField[string](ctx, "value", m.GetValue(), WriteString(writeBuffer, int32(m.GetActualLengthInBit())), codegen.WithEncoding("UTF-8")); err != nil {
+	if err := WriteSimpleField[string](ctx, "value", m.GetValue(), WriteString(writeBuffer, int32(m.GetActualLengthInBit())), codegen.WithEncoding("UTF8")); err != nil {
 		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 

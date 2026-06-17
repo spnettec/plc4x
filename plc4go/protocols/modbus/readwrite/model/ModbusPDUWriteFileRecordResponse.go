@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_ModbusPDUWriteFileRecordResponseBuilder) WithItems(items ...ModbusPDUW
 }
 
 func (b *_ModbusPDUWriteFileRecordResponseBuilder) Build() (ModbusPDUWriteFileRecordResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUWriteFileRecordResponse.deepCopy(), nil
@@ -214,7 +215,7 @@ func CastModbusPDUWriteFileRecordResponse(structType any) ModbusPDUWriteFileReco
 	return nil
 }
 
-func (m *_ModbusPDUWriteFileRecordResponse) GetTypeName() string {
+func (m *_ModbusPDUWriteFileRecordResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteFileRecordResponse"
 }
 

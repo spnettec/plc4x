@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -105,7 +106,7 @@ func (b *_BACnetTagPayloadBooleanBuilder) WithActualLength(actualLength uint32) 
 }
 
 func (b *_BACnetTagPayloadBooleanBuilder) Build() (BACnetTagPayloadBoolean, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTagPayloadBoolean.deepCopy(), nil
@@ -192,7 +193,7 @@ func CastBACnetTagPayloadBoolean(structType any) BACnetTagPayloadBoolean {
 	return nil
 }
 
-func (m *_BACnetTagPayloadBoolean) GetTypeName() string {
+func (m *_BACnetTagPayloadBoolean) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadBoolean"
 }
 

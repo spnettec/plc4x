@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -175,7 +176,7 @@ func (b *_BACnetServiceAckAtomicReadFileRecordBuilder) Build() (BACnetServiceAck
 	if b.ReturnedRecordCount == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'returnedRecordCount' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetServiceAckAtomicReadFileRecord.deepCopy(), nil
@@ -268,7 +269,7 @@ func CastBACnetServiceAckAtomicReadFileRecord(structType any) BACnetServiceAckAt
 	return nil
 }
 
-func (m *_BACnetServiceAckAtomicReadFileRecord) GetTypeName() string {
+func (m *_BACnetServiceAckAtomicReadFileRecord) GetPlx4xTypeName() string {
 	return "BACnetServiceAckAtomicReadFileRecord"
 }
 

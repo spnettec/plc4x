@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_MonitoringFilterResultBuilder) WithMandatoryFields() MonitoringFilterR
 }
 
 func (b *_MonitoringFilterResultBuilder) Build() (MonitoringFilterResult, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MonitoringFilterResult.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastMonitoringFilterResult(structType any) MonitoringFilterResult {
 	return nil
 }
 
-func (m *_MonitoringFilterResult) GetTypeName() string {
+func (m *_MonitoringFilterResult) GetPlx4xTypeName() string {
 	return "MonitoringFilterResult"
 }
 

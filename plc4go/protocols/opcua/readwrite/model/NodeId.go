@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -120,7 +121,7 @@ func (b *_NodeIdBuilder) Build() (NodeId, error) {
 	if b.NodeId == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'nodeId' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NodeId.deepCopy(), nil
@@ -180,7 +181,7 @@ func CastNodeId(structType any) NodeId {
 	return nil
 }
 
-func (m *_NodeId) GetTypeName() string {
+func (m *_NodeId) GetPlx4xTypeName() string {
 	return "NodeId"
 }
 

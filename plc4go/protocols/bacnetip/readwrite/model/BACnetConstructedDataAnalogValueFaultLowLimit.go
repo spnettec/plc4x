@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataAnalogValueFaultLowLimitBuilder) Build() (BACnetC
 	if b.FaultLowLimit == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'faultLowLimit' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataAnalogValueFaultLowLimit.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataAnalogValueFaultLowLimit(structType any) BACnetCon
 	return nil
 }
 
-func (m *_BACnetConstructedDataAnalogValueFaultLowLimit) GetTypeName() string {
+func (m *_BACnetConstructedDataAnalogValueFaultLowLimit) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAnalogValueFaultLowLimit"
 }
 

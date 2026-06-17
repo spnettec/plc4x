@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_BACnetConstructedDataAccumulatorAllBuilder) WithMandatoryFields() BACn
 }
 
 func (b *_BACnetConstructedDataAccumulatorAllBuilder) Build() (BACnetConstructedDataAccumulatorAll, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataAccumulatorAll.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastBACnetConstructedDataAccumulatorAll(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorAll) GetTypeName() string {
+func (m *_BACnetConstructedDataAccumulatorAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataAccumulatorAll"
 }
 

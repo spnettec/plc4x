@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -202,7 +203,7 @@ func (b *_S7PayloadDiagnosticMessageBuilder) Build() (S7PayloadDiagnosticMessage
 	if b.TimeStamp == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeStamp' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadDiagnosticMessage.deepCopy(), nil
@@ -323,7 +324,7 @@ func CastS7PayloadDiagnosticMessage(structType any) S7PayloadDiagnosticMessage {
 	return nil
 }
 
-func (m *_S7PayloadDiagnosticMessage) GetTypeName() string {
+func (m *_S7PayloadDiagnosticMessage) GetPlx4xTypeName() string {
 	return "S7PayloadDiagnosticMessage"
 }
 

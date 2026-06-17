@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) WithListOfRemoteVtSession
 }
 
 func (b *_BACnetConfirmedServiceRequestVTCloseBuilder) Build() (BACnetConfirmedServiceRequestVTClose, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestVTClose.deepCopy(), nil
@@ -206,7 +207,7 @@ func CastBACnetConfirmedServiceRequestVTClose(structType any) BACnetConfirmedSer
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTClose) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestVTClose) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestVTClose"
 }
 

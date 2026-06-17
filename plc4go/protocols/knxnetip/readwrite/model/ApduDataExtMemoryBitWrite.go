@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_ApduDataExtMemoryBitWriteBuilder) WithMandatoryFields() ApduDataExtMem
 }
 
 func (b *_ApduDataExtMemoryBitWriteBuilder) Build() (ApduDataExtMemoryBitWrite, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtMemoryBitWrite.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastApduDataExtMemoryBitWrite(structType any) ApduDataExtMemoryBitWrite {
 	return nil
 }
 
-func (m *_ApduDataExtMemoryBitWrite) GetTypeName() string {
+func (m *_ApduDataExtMemoryBitWrite) GetPlx4xTypeName() string {
 	return "ApduDataExtMemoryBitWrite"
 }
 

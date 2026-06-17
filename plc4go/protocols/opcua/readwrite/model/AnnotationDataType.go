@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -193,7 +195,7 @@ func (b *_AnnotationDataTypeBuilder) Build() (AnnotationDataType, error) {
 	if b.Uri == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'uri' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AnnotationDataType.deepCopy(), nil
@@ -290,7 +292,7 @@ func CastAnnotationDataType(structType any) AnnotationDataType {
 	return nil
 }
 
-func (m *_AnnotationDataType) GetTypeName() string {
+func (m *_AnnotationDataType) GetPlx4xTypeName() string {
 	return "AnnotationDataType"
 }
 
@@ -324,19 +326,19 @@ func (m *_AnnotationDataType) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	annotation, err := ReadSimpleField[PascalString](ctx, "annotation", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	annotation, err := ReadSimpleField[PascalString](ctx, "annotation", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'annotation' field"))
 	}
 	m.Annotation = annotation
 
-	discipline, err := ReadSimpleField[PascalString](ctx, "discipline", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	discipline, err := ReadSimpleField[PascalString](ctx, "discipline", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discipline' field"))
 	}
 	m.Discipline = discipline
 
-	uri, err := ReadSimpleField[PascalString](ctx, "uri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	uri, err := ReadSimpleField[PascalString](ctx, "uri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'uri' field"))
 	}
@@ -367,15 +369,15 @@ func (m *_AnnotationDataType) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for AnnotationDataType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "annotation", m.GetAnnotation(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "annotation", m.GetAnnotation(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'annotation' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "discipline", m.GetDiscipline(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "discipline", m.GetDiscipline(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'discipline' field")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "uri", m.GetUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "uri", m.GetUri(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'uri' field")
 		}
 

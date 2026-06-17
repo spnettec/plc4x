@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_SecurityDataSystemArmedDisarmedBuilder) Build() (SecurityDataSystemArm
 	if b.ArmCodeType == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'armCodeType' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataSystemArmedDisarmed.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastSecurityDataSystemArmedDisarmed(structType any) SecurityDataSystemArmed
 	return nil
 }
 
-func (m *_SecurityDataSystemArmedDisarmed) GetTypeName() string {
+func (m *_SecurityDataSystemArmedDisarmed) GetPlx4xTypeName() string {
 	return "SecurityDataSystemArmedDisarmed"
 }
 

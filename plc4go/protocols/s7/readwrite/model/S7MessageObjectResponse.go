@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -130,7 +131,7 @@ func (b *_S7MessageObjectResponseBuilder) WithTransportSize(transportSize DataTr
 }
 
 func (b *_S7MessageObjectResponseBuilder) Build() (S7MessageObjectResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7MessageObjectResponse.deepCopy(), nil
@@ -223,7 +224,7 @@ func CastS7MessageObjectResponse(structType any) S7MessageObjectResponse {
 	return nil
 }
 
-func (m *_S7MessageObjectResponse) GetTypeName() string {
+func (m *_S7MessageObjectResponse) GetPlx4xTypeName() string {
 	return "S7MessageObjectResponse"
 }
 

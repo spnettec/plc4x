@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithShedLevelDescri
 }
 
 func (b *_BACnetConstructedDataShedLevelDescriptionsBuilder) Build() (BACnetConstructedDataShedLevelDescriptions, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataShedLevelDescriptions.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataShedLevelDescriptions(structType any) BACnetConstr
 	return nil
 }
 
-func (m *_BACnetConstructedDataShedLevelDescriptions) GetTypeName() string {
+func (m *_BACnetConstructedDataShedLevelDescriptions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataShedLevelDescriptions"
 }
 

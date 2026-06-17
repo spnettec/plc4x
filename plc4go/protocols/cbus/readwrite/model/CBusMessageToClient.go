@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -135,7 +138,7 @@ func (b *_CBusMessageToClientBuilder) Build() (CBusMessageToClient, error) {
 	if b.Reply == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'reply' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CBusMessageToClient.deepCopy(), nil
@@ -224,7 +227,7 @@ func CastCBusMessageToClient(structType any) CBusMessageToClient {
 	return nil
 }
 
-func (m *_CBusMessageToClient) GetTypeName() string {
+func (m *_CBusMessageToClient) GetPlx4xTypeName() string {
 	return "CBusMessageToClient"
 }
 
@@ -252,7 +255,7 @@ func (m *_CBusMessageToClient) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reply, err := ReadSimpleField[ReplyOrConfirmation](ctx, "reply", ReadComplex[ReplyOrConfirmation](ReplyOrConfirmationParseWithBufferProducer[ReplyOrConfirmation]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer))
+	reply, err := ReadSimpleField[ReplyOrConfirmation](ctx, "reply", ReadComplex[ReplyOrConfirmation](ReplyOrConfirmationParseWithBufferProducer[ReplyOrConfirmation]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reply' field"))
 	}
@@ -266,7 +269,7 @@ func (m *_CBusMessageToClient) parse(ctx context.Context, readBuffer utils.ReadB
 }
 
 func (m *_CBusMessageToClient) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -283,7 +286,7 @@ func (m *_CBusMessageToClient) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for CBusMessageToClient")
 		}
 
-		if err := WriteSimpleField[ReplyOrConfirmation](ctx, "reply", m.GetReply(), WriteComplex[ReplyOrConfirmation](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ReplyOrConfirmation](ctx, "reply", m.GetReply(), WriteComplex[ReplyOrConfirmation](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reply' field")
 		}
 

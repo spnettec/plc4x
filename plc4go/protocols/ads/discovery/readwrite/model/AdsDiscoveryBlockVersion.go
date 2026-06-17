@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_AdsDiscoveryBlockVersionBuilder) WithVersionData(versionData ...byte) 
 }
 
 func (b *_AdsDiscoveryBlockVersionBuilder) Build() (AdsDiscoveryBlockVersion, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsDiscoveryBlockVersion.deepCopy(), nil
@@ -206,7 +207,7 @@ func CastAdsDiscoveryBlockVersion(structType any) AdsDiscoveryBlockVersion {
 	return nil
 }
 
-func (m *_AdsDiscoveryBlockVersion) GetTypeName() string {
+func (m *_AdsDiscoveryBlockVersion) GetPlx4xTypeName() string {
 	return "AdsDiscoveryBlockVersion"
 }
 

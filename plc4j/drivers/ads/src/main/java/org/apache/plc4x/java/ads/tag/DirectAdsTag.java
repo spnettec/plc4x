@@ -21,10 +21,10 @@ package org.apache.plc4x.java.ads.tag;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.drivers.model.DefaultArrayInfo;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -64,8 +64,16 @@ public class DirectAdsTag implements AdsTag {
         }
     }
 
+    public DirectAdsTag(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {
+        this(indexGroup, indexOffset, adsDataTypeName, numberOfElements, null);
+    }
+
     public static DirectAdsTag of(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements, String stringEncoding) {
         return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeName, numberOfElements, stringEncoding);
+    }
+
+    public static DirectAdsTag of(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {
+        return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeName, numberOfElements, null);
     }
 
     public static DirectAdsTag of(String address) {
@@ -136,9 +144,12 @@ public class DirectAdsTag implements AdsTag {
 
     @Override
     public String getAddressString() {
-        String address = String.format("0x%d/%d:%s", getIndexGroup(), getIndexOffset(), getPlcDataType());
+        String address = String.format("%d/%d:%s", getIndexGroup(), getIndexOffset(), getPlcDataType());
         if(getNumberOfElements() != 1) {
             address += "[" + getNumberOfElements() + "]";
+        }
+        if (getStringEncoding() != null && !getStringEncoding().isEmpty() && !"AUTO".equalsIgnoreCase(getStringEncoding())) {
+            address += "|" + getStringEncoding();
         }
         return address;
     }
@@ -155,7 +166,7 @@ public class DirectAdsTag implements AdsTag {
     @Override
     public List<ArrayInfo> getArrayInfo() {
         if(getNumberOfElements() != 1) {
-            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements()));
+            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements() - 1));
         }
         return Collections.emptyList();
     }
@@ -187,17 +198,26 @@ public class DirectAdsTag implements AdsTag {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
+    public void serialize(WriteBuffer writeBuffer) throws BufferException {
+        writeBuffer.pushContext(WithOption.WithName(getClass().getSimpleName()));
 
-        writeBuffer.writeUnsignedLong("indexGroup", 32, getIndexGroup());
-        writeBuffer.writeUnsignedLong("indexOffset", 32, getIndexOffset());
-        writeBuffer.writeUnsignedLong("numberOfElements", 32, getNumberOfElements());
-        writeBuffer.writeString("dataType",
+        writeBuffer.writeUnsignedLong(32, getIndexGroup(), WithOption.WithName("indexGroup"));
+        writeBuffer.writeUnsignedLong(32, getIndexOffset(), WithOption.WithName("indexOffset"));
+        writeBuffer.writeUnsignedLong(32, getNumberOfElements(), WithOption.WithName("numberOfElements"));
+        writeBuffer.writeString(
             getPlcDataType().getBytes(StandardCharsets.UTF_8).length * 8,
-            getPlcDataType(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+            getPlcDataType(),
+            WithOption.WithName("dataType"),
+            WithOption.WithEncoding("UTF8"));
+        if (getStringEncoding() != null && !getStringEncoding().isEmpty()) {
+            writeBuffer.writeString(
+                getStringEncoding().getBytes(StandardCharsets.UTF_8).length * 8,
+                getStringEncoding(),
+                WithOption.WithName("stringEncoding"),
+                WithOption.WithEncoding("UTF8"));
+        }
 
-        writeBuffer.popContext(getClass().getSimpleName());
+        writeBuffer.popContext(WithOption.WithName(getClass().getSimpleName()));
     }
 
 }

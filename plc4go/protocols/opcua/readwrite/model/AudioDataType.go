@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -88,7 +89,7 @@ func (b *_AudioDataTypeBuilder) WithMandatoryFields() AudioDataTypeBuilder {
 }
 
 func (b *_AudioDataTypeBuilder) Build() (AudioDataType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AudioDataType.deepCopy(), nil
@@ -134,7 +135,7 @@ func CastAudioDataType(structType any) AudioDataType {
 	return nil
 }
 
-func (m *_AudioDataType) GetTypeName() string {
+func (m *_AudioDataType) GetPlx4xTypeName() string {
 	return "AudioDataType"
 }
 

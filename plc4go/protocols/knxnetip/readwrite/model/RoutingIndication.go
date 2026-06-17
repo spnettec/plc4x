@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -105,7 +106,7 @@ func (b *_RoutingIndicationBuilder) WithMandatoryFields() RoutingIndicationBuild
 }
 
 func (b *_RoutingIndicationBuilder) Build() (RoutingIndication, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._RoutingIndication.deepCopy(), nil
@@ -180,7 +181,7 @@ func CastRoutingIndication(structType any) RoutingIndication {
 	return nil
 }
 
-func (m *_RoutingIndication) GetTypeName() string {
+func (m *_RoutingIndication) GetPlx4xTypeName() string {
 	return "RoutingIndication"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataControlGroupsBuilder) WithControlGroups(controlGr
 }
 
 func (b *_BACnetConstructedDataControlGroupsBuilder) Build() (BACnetConstructedDataControlGroups, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataControlGroups.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataControlGroups(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataControlGroups) GetTypeName() string {
+func (m *_BACnetConstructedDataControlGroups) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataControlGroups"
 }
 

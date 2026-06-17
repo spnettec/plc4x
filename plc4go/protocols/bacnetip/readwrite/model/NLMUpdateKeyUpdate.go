@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -245,7 +246,7 @@ func (b *_NLMUpdateKeyUpdateBuilder) Build() (NLMUpdateKeyUpdate, error) {
 	if b.ControlFlags == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'controlFlags' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMUpdateKeyUpdate.deepCopy(), nil
@@ -374,7 +375,7 @@ func CastNLMUpdateKeyUpdate(structType any) NLMUpdateKeyUpdate {
 	return nil
 }
 
-func (m *_NLMUpdateKeyUpdate) GetTypeName() string {
+func (m *_NLMUpdateKeyUpdate) GetPlx4xTypeName() string {
 	return "NLMUpdateKeyUpdate"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataDoorUnlockDelayTimeBuilder) Build() (BACnetConstr
 	if b.DoorUnlockDelayTime == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'doorUnlockDelayTime' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataDoorUnlockDelayTime.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataDoorUnlockDelayTime(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetTypeName() string {
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDoorUnlockDelayTime"
 }
 

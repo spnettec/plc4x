@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -138,7 +139,7 @@ func (b *_S7PayloadUserDataItemClkSetRequestBuilder) Build() (S7PayloadUserDataI
 	if b.TimeStamp == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'timeStamp' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemClkSetRequest.deepCopy(), nil
@@ -235,7 +236,7 @@ func CastS7PayloadUserDataItemClkSetRequest(structType any) S7PayloadUserDataIte
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemClkSetRequest) GetTypeName() string {
+func (m *_S7PayloadUserDataItemClkSetRequest) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemClkSetRequest"
 }
 

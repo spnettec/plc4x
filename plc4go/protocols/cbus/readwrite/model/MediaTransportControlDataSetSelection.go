@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_MediaTransportControlDataSetSelectionBuilder) WithSelectionLo(selectio
 }
 
 func (b *_MediaTransportControlDataSetSelectionBuilder) Build() (MediaTransportControlDataSetSelection, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MediaTransportControlDataSetSelection.deepCopy(), nil
@@ -217,7 +218,7 @@ func CastMediaTransportControlDataSetSelection(structType any) MediaTransportCon
 	return nil
 }
 
-func (m *_MediaTransportControlDataSetSelection) GetTypeName() string {
+func (m *_MediaTransportControlDataSetSelection) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataSetSelection"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_S7PayloadAlarmSQBuilder) Build() (S7PayloadAlarmSQ, error) {
 	if b.AlarmMessage == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'alarmMessage' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadAlarmSQ.deepCopy(), nil
@@ -232,7 +233,7 @@ func CastS7PayloadAlarmSQ(structType any) S7PayloadAlarmSQ {
 	return nil
 }
 
-func (m *_S7PayloadAlarmSQ) GetTypeName() string {
+func (m *_S7PayloadAlarmSQ) GetPlx4xTypeName() string {
 	return "S7PayloadAlarmSQ"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataValueSourceArrayBuilder) WithVtClassesSupported(v
 }
 
 func (b *_BACnetConstructedDataValueSourceArrayBuilder) Build() (BACnetConstructedDataValueSourceArray, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataValueSourceArray.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataValueSourceArray(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataValueSourceArray) GetTypeName() string {
+func (m *_BACnetConstructedDataValueSourceArray) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataValueSourceArray"
 }
 

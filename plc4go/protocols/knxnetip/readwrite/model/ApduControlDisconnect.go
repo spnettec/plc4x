@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_ApduControlDisconnectBuilder) WithMandatoryFields() ApduControlDisconn
 }
 
 func (b *_ApduControlDisconnectBuilder) Build() (ApduControlDisconnect, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduControlDisconnect.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastApduControlDisconnect(structType any) ApduControlDisconnect {
 	return nil
 }
 
-func (m *_ApduControlDisconnect) GetTypeName() string {
+func (m *_ApduControlDisconnect) GetPlx4xTypeName() string {
 	return "ApduControlDisconnect"
 }
 

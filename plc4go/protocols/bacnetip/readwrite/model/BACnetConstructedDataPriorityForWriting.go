@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataPriorityForWritingBuilder) Build() (BACnetConstru
 	if b.PriorityForWriting == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'priorityForWriting' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataPriorityForWriting.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataPriorityForWriting(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataPriorityForWriting) GetTypeName() string {
+func (m *_BACnetConstructedDataPriorityForWriting) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPriorityForWriting"
 }
 

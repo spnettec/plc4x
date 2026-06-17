@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -156,7 +157,7 @@ func (b *_PayloadBuilder) PartialBuild() (PayloadContract, error) {
 	if b.SequenceHeader == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'sequenceHeader' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Payload.deepCopy(), nil
@@ -258,7 +259,7 @@ func CastPayload(structType any) Payload {
 	return nil
 }
 
-func (m *_Payload) GetTypeName() string {
+func (m *_Payload) GetPlx4xTypeName() string {
 	return "Payload"
 }
 

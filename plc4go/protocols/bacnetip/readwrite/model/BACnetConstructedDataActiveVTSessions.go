@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataActiveVTSessionsBuilder) WithActiveVTSession(acti
 }
 
 func (b *_BACnetConstructedDataActiveVTSessionsBuilder) Build() (BACnetConstructedDataActiveVTSessions, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataActiveVTSessions.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataActiveVTSessions(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataActiveVTSessions) GetTypeName() string {
+func (m *_BACnetConstructedDataActiveVTSessions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataActiveVTSessions"
 }
 

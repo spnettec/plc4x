@@ -109,7 +109,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.84</bouncycastle.version>
-    <byte-buddy.version>1.18.9</byte-buddy.version>
+    <byte-buddy.version>1.18.10</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.11.0</commons-cli.version>
@@ -124,35 +124,35 @@
     <commons-net.version>3.13.0</commons-net.version>
     <commons-text.version>1.15.0</commons-text.version>
     <commons-csv.version>1.14.1</commons-csv.version>
-    <commons-pool2.version>2.12.1</commons-pool2.version>
     <dom4j.version>2.2.0</dom4j.version>
     <equalsverifier.version>4.5</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
     <groovy.version>5.0.6</groovy.version>
     <guava.version>33.6.0-jre</guava.version>
+    <h2.version>2.3.232</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <jackson.version>3.1.2</jackson.version>
-    <jackson.broken.version>2.21</jackson.broken.version>
+    <jackson.version>3.2.0</jackson.version>
+    <jackson.broken.version>2.22</jackson.broken.version>
     <woodstox-core.version>7.1.1</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.4</jaxb.version>
     <jetty-util.version>12.1.0</jetty-util.version>
-    <jna.version>5.18.1</jna.version>
+    <jna.version>5.19.1</jna.version>
     <jserialcom.version>2.11.4</jserialcom.version>
     <junit.jupiter.version>6.1.0</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.5.34</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
-    <milo.version>1.1.2</milo.version>
+    <milo.version>1.1.4</milo.version>
     <mockito.version>5.23.0</mockito.version>
-    <!-- Netty 4.2.x seems to break the serial transports -->
-    <netty.version>4.2.12.Final</netty.version>
+    <!-- Netty 4.2.x serial transport issues fixed in SerialChannel/SerialPollingSelector (YOFC) -->
+    <netty.version>4.2.15.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.18</slf4j.version>
     <vavr.version>1.0.1</vavr.version>
-    <xmlunit.version>2.11.0</xmlunit.version>
+    <xmlunit.version>2.12.0</xmlunit.version>
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.6</asciidoctor.maven.plugin.version>
@@ -169,7 +169,6 @@
     <enable-all-tests>false</enable-all-tests>
     <excluded-test-groups>require-all-tests</excluded-test-groups>
     <reflow.skin.version>2.3.3</reflow.skin.version>
-    <h2.version>2.3.232</h2.version>
   </properties>
 
   <modules>
@@ -206,11 +205,6 @@
         <groupId>org.freemarker</groupId>
         <artifactId>freemarker</artifactId>
         <version>${freemarker.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.osgi</groupId>
-        <artifactId>osgi.core</artifactId>
-        <version>8.0.0</version>
       </dependency>
 
       <dependency>
@@ -265,11 +259,6 @@
         <groupId>commons-net</groupId>
         <artifactId>commons-net</artifactId>
         <version>${commons-net.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-pool2</artifactId>
-        <version>${commons-pool2.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -359,6 +348,11 @@
         <groupId>com.fasterxml.woodstox</groupId>
         <artifactId>woodstox-core</artifactId>
         <version>${woodstox-core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.woodstox</groupId>
+        <artifactId>stax2-api</artifactId>
+        <version>4.3.0</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -451,6 +445,16 @@
         <artifactId>bcprov-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcutil-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bctls-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.eclipse.milo</groupId>
@@ -488,6 +492,18 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-junit-jupiter</artifactId>
         <version>${mockito.version}</version>
+      </dependency>
+
+      <!-- OSGi Dependencies -->
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>osgi.core</artifactId>
+        <version>8.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.service.component.annotations</artifactId>
+        <version>1.5.1</version>
       </dependency>
 
       <!-- TODO: Eliminate the usage of AssertJ (OPM and OPC-UA Driver) -->
@@ -661,14 +677,10 @@
           <execution>
             <id>license-check</id>
             <!--
-              Moved from the default validate phase to the verify phase.
-              Running in the test phase races with surefire under parallel builds
-              (-T 1C): surefire writes TEST-*.xml/txt reports without license
-              headers into target/surefire-reports/ while RAT is scanning, causing
-              random "UNAPPROVED" failures. Running in verify ensures surefire has
-              finished writing all reports before the license check runs.
+              Moved from the default validate phase to the test phase, as there are issues with newer
+              shade-plugin versions seem to interfere with the rat plugin.
             -->
-            <phase>verify</phase>
+            <phase>test</phase>
             <goals>
               <goal>check</goal>
             </goals>
@@ -677,10 +689,10 @@
         <configuration>
           <useMavenDefaultExcludes>true</useMavenDefaultExcludes>
           <inputExcludes>
+            <!-- Git related files -->
             <inputExclude>**/.gitnexusignore</inputExclude>
             <inputExclude>**/AGENTS.md</inputExclude>
             <inputExclude>**/CLAUDE.md</inputExclude>
-            <!-- Git related files -->
             <inputExclude>**/.git/**</inputExclude>
             <inputExclude>**/.gitignore</inputExclude>
             <inputExclude>**/cmake-*/**</inputExclude>
@@ -701,29 +713,10 @@
             <inputExclude>target/**</inputExclude>
             <inputExclude>out/**</inputExclude>
 
-            <!--
-              Develocity build-cache + Maven build-output artifacts. These all live under
-              target/ (already excluded above), so these globs are defense-in-depth. The
-              actual cause of the random per-module license-check failures under a parallel
-              reactor (mvn -T 1C) was the local Develocity build cache restoring stale target/
-              outputs mid-build; that is fixed by disabling the local cache in
-              .mvn/develocity.xml. Keeping these name/dir excludes too so a direct
-              apache-rat:check on a populated target/ never trips regardless of cache state.
-            -->
-            <inputExclude>**/.plxarc</inputExclude>
-            <inputExclude>**/.develocity/**</inputExclude>
-            <inputExclude>**/develocity/**</inputExclude>
-            <inputExclude>**/maven-status/**</inputExclude>
-            <inputExclude>**/maven-archiver/**</inputExclude>
-            <inputExclude>**/surefire-reports/**</inputExclude>
-            <inputExclude>**/failsafe-reports/**</inputExclude>
-            <inputExclude>**/rat.txt</inputExclude>
-
-            <!-- Maven shade plugin generates this at the module root -->
+            <!-- Build artifacts without license headers -->
             <inputExclude>**/dependency-reduced-pom.xml</inputExclude>
-
-            <!-- Jacoco / site reports -->
             <inputExclude>**/site/**</inputExclude>
+            <inputExclude>**/rat.txt</inputExclude>
 
             <!-- Python related files -->
             <inputExclude>**/.pytest_cache/**</inputExclude>
@@ -822,6 +815,11 @@
             <!-- Exclude core dumps-->
             <inputExclude>**/hs_err_pid*</inputExclude>
             <inputExclude>**/replay_pid*</inputExclude>
+
+            <!-- Agents exclude -->
+            <inputExclude>AGENTS.md</inputExclude>
+            <inputExclude>SECURITY.md</inputExclude>
+            <inputExclude>THREAT-MODEL.md</inputExclude>
           </inputExcludes>
         </configuration>
       </plugin>
@@ -1063,7 +1061,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.14</version>
+          <version>0.8.15</version>
         </plugin>
 
         <plugin>
@@ -1071,12 +1069,9 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.15.0</version>
           <configuration>
-            <!--
-              Use the eclipse compiler instead of the normal jdk one, as we were seeing
-              problems on the CI server when compiling the BACnet java driver.
-            -->
-            <compilerId>eclipse</compilerId>
             <release>${java.version}</release>
+            <!-- Make sure the parameter names are available via reflection -->
+            <parameters>true</parameters>
           </configuration>
           <dependencies>
             <dependency>
@@ -1093,7 +1088,7 @@
             <dependency>
               <groupId>org.eclipse.jdt</groupId>
               <artifactId>ecj</artifactId>
-              <version>3.45.0</version>
+              <version>3.46.0</version>
             </dependency>
           </dependencies>
         </plugin>

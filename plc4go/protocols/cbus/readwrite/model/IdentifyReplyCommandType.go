@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -117,7 +120,7 @@ func (b *_IdentifyReplyCommandTypeBuilder) WithUnitType(unitType string) Identif
 }
 
 func (b *_IdentifyReplyCommandTypeBuilder) Build() (IdentifyReplyCommandType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._IdentifyReplyCommandType.deepCopy(), nil
@@ -206,7 +209,7 @@ func CastIdentifyReplyCommandType(structType any) IdentifyReplyCommandType {
 	return nil
 }
 
-func (m *_IdentifyReplyCommandType) GetTypeName() string {
+func (m *_IdentifyReplyCommandType) GetPlx4xTypeName() string {
 	return "IdentifyReplyCommandType"
 }
 
@@ -234,7 +237,7 @@ func (m *_IdentifyReplyCommandType) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	unitType, err := ReadSimpleField(ctx, "unitType", ReadString(readBuffer, uint32(64)))
+	unitType, err := ReadSimpleField(ctx, "unitType", ReadString(readBuffer, uint32(64)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitType' field"))
 	}
@@ -248,7 +251,7 @@ func (m *_IdentifyReplyCommandType) parse(ctx context.Context, readBuffer utils.
 }
 
 func (m *_IdentifyReplyCommandType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -265,7 +268,7 @@ func (m *_IdentifyReplyCommandType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandType")
 		}
 
-		if err := WriteSimpleField[string](ctx, "unitType", m.GetUnitType(), WriteString(writeBuffer, 64)); err != nil {
+		if err := WriteSimpleField[string](ctx, "unitType", m.GetUnitType(), WriteString(writeBuffer, 64), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unitType' field")
 		}
 

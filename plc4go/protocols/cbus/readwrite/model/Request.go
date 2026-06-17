@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -208,7 +211,7 @@ func (b *_RequestBuilder) PartialBuild() (RequestContract, error) {
 	if b.Termination == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'termination' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Request.deepCopy(), nil
@@ -396,7 +399,7 @@ func CastRequest(structType any) Request {
 	return nil
 }
 
-func (m *_Request) GetTypeName() string {
+func (m *_Request) GetPlx4xTypeName() string {
 	return "Request"
 }
 
@@ -430,7 +433,7 @@ func (m *_Request) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func RequestParse[T Request](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {
-	return RequestParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return RequestParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions)
 }
 
 func RequestParseWithBufferProducer[T Request](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
@@ -467,33 +470,33 @@ func (m *_Request) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusO
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	peekedByte, err := ReadPeekField[RequestType](ctx, "peekedByte", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
+	peekedByte, err := ReadPeekField[RequestType](ctx, "peekedByte", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedByte' field"))
 	}
 	m.PeekedByte = peekedByte
 
 	var startingCR *RequestType
-	startingCR, err = ReadOptionalField[RequestType](ctx, "startingCR", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((peekedByte) == (RequestType_EMPTY)))
+	startingCR, err = ReadOptionalField[RequestType](ctx, "startingCR", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((peekedByte) == (RequestType_EMPTY)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingCR' field"))
 	}
 	m.StartingCR = startingCR
 
 	var resetMode *RequestType
-	resetMode, err = ReadOptionalField[RequestType](ctx, "resetMode", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((peekedByte) == (RequestType_RESET)))
+	resetMode, err = ReadOptionalField[RequestType](ctx, "resetMode", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((peekedByte) == (RequestType_RESET)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'resetMode' field"))
 	}
 	m.ResetMode = resetMode
 
-	secondPeek, err := ReadPeekField[RequestType](ctx, "secondPeek", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
+	secondPeek, err := ReadPeekField[RequestType](ctx, "secondPeek", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondPeek' field"))
 	}
 	m.SecondPeek = secondPeek
 
-	actualPeek, err := ReadVirtualField[RequestType](ctx, "actualPeek", (*RequestType)(nil), CastRequestType(utils.InlineIf(bool((bool(bool((startingCR) == (nil))) && bool(bool((resetMode) == (nil))))) || bool((bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) != (nil)))) && bool(bool((secondPeek) == (RequestType_EMPTY))))), func() any { return CastRequestType(peekedByte) }, func() any { return CastRequestType(secondPeek) })))
+	actualPeek, err := ReadVirtualField[RequestType](ctx, "actualPeek", (*RequestType)(nil), CastRequestType(utils.InlineIf(bool((bool(bool((startingCR) == (nil))) && bool(bool((resetMode) == (nil))))) || bool((bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) != (nil)))) && bool(bool((secondPeek) == (RequestType_EMPTY))))), func() any { return CastRequestType(peekedByte) }, func() any { return CastRequestType(secondPeek) })), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualPeek' field"))
 	}
@@ -534,7 +537,7 @@ func (m *_Request) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusO
 		return nil, errors.Errorf("Unmapped type for parameters [actualPeek=%v]", actualPeek)
 	}
 
-	termination, err := ReadSimpleField[RequestTermination](ctx, "termination", ReadComplex[RequestTermination](RequestTerminationParseWithBuffer, readBuffer))
+	termination, err := ReadSimpleField[RequestTermination](ctx, "termination", ReadComplex[RequestTermination](RequestTerminationParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'termination' field"))
 	}
@@ -559,11 +562,11 @@ func (pm *_Request) serializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(pushErr, "Error pushing for Request")
 	}
 
-	if err := WriteOptionalEnumField[RequestType](ctx, "startingCR", "RequestType", m.GetStartingCR(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetPeekedByte()) == (RequestType_EMPTY))); err != nil {
+	if err := WriteOptionalEnumField[RequestType](ctx, "startingCR", "RequestType", m.GetStartingCR(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetPeekedByte()) == (RequestType_EMPTY)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'startingCR' field")
 	}
 
-	if err := WriteOptionalEnumField[RequestType](ctx, "resetMode", "RequestType", m.GetResetMode(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetPeekedByte()) == (RequestType_RESET))); err != nil {
+	if err := WriteOptionalEnumField[RequestType](ctx, "resetMode", "RequestType", m.GetResetMode(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetPeekedByte()) == (RequestType_RESET)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'resetMode' field")
 	}
 	// Virtual field
@@ -578,7 +581,7 @@ func (pm *_Request) serializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	if err := WriteSimpleField[RequestTermination](ctx, "termination", m.GetTermination(), WriteComplex[RequestTermination](writeBuffer)); err != nil {
+	if err := WriteSimpleField[RequestTermination](ctx, "termination", m.GetTermination(), WriteComplex[RequestTermination](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'termination' field")
 	}
 

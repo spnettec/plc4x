@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -119,7 +120,7 @@ func (b *_BVLCWriteBroadcastDistributionTableBuilder) WithTable(table ...BVLCBro
 }
 
 func (b *_BVLCWriteBroadcastDistributionTableBuilder) Build() (BVLCWriteBroadcastDistributionTable, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCWriteBroadcastDistributionTable.deepCopy(), nil
@@ -208,7 +209,7 @@ func CastBVLCWriteBroadcastDistributionTable(structType any) BVLCWriteBroadcastD
 	return nil
 }
 
-func (m *_BVLCWriteBroadcastDistributionTable) GetTypeName() string {
+func (m *_BVLCWriteBroadcastDistributionTable) GetPlx4xTypeName() string {
 	return "BVLCWriteBroadcastDistributionTable"
 }
 
@@ -240,7 +241,7 @@ func (m *_BVLCWriteBroadcastDistributionTable) parse(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	table, err := ReadLengthArrayField[BVLCBroadcastDistributionTableEntry](ctx, "table", ReadComplex[BVLCBroadcastDistributionTableEntry](BVLCBroadcastDistributionTableEntryParseWithBuffer, readBuffer), int(bvlcPayloadLength), codegen.WithByteOrder(binary.BigEndian))
+	table, err := ReadLengthArrayField[BVLCBroadcastDistributionTableEntry](ctx, "table", ReadComplex[BVLCBroadcastDistributionTableEntry](BVLCBroadcastDistributionTableEntryParseWithBuffer, readBuffer), int(bvlcPayloadLength), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'table' field"))
 	}
@@ -271,7 +272,7 @@ func (m *_BVLCWriteBroadcastDistributionTable) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BVLCWriteBroadcastDistributionTable")
 		}
 
-		if err := WriteComplexTypeArrayField(ctx, "table", m.GetTable(), writeBuffer, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteComplexTypeArrayField(ctx, "table", m.GetTable(), writeBuffer, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'table' field")
 		}
 

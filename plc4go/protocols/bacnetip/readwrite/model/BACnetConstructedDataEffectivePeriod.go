@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataEffectivePeriodBuilder) Build() (BACnetConstructe
 	if b.DateRange == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'dateRange' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataEffectivePeriod.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataEffectivePeriod(structType any) BACnetConstructedD
 	return nil
 }
 
-func (m *_BACnetConstructedDataEffectivePeriod) GetTypeName() string {
+func (m *_BACnetConstructedDataEffectivePeriod) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataEffectivePeriod"
 }
 

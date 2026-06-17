@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -93,7 +94,7 @@ func (b *_OpcuaConstantsBuilder) WithMandatoryFields() OpcuaConstantsBuilder {
 }
 
 func (b *_OpcuaConstantsBuilder) Build() (OpcuaConstants, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpcuaConstants.deepCopy(), nil
@@ -153,7 +154,7 @@ func CastOpcuaConstants(structType any) OpcuaConstants {
 	return nil
 }
 
-func (m *_OpcuaConstants) GetTypeName() string {
+func (m *_OpcuaConstants) GetPlx4xTypeName() string {
 	return "OpcuaConstants"
 }
 

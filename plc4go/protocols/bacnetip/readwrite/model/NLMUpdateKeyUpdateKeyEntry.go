@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -120,7 +121,7 @@ func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) WithKey(key ...byte) NLMUpdateKeyUp
 }
 
 func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) Build() (NLMUpdateKeyUpdateKeyEntry, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMUpdateKeyUpdateKeyEntry.deepCopy(), nil
@@ -188,7 +189,7 @@ func CastNLMUpdateKeyUpdateKeyEntry(structType any) NLMUpdateKeyUpdateKeyEntry {
 	return nil
 }
 
-func (m *_NLMUpdateKeyUpdateKeyEntry) GetTypeName() string {
+func (m *_NLMUpdateKeyUpdateKeyEntry) GetPlx4xTypeName() string {
 	return "NLMUpdateKeyUpdateKeyEntry"
 }
 

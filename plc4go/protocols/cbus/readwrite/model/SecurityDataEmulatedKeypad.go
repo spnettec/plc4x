@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -139,7 +140,7 @@ func (b *_SecurityDataEmulatedKeypadBuilder) WithKey(key byte) SecurityDataEmula
 }
 
 func (b *_SecurityDataEmulatedKeypadBuilder) Build() (SecurityDataEmulatedKeypad, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataEmulatedKeypad.deepCopy(), nil
@@ -299,7 +300,7 @@ func CastSecurityDataEmulatedKeypad(structType any) SecurityDataEmulatedKeypad {
 	return nil
 }
 
-func (m *_SecurityDataEmulatedKeypad) GetTypeName() string {
+func (m *_SecurityDataEmulatedKeypad) GetPlx4xTypeName() string {
 	return "SecurityDataEmulatedKeypad"
 }
 

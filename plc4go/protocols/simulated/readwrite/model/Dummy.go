@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -102,7 +103,7 @@ func (b *_DummyBuilder) WithDummy(dummy uint16) DummyBuilder {
 }
 
 func (b *_DummyBuilder) Build() (Dummy, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Dummy.deepCopy(), nil
@@ -162,7 +163,7 @@ func CastDummy(structType any) Dummy {
 	return nil
 }
 
-func (m *_Dummy) GetTypeName() string {
+func (m *_Dummy) GetPlx4xTypeName() string {
 	return "Dummy"
 }
 
@@ -206,7 +207,7 @@ func (m *_Dummy) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dumm
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dummy, err := ReadSimpleField(ctx, "dummy", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	dummy, err := ReadSimpleField(ctx, "dummy", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dummy' field"))
 	}
@@ -236,7 +237,7 @@ func (m *_Dummy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return errors.Wrap(pushErr, "Error pushing for Dummy")
 	}
 
-	if err := WriteSimpleField[uint16](ctx, "dummy", m.GetDummy(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+	if err := WriteSimpleField[uint16](ctx, "dummy", m.GetDummy(), WriteUnsignedShort(writeBuffer, 16), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'dummy' field")
 	}
 

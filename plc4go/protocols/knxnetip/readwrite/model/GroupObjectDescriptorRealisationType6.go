@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -89,7 +90,7 @@ func (b *_GroupObjectDescriptorRealisationType6Builder) WithMandatoryFields() Gr
 }
 
 func (b *_GroupObjectDescriptorRealisationType6Builder) Build() (GroupObjectDescriptorRealisationType6, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._GroupObjectDescriptorRealisationType6.deepCopy(), nil
@@ -135,7 +136,7 @@ func CastGroupObjectDescriptorRealisationType6(structType any) GroupObjectDescri
 	return nil
 }
 
-func (m *_GroupObjectDescriptorRealisationType6) GetTypeName() string {
+func (m *_GroupObjectDescriptorRealisationType6) GetPlx4xTypeName() string {
 	return "GroupObjectDescriptorRealisationType6"
 }
 

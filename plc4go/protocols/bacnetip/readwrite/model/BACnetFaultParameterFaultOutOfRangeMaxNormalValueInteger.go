@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) Build
 	if b.IntegerValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'integerValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(structType any
 	return nil
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) GetTypeName() string {
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) GetPlx4xTypeName() string {
 	return "BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger"
 }
 

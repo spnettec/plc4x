@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataTagsBuilder) WithTags(tags ...BACnetNameValue) BA
 }
 
 func (b *_BACnetConstructedDataTagsBuilder) Build() (BACnetConstructedDataTags, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataTags.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataTags(structType any) BACnetConstructedDataTags {
 	return nil
 }
 
-func (m *_BACnetConstructedDataTags) GetTypeName() string {
+func (m *_BACnetConstructedDataTags) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTags"
 }
 

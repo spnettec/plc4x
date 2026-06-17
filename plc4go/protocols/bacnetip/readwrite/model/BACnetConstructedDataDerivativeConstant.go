@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataDerivativeConstantBuilder) Build() (BACnetConstru
 	if b.DerivativeConstant == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'derivativeConstant' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataDerivativeConstant.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataDerivativeConstant(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataDerivativeConstant) GetTypeName() string {
+func (m *_BACnetConstructedDataDerivativeConstant) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDerivativeConstant"
 }
 

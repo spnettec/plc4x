@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder) Build() (BACne
 	if b.ObjectName == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'objectName' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetUnconfirmedServiceRequestWhoHasObjectName.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetUnconfirmedServiceRequestWhoHasObjectName(structType any) BACnetU
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWhoHasObjectName"
 }
 

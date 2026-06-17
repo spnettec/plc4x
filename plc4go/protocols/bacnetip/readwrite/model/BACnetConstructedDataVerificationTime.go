@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataVerificationTimeBuilder) Build() (BACnetConstruct
 	if b.VerificationTime == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'verificationTime' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataVerificationTime.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataVerificationTime(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataVerificationTime) GetTypeName() string {
+func (m *_BACnetConstructedDataVerificationTime) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataVerificationTime"
 }
 

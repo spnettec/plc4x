@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_TransmitQosDataTypeBuilder) WithMandatoryFields() TransmitQosDataTypeB
 }
 
 func (b *_TransmitQosDataTypeBuilder) Build() (TransmitQosDataType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TransmitQosDataType.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastTransmitQosDataType(structType any) TransmitQosDataType {
 	return nil
 }
 
-func (m *_TransmitQosDataType) GetTypeName() string {
+func (m *_TransmitQosDataType) GetPlx4xTypeName() string {
 	return "TransmitQosDataType"
 }
 

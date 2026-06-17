@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -129,7 +130,7 @@ func (b *_ModbusADUBuilder) WithMandatoryFields() ModbusADUBuilder {
 }
 
 func (b *_ModbusADUBuilder) PartialBuild() (ModbusADUContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusADU.deepCopy(), nil
@@ -227,7 +228,7 @@ func CastModbusADU(structType any) ModbusADU {
 	return nil
 }
 
-func (m *_ModbusADU) GetTypeName() string {
+func (m *_ModbusADU) GetPlx4xTypeName() string {
 	return "ModbusADU"
 }
 

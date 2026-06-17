@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -75,7 +76,7 @@ var _ AdsReadDeviceInfoResponse = (*_AdsReadDeviceInfoResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsReadDeviceInfoResponse)(nil)
 
 // NewAdsReadDeviceInfoResponse factory function for _AdsReadDeviceInfoResponse
-func NewAdsReadDeviceInfoResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *_AdsReadDeviceInfoResponse {
+func NewAdsReadDeviceInfoResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *_AdsReadDeviceInfoResponse {
 	_result := &_AdsReadDeviceInfoResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,
@@ -166,7 +167,7 @@ func (b *_AdsReadDeviceInfoResponseBuilder) WithDevice(device ...byte) AdsReadDe
 }
 
 func (b *_AdsReadDeviceInfoResponseBuilder) Build() (AdsReadDeviceInfoResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsReadDeviceInfoResponse.deepCopy(), nil
@@ -275,7 +276,7 @@ func CastAdsReadDeviceInfoResponse(structType any) AdsReadDeviceInfoResponse {
 	return nil
 }
 
-func (m *_AdsReadDeviceInfoResponse) GetTypeName() string {
+func (m *_AdsReadDeviceInfoResponse) GetPlx4xTypeName() string {
 	return "AdsReadDeviceInfoResponse"
 }
 

@@ -40,7 +40,9 @@ public class MiloTestContainer extends GenericContainer<MiloTestContainer> {
             // Uncomment below to debug Milo server
             //.withStartupTimeout(Duration.ofMinutes(10))
         ;
-        addExposedPort(12686);
+        // Fixed port: OPC UA HELLO includes the endpoint URL with this port,
+        // and Milo 1.1.x validates it. Random mapping causes Bad_TcpEndpointUrlInvalid.
+        addFixedExposedPort(12686, 12686);
 
         // Uncomment below to enable server debug
         //withEnv("JAVA_TOOL_OPTIONS", "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=y");

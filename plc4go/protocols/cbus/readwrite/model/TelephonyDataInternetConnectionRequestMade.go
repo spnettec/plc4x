@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) WithMandatoryFields
 }
 
 func (b *_TelephonyDataInternetConnectionRequestMadeBuilder) Build() (TelephonyDataInternetConnectionRequestMade, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TelephonyDataInternetConnectionRequestMade.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastTelephonyDataInternetConnectionRequestMade(structType any) TelephonyDat
 	return nil
 }
 
-func (m *_TelephonyDataInternetConnectionRequestMade) GetTypeName() string {
+func (m *_TelephonyDataInternetConnectionRequestMade) GetPlx4xTypeName() string {
 	return "TelephonyDataInternetConnectionRequestMade"
 }
 

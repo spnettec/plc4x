@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -167,7 +168,7 @@ func (b *_BACnetServiceAckBuilder) WithServiceAckLength(serviceAckLength uint32)
 }
 
 func (b *_BACnetServiceAckBuilder) PartialBuild() (BACnetServiceAckContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetServiceAck.deepCopy(), nil
@@ -415,7 +416,7 @@ func CastBACnetServiceAck(structType any) BACnetServiceAck {
 	return nil
 }
 
-func (m *_BACnetServiceAck) GetTypeName() string {
+func (m *_BACnetServiceAck) GetPlx4xTypeName() string {
 	return "BACnetServiceAck"
 }
 

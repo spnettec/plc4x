@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_AirConditioningDataSetZoneGroupOnBuilder) WithZoneGroup(zoneGroup byte
 }
 
 func (b *_AirConditioningDataSetZoneGroupOnBuilder) Build() (AirConditioningDataSetZoneGroupOn, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AirConditioningDataSetZoneGroupOn.deepCopy(), nil
@@ -202,7 +203,7 @@ func CastAirConditioningDataSetZoneGroupOn(structType any) AirConditioningDataSe
 	return nil
 }
 
-func (m *_AirConditioningDataSetZoneGroupOn) GetTypeName() string {
+func (m *_AirConditioningDataSetZoneGroupOn) GetPlx4xTypeName() string {
 	return "AirConditioningDataSetZoneGroupOn"
 }
 

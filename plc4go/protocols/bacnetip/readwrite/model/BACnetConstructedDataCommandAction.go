@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataCommandActionBuilder) WithActionLists(actionLists
 }
 
 func (b *_BACnetConstructedDataCommandActionBuilder) Build() (BACnetConstructedDataCommandAction, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataCommandAction.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataCommandAction(structType any) BACnetConstructedDat
 	return nil
 }
 
-func (m *_BACnetConstructedDataCommandAction) GetTypeName() string {
+func (m *_BACnetConstructedDataCommandAction) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCommandAction"
 }
 

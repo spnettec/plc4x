@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataDoorStatusBuilder) Build() (BACnetConstructedData
 	if b.DoorStatus == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'doorStatus' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataDoorStatus.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataDoorStatus(structType any) BACnetConstructedDataDo
 	return nil
 }
 
-func (m *_BACnetConstructedDataDoorStatus) GetTypeName() string {
+func (m *_BACnetConstructedDataDoorStatus) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDoorStatus"
 }
 

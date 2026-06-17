@@ -24,7 +24,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.BundleWiring;
-import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.transports.api.Transport;
 
 import java.util.Hashtable;
 import java.util.ServiceLoader;

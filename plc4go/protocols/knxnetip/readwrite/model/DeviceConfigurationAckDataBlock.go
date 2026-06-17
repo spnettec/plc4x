@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -120,7 +121,7 @@ func (b *_DeviceConfigurationAckDataBlockBuilder) WithStatus(status Status) Devi
 }
 
 func (b *_DeviceConfigurationAckDataBlockBuilder) Build() (DeviceConfigurationAckDataBlock, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DeviceConfigurationAckDataBlock.deepCopy(), nil
@@ -188,7 +189,7 @@ func CastDeviceConfigurationAckDataBlock(structType any) DeviceConfigurationAckD
 	return nil
 }
 
-func (m *_DeviceConfigurationAckDataBlock) GetTypeName() string {
+func (m *_DeviceConfigurationAckDataBlock) GetPlx4xTypeName() string {
 	return "DeviceConfigurationAckDataBlock"
 }
 

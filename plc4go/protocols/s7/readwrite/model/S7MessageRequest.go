@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_S7MessageRequestBuilder) WithMandatoryFields() S7MessageRequestBuilder
 }
 
 func (b *_S7MessageRequestBuilder) Build() (S7MessageRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7MessageRequest.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastS7MessageRequest(structType any) S7MessageRequest {
 	return nil
 }
 
-func (m *_S7MessageRequest) GetTypeName() string {
+func (m *_S7MessageRequest) GetPlx4xTypeName() string {
 	return "S7MessageRequest"
 }
 

@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -146,7 +148,7 @@ func (b *_AliasCategoryUpdateDataTypeBuilder) Build() (AliasCategoryUpdateDataTy
 	if b.Category == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'category' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AliasCategoryUpdateDataType.deepCopy(), nil
@@ -239,7 +241,7 @@ func CastAliasCategoryUpdateDataType(structType any) AliasCategoryUpdateDataType
 	return nil
 }
 
-func (m *_AliasCategoryUpdateDataType) GetTypeName() string {
+func (m *_AliasCategoryUpdateDataType) GetPlx4xTypeName() string {
 	return "AliasCategoryUpdateDataType"
 }
 
@@ -270,13 +272,13 @@ func (m *_AliasCategoryUpdateDataType) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	category, err := ReadSimpleField[PortableNodeId](ctx, "category", ReadComplex[PortableNodeId](ExtensionObjectDefinitionParseWithBufferProducer[PortableNodeId]((int32)(int32(24108))), readBuffer))
+	category, err := ReadSimpleField[PortableNodeId](ctx, "category", ReadComplex[PortableNodeId](ExtensionObjectDefinitionParseWithBufferProducer[PortableNodeId]((int32)(int32(24108))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'category' field"))
 	}
 	m.Category = category
 
-	lastChange, err := ReadSimpleField(ctx, "lastChange", ReadUnsignedInt(readBuffer, uint8(32)))
+	lastChange, err := ReadSimpleField(ctx, "lastChange", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastChange' field"))
 	}
@@ -307,11 +309,11 @@ func (m *_AliasCategoryUpdateDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for AliasCategoryUpdateDataType")
 		}
 
-		if err := WriteSimpleField[PortableNodeId](ctx, "category", m.GetCategory(), WriteComplex[PortableNodeId](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PortableNodeId](ctx, "category", m.GetCategory(), WriteComplex[PortableNodeId](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'category' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "lastChange", m.GetLastChange(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "lastChange", m.GetLastChange(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastChange' field")
 		}
 

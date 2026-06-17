@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -109,7 +112,7 @@ func (b *_ServerErrorReplyBuilder) WithMandatoryFields() ServerErrorReplyBuilder
 }
 
 func (b *_ServerErrorReplyBuilder) Build() (ServerErrorReply, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ServerErrorReply.deepCopy(), nil
@@ -194,7 +197,7 @@ func CastServerErrorReply(structType any) ServerErrorReply {
 	return nil
 }
 
-func (m *_ServerErrorReply) GetTypeName() string {
+func (m *_ServerErrorReply) GetPlx4xTypeName() string {
 	return "ServerErrorReply"
 }
 
@@ -222,7 +225,7 @@ func (m *_ServerErrorReply) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	errorMarker, err := ReadConstField[byte](ctx, "errorMarker", ReadByte(readBuffer, 8), ServerErrorReply_ERRORMARKER)
+	errorMarker, err := ReadConstField[byte](ctx, "errorMarker", ReadByte(readBuffer, 8), ServerErrorReply_ERRORMARKER, codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorMarker' field"))
 	}
@@ -236,7 +239,7 @@ func (m *_ServerErrorReply) parse(ctx context.Context, readBuffer utils.ReadBuff
 }
 
 func (m *_ServerErrorReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -253,7 +256,7 @@ func (m *_ServerErrorReply) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for ServerErrorReply")
 		}
 
-		if err := WriteConstField(ctx, "errorMarker", ServerErrorReply_ERRORMARKER, WriteByte(writeBuffer, 8)); err != nil {
+		if err := WriteConstField(ctx, "errorMarker", ServerErrorReply_ERRORMARKER, WriteByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'errorMarker' field")
 		}
 

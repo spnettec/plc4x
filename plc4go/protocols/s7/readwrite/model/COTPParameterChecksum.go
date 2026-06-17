@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_COTPParameterChecksumBuilder) WithCrc(crc uint8) COTPParameterChecksum
 }
 
 func (b *_COTPParameterChecksumBuilder) Build() (COTPParameterChecksum, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._COTPParameterChecksum.deepCopy(), nil
@@ -206,7 +207,7 @@ func CastCOTPParameterChecksum(structType any) COTPParameterChecksum {
 	return nil
 }
 
-func (m *_COTPParameterChecksum) GetTypeName() string {
+func (m *_COTPParameterChecksum) GetPlx4xTypeName() string {
 	return "COTPParameterChecksum"
 }
 

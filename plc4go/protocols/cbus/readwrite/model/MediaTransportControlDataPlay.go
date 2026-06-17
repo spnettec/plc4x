@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_MediaTransportControlDataPlayBuilder) WithMandatoryFields() MediaTrans
 }
 
 func (b *_MediaTransportControlDataPlayBuilder) Build() (MediaTransportControlDataPlay, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MediaTransportControlDataPlay.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastMediaTransportControlDataPlay(structType any) MediaTransportControlData
 	return nil
 }
 
-func (m *_MediaTransportControlDataPlay) GetTypeName() string {
+func (m *_MediaTransportControlDataPlay) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataPlay"
 }
 

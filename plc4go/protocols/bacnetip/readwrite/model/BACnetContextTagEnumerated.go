@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetContextTagEnumeratedBuilder) Build() (BACnetContextTagEnumerated
 	if b.Payload == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'payload' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetContextTagEnumerated.deepCopy(), nil
@@ -241,7 +242,7 @@ func CastBACnetContextTagEnumerated(structType any) BACnetContextTagEnumerated {
 	return nil
 }
 
-func (m *_BACnetContextTagEnumerated) GetTypeName() string {
+func (m *_BACnetContextTagEnumerated) GetPlx4xTypeName() string {
 	return "BACnetContextTagEnumerated"
 }
 

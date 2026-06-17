@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataMaintenanceRequiredBuilder) Build() (BACnetConstr
 	if b.MaintenanceRequired == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'maintenanceRequired' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataMaintenanceRequired.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataMaintenanceRequired(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataMaintenanceRequired) GetTypeName() string {
+func (m *_BACnetConstructedDataMaintenanceRequired) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMaintenanceRequired"
 }
 

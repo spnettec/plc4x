@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -120,7 +121,7 @@ func (b *_AlarmMessageAckResponseTypeBuilder) WithMessageObjects(messageObjects 
 }
 
 func (b *_AlarmMessageAckResponseTypeBuilder) Build() (AlarmMessageAckResponseType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AlarmMessageAckResponseType.deepCopy(), nil
@@ -188,7 +189,7 @@ func CastAlarmMessageAckResponseType(structType any) AlarmMessageAckResponseType
 	return nil
 }
 
-func (m *_AlarmMessageAckResponseType) GetTypeName() string {
+func (m *_AlarmMessageAckResponseType) GetPlx4xTypeName() string {
 	return "AlarmMessageAckResponseType"
 }
 

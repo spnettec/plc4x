@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_NotificationDataBuilder) WithMandatoryFields() NotificationDataBuilder
 }
 
 func (b *_NotificationDataBuilder) Build() (NotificationData, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NotificationData.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastNotificationData(structType any) NotificationData {
 	return nil
 }
 
-func (m *_NotificationData) GetTypeName() string {
+func (m *_NotificationData) GetPlx4xTypeName() string {
 	return "NotificationData"
 }
 

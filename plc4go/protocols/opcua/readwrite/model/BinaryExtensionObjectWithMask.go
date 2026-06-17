@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -135,7 +137,7 @@ func (b *_BinaryExtensionObjectWithMaskBuilder) Build() (BinaryExtensionObjectWi
 	if b.Body == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'body' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BinaryExtensionObjectWithMask.deepCopy(), nil
@@ -228,7 +230,7 @@ func CastBinaryExtensionObjectWithMask(structType any) BinaryExtensionObjectWith
 	return nil
 }
 
-func (m *_BinaryExtensionObjectWithMask) GetTypeName() string {
+func (m *_BinaryExtensionObjectWithMask) GetPlx4xTypeName() string {
 	return "BinaryExtensionObjectWithMask"
 }
 
@@ -259,13 +261,13 @@ func (m *_BinaryExtensionObjectWithMask) parse(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bodyLength, err := ReadImplicitField[int32](ctx, "bodyLength", ReadSignedInt(readBuffer, uint8(32)))
+	bodyLength, err := ReadImplicitField[int32](ctx, "bodyLength", ReadSignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bodyLength' field"))
 	}
 	_ = bodyLength
 
-	body, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "body", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((int32)(extensionId)), readBuffer))
+	body, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "body", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((int32)(extensionId)), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'body' field"))
 	}
@@ -296,11 +298,11 @@ func (m *_BinaryExtensionObjectWithMask) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BinaryExtensionObjectWithMask")
 		}
 		bodyLength := int32(utils.InlineIf(bool((m.GetBody()) == (nil)), func() any { return int32(int32(0)) }, func() any { return int32(m.GetBody().GetLengthInBytes(ctx)) }).(int32))
-		if err := WriteImplicitField(ctx, "bodyLength", bodyLength, WriteSignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteImplicitField(ctx, "bodyLength", bodyLength, WriteSignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'bodyLength' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "body", m.GetBody(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "body", m.GetBody(), WriteComplex[ExtensionObjectDefinition](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'body' field")
 		}
 

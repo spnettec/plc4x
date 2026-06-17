@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) WithManualSlave
 }
 
 func (b *_BACnetConstructedDataManualSlaveAddressBindingBuilder) Build() (BACnetConstructedDataManualSlaveAddressBinding, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataManualSlaveAddressBinding.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataManualSlaveAddressBinding(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetTypeName() string {
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataManualSlaveAddressBinding"
 }
 

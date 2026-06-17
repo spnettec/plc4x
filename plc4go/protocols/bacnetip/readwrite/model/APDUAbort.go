@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -159,7 +160,7 @@ func (b *_APDUAbortBuilder) Build() (APDUAbort, error) {
 	if b.AbortReason == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'abortReason' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._APDUAbort.deepCopy(), nil
@@ -256,7 +257,7 @@ func CastAPDUAbort(structType any) APDUAbort {
 	return nil
 }
 
-func (m *_APDUAbort) GetTypeName() string {
+func (m *_APDUAbort) GetPlx4xTypeName() string {
 	return "APDUAbort"
 }
 

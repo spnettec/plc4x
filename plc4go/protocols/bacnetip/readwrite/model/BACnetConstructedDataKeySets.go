@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataKeySetsBuilder) WithKeySets(keySets ...BACnetSecu
 }
 
 func (b *_BACnetConstructedDataKeySetsBuilder) Build() (BACnetConstructedDataKeySets, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataKeySets.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataKeySets(structType any) BACnetConstructedDataKeySe
 	return nil
 }
 
-func (m *_BACnetConstructedDataKeySets) GetTypeName() string {
+func (m *_BACnetConstructedDataKeySets) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataKeySets"
 }
 

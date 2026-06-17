@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_ListServicesRequestBuilder) WithMandatoryFields() ListServicesRequestB
 }
 
 func (b *_ListServicesRequestBuilder) Build() (ListServicesRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ListServicesRequest.deepCopy(), nil
@@ -187,7 +188,7 @@ func CastListServicesRequest(structType any) ListServicesRequest {
 	return nil
 }
 
-func (m *_ListServicesRequest) GetTypeName() string {
+func (m *_ListServicesRequest) GetPlx4xTypeName() string {
 	return "ListServicesRequest"
 }
 

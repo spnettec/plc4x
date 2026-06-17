@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SysexCommandCapabilityResponseBuilder) WithMandatoryFields() SysexComm
 }
 
 func (b *_SysexCommandCapabilityResponseBuilder) Build() (SysexCommandCapabilityResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SysexCommandCapabilityResponse.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastSysexCommandCapabilityResponse(structType any) SysexCommandCapabilityRe
 	return nil
 }
 
-func (m *_SysexCommandCapabilityResponse) GetTypeName() string {
+func (m *_SysexCommandCapabilityResponse) GetPlx4xTypeName() string {
 	return "SysexCommandCapabilityResponse"
 }
 

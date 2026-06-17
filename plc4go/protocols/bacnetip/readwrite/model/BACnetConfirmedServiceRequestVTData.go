@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -193,7 +194,7 @@ func (b *_BACnetConfirmedServiceRequestVTDataBuilder) Build() (BACnetConfirmedSe
 	if b.VtDataFlag == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'vtDataFlag' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestVTData.deepCopy(), nil
@@ -290,7 +291,7 @@ func CastBACnetConfirmedServiceRequestVTData(structType any) BACnetConfirmedServ
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTData) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestVTData) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestVTData"
 }
 

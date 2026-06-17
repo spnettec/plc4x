@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataControlledVariableReferenceBuilder) Build() (BACn
 	if b.ControlledVariableReference == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'controlledVariableReference' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataControlledVariableReference.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataControlledVariableReference(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConstructedDataControlledVariableReference) GetTypeName() string {
+func (m *_BACnetConstructedDataControlledVariableReference) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataControlledVariableReference"
 }
 

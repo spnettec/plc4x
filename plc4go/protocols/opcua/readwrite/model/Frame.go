@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_FrameBuilder) WithMandatoryFields() FrameBuilder {
 }
 
 func (b *_FrameBuilder) Build() (Frame, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Frame.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastFrame(structType any) Frame {
 	return nil
 }
 
-func (m *_Frame) GetTypeName() string {
+func (m *_Frame) GetPlx4xTypeName() string {
 	return "Frame"
 }
 

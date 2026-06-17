@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataBitTextBuilder) WithBitText(bitText ...BACnetAppl
 }
 
 func (b *_BACnetConstructedDataBitTextBuilder) Build() (BACnetConstructedDataBitText, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataBitText.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataBitText(structType any) BACnetConstructedDataBitTe
 	return nil
 }
 
-func (m *_BACnetConstructedDataBitText) GetTypeName() string {
+func (m *_BACnetConstructedDataBitText) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataBitText"
 }
 

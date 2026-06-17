@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_VariantDiagnosticInfoBuilder) WithValue(value ...DiagnosticInfo) Varia
 }
 
 func (b *_VariantDiagnosticInfoBuilder) Build() (VariantDiagnosticInfo, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantDiagnosticInfo.deepCopy(), nil
@@ -221,7 +222,7 @@ func CastVariantDiagnosticInfo(structType any) VariantDiagnosticInfo {
 	return nil
 }
 
-func (m *_VariantDiagnosticInfo) GetTypeName() string {
+func (m *_VariantDiagnosticInfo) GetPlx4xTypeName() string {
 	return "VariantDiagnosticInfo"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataMinActualValueBuilder) Build() (BACnetConstructed
 	if b.MinActualValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'minActualValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataMinActualValue.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataMinActualValue(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataMinActualValue) GetTypeName() string {
+func (m *_BACnetConstructedDataMinActualValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMinActualValue"
 }
 

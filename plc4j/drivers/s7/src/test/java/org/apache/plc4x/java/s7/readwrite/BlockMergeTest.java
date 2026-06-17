@@ -107,7 +107,7 @@ public class BlockMergeTest {
             PlcReadRequest.Builder builder = conn.readRequestBuilder();
             builder.addTagAddress("bool1", "%DB1:0.0:BOOL");
             builder.addTagAddress("bool2", "%DB1:0.1:BOOL");
-            builder.addTagAddress("bit-arr", "%DB1:2:BIT[10]");
+            builder.addTagAddress("bit-arr", "%DB1:2:BOOL[10]");
             builder.addTagAddress("byte", "%DB1:4:BYTE");
             builder.addTagAddress("word", "%DB1:8:WORD");
             builder.addTagAddress("dword", "%DB1:14:DWORD");

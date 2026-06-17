@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_UnConnectedDataItemBuilder) Build() (UnConnectedDataItem, error) {
 	if b.Service == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'service' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._UnConnectedDataItem.deepCopy(), nil
@@ -224,7 +225,7 @@ func CastUnConnectedDataItem(structType any) UnConnectedDataItem {
 	return nil
 }
 
-func (m *_UnConnectedDataItem) GetTypeName() string {
+func (m *_UnConnectedDataItem) GetPlx4xTypeName() string {
 	return "UnConnectedDataItem"
 }
 

@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -136,7 +139,7 @@ func (b *_SALDataIrrigationControlBuilder) Build() (SALDataIrrigationControl, er
 	if b.IrrigationControlData == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'irrigationControlData' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataIrrigationControl.deepCopy(), nil
@@ -225,7 +228,7 @@ func CastSALDataIrrigationControl(structType any) SALDataIrrigationControl {
 	return nil
 }
 
-func (m *_SALDataIrrigationControl) GetTypeName() string {
+func (m *_SALDataIrrigationControl) GetPlx4xTypeName() string {
 	return "SALDataIrrigationControl"
 }
 
@@ -253,7 +256,7 @@ func (m *_SALDataIrrigationControl) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	irrigationControlData, err := ReadSimpleField[LightingData](ctx, "irrigationControlData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	irrigationControlData, err := ReadSimpleField[LightingData](ctx, "irrigationControlData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'irrigationControlData' field"))
 	}
@@ -267,7 +270,7 @@ func (m *_SALDataIrrigationControl) parse(ctx context.Context, readBuffer utils.
 }
 
 func (m *_SALDataIrrigationControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -284,7 +287,7 @@ func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for SALDataIrrigationControl")
 		}
 
-		if err := WriteSimpleField[LightingData](ctx, "irrigationControlData", m.GetIrrigationControlData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[LightingData](ctx, "irrigationControlData", m.GetIrrigationControlData(), WriteComplex[LightingData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'irrigationControlData' field")
 		}
 

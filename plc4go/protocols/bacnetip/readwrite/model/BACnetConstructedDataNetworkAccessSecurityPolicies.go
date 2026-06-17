@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -143,7 +144,7 @@ func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) WithNetwork
 }
 
 func (b *_BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder) Build() (BACnetConstructedDataNetworkAccessSecurityPolicies, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataNetworkAccessSecurityPolicies.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConstructedDataNetworkAccessSecurityPolicies(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) GetTypeName() string {
+func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNetworkAccessSecurityPolicies"
 }
 

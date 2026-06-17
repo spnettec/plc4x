@@ -40,11 +40,10 @@
   <modules>
     <module>capture-replay</module>
     <module>connection-cache</module>
-    <module>connection-pool</module>
-    <module>opm</module>
     <module>plc4x-server</module>
-    <module>scraper</module>
-    <module>scraper-ng</module>
+    <!--module>opm</module-->
+    <!--module>scraper</module>
+    <module>scraper-ng</module-->
   </modules>
 
 </project>

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataIPv6AddressBuilder) Build() (BACnetConstructedDat
 	if b.Ipv6Address == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'ipv6Address' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataIPv6Address.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataIPv6Address(structType any) BACnetConstructedDataI
 	return nil
 }
 
-func (m *_BACnetConstructedDataIPv6Address) GetTypeName() string {
+func (m *_BACnetConstructedDataIPv6Address) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataIPv6Address"
 }
 

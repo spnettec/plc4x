@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -119,7 +120,7 @@ func (b *_BVLCResultBuilder) WithCode(code BVLCResultCode) BVLCResultBuilder {
 }
 
 func (b *_BVLCResultBuilder) Build() (BVLCResult, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BVLCResult.deepCopy(), nil
@@ -208,7 +209,7 @@ func CastBVLCResult(structType any) BVLCResult {
 	return nil
 }
 
-func (m *_BVLCResult) GetTypeName() string {
+func (m *_BVLCResult) GetPlx4xTypeName() string {
 	return "BVLCResult"
 }
 
@@ -236,7 +237,7 @@ func (m *_BVLCResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, pa
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	code, err := ReadEnumField[BVLCResultCode](ctx, "code", "BVLCResultCode", ReadEnum(BVLCResultCodeByValue, ReadUnsignedShort(readBuffer, uint8(16))), codegen.WithByteOrder(binary.BigEndian))
+	code, err := ReadEnumField[BVLCResultCode](ctx, "code", "BVLCResultCode", ReadEnum(BVLCResultCodeByValue, ReadUnsignedShort(readBuffer, uint8(16))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
@@ -267,7 +268,7 @@ func (m *_BVLCResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(pushErr, "Error pushing for BVLCResult")
 		}
 
-		if err := WriteSimpleEnumField[BVLCResultCode](ctx, "code", "BVLCResultCode", m.GetCode(), WriteEnum[BVLCResultCode, uint16](BVLCResultCode.GetValue, BVLCResultCode.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16)), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteSimpleEnumField[BVLCResultCode](ctx, "code", "BVLCResultCode", m.GetCode(), WriteEnum[BVLCResultCode, uint16](BVLCResultCode.GetValue, BVLCResultCode.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16)), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'code' field")
 		}
 

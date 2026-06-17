@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) Build() (BA
 	if b.InterfaceValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'interfaceValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataMultiStateInputInterfaceValue.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataMultiStateInputInterfaceValue(structType any) BACn
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateInputInterfaceValue"
 }
 

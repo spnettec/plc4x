@@ -19,29 +19,30 @@
 package org.apache.plc4x.java.simulated;
 
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.simulated.configuration.SimulatedConfiguration;
 import org.apache.plc4x.java.simulated.connection.SimulatedConnection;
 import org.apache.plc4x.java.simulated.connection.SimulatedDevice;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
-import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
 /**
  * Test driver holding its state in the client process.
- * The URL schema is {@code simulated:<device_name>}.
- * Devices are created each time a connection is established and should not be reused.
- * Every device contains a random value generator accessible by address {@code random}.
- * Any value can be stored into test devices, however the state will be gone when connection is closed.
+ *
+ * <p>URL schema: {@code simulated:<device_name>}. Each call creates a fresh
+ * in-memory device; values written through one connection do not survive its
+ * close, and devices are not shared between connections.</p>
+ *
+ * <p>Tag addresses follow {@code <TYPE>/<name>:<plc-value-type>[<count>]?},
+ * e.g. {@code RANDOM/foo:INT}, {@code STATE/bar:STRING[16]}, {@code STDOUT/log:STRING}.</p>
  */
-public class SimulatedDriver implements PlcDriver {
+public class SimulatedDriver extends DriverBase {
 
-    private static final Pattern URI_PATTERN = Pattern.compile(
-        "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?:(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
     @Override
     public String getProtocolCode() {
         return "simulated";
@@ -53,46 +54,96 @@ public class SimulatedDriver implements PlcDriver {
     }
 
     @Override
-    public PlcConnection getConnection(String url) throws PlcConnectionException {
-        // TODO: perform further checks
-        Matcher matcher = URI_PATTERN.matcher(url);
-        if (!matcher.matches()) {
-            throw new PlcConnectionException(
-                "Connection string doesn't match the format '{protocol-code}:({transport-code})?//{transport-address}(?{parameter-string)?'");
-        }
-        final String protocolCode = matcher.group("protocolCode");
-        final String transportCode = matcher.group("transportCode");
-        final String transportConfig = matcher.group("transportConfig");
-        final String paramString = matcher.group("paramString");
+    protected Class<? extends Configuration> getConfigurationClass() {
+        return SimulatedConfiguration.class;
+    }
 
-        // Check if the protocol code matches this driver.
-        if (!protocolCode.equals(getProtocolCode())) {
-            // Actually this shouldn't happen as the DriverManager should have not used this driver in the first place.
-            throw new PlcConnectionException(
-                "This driver is not suited to handle this connection string");
-        }
+    @Override
+    protected boolean canRead() {
+        return true;
+    }
 
-        if (transportConfig.isEmpty()) {
+    @Override
+    protected boolean canWrite() {
+        return true;
+    }
+
+    @Override
+    protected boolean canSubscribe() {
+        return true;
+    }
+
+    @Override
+    protected boolean canPing() {
+        return true;
+    }
+
+    /**
+     * The simulated driver runs entirely in-process and never opens a transport.
+     * We override {@link #getConnection(String)} to parse the {@code simulated:<device_name>}
+     * URL form directly — the inherited URI parser expects a {@code ://} delimiter
+     * and a transport, neither of which apply here.
+     */
+    @Override
+    public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
+        String prefix = getProtocolCode() + ":";
+        if (connectionString == null || !connectionString.startsWith(prefix)) {
+            throw new PlcConnectionException(
+                "Invalid URL: expected '" + prefix + "<device_name>'");
+        }
+        String remainder = connectionString.substring(prefix.length());
+        if (remainder.isEmpty()) {
             throw new PlcConnectionException("Invalid URL: no device name given.");
         }
-        // Create the configuration object.
-        SimulatedConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            SimulatedConfiguration.class, protocolCode,
-                transportCode == null?"":transportCode, transportConfig, paramString);
-        if (configuration == null) {
-            throw new PlcConnectionException("Unsupported configuration");
+        // Parse device name and optional query parameters (?file=...&data=...)
+        String deviceName;
+        SimulatedConfiguration config = new SimulatedConfiguration();
+        int qIdx = remainder.indexOf('?');
+        if (qIdx >= 0) {
+            deviceName = remainder.substring(0, qIdx);
+            String query = remainder.substring(qIdx + 1);
+            for (String param : query.split("&")) {
+                String[] kv = param.split("=", 2);
+                if (kv.length == 2) {
+                    if ("file".equals(kv[0])) config.setFile(kv[1]);
+                    else if ("data".equals(kv[0])) config.setData(kv[1]);
+                }
+            }
+        } else {
+            deviceName = remainder;
         }
-        SimulatedDevice device = new SimulatedDevice(transportConfig,configuration);
-        return new SimulatedConnection(device);
+        if (deviceName.isEmpty()) {
+            throw new PlcConnectionException("Invalid URL: no device name given.");
+        }
+        SimulatedDevice device = new SimulatedDevice(deviceName, config);
+        return new SimulatedConnection(device, config,
+            AuditLog.builder().withSource(getProtocolCode()).build());
     }
 
     @Override
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("Test driver does not support authentication.");
+    public PlcConnection getConnection(String connectionString, PlcAuthentication authentication)
+        throws PlcConnectionException {
+        if (authentication != null) {
+            throw new PlcConnectionException("Simulated driver does not support authentication.");
+        }
+        return getConnection(connectionString);
+    }
+
+    /**
+     * Unused — {@link #getConnection(String)} above takes the direct path that
+     * doesn't go through {@link DriverBase}'s transport-aware factory. Kept so
+     * the abstract contract is still satisfied.
+     */
+    @Override
+    protected ConnectionBase<?> getConnection(Configuration configuration,
+                                              TransportInstance<?> transportInstance,
+                                              AuditLog auditLog) {
+        throw new UnsupportedOperationException(
+            "Simulated driver bypasses the transport-aware connection factory.");
     }
 
     @Override
-    public SimulatedTag prepareTag(String tagAddress){
+    public SimulatedTag prepareTag(String tagAddress) {
         return SimulatedTag.of(tagAddress);
     }
 

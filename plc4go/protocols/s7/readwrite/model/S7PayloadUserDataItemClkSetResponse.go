@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_S7PayloadUserDataItemClkSetResponseBuilder) WithMandatoryFields() S7Pa
 }
 
 func (b *_S7PayloadUserDataItemClkSetResponseBuilder) Build() (S7PayloadUserDataItemClkSetResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemClkSetResponse.deepCopy(), nil
@@ -187,7 +188,7 @@ func CastS7PayloadUserDataItemClkSetResponse(structType any) S7PayloadUserDataIt
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemClkSetResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemClkSetResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemClkSetResponse"
 }
 

@@ -20,75 +20,76 @@ package org.apache.plc4x.java.plc4x.readwrite.utils;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
 
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class StaticHelper {
 
-    public static String parseString(ReadBuffer io,  String encoding) {
+    private static final WithOption UINT_OPT = WithOption.WithUnsignedIntegerEncoding("unsigned-binary");
+    private static final WithOption SINT_OPT = WithOption.WithSignedIntegerEncoding("twos-complement");
+
+    public static String parseString(ReadBuffer io, String encoding) {
         try {
             if ("UTF-8".equalsIgnoreCase(encoding)) {
-                // This is the maximum number of bytes a string can be long.
-                short stringLength = io.readUnsignedShort(8);
-                // This is the total length of the string on the PLC (Not necessarily the number of characters read)
-                final byte[] byteArray = new byte[stringLength];
-                for (int i = 0; (i < stringLength) && io.hasMore(8); i++) {
-                    final byte curByte = io.readByte();
-                    byteArray[i] = curByte;
+                short stringLength = io.readUnsignedShort(8, UINT_OPT);
+                byte[] byteArray = new byte[stringLength];
+                for (int i = 0; i < stringLength && io.getRemainingBits() >= 8; i++) {
+                    byteArray[i] = io.readSignedByte(8, SINT_OPT);
                 }
                 return new String(byteArray, StandardCharsets.UTF_8);
             } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-                // This is the maximum number of bytes a string can be long.
-                int stringLength = io.readUnsignedInt(16);
-                final byte[] byteArray = new byte[stringLength * 2];
-                for (int i = 0; (i < stringLength) && io.hasMore(16); i++) {
-                    final short curShort = io.readShort(16);
-                        byteArray[i * 2] = (byte) (curShort >>> 8);
-                        byteArray[(i * 2) + 1] = (byte) (curShort & 0xFF);
+                int stringLength = io.readUnsignedInt(16, UINT_OPT);
+                byte[] byteArray = new byte[stringLength * 2];
+                for (int i = 0; i < stringLength && io.getRemainingBits() >= 16; i++) {
+                    short curShort = io.readSignedShort(16, SINT_OPT);
+                    byteArray[i * 2] = (byte) (curShort >>> 8);
+                    byteArray[(i * 2) + 1] = (byte) (curShort & 0xFF);
                 }
                 return new String(byteArray, StandardCharsets.UTF_16);
             } else {
                 throw new PlcRuntimeException("Unsupported string encoding " + encoding);
             }
-        } catch (ParseException e) {
+        } catch (BufferException e) {
             throw new PlcRuntimeException("Error parsing string", e);
         }
     }
+
     public static void serializeString(WriteBuffer io, PlcValue value, String encoding) {
-        String valueString = value.getString();
-        valueString = valueString == null ? "" : valueString;
-
-        if ("UTF-8".equalsIgnoreCase(encoding)) {
-            final byte[] raw = valueString.getBytes(StandardCharsets.UTF_8);
-            try {
-                io.writeByte((byte) raw.length);
+        String str = value.getString();
+        str = (str == null) ? "" : str;
+        try {
+            if ("UTF-8".equalsIgnoreCase(encoding)) {
+                byte[] raw = str.getBytes(StandardCharsets.UTF_8);
+                io.writeSignedByte(8, (byte) raw.length, SINT_OPT);
                 for (byte b : raw) {
-                    io.writeByte(b);
+                    io.writeSignedByte(8, b, SINT_OPT);
                 }
-            }
-            catch (SerializationException ex) {
-                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-            final byte[] raw = valueString.getBytes(StandardCharsets.UTF_16);
-            try {
-                io.writeUnsignedInt(16, raw.length);
-                for (int i = 0; i < raw.length; i++) {
-                    io.writeByte( raw[i]);
+            } else if ("UTF-16".equalsIgnoreCase(encoding)) {
+                byte[] raw = str.getBytes(StandardCharsets.UTF_16);
+                io.writeUnsignedInt(16, raw.length, UINT_OPT);
+                for (byte b : raw) {
+                    io.writeSignedByte(8, b, SINT_OPT);
                 }
+            } else {
+                throw new PlcRuntimeException("Unsupported string encoding " + encoding);
             }
-            catch (SerializationException ex) {
-                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            throw new PlcRuntimeException("Unsupported string encoding " + encoding);
+        } catch (BufferException e) {
+            throw new PlcRuntimeException("Error serializing string", e);
         }
+    }
 
+    public static int stringLengthInBits(PlcValue value, String encoding) {
+        String s = (value != null) ? value.getString() : "";
+        if (s == null) s = "";
+        if ("UTF-8".equalsIgnoreCase(encoding)) {
+            return 8 + s.getBytes(StandardCharsets.UTF_8).length * 8;
+        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
+            return 16 + s.getBytes(StandardCharsets.UTF_16).length * 8;
+        }
+        return 8;
     }
 }

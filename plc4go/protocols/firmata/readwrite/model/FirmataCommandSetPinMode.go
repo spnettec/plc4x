@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_FirmataCommandSetPinModeBuilder) WithMode(mode PinMode) FirmataCommand
 }
 
 func (b *_FirmataCommandSetPinModeBuilder) Build() (FirmataCommandSetPinMode, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._FirmataCommandSetPinMode.deepCopy(), nil
@@ -221,7 +222,7 @@ func CastFirmataCommandSetPinMode(structType any) FirmataCommandSetPinMode {
 	return nil
 }
 
-func (m *_FirmataCommandSetPinMode) GetTypeName() string {
+func (m *_FirmataCommandSetPinMode) GetPlx4xTypeName() string {
 	return "FirmataCommandSetPinMode"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataUTCOffsetBuilder) Build() (BACnetConstructedDataU
 	if b.UtcOffset == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'utcOffset' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataUTCOffset.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataUTCOffset(structType any) BACnetConstructedDataUTC
 	return nil
 }
 
-func (m *_BACnetConstructedDataUTCOffset) GetTypeName() string {
+func (m *_BACnetConstructedDataUTCOffset) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataUTCOffset"
 }
 

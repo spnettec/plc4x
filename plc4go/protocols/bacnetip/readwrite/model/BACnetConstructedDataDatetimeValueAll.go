@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_BACnetConstructedDataDatetimeValueAllBuilder) WithMandatoryFields() BA
 }
 
 func (b *_BACnetConstructedDataDatetimeValueAllBuilder) Build() (BACnetConstructedDataDatetimeValueAll, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataDatetimeValueAll.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastBACnetConstructedDataDatetimeValueAll(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataDatetimeValueAll) GetTypeName() string {
+func (m *_BACnetConstructedDataDatetimeValueAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDatetimeValueAll"
 }
 

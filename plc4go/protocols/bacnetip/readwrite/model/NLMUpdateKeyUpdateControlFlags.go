@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -170,7 +171,7 @@ func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) WithRemoveAllKeys(removeAllKeys
 }
 
 func (b *_NLMUpdateKeyUpdateControlFlagsBuilder) Build() (NLMUpdateKeyUpdateControlFlags, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMUpdateKeyUpdateControlFlags.deepCopy(), nil
@@ -258,7 +259,7 @@ func CastNLMUpdateKeyUpdateControlFlags(structType any) NLMUpdateKeyUpdateContro
 	return nil
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlags) GetTypeName() string {
+func (m *_NLMUpdateKeyUpdateControlFlags) GetPlx4xTypeName() string {
 	return "NLMUpdateKeyUpdateControlFlags"
 }
 

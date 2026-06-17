@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -150,7 +151,7 @@ func (b *_ApduDataExtPropertyValueReadBuilder) WithIndex(index uint16) ApduDataE
 }
 
 func (b *_ApduDataExtPropertyValueReadBuilder) Build() (ApduDataExtPropertyValueRead, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtPropertyValueRead.deepCopy(), nil
@@ -251,7 +252,7 @@ func CastApduDataExtPropertyValueRead(structType any) ApduDataExtPropertyValueRe
 	return nil
 }
 
-func (m *_ApduDataExtPropertyValueRead) GetTypeName() string {
+func (m *_ApduDataExtPropertyValueRead) GetPlx4xTypeName() string {
 	return "ApduDataExtPropertyValueRead"
 }
 

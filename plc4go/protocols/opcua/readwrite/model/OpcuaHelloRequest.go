@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -175,7 +176,7 @@ func (b *_OpcuaHelloRequestBuilder) Build() (OpcuaHelloRequest, error) {
 	if b.Endpoint == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'endpoint' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpcuaHelloRequest.deepCopy(), nil
@@ -276,7 +277,7 @@ func CastOpcuaHelloRequest(structType any) OpcuaHelloRequest {
 	return nil
 }
 
-func (m *_OpcuaHelloRequest) GetTypeName() string {
+func (m *_OpcuaHelloRequest) GetPlx4xTypeName() string {
 	return "OpcuaHelloRequest"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetChannelValueCharacterStringBuilder) Build() (BACnetChannelValueC
 	if b.CharacterStringValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'characterStringValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetChannelValueCharacterString.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetChannelValueCharacterString(structType any) BACnetChannelValueCha
 	return nil
 }
 
-func (m *_BACnetChannelValueCharacterString) GetTypeName() string {
+func (m *_BACnetChannelValueCharacterString) GetPlx4xTypeName() string {
 	return "BACnetChannelValueCharacterString"
 }
 

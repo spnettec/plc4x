@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -59,7 +60,7 @@ var _ AdsDeleteDeviceNotificationResponse = (*_AdsDeleteDeviceNotificationRespon
 var _ AmsPacketRequirements = (*_AdsDeleteDeviceNotificationResponse)(nil)
 
 // NewAdsDeleteDeviceNotificationResponse factory function for _AdsDeleteDeviceNotificationResponse
-func NewAdsDeleteDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode) *_AdsDeleteDeviceNotificationResponse {
+func NewAdsDeleteDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, result ReturnCode) *_AdsDeleteDeviceNotificationResponse {
 	_result := &_AdsDeleteDeviceNotificationResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,
@@ -118,7 +119,7 @@ func (b *_AdsDeleteDeviceNotificationResponseBuilder) WithResult(result ReturnCo
 }
 
 func (b *_AdsDeleteDeviceNotificationResponseBuilder) Build() (AdsDeleteDeviceNotificationResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsDeleteDeviceNotificationResponse.deepCopy(), nil
@@ -211,7 +212,7 @@ func CastAdsDeleteDeviceNotificationResponse(structType any) AdsDeleteDeviceNoti
 	return nil
 }
 
-func (m *_AdsDeleteDeviceNotificationResponse) GetTypeName() string {
+func (m *_AdsDeleteDeviceNotificationResponse) GetPlx4xTypeName() string {
 	return "AdsDeleteDeviceNotificationResponse"
 }
 

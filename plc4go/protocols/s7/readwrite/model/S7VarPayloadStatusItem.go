@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -100,7 +101,7 @@ func (b *_S7VarPayloadStatusItemBuilder) WithReturnCode(returnCode DataTransport
 }
 
 func (b *_S7VarPayloadStatusItemBuilder) Build() (S7VarPayloadStatusItem, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7VarPayloadStatusItem.deepCopy(), nil
@@ -160,7 +161,7 @@ func CastS7VarPayloadStatusItem(structType any) S7VarPayloadStatusItem {
 	return nil
 }
 
-func (m *_S7VarPayloadStatusItem) GetTypeName() string {
+func (m *_S7VarPayloadStatusItem) GetPlx4xTypeName() string {
 	return "S7VarPayloadStatusItem"
 }
 

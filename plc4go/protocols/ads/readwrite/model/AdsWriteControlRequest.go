@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -67,7 +68,7 @@ var _ AdsWriteControlRequest = (*_AdsWriteControlRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsWriteControlRequest)(nil)
 
 // NewAdsWriteControlRequest factory function for _AdsWriteControlRequest
-func NewAdsWriteControlRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, adsState uint16, deviceState uint16, data []byte) *_AdsWriteControlRequest {
+func NewAdsWriteControlRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, adsState uint16, deviceState uint16, data []byte) *_AdsWriteControlRequest {
 	_result := &_AdsWriteControlRequest{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		AdsState:          adsState,
@@ -142,7 +143,7 @@ func (b *_AdsWriteControlRequestBuilder) WithData(data ...byte) AdsWriteControlR
 }
 
 func (b *_AdsWriteControlRequestBuilder) Build() (AdsWriteControlRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsWriteControlRequest.deepCopy(), nil
@@ -243,7 +244,7 @@ func CastAdsWriteControlRequest(structType any) AdsWriteControlRequest {
 	return nil
 }
 
-func (m *_AdsWriteControlRequest) GetTypeName() string {
+func (m *_AdsWriteControlRequest) GetPlx4xTypeName() string {
 	return "AdsWriteControlRequest"
 }
 

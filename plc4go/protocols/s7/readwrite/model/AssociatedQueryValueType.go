@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -130,7 +131,7 @@ func (b *_AssociatedQueryValueTypeBuilder) WithData(data ...uint8) AssociatedQue
 }
 
 func (b *_AssociatedQueryValueTypeBuilder) Build() (AssociatedQueryValueType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AssociatedQueryValueType.deepCopy(), nil
@@ -202,7 +203,7 @@ func CastAssociatedQueryValueType(structType any) AssociatedQueryValueType {
 	return nil
 }
 
-func (m *_AssociatedQueryValueType) GetTypeName() string {
+func (m *_AssociatedQueryValueType) GetPlx4xTypeName() string {
 	return "AssociatedQueryValueType"
 }
 

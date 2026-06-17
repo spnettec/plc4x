@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -146,7 +148,7 @@ func (b *_ConfigurationUpdateTargetTypeBuilder) Build() (ConfigurationUpdateTarg
 	if b.Path == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'path' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConfigurationUpdateTargetType.deepCopy(), nil
@@ -239,7 +241,7 @@ func CastConfigurationUpdateTargetType(structType any) ConfigurationUpdateTarget
 	return nil
 }
 
-func (m *_ConfigurationUpdateTargetType) GetTypeName() string {
+func (m *_ConfigurationUpdateTargetType) GetPlx4xTypeName() string {
 	return "ConfigurationUpdateTargetType"
 }
 
@@ -270,13 +272,13 @@ func (m *_ConfigurationUpdateTargetType) parse(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	path, err := ReadSimpleField[PascalString](ctx, "path", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	path, err := ReadSimpleField[PascalString](ctx, "path", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'path' field"))
 	}
 	m.Path = path
 
-	updateType, err := ReadEnumField[ConfigurationUpdateType](ctx, "updateType", "ConfigurationUpdateType", ReadEnum(ConfigurationUpdateTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	updateType, err := ReadEnumField[ConfigurationUpdateType](ctx, "updateType", "ConfigurationUpdateType", ReadEnum(ConfigurationUpdateTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updateType' field"))
 	}
@@ -307,11 +309,11 @@ func (m *_ConfigurationUpdateTargetType) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for ConfigurationUpdateTargetType")
 		}
 
-		if err := WriteSimpleField[PascalString](ctx, "path", m.GetPath(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalString](ctx, "path", m.GetPath(), WriteComplex[PascalString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'path' field")
 		}
 
-		if err := WriteSimpleEnumField[ConfigurationUpdateType](ctx, "updateType", "ConfigurationUpdateType", m.GetUpdateType(), WriteEnum[ConfigurationUpdateType, uint32](ConfigurationUpdateType.GetValue, ConfigurationUpdateType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+		if err := WriteSimpleEnumField[ConfigurationUpdateType](ctx, "updateType", "ConfigurationUpdateType", m.GetUpdateType(), WriteEnum[ConfigurationUpdateType, uint32](ConfigurationUpdateType.GetValue, ConfigurationUpdateType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'updateType' field")
 		}
 

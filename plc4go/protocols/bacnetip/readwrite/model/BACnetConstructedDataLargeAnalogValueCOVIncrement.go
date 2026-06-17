@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) Build() (BAC
 	if b.CovIncrement == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'covIncrement' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataLargeAnalogValueCOVIncrement.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataLargeAnalogValueCOVIncrement(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) GetTypeName() string {
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLargeAnalogValueCOVIncrement"
 }
 

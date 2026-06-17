@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -233,7 +234,7 @@ func (b *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) Buil
 	if b.ListOfCovSubscriptionSpecifications == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'listOfCovSubscriptionSpecifications' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple.deepCopy(), nil
@@ -338,7 +339,7 @@ func CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType an
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"
 }
 

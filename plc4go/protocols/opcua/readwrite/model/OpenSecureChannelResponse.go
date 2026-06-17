@@ -21,10 +21,12 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -204,7 +206,7 @@ func (b *_OpenSecureChannelResponseBuilder) Build() (OpenSecureChannelResponse, 
 	if b.ServerNonce == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'serverNonce' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpenSecureChannelResponse.deepCopy(), nil
@@ -305,7 +307,7 @@ func CastOpenSecureChannelResponse(structType any) OpenSecureChannelResponse {
 	return nil
 }
 
-func (m *_OpenSecureChannelResponse) GetTypeName() string {
+func (m *_OpenSecureChannelResponse) GetPlx4xTypeName() string {
 	return "OpenSecureChannelResponse"
 }
 
@@ -342,25 +344,25 @@ func (m *_OpenSecureChannelResponse) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	serverProtocolVersion, err := ReadSimpleField(ctx, "serverProtocolVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	serverProtocolVersion, err := ReadSimpleField(ctx, "serverProtocolVersion", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverProtocolVersion' field"))
 	}
 	m.ServerProtocolVersion = serverProtocolVersion
 
-	securityToken, err := ReadSimpleField[ChannelSecurityToken](ctx, "securityToken", ReadComplex[ChannelSecurityToken](ExtensionObjectDefinitionParseWithBufferProducer[ChannelSecurityToken]((int32)(int32(443))), readBuffer))
+	securityToken, err := ReadSimpleField[ChannelSecurityToken](ctx, "securityToken", ReadComplex[ChannelSecurityToken](ExtensionObjectDefinitionParseWithBufferProducer[ChannelSecurityToken]((int32)(int32(443))), readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityToken' field"))
 	}
 	m.SecurityToken = securityToken
 
-	serverNonce, err := ReadSimpleField[PascalByteString](ctx, "serverNonce", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	serverNonce, err := ReadSimpleField[PascalByteString](ctx, "serverNonce", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverNonce' field"))
 	}
@@ -391,19 +393,19 @@ func (m *_OpenSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for OpenSecureChannelResponse")
 		}
 
-		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		if err := WriteSimpleField[uint32](ctx, "serverProtocolVersion", m.GetServerProtocolVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		if err := WriteSimpleField[uint32](ctx, "serverProtocolVersion", m.GetServerProtocolVersion(), WriteUnsignedInt(writeBuffer, 32), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverProtocolVersion' field")
 		}
 
-		if err := WriteSimpleField[ChannelSecurityToken](ctx, "securityToken", m.GetSecurityToken(), WriteComplex[ChannelSecurityToken](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ChannelSecurityToken](ctx, "securityToken", m.GetSecurityToken(), WriteComplex[ChannelSecurityToken](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityToken' field")
 		}
 
-		if err := WriteSimpleField[PascalByteString](ctx, "serverNonce", m.GetServerNonce(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		if err := WriteSimpleField[PascalByteString](ctx, "serverNonce", m.GetServerNonce(), WriteComplex[PascalByteString](writeBuffer), codegen.WithEncoding("UTF8")); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverNonce' field")
 		}
 

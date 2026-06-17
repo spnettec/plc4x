@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) WithFloorText(f
 }
 
 func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) Build() (BACnetConstructedDataTrendLogMultipleLogBuffer, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataTrendLogMultipleLogBuffer.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataTrendLogMultipleLogBuffer(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetTypeName() string {
+func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrendLogMultipleLogBuffer"
 }
 

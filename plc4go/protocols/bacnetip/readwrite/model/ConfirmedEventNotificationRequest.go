@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -431,7 +432,7 @@ func (b *_ConfirmedEventNotificationRequestBuilder) Build() (ConfirmedEventNotif
 	if b.ToState == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'toState' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ConfirmedEventNotificationRequest.deepCopy(), nil
@@ -539,7 +540,7 @@ func CastConfirmedEventNotificationRequest(structType any) ConfirmedEventNotific
 	return nil
 }
 
-func (m *_ConfirmedEventNotificationRequest) GetTypeName() string {
+func (m *_ConfirmedEventNotificationRequest) GetPlx4xTypeName() string {
 	return "ConfirmedEventNotificationRequest"
 }
 

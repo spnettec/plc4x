@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -118,7 +119,7 @@ func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) WithVersion(version uint
 }
 
 func (b *_KnxNetRemoteConfigurationAndDiagnosisBuilder) Build() (KnxNetRemoteConfigurationAndDiagnosis, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._KnxNetRemoteConfigurationAndDiagnosis.deepCopy(), nil
@@ -207,7 +208,7 @@ func CastKnxNetRemoteConfigurationAndDiagnosis(structType any) KnxNetRemoteConfi
 	return nil
 }
 
-func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetTypeName() string {
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetPlx4xTypeName() string {
 	return "KnxNetRemoteConfigurationAndDiagnosis"
 }
 

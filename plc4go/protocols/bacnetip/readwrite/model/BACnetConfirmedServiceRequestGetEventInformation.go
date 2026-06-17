@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -129,7 +130,7 @@ func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithOptionalL
 }
 
 func (b *_BACnetConfirmedServiceRequestGetEventInformationBuilder) Build() (BACnetConfirmedServiceRequestGetEventInformation, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestGetEventInformation.deepCopy(), nil
@@ -218,7 +219,7 @@ func CastBACnetConfirmedServiceRequestGetEventInformation(structType any) BACnet
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestGetEventInformation"
 }
 

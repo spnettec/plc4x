@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataDatabaseRevisionBuilder) Build() (BACnetConstruct
 	if b.DatabaseRevision == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'databaseRevision' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataDatabaseRevision.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataDatabaseRevision(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataDatabaseRevision) GetTypeName() string {
+func (m *_BACnetConstructedDataDatabaseRevision) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDatabaseRevision"
 }
 

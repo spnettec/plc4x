@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataStatusFlagsBuilder) Build() (BACnetConstructedDat
 	if b.StatusFlags == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'statusFlags' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataStatusFlags.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataStatusFlags(structType any) BACnetConstructedDataS
 	return nil
 }
 
-func (m *_BACnetConstructedDataStatusFlags) GetTypeName() string {
+func (m *_BACnetConstructedDataStatusFlags) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataStatusFlags"
 }
 

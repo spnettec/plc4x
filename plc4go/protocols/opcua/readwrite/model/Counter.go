@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -88,7 +89,7 @@ func (b *_CounterBuilder) WithMandatoryFields() CounterBuilder {
 }
 
 func (b *_CounterBuilder) Build() (Counter, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Counter.deepCopy(), nil
@@ -134,7 +135,7 @@ func CastCounter(structType any) Counter {
 	return nil
 }
 
-func (m *_Counter) GetTypeName() string {
+func (m *_Counter) GetPlx4xTypeName() string {
 	return "Counter"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetPropertyStatesAccessCredentialDisableBuilder) Build() (BACnetPro
 	if b.AccessCredentialDisable == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'accessCredentialDisable' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetPropertyStatesAccessCredentialDisable.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetPropertyStatesAccessCredentialDisable(structType any) BACnetPrope
 	return nil
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisable) GetTypeName() string {
+func (m *_BACnetPropertyStatesAccessCredentialDisable) GetPlx4xTypeName() string {
 	return "BACnetPropertyStatesAccessCredentialDisable"
 }
 

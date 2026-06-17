@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetScaleIntegerScaleBuilder) Build() (BACnetScaleIntegerScale, erro
 	if b.IntegerScale == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'integerScale' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetScaleIntegerScale.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetScaleIntegerScale(structType any) BACnetScaleIntegerScale {
 	return nil
 }
 
-func (m *_BACnetScaleIntegerScale) GetTypeName() string {
+func (m *_BACnetScaleIntegerScale) GetPlx4xTypeName() string {
 	return "BACnetScaleIntegerScale"
 }
 

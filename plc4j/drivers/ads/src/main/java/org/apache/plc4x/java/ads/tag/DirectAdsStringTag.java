@@ -19,9 +19,9 @@
 package org.apache.plc4x.java.ads.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
@@ -42,8 +42,16 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
         this.stringLength = stringLength;
     }
 
+    public DirectAdsStringTag(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
+        this(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements, null);
+    }
+
     public static DirectAdsStringTag of(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements, String stringEncoding) {
         return new DirectAdsStringTag(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements, stringEncoding);
+    }
+
+    public static DirectAdsStringTag of(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
+        return new DirectAdsStringTag(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements, null);
     }
 
     public static DirectAdsStringTag of(String address) {
@@ -97,9 +105,12 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
 
     @Override
     public String getAddressString() {
-        String address = String.format("0x%d/%d:%s(%d)", getIndexGroup(), getIndexOffset(), getPlcDataType(), getStringLength());
+        String address = String.format("%d/%d:%s(%d)", getIndexGroup(), getIndexOffset(), getPlcDataType(), getStringLength());
         if(getNumberOfElements() != 1) {
             address += "[" + getNumberOfElements() + "]";
+        }
+        if (getStringEncoding() != null && !getStringEncoding().isEmpty() && !"AUTO".equalsIgnoreCase(getStringEncoding())) {
+            address += "|" + getStringEncoding();
         }
         return address;
     }
@@ -119,18 +130,27 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext(getClass().getSimpleName());
+    public void serialize(WriteBuffer writeBuffer) throws BufferException {
+        writeBuffer.pushContext(WithOption.WithName(getClass().getSimpleName()));
 
-        writeBuffer.writeUnsignedLong("indexGroup", 32, getIndexGroup());
-        writeBuffer.writeUnsignedLong("indexOffset", 32, getIndexOffset());
-        writeBuffer.writeUnsignedLong("numberOfElements", 32, getNumberOfElements());
-        writeBuffer.writeString("dataType",
+        writeBuffer.writeUnsignedLong(32, getIndexGroup(), WithOption.WithName("indexGroup"));
+        writeBuffer.writeUnsignedLong(32, getIndexOffset(), WithOption.WithName("indexOffset"));
+        writeBuffer.writeUnsignedLong(32, getNumberOfElements(), WithOption.WithName("numberOfElements"));
+        writeBuffer.writeString(
             getPlcDataType().getBytes(StandardCharsets.UTF_8).length * 8,
-            getPlcDataType(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
-        writeBuffer.writeUnsignedLong("stringLength", 32, getStringLength());
+            getPlcDataType(),
+            WithOption.WithName("dataType"),
+            WithOption.WithEncoding("UTF8"));
+        writeBuffer.writeUnsignedLong(32, getStringLength(), WithOption.WithName("stringLength"));
+        if (getStringEncoding() != null && !getStringEncoding().isEmpty()) {
+            writeBuffer.writeString(
+                getStringEncoding().getBytes(StandardCharsets.UTF_8).length * 8,
+                getStringEncoding(),
+                WithOption.WithName("stringEncoding"),
+                WithOption.WithEncoding("UTF8"));
+        }
 
-        writeBuffer.popContext(getClass().getSimpleName());
+        writeBuffer.popContext(WithOption.WithName(getClass().getSimpleName()));
     }
 
 }

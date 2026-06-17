@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -88,7 +89,7 @@ func (b *_ContinuationPointBuilder) WithMandatoryFields() ContinuationPointBuild
 }
 
 func (b *_ContinuationPointBuilder) Build() (ContinuationPoint, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ContinuationPoint.deepCopy(), nil
@@ -134,7 +135,7 @@ func CastContinuationPoint(structType any) ContinuationPoint {
 	return nil
 }
 
-func (m *_ContinuationPoint) GetTypeName() string {
+func (m *_ContinuationPoint) GetPlx4xTypeName() string {
 	return "ContinuationPoint"
 }
 

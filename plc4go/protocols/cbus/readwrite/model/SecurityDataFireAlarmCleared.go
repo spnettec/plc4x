@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SecurityDataFireAlarmClearedBuilder) WithMandatoryFields() SecurityDat
 }
 
 func (b *_SecurityDataFireAlarmClearedBuilder) Build() (SecurityDataFireAlarmCleared, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataFireAlarmCleared.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastSecurityDataFireAlarmCleared(structType any) SecurityDataFireAlarmClear
 	return nil
 }
 
-func (m *_SecurityDataFireAlarmCleared) GetTypeName() string {
+func (m *_SecurityDataFireAlarmCleared) GetPlx4xTypeName() string {
 	return "SecurityDataFireAlarmCleared"
 }
 

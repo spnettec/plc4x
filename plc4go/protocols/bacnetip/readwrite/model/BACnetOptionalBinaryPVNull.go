@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetOptionalBinaryPVNullBuilder) Build() (BACnetOptionalBinaryPVNull
 	if b.NullValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'nullValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetOptionalBinaryPVNull.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetOptionalBinaryPVNull(structType any) BACnetOptionalBinaryPVNull {
 	return nil
 }
 
-func (m *_BACnetOptionalBinaryPVNull) GetTypeName() string {
+func (m *_BACnetOptionalBinaryPVNull) GetPlx4xTypeName() string {
 	return "BACnetOptionalBinaryPVNull"
 }
 

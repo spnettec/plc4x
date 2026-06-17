@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -136,7 +137,7 @@ func (b *_AssociatedValueTypeBuilder) WithData(data ...uint8) AssociatedValueTyp
 }
 
 func (b *_AssociatedValueTypeBuilder) Build() (AssociatedValueType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AssociatedValueType.deepCopy(), nil
@@ -208,7 +209,7 @@ func CastAssociatedValueType(structType any) AssociatedValueType {
 	return nil
 }
 
-func (m *_AssociatedValueType) GetTypeName() string {
+func (m *_AssociatedValueType) GetPlx4xTypeName() string {
 	return "AssociatedValueType"
 }
 

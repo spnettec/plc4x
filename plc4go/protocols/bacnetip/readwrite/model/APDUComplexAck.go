@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -213,7 +214,7 @@ func (b *_APDUComplexAckBuilder) WithSegment(segment ...byte) APDUComplexAckBuil
 }
 
 func (b *_APDUComplexAckBuilder) Build() (APDUComplexAck, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._APDUComplexAck.deepCopy(), nil
@@ -367,7 +368,7 @@ func CastAPDUComplexAck(structType any) APDUComplexAck {
 	return nil
 }
 
-func (m *_APDUComplexAck) GetTypeName() string {
+func (m *_APDUComplexAck) GetPlx4xTypeName() string {
 	return "APDUComplexAck"
 }
 

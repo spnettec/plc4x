@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -196,7 +197,7 @@ func (b *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierBuilder) Build
 	if b.ClosingTag == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'closingTag' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestCreateObjectObjectSpecifier.deepCopy(), nil
@@ -307,7 +308,7 @@ func CastBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(structType any
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestCreateObjectObjectSpecifier"
 }
 

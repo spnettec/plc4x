@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -151,7 +152,7 @@ func (b *_Alarm8MessageQueryTypeBuilder) WithMessageObjects(messageObjects ...Al
 }
 
 func (b *_Alarm8MessageQueryTypeBuilder) Build() (Alarm8MessageQueryType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Alarm8MessageQueryType.deepCopy(), nil
@@ -231,7 +232,7 @@ func CastAlarm8MessageQueryType(structType any) Alarm8MessageQueryType {
 	return nil
 }
 
-func (m *_Alarm8MessageQueryType) GetTypeName() string {
+func (m *_Alarm8MessageQueryType) GetPlx4xTypeName() string {
 	return "Alarm8MessageQueryType"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataScaleBuilder) Build() (BACnetConstructedDataScale
 	if b.Scale == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'scale' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataScale.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataScale(structType any) BACnetConstructedDataScale {
 	return nil
 }
 
-func (m *_BACnetConstructedDataScale) GetTypeName() string {
+func (m *_BACnetConstructedDataScale) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataScale"
 }
 

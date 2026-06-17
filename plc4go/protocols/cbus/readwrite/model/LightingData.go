@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -146,7 +147,7 @@ func (b *_LightingDataBuilder) WithCommandTypeContainer(commandTypeContainer Lig
 }
 
 func (b *_LightingDataBuilder) PartialBuild() (LightingDataContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LightingData.deepCopy(), nil
@@ -294,7 +295,7 @@ func CastLightingData(structType any) LightingData {
 	return nil
 }
 
-func (m *_LightingData) GetTypeName() string {
+func (m *_LightingData) GetPlx4xTypeName() string {
 	return "LightingData"
 }
 

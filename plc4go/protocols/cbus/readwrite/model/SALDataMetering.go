@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -135,7 +138,7 @@ func (b *_SALDataMeteringBuilder) Build() (SALDataMetering, error) {
 	if b.MeteringData == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'meteringData' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataMetering.deepCopy(), nil
@@ -224,7 +227,7 @@ func CastSALDataMetering(structType any) SALDataMetering {
 	return nil
 }
 
-func (m *_SALDataMetering) GetTypeName() string {
+func (m *_SALDataMetering) GetPlx4xTypeName() string {
 	return "SALDataMetering"
 }
 
@@ -252,7 +255,7 @@ func (m *_SALDataMetering) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	meteringData, err := ReadSimpleField[MeteringData](ctx, "meteringData", ReadComplex[MeteringData](MeteringDataParseWithBuffer, readBuffer))
+	meteringData, err := ReadSimpleField[MeteringData](ctx, "meteringData", ReadComplex[MeteringData](MeteringDataParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'meteringData' field"))
 	}
@@ -266,7 +269,7 @@ func (m *_SALDataMetering) parse(ctx context.Context, readBuffer utils.ReadBuffe
 }
 
 func (m *_SALDataMetering) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -283,7 +286,7 @@ func (m *_SALDataMetering) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for SALDataMetering")
 		}
 
-		if err := WriteSimpleField[MeteringData](ctx, "meteringData", m.GetMeteringData(), WriteComplex[MeteringData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[MeteringData](ctx, "meteringData", m.GetMeteringData(), WriteComplex[MeteringData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'meteringData' field")
 		}
 

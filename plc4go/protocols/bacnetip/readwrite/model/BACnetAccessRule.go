@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -218,7 +219,7 @@ func (b *_BACnetAccessRuleBuilder) Build() (BACnetAccessRule, error) {
 	if b.Enable == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'enable' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetAccessRule.deepCopy(), nil
@@ -294,7 +295,7 @@ func CastBACnetAccessRule(structType any) BACnetAccessRule {
 	return nil
 }
 
-func (m *_BACnetAccessRule) GetTypeName() string {
+func (m *_BACnetAccessRule) GetPlx4xTypeName() string {
 	return "BACnetAccessRule"
 }
 

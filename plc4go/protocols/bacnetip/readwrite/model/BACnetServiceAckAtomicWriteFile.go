@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetServiceAckAtomicWriteFileBuilder) Build() (BACnetServiceAckAtomi
 	if b.FileStartPosition == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'fileStartPosition' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetServiceAckAtomicWriteFile.deepCopy(), nil
@@ -224,7 +225,7 @@ func CastBACnetServiceAckAtomicWriteFile(structType any) BACnetServiceAckAtomicW
 	return nil
 }
 
-func (m *_BACnetServiceAckAtomicWriteFile) GetTypeName() string {
+func (m *_BACnetServiceAckAtomicWriteFile) GetPlx4xTypeName() string {
 	return "BACnetServiceAckAtomicWriteFile"
 }
 

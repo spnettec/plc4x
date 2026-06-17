@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) WithMessageOb
 }
 
 func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7PayloadUserDataItemCpuFunctionAlarmAckResponse.deepCopy(), nil
@@ -229,7 +230,7 @@ func CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(structType any) S7Payl
 	return nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetTypeName() string {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetPlx4xTypeName() string {
 	return "S7PayloadUserDataItemCpuFunctionAlarmAckResponse"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_VariantGuidBuilder) WithValue(value ...GuidValue) VariantGuidBuilder {
 }
 
 func (b *_VariantGuidBuilder) Build() (VariantGuid, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantGuid.deepCopy(), nil
@@ -221,7 +222,7 @@ func CastVariantGuid(structType any) VariantGuid {
 	return nil
 }
 
-func (m *_VariantGuid) GetTypeName() string {
+func (m *_VariantGuid) GetPlx4xTypeName() string {
 	return "VariantGuid"
 }
 

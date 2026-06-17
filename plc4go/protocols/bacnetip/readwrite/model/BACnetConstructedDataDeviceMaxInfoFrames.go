@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataDeviceMaxInfoFramesBuilder) Build() (BACnetConstr
 	if b.MaxInfoFrames == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'maxInfoFrames' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataDeviceMaxInfoFrames.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataDeviceMaxInfoFrames(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetTypeName() string {
+func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataDeviceMaxInfoFrames"
 }
 

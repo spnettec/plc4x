@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -140,7 +141,7 @@ func (b *_BACnetNameValueBuilder) Build() (BACnetNameValue, error) {
 	if b.Name == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'name' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetNameValue.deepCopy(), nil
@@ -204,7 +205,7 @@ func CastBACnetNameValue(structType any) BACnetNameValue {
 	return nil
 }
 
-func (m *_BACnetNameValue) GetTypeName() string {
+func (m *_BACnetNameValue) GetPlx4xTypeName() string {
 	return "BACnetNameValue"
 }
 

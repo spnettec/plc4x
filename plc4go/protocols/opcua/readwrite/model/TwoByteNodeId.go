@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -100,7 +101,7 @@ func (b *_TwoByteNodeIdBuilder) WithIdentifier(identifier uint8) TwoByteNodeIdBu
 }
 
 func (b *_TwoByteNodeIdBuilder) Build() (TwoByteNodeId, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TwoByteNodeId.deepCopy(), nil
@@ -160,7 +161,7 @@ func CastTwoByteNodeId(structType any) TwoByteNodeId {
 	return nil
 }
 
-func (m *_TwoByteNodeId) GetTypeName() string {
+func (m *_TwoByteNodeId) GetPlx4xTypeName() string {
 	return "TwoByteNodeId"
 }
 

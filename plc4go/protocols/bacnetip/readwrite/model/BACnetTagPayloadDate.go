@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -152,7 +153,7 @@ func (b *_BACnetTagPayloadDateBuilder) WithDayOfWeek(dayOfWeek uint8) BACnetTagP
 }
 
 func (b *_BACnetTagPayloadDateBuilder) Build() (BACnetTagPayloadDate, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTagPayloadDate.deepCopy(), nil
@@ -299,7 +300,7 @@ func CastBACnetTagPayloadDate(structType any) BACnetTagPayloadDate {
 	return nil
 }
 
-func (m *_BACnetTagPayloadDate) GetTypeName() string {
+func (m *_BACnetTagPayloadDate) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadDate"
 }
 

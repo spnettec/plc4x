@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -161,7 +162,7 @@ func (b *_ClockAndTimekeepingDataUpdateDateBuilder) WithDayOfWeek(dayOfWeek uint
 }
 
 func (b *_ClockAndTimekeepingDataUpdateDateBuilder) Build() (ClockAndTimekeepingDataUpdateDate, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ClockAndTimekeepingDataUpdateDate.deepCopy(), nil
@@ -262,7 +263,7 @@ func CastClockAndTimekeepingDataUpdateDate(structType any) ClockAndTimekeepingDa
 	return nil
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDate) GetTypeName() string {
+func (m *_ClockAndTimekeepingDataUpdateDate) GetPlx4xTypeName() string {
 	return "ClockAndTimekeepingDataUpdateDate"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -164,7 +165,7 @@ func (b *_BACnetConfirmedServiceRequestAtomicReadFileBuilder) Build() (BACnetCon
 	if b.AccessMethod == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'accessMethod' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestAtomicReadFile.deepCopy(), nil
@@ -257,7 +258,7 @@ func CastBACnetConfirmedServiceRequestAtomicReadFile(structType any) BACnetConfi
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestAtomicReadFile"
 }
 

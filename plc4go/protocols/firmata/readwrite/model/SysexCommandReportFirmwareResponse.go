@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -139,7 +140,7 @@ func (b *_SysexCommandReportFirmwareResponseBuilder) WithFileName(fileName ...by
 }
 
 func (b *_SysexCommandReportFirmwareResponseBuilder) Build() (SysexCommandReportFirmwareResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SysexCommandReportFirmwareResponse.deepCopy(), nil
@@ -240,7 +241,7 @@ func CastSysexCommandReportFirmwareResponse(structType any) SysexCommandReportFi
 	return nil
 }
 
-func (m *_SysexCommandReportFirmwareResponse) GetTypeName() string {
+func (m *_SysexCommandReportFirmwareResponse) GetPlx4xTypeName() string {
 	return "SysexCommandReportFirmwareResponse"
 }
 

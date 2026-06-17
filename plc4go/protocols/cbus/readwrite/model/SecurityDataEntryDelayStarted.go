@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SecurityDataEntryDelayStartedBuilder) WithMandatoryFields() SecurityDa
 }
 
 func (b *_SecurityDataEntryDelayStartedBuilder) Build() (SecurityDataEntryDelayStarted, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataEntryDelayStarted.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastSecurityDataEntryDelayStarted(structType any) SecurityDataEntryDelaySta
 	return nil
 }
 
-func (m *_SecurityDataEntryDelayStarted) GetTypeName() string {
+func (m *_SecurityDataEntryDelayStarted) GetPlx4xTypeName() string {
 	return "SecurityDataEntryDelayStarted"
 }
 

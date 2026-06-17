@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -117,7 +120,7 @@ func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) WithData(da
 }
 
 func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) Build() (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DF1CommandResponseMessageProtectedTypedLogicalRead.deepCopy(), nil
@@ -206,7 +209,7 @@ func CastDF1CommandResponseMessageProtectedTypedLogicalRead(structType any) DF1C
 	return nil
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetTypeName() string {
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetPlx4xTypeName() string {
 	return "DF1CommandResponseMessageProtectedTypedLogicalRead"
 }
 
@@ -236,7 +239,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) parse(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	data, err := ReadLengthArrayField[uint8](ctx, "data", ReadUnsignedByte(readBuffer, uint8(8)), int(int32(payloadLength)-int32(int32(8))))
+	data, err := ReadLengthArrayField[uint8](ctx, "data", ReadUnsignedByte(readBuffer, uint8(8)), int(int32(payloadLength)-int32(int32(8))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
@@ -250,7 +253,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) parse(ctx context.
 }
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -267,7 +270,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWrite
 			return errors.Wrap(pushErr, "Error pushing for DF1CommandResponseMessageProtectedTypedLogicalRead")
 		}
 
-		if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

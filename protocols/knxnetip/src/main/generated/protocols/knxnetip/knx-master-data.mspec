@@ -1134,7 +1134,7 @@
     ['379' M_TDE_GMBH ['430', '"TDE GmbH"']]
     ['380' M_NANJING_SHUFAN_INFORMATION_TECHNOLOGY_CO__LTD_ ['431', '"Nanjing Shufan Information technology Co.,Ltd."']]
     ['381' M_EWTECH ['432', '"EWTech"']]
-    ['382' M_KLUGER_AUTOMATION_GMBH ['433', '"Kluger Automation GmbH"']]
+    ['382' M_KLUGER_AUTOMATION ['433', '"Kluger Automation"']]
     ['383' M_JOONGANG_CONTROL ['434', '"JoongAng Control"']]
     ['384' M_GREENCONTROLS_TECHNOLOGY_SDN__BHD_ ['435', '"GreenControls Technology Sdn. Bhd."']]
     ['385' M_IME_S_P_A_ ['436', '"IME S.p.a."']]
@@ -1514,7 +1514,7 @@
     ['759' M_STRUCTURED_CABLE_PRODUCTS ['820', '"structured cable products"']]
     ['760' M_JIWU_FUZHOU_TECHNOLOGY_CO___LTD_ ['821', '"Jiwu (Fuzhou) Technology Co., Ltd."']]
     ['761' M_FOSHAN_BRISDOM_TECHNOLOGY_CO___LTD_ ['822', '"Foshan Brisdom Technology Co., Ltd."']]
-    ['762' M_YUEOING_ZHONGYI_ELECTRICALCO__LTD ['823', '"YUEOING ZHONGYI ELECTRICALCO.,LTD"']]
+    ['762' M_YUEQING_ZHONGYI_ELECTRIC_CO___LTD_ ['823', '"YUEQING ZHONGYI ELECTRIC CO., LTD."']]
     ['763' M_HYUNDAI ['824', '"HYUNDAI"']]
     ['764' M_QINGDAO_HISENSE_TRANSTECH_CO__LTD_ ['825', '"Qingdao Hisense TransTech Co.,Ltd."']]
     ['765' M_SPECIALCAVI_BALDASSARI_SRL ['826', '"SPECIALCAVI BALDASSARI SRL"']]
@@ -1553,9 +1553,14 @@
     ['798' M_ARCOLA_AI_LIMITED ['859', '"Arcola AI Limited"']]
     ['799' M_ZHEJIANG_DOOYA_INTELLIGENT_TECHNOLOGY_CO___LTD_ ['860', '"Zhejiang Dooya Intelligent Technology Co., Ltd."']]
     ['800' M_HUARUI ['861', '"HUARUI"']]
-    ['801' M_TECHNOVATION_ALLIANCE_ENTERPRISE_B_V ['862', '"Technovation Alliance Enterprise B.V"']]
-    ['802' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['803' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['801' M_CAMCOM_CABLES_NETHERLANDS ['862', '"CAMCOM Cables NETHERLANDS"']]
+    ['802' M_BI_TECH_ELECTRONICS ['863', '"BI-TECH Electronics"']]
+    ['803' M_BELFAST_CABLES_UK_SOLUTIONS_LTD ['864', '"BELFAST CABLES UK SOLUTIONS LTD"']]
+    ['804' M_KAYBE_NETWORKING_LLP ['865', '"KAYBE NETWORKING LLP"']]
+    ['805' M_GUANGZHOU_EASYCTRL_INTELLIGENT_TECHNOLOGY_CO__LTD_ ['866', '"Guangzhou Easyctrl Intelligent Technology Co.,Ltd."']]
+    ['806' M_HORIZENTIS ['867', '"Horizentis"']]
+    ['807' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['808' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
@@ -1623,11 +1628,11 @@
         ]
         ['CHAR' CHAR
             [reserved uint 8    '0x00']
-            [simple   string 8  value  encoding='"UTF-8"']
+            [simple   string 8  value  stringEncoding='"UTF8"']
         ]
         ['WCHAR' WCHAR
             [reserved uint 8    '0x00']
-            [simple   string 16 value  encoding='"UTF-16"']
+            [simple   string 16 value  stringEncoding='"UTF16"']
         ]
         //['STRING' STRING
         //]
@@ -1667,7 +1672,7 @@
             [simple   uint 8  hour       ]
             [simple   uint 8  minutes    ]
             [simple   uint 8  seconds    ]
-            [simple   uint 32 nanoseconds]
+            [simple   uint 32 nanosecondsOfSecond]
         ]
         ['DT' DATE_AND_TIME
             [reserved uint 8  '0x00'     ]
@@ -1678,7 +1683,7 @@
             [simple   uint 8  hour       ]
             [simple   uint 8  minutes    ]
             [simple   uint 8  seconds    ]
-            [simple   uint 32 nanoseconds]
+            [simple   uint 32 nanosecondsOfSecond]
         ]
 
     
@@ -2231,161 +2236,161 @@
         ['DPT_Value_Temp' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Tempd' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Tempa' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Lux' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Wsp' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Pres' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Humidity' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_AirQuality' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_AirFlow' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Time1' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Time2' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Volt' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Curr' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_PowerDensity' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_KelvinPerPercent' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Power' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Volume_Flow' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Rain_Amount' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Temp_F' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Wsp_kmh' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Absolute_Humidity' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Concentration_ygm3' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Coefficient' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
@@ -3123,14 +3128,14 @@
         ['DPT_Volume_Flux_Meter' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Volume_Flux_ls' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value encoding='"KNXFloat"']
+            [simple   float 16 value floatEncoding='"KNXFloat"']
                     
         ]
     
@@ -4395,11 +4400,11 @@
            [reserved uint 8 '0x00']
 
                     
-                    [simple float 16 tempsetpcomf encoding='"KNXFloat"']
+                    [simple float 16 tempsetpcomf floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 tempsetpstdby encoding='"KNXFloat"']
+                    [simple float 16 tempsetpstdby floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 tempsetpeco encoding='"KNXFloat"']
+                    [simple float 16 tempsetpeco floatEncoding='"KNXFloat"']
                 
         ]
     
@@ -4408,11 +4413,11 @@
            [reserved uint 8 '0x00']
 
                     
-                    [simple float 16 tempsetpshiftcomf encoding='"KNXFloat"']
+                    [simple float 16 tempsetpshiftcomf floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 tempsetpshiftstdby encoding='"KNXFloat"']
+                    [simple float 16 tempsetpshiftstdby floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 tempsetpshifteco encoding='"KNXFloat"']
+                    [simple float 16 tempsetpshifteco floatEncoding='"KNXFloat"']
                 
         ]
     
@@ -4856,13 +4861,13 @@
            [reserved uint 8 '0x00']
 
                     
-                    [simple float 16 roomTemperatureSetpointComfort encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointComfort floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointStandby encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointStandby floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointEconomy encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointEconomy floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointBuildingProtection encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointBuildingProtection floatEncoding='"KNXFloat"']
                 
         ]
     
@@ -4871,13 +4876,13 @@
            [reserved uint 8 '0x00']
 
                     
-                    [simple float 16 roomTemperatureSetpointShiftComfort encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointShiftComfort floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointShiftStandby encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointShiftStandby floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointShiftEconomy encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointShiftEconomy floatEncoding='"KNXFloat"']
                 
-                    [simple float 16 roomTemperatureSetpointShiftBuildingProtection encoding='"KNXFloat"']
+                    [simple float 16 roomTemperatureSetpointShiftBuildingProtection floatEncoding='"KNXFloat"']
                 
         ]
     

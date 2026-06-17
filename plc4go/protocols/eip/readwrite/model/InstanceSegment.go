@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -130,7 +131,7 @@ func (b *_InstanceSegmentBuilder) WithInstance(instance uint8) InstanceSegmentBu
 }
 
 func (b *_InstanceSegmentBuilder) Build() (InstanceSegment, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._InstanceSegment.deepCopy(), nil
@@ -202,7 +203,7 @@ func CastInstanceSegment(structType any) InstanceSegment {
 	return nil
 }
 
-func (m *_InstanceSegment) GetTypeName() string {
+func (m *_InstanceSegment) GetPlx4xTypeName() string {
 	return "InstanceSegment"
 }
 

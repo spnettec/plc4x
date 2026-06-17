@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_AccessControlDataAccessPointLeftOpenBuilder) WithMandatoryFields() Acc
 }
 
 func (b *_AccessControlDataAccessPointLeftOpenBuilder) Build() (AccessControlDataAccessPointLeftOpen, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AccessControlDataAccessPointLeftOpen.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastAccessControlDataAccessPointLeftOpen(structType any) AccessControlDataA
 	return nil
 }
 
-func (m *_AccessControlDataAccessPointLeftOpen) GetTypeName() string {
+func (m *_AccessControlDataAccessPointLeftOpen) GetPlx4xTypeName() string {
 	return "AccessControlDataAccessPointLeftOpen"
 }
 

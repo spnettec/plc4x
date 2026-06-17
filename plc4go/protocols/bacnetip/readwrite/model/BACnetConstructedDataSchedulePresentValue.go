@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataSchedulePresentValueBuilder) Build() (BACnetConst
 	if b.PresentValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'presentValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataSchedulePresentValue.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataSchedulePresentValue(structType any) BACnetConstru
 	return nil
 }
 
-func (m *_BACnetConstructedDataSchedulePresentValue) GetTypeName() string {
+func (m *_BACnetConstructedDataSchedulePresentValue) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataSchedulePresentValue"
 }
 

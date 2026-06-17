@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -119,7 +120,7 @@ func (b *_UnknownMessageBuilder) WithUnknownData(unknownData ...byte) UnknownMes
 }
 
 func (b *_UnknownMessageBuilder) Build() (UnknownMessage, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._UnknownMessage.deepCopy(), nil
@@ -208,7 +209,7 @@ func CastUnknownMessage(structType any) UnknownMessage {
 	return nil
 }
 
-func (m *_UnknownMessage) GetTypeName() string {
+func (m *_UnknownMessage) GetPlx4xTypeName() string {
 	return "UnknownMessage"
 }
 
@@ -238,7 +239,7 @@ func (m *_UnknownMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	unknownData, err := readBuffer.ReadByteArray("unknownData", int(int32(totalLength)-int32(int32(6))), codegen.WithByteOrder(binary.BigEndian))
+	unknownData, err := readBuffer.ReadByteArray("unknownData", int(int32(totalLength)-int32(int32(6))), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownData' field"))
 	}
@@ -269,7 +270,7 @@ func (m *_UnknownMessage) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for UnknownMessage")
 		}
 
-		if err := WriteByteArrayField(ctx, "unknownData", m.GetUnknownData(), WriteByteArray(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		if err := WriteByteArrayField(ctx, "unknownData", m.GetUnknownData(), WriteByteArray(writeBuffer, 8), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unknownData' field")
 		}
 

@@ -18,191 +18,172 @@
  */
 package org.apache.plc4x.java.ads.readwrite.utils;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
+import org.apache.plc4x.java.spi.buffers.api.ReadBuffer;
+import org.apache.plc4x.java.spi.buffers.api.WithOption;
+import org.apache.plc4x.java.spi.buffers.api.WriteBuffer;
+import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
+import org.apache.plc4x.java.api.value.PlcValue;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-
-import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.readReservedField;
-import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.readSimpleField;
-import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.writeReservedField;
-import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.writeSimpleField;
-import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
-import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
+import java.util.Arrays;
 
 public class StaticHelper {
-    private static final String[] DEFAULTCHARSETS = {"ASCII", "UTF-8", "GBK", "GB2312", "BIG5", "GB18030"};
 
-    public static Charset detectCharset(String firstMaTch, byte[] bytes) {
+    private static final String[] DEFAULT_CHARSETS = {"ASCII", "UTF-8", "GBK", "GB2312", "BIG5", "GB18030"};
+    private static final Charset WINDOWS_1252 = Charset.forName("Windows-1252");
 
-        Charset charset = null;
-        if (firstMaTch!=null && !"".equals(firstMaTch))
-        {
-            try {
-                charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
-            }catch (Exception ignored) {
-            }
-            return charset;
+    public static String parseZeroTerminatedString(ReadBuffer io, int stringValueLength) throws BufferException {
+        byte[] bytes = io.readBits(stringValueLength * 8, WithOption.WithName("stringValueLength"));
+        String stringValue = new String(bytes, 0, bytes.length);
+        // Consume the zero terminator
+        byte terminatorByte = io.readSignedByte(8);
+        if (terminatorByte != (byte) 0x00) {
+            throw new BufferException("Expected 0x00, but found " + terminatorByte);
         }
-        for (String charsetName : DEFAULTCHARSETS) {
-            charset = detectCharset(bytes, Charset.forName(charsetName), bytes.length);
-            if (charset != null) {
+        return stringValue;
+    }
+
+    public static void serializeZeroTerminatedString(WriteBuffer io, String data) throws BufferException {
+        io.writeString(data.length() * 8, data, WithOption.WithName("stringValue"), WithOption.WithEncoding("ASCII"));
+        io.writeSignedByte(8, (byte) 0x00, WithOption.WithName("terminator"));
+    }
+
+    public static int lengthZeroTerminatedString(String data) {
+        return (data.length() + 1) * 8;
+    }
+
+    public static String parseAmsString(ReadBuffer io, int stringLength, String encoding, String stringEncoding) throws BufferException {
+        boolean wide = isWideEncoding(encoding);
+        byte[] raw = new byte[wide ? stringLength * 2 : stringLength];
+        for (int i = 0; i < raw.length; i++) {
+            raw[i] = io.readSignedByte(8);
+        }
+        if (wide) {
+            int terminator = io.readUnsignedInt(16);
+            if (terminator != 0x0000) {
+                throw new BufferException("Expected 0x0000, but found " + terminator);
+            }
+        } else {
+            short terminator = io.readUnsignedShort(8);
+            if (terminator != 0x00) {
+                throw new BufferException("Expected 0x00, but found " + terminator);
+            }
+        }
+        byte[] content = wide ? trimWideTerminated(raw) : trimZeroTerminated(raw);
+        return new String(content, resolveReadCharset(stringEncoding, wide, content));
+    }
+
+    public static void serializeAmsString(WriteBuffer io, PlcValue value, int stringLength, String encoding, String stringEncoding) throws BufferException {
+        boolean wide = isWideEncoding(encoding);
+        String stringValue = value.getString();
+        stringValue = stringValue == null ? "" : stringValue;
+        Charset charset = resolveWriteCharset(stringEncoding, wide, stringValue);
+        if (wide && stringValue.length() > stringLength) {
+            stringValue = stringValue.substring(0, stringLength);
+        }
+        byte[] encoded = stringValue.getBytes(charset);
+        int dataLength = wide ? stringLength * 2 : stringLength;
+        for (int i = 0; i < dataLength; i++) {
+            io.writeSignedByte(8, i < encoded.length ? encoded[i] : 0);
+        }
+        if (wide) {
+            io.writeUnsignedInt(16, 0x0000);
+        } else {
+            io.writeUnsignedShort(8, (short) 0x00);
+        }
+    }
+
+    private static byte[] trimZeroTerminated(byte[] bytes) {
+        int length = 0;
+        while (length < bytes.length && bytes[length] != 0) {
+            length++;
+        }
+        return Arrays.copyOf(bytes, length);
+    }
+
+    private static byte[] trimWideTerminated(byte[] bytes) {
+        int length = bytes.length;
+        for (int i = 0; i + 1 < bytes.length; i += 2) {
+            if (bytes[i] == 0 && bytes[i + 1] == 0) {
+                length = i;
                 break;
             }
         }
-
-        return charset;
+        return Arrays.copyOf(bytes, length);
     }
 
-    private static Charset detectCharset(byte[] bytes, Charset charset, int length) {
-        try {
-            BufferedInputStream input = new BufferedInputStream(new ByteArrayInputStream(bytes, 0, length));
+    private static boolean isWideEncoding(String encoding) {
+        return encoding != null && encoding.replace("-", "").equalsIgnoreCase("UTF16");
+    }
 
-            CharsetDecoder decoder = charset.newDecoder();
-            decoder.reset();
-
-            byte[] buffer = new byte[512];
-            boolean identified = false;
-            while (input.read(buffer) != -1 && !identified) {
-                identified = identify(buffer, decoder);
-            }
-
-            input.close();
-
-            if (identified) {
-                return charset;
-            } else {
-                return null;
-            }
-
-        } catch (Exception e) {
-            return null;
+    private static Charset resolveReadCharset(String stringEncoding, boolean wide, byte[] content) {
+        if (stringEncoding == null || stringEncoding.isEmpty() || "AUTO".equalsIgnoreCase(stringEncoding)) {
+            return wide ? StandardCharsets.UTF_16LE : detectCharset(content);
         }
+        return resolveCharset(stringEncoding, wide);
     }
 
-    private static boolean identify(byte[] bytes, CharsetDecoder decoder) {
+    private static Charset resolveWriteCharset(String stringEncoding, boolean wide, String value) {
+        if (stringEncoding == null || stringEncoding.isEmpty() || "AUTO".equalsIgnoreCase(stringEncoding)) {
+            return wide ? StandardCharsets.UTF_16LE : detectWriteCharset(value);
+        }
+        return resolveCharset(stringEncoding, wide);
+    }
+
+    private static Charset resolveCharset(String charsetName, boolean wide) {
+        String normalized = charsetName.replace('_', '-');
+        if ("UTF8".equalsIgnoreCase(normalized) || "UTF-8".equalsIgnoreCase(normalized)) {
+            return StandardCharsets.UTF_8;
+        }
+        if ("UTF16".equalsIgnoreCase(normalized) || "UTF-16".equalsIgnoreCase(normalized)) {
+            return wide ? StandardCharsets.UTF_16LE : StandardCharsets.UTF_16;
+        }
+        if ("UTF16LE".equalsIgnoreCase(normalized) || "UTF-16LE".equalsIgnoreCase(normalized)) {
+            return StandardCharsets.UTF_16LE;
+        }
+        if ("UTF16BE".equalsIgnoreCase(normalized) || "UTF-16BE".equalsIgnoreCase(normalized)) {
+            return StandardCharsets.UTF_16BE;
+        }
+        if ("WINDOWS1252".equalsIgnoreCase(normalized) || "WINDOWS-1252".equalsIgnoreCase(normalized)) {
+            return WINDOWS_1252;
+        }
+        return Charset.forName(normalized);
+    }
+
+    private static Charset detectCharset(byte[] bytes) {
+        for (String charsetName : DEFAULT_CHARSETS) {
+            Charset charset = Charset.forName(charsetName);
+            if (canDecode(bytes, charset)) {
+                return charset;
+            }
+        }
+        return WINDOWS_1252;
+    }
+
+    private static boolean canDecode(byte[] bytes, Charset charset) {
         try {
-            decoder.decode(ByteBuffer.wrap(bytes));
+            charset.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT)
+                .decode(ByteBuffer.wrap(bytes));
+            return true;
         } catch (CharacterCodingException e) {
             return false;
         }
-        return true;
-    }
-    public static Charset getEncoding(String firstMaTch, String str) {
-        if (str == null || str.trim().isEmpty()) {
-            return null;
-        }
-        Charset charset = null;
-        if (firstMaTch!=null && !firstMaTch.isEmpty())
-        {
-            try {
-                charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
-            }catch (Exception ignored) {
-            }
-            return charset;
-        }
-        for (String encode : DEFAULTCHARSETS) {
-            try {
-                Charset charset1 = Charset.forName(encode);
-                if (str.equals(new String(str.getBytes(charset1), charset1))) {
-                    return charset1;
-                }
-            } catch (Exception er) {
-            }
-        }
-        return null;
     }
 
-    public static String parseAmsString(ReadBuffer readBuffer, int stringLength, String encoding, String stringEncoding) {
-        stringLength = Math.min(stringLength, 256);
-        if ("AUTO".equalsIgnoreCase(stringEncoding))
-        {
-            stringEncoding = null;
+    private static Charset detectWriteCharset(String value) {
+        for (String charsetName : DEFAULT_CHARSETS) {
+            Charset charset = Charset.forName(charsetName);
+            if (value.equals(new String(value.getBytes(charset), charset))) {
+                return charset;
+            }
         }
-        try {
-            if ("UTF-8".equalsIgnoreCase(encoding)) {
-                String value =
-                    readSimpleField(
-                        "value",
-                        readString(readBuffer, (stringLength) * (8)),
-                        WithOption.WithEncoding("Windows-1252"));
-                    readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
-                return value;
-            } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-                String value =
-                    readSimpleField(
-                        "value",
-                        readString(readBuffer, ((stringLength) * (8)) * (2)),
-                        WithOption.WithEncoding("UTF-16LE"));
-                    readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
-                return value;
-            } else {
-                throw new PlcRuntimeException("Unsupported string encoding " + encoding);
-            }
-        } catch (ParseException e) {
-            throw new PlcRuntimeException("Error parsing string", e);
-        }
-    }
-
-    public static void serializeAmsString(WriteBuffer io, PlcValue value, int stringLength, String encoding, String stringEncoding) {
-        stringLength = Math.min(stringLength, 256);
-        String valueString = (String) value.getObject();
-        valueString = valueString == null ? "" : valueString;
-        if ("AUTO".equalsIgnoreCase(stringEncoding))
-        {
-            stringEncoding = null;
-        }
-        Charset charsetTemp = getEncoding(stringEncoding,valueString);
-        if ("UTF-8".equalsIgnoreCase(encoding)) {
-            if (charsetTemp == null) {
-                charsetTemp = StandardCharsets.UTF_8;
-            }
-            try {
-                writeSimpleField(
-                    "value",
-                    valueString,
-                    writeString(io, (stringLength) * (8)),
-                    WithOption.WithEncoding("Windows-1252"));
-                writeReservedField("reserved", (short) 0x00, writeUnsignedShort(io, 8));
-            }
-            catch (SerializationException ex) {
-                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-            if (charsetTemp == null || charsetTemp == StandardCharsets.UTF_8 || charsetTemp == StandardCharsets.UTF_16) {
-                charsetTemp = StandardCharsets.UTF_16LE;
-            }
-            try {
-                writeSimpleField(
-                    "value",
-                    valueString,
-                    writeString(io, ((stringLength) * (8)) * (2)),
-                    WithOption.WithEncoding("UTF-16LE"));
-
-                // Reserved Field (reserved)
-                writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(io, 16));
-            }
-            catch (SerializationException ex) {
-                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            throw new PlcRuntimeException("Unsupported string encoding " + encoding);
-        }
+        return WINDOWS_1252;
     }
 
 }

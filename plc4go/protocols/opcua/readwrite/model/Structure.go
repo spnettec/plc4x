@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -88,7 +89,7 @@ func (b *_StructureBuilder) WithMandatoryFields() StructureBuilder {
 }
 
 func (b *_StructureBuilder) Build() (Structure, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Structure.deepCopy(), nil
@@ -134,7 +135,7 @@ func CastStructure(structType any) Structure {
 	return nil
 }
 
-func (m *_Structure) GetTypeName() string {
+func (m *_Structure) GetPlx4xTypeName() string {
 	return "Structure"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -198,7 +199,7 @@ func (b *_BACnetTagPayloadSignedIntegerBuilder) WithOptionalValueInt64(valueInt6
 }
 
 func (b *_BACnetTagPayloadSignedIntegerBuilder) Build() (BACnetTagPayloadSignedInteger, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetTagPayloadSignedInteger.deepCopy(), nil
@@ -509,7 +510,7 @@ func CastBACnetTagPayloadSignedInteger(structType any) BACnetTagPayloadSignedInt
 	return nil
 }
 
-func (m *_BACnetTagPayloadSignedInteger) GetTypeName() string {
+func (m *_BACnetTagPayloadSignedInteger) GetPlx4xTypeName() string {
 	return "BACnetTagPayloadSignedInteger"
 }
 

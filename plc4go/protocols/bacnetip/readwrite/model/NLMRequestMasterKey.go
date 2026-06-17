@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_NLMRequestMasterKeyBuilder) WithEncryptionAndSignatureAlgorithms(encry
 }
 
 func (b *_NLMRequestMasterKeyBuilder) Build() (NLMRequestMasterKey, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMRequestMasterKey.deepCopy(), nil
@@ -221,7 +222,7 @@ func CastNLMRequestMasterKey(structType any) NLMRequestMasterKey {
 	return nil
 }
 
-func (m *_NLMRequestMasterKey) GetTypeName() string {
+func (m *_NLMRequestMasterKey) GetPlx4xTypeName() string {
 	return "NLMRequestMasterKey"
 }
 

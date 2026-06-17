@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_ApduDataExtLinkWriteBuilder) WithMandatoryFields() ApduDataExtLinkWrit
 }
 
 func (b *_ApduDataExtLinkWriteBuilder) Build() (ApduDataExtLinkWrite, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtLinkWrite.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastApduDataExtLinkWrite(structType any) ApduDataExtLinkWrite {
 	return nil
 }
 
-func (m *_ApduDataExtLinkWrite) GetTypeName() string {
+func (m *_ApduDataExtLinkWrite) GetPlx4xTypeName() string {
 	return "ApduDataExtLinkWrite"
 }
 

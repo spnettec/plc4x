@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SysexCommandSysexNonRealtimeBuilder) WithMandatoryFields() SysexComman
 }
 
 func (b *_SysexCommandSysexNonRealtimeBuilder) Build() (SysexCommandSysexNonRealtime, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SysexCommandSysexNonRealtime.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastSysexCommandSysexNonRealtime(structType any) SysexCommandSysexNonRealti
 	return nil
 }
 
-func (m *_SysexCommandSysexNonRealtime) GetTypeName() string {
+func (m *_SysexCommandSysexNonRealtime) GetPlx4xTypeName() string {
 	return "SysexCommandSysexNonRealtime"
 }
 

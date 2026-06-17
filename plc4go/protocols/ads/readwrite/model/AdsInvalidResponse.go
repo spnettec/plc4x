@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -53,7 +54,7 @@ var _ AdsInvalidResponse = (*_AdsInvalidResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsInvalidResponse)(nil)
 
 // NewAdsInvalidResponse factory function for _AdsInvalidResponse
-func NewAdsInvalidResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsInvalidResponse {
+func NewAdsInvalidResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32) *_AdsInvalidResponse {
 	_result := &_AdsInvalidResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
@@ -104,7 +105,7 @@ func (b *_AdsInvalidResponseBuilder) WithMandatoryFields() AdsInvalidResponseBui
 }
 
 func (b *_AdsInvalidResponseBuilder) Build() (AdsInvalidResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsInvalidResponse.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastAdsInvalidResponse(structType any) AdsInvalidResponse {
 	return nil
 }
 
-func (m *_AdsInvalidResponse) GetTypeName() string {
+func (m *_AdsInvalidResponse) GetPlx4xTypeName() string {
 	return "AdsInvalidResponse"
 }
 

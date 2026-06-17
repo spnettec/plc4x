@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataCredentialsInZoneBuilder) WithCredentialsInZone(c
 }
 
 func (b *_BACnetConstructedDataCredentialsInZoneBuilder) Build() (BACnetConstructedDataCredentialsInZone, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataCredentialsInZone.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataCredentialsInZone(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataCredentialsInZone) GetTypeName() string {
+func (m *_BACnetConstructedDataCredentialsInZone) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataCredentialsInZone"
 }
 

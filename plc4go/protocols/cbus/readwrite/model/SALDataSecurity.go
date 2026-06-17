@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -135,7 +138,7 @@ func (b *_SALDataSecurityBuilder) Build() (SALDataSecurity, error) {
 	if b.SecurityData == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'securityData' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SALDataSecurity.deepCopy(), nil
@@ -224,7 +227,7 @@ func CastSALDataSecurity(structType any) SALDataSecurity {
 	return nil
 }
 
-func (m *_SALDataSecurity) GetTypeName() string {
+func (m *_SALDataSecurity) GetPlx4xTypeName() string {
 	return "SALDataSecurity"
 }
 
@@ -252,7 +255,7 @@ func (m *_SALDataSecurity) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	securityData, err := ReadSimpleField[SecurityData](ctx, "securityData", ReadComplex[SecurityData](SecurityDataParseWithBuffer, readBuffer))
+	securityData, err := ReadSimpleField[SecurityData](ctx, "securityData", ReadComplex[SecurityData](SecurityDataParseWithBuffer, readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityData' field"))
 	}
@@ -266,7 +269,7 @@ func (m *_SALDataSecurity) parse(ctx context.Context, readBuffer utils.ReadBuffe
 }
 
 func (m *_SALDataSecurity) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -283,7 +286,7 @@ func (m *_SALDataSecurity) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for SALDataSecurity")
 		}
 
-		if err := WriteSimpleField[SecurityData](ctx, "securityData", m.GetSecurityData(), WriteComplex[SecurityData](writeBuffer)); err != nil {
+		if err := WriteSimpleField[SecurityData](ctx, "securityData", m.GetSecurityData(), WriteComplex[SecurityData](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityData' field")
 		}
 

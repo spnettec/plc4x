@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SecurityDataStatus2RequestBuilder) WithMandatoryFields() SecurityDataS
 }
 
 func (b *_SecurityDataStatus2RequestBuilder) Build() (SecurityDataStatus2Request, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataStatus2Request.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastSecurityDataStatus2Request(structType any) SecurityDataStatus2Request {
 	return nil
 }
 
-func (m *_SecurityDataStatus2Request) GetTypeName() string {
+func (m *_SecurityDataStatus2Request) GetPlx4xTypeName() string {
 	return "SecurityDataStatus2Request"
 }
 

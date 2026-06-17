@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -206,7 +207,7 @@ func (b *_ModbusPDUBuilder) WithMandatoryFields() ModbusPDUBuilder {
 }
 
 func (b *_ModbusPDUBuilder) PartialBuild() (ModbusPDUContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDU.deepCopy(), nil
@@ -664,7 +665,7 @@ func CastModbusPDU(structType any) ModbusPDU {
 	return nil
 }
 
-func (m *_ModbusPDU) GetTypeName() string {
+func (m *_ModbusPDU) GetPlx4xTypeName() string {
 	return "ModbusPDU"
 }
 

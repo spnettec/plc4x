@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataArchiveBuilder) Build() (BACnetConstructedDataArc
 	if b.Archive == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'archive' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataArchive.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataArchive(structType any) BACnetConstructedDataArchi
 	return nil
 }
 
-func (m *_BACnetConstructedDataArchive) GetTypeName() string {
+func (m *_BACnetConstructedDataArchive) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataArchive"
 }
 

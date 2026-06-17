@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_NLMEstablishConnectionToNetworkBuilder) WithTerminationTime(terminatio
 }
 
 func (b *_NLMEstablishConnectionToNetworkBuilder) Build() (NLMEstablishConnectionToNetwork, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NLMEstablishConnectionToNetwork.deepCopy(), nil
@@ -221,7 +222,7 @@ func CastNLMEstablishConnectionToNetwork(structType any) NLMEstablishConnectionT
 	return nil
 }
 
-func (m *_NLMEstablishConnectionToNetwork) GetTypeName() string {
+func (m *_NLMEstablishConnectionToNetwork) GetPlx4xTypeName() string {
 	return "NLMEstablishConnectionToNetwork"
 }
 

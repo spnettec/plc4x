@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_ClassIDBuilder) WithSegmentClass(segmentClass uint8) ClassIDBuilder {
 }
 
 func (b *_ClassIDBuilder) Build() (ClassID, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ClassID.deepCopy(), nil
@@ -221,7 +222,7 @@ func CastClassID(structType any) ClassID {
 	return nil
 }
 
-func (m *_ClassID) GetTypeName() string {
+func (m *_ClassID) GetPlx4xTypeName() string {
 	return "ClassID"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_MPropWriteReqBuilder) WithMandatoryFields() MPropWriteReqBuilder {
 }
 
 func (b *_MPropWriteReqBuilder) Build() (MPropWriteReq, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MPropWriteReq.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastMPropWriteReq(structType any) MPropWriteReq {
 	return nil
 }
 
-func (m *_MPropWriteReq) GetTypeName() string {
+func (m *_MPropWriteReq) GetPlx4xTypeName() string {
 	return "MPropWriteReq"
 }
 

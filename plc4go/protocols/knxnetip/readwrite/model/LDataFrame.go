@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -184,7 +185,7 @@ func (b *_LDataFrameBuilder) WithErrorFlag(errorFlag bool) LDataFrameBuilder {
 }
 
 func (b *_LDataFrameBuilder) PartialBuild() (LDataFrameContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._LDataFrame.deepCopy(), nil
@@ -312,7 +313,7 @@ func CastLDataFrame(structType any) LDataFrame {
 	return nil
 }
 
-func (m *_LDataFrame) GetTypeName() string {
+func (m *_LDataFrame) GetPlx4xTypeName() string {
 	return "LDataFrame"
 }
 

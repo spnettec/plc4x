@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -138,7 +139,7 @@ func (b *_ServiceIdBuilder) WithMandatoryFields() ServiceIdBuilder {
 }
 
 func (b *_ServiceIdBuilder) PartialBuild() (ServiceIdContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ServiceId.deepCopy(), nil
@@ -276,7 +277,7 @@ func CastServiceId(structType any) ServiceId {
 	return nil
 }
 
-func (m *_ServiceId) GetTypeName() string {
+func (m *_ServiceId) GetPlx4xTypeName() string {
 	return "ServiceId"
 }
 

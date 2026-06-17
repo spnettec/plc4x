@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -223,7 +224,7 @@ func (b *_BACnetNotificationParametersChangeOfDiscreteValueBuilder) Build() (BAC
 	if b.InnerClosingTag == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'innerClosingTag' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetNotificationParametersChangeOfDiscreteValue.deepCopy(), nil
@@ -320,7 +321,7 @@ func CastBACnetNotificationParametersChangeOfDiscreteValue(structType any) BACne
 	return nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValue) GetTypeName() string {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValue) GetPlx4xTypeName() string {
 	return "BACnetNotificationParametersChangeOfDiscreteValue"
 }
 

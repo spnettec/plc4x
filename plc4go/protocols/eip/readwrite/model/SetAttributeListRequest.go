@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SetAttributeListRequestBuilder) WithMandatoryFields() SetAttributeList
 }
 
 func (b *_SetAttributeListRequestBuilder) Build() (SetAttributeListRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SetAttributeListRequest.deepCopy(), nil
@@ -187,7 +188,7 @@ func CastSetAttributeListRequest(structType any) SetAttributeListRequest {
 	return nil
 }
 
-func (m *_SetAttributeListRequest) GetTypeName() string {
+func (m *_SetAttributeListRequest) GetPlx4xTypeName() string {
 	return "SetAttributeListRequest"
 }
 

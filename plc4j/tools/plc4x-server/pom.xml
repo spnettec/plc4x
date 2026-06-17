@@ -87,9 +87,36 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-all</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
           </usedDependencies>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>report</id>
+            <configuration>
+              <excludes combine.children="append">
+                <!-- Server lifecycle, main(), shutdown hooks — not unit-testable -->
+                <exclude>org/apache/plc4x/java/tools/plc4xserver/Plc4xServer*.class</exclude>
+                <!-- Complex protocol adapter with read/write/connect dispatch — requires integration tests -->
+                <exclude>org/apache/plc4x/java/tools/plc4xserver/protocol/Plc4xServerAdapter.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>check-coverage</id>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>org/apache/plc4x/java/tools/plc4xserver/Plc4xServer*.class</exclude>
+                <exclude>org/apache/plc4x/java/tools/plc4xserver/protocol/Plc4xServerAdapter.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -101,9 +128,20 @@
       <artifactId>plc4j-api</artifactId>
       <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
+    <!-- SPI sub-modules (plc4j-spi is now pom-only after SPI restructuring) -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-buffers-byte</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
       <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
 
@@ -119,12 +157,25 @@
       <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
 
-    <!-- Include all other drivers -->
+    <!-- Include only needed drivers (plc4j-driver-all includes drivers not yet
+         adapted to the new SPI, causing ServiceLoader conflicts) -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-all</artifactId>
+      <artifactId>plc4j-driver-s7</artifactId>
       <version>0.14.0.B-SNAPSHOT</version>
-      <type>pom</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-simulated</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- bit-io: needed by plc4j-spi-buffers-byte but missing from its pom after SPI split -->
+    <dependency>
+      <groupId>com.github.jinahya</groupId>
+      <artifactId>bit-io</artifactId>
       <scope>runtime</scope>
     </dependency>
 

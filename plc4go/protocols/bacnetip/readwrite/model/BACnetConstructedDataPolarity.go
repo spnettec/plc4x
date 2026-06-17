@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataPolarityBuilder) Build() (BACnetConstructedDataPo
 	if b.Polarity == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'polarity' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataPolarity.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataPolarity(structType any) BACnetConstructedDataPola
 	return nil
 }
 
-func (m *_BACnetConstructedDataPolarity) GetTypeName() string {
+func (m *_BACnetConstructedDataPolarity) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPolarity"
 }
 

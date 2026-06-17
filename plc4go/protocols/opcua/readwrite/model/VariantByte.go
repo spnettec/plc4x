@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_VariantByteBuilder) WithValue(value ...uint8) VariantByteBuilder {
 }
 
 func (b *_VariantByteBuilder) Build() (VariantByte, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._VariantByte.deepCopy(), nil
@@ -221,7 +222,7 @@ func CastVariantByte(structType any) VariantByte {
 	return nil
 }
 
-func (m *_VariantByte) GetTypeName() string {
+func (m *_VariantByte) GetPlx4xTypeName() string {
 	return "VariantByte"
 }
 

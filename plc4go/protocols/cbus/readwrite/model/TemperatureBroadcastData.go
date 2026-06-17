@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -124,7 +125,7 @@ func (b *_TemperatureBroadcastDataBuilder) WithTemperatureByte(temperatureByte b
 }
 
 func (b *_TemperatureBroadcastDataBuilder) Build() (TemperatureBroadcastData, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TemperatureBroadcastData.deepCopy(), nil
@@ -213,7 +214,7 @@ func CastTemperatureBroadcastData(structType any) TemperatureBroadcastData {
 	return nil
 }
 
-func (m *_TemperatureBroadcastData) GetTypeName() string {
+func (m *_TemperatureBroadcastData) GetPlx4xTypeName() string {
 	return "TemperatureBroadcastData"
 }
 

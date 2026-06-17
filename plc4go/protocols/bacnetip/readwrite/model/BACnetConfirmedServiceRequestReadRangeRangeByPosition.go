@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -164,7 +165,7 @@ func (b *_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder) Build() 
 	if b.Count == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'count' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConfirmedServiceRequestReadRangeRangeByPosition.deepCopy(), nil
@@ -253,7 +254,7 @@ func CastBACnetConfirmedServiceRequestReadRangeRangeByPosition(structType any) B
 	return nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetTypeName() string {
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetPlx4xTypeName() string {
 	return "BACnetConfirmedServiceRequestReadRangeRangeByPosition"
 }
 

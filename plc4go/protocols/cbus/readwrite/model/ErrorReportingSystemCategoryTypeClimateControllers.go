@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) WithCategor
 }
 
 func (b *_ErrorReportingSystemCategoryTypeClimateControllersBuilder) Build() (ErrorReportingSystemCategoryTypeClimateControllers, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ErrorReportingSystemCategoryTypeClimateControllers.deepCopy(), nil
@@ -206,7 +207,7 @@ func CastErrorReportingSystemCategoryTypeClimateControllers(structType any) Erro
 	return nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetTypeName() string {
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetPlx4xTypeName() string {
 	return "ErrorReportingSystemCategoryTypeClimateControllers"
 }
 

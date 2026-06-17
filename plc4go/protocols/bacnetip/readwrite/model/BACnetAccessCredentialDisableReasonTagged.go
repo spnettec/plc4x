@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -140,7 +141,7 @@ func (b *_BACnetAccessCredentialDisableReasonTaggedBuilder) Build() (BACnetAcces
 	if b.Header == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'header' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetAccessCredentialDisableReasonTagged.deepCopy(), nil
@@ -223,7 +224,7 @@ func CastBACnetAccessCredentialDisableReasonTagged(structType any) BACnetAccessC
 	return nil
 }
 
-func (m *_BACnetAccessCredentialDisableReasonTagged) GetTypeName() string {
+func (m *_BACnetAccessCredentialDisableReasonTagged) GetPlx4xTypeName() string {
 	return "BACnetAccessCredentialDisableReasonTagged"
 }
 

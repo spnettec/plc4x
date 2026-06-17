@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataPassengerAlarmBuilder) Build() (BACnetConstructed
 	if b.PassengerAlarm == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'passengerAlarm' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataPassengerAlarm.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataPassengerAlarm(structType any) BACnetConstructedDa
 	return nil
 }
 
-func (m *_BACnetConstructedDataPassengerAlarm) GetTypeName() string {
+func (m *_BACnetConstructedDataPassengerAlarm) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataPassengerAlarm"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) WithQuantity(qu
 }
 
 func (b *_ModbusPDUWriteMultipleHoldingRegistersResponseBuilder) Build() (ModbusPDUWriteMultipleHoldingRegistersResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUWriteMultipleHoldingRegistersResponse.deepCopy(), nil
@@ -229,7 +230,7 @@ func CastModbusPDUWriteMultipleHoldingRegistersResponse(structType any) ModbusPD
 	return nil
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) GetTypeName() string {
+func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUWriteMultipleHoldingRegistersResponse"
 }
 

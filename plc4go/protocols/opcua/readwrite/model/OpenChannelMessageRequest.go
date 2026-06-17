@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -204,7 +205,7 @@ func (b *_OpenChannelMessageRequestBuilder) Build() (OpenChannelMessageRequest, 
 	if b.ReceiverCertificateThumbprint == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'receiverCertificateThumbprint' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpenChannelMessageRequest.deepCopy(), nil
@@ -305,7 +306,7 @@ func CastOpenChannelMessageRequest(structType any) OpenChannelMessageRequest {
 	return nil
 }
 
-func (m *_OpenChannelMessageRequest) GetTypeName() string {
+func (m *_OpenChannelMessageRequest) GetPlx4xTypeName() string {
 	return "OpenChannelMessageRequest"
 }
 

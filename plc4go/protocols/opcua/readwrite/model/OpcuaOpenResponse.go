@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -164,7 +165,7 @@ func (b *_OpcuaOpenResponseBuilder) Build() (OpcuaOpenResponse, error) {
 	if b.Message == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'message' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._OpcuaOpenResponse.deepCopy(), nil
@@ -261,7 +262,7 @@ func CastOpcuaOpenResponse(structType any) OpcuaOpenResponse {
 	return nil
 }
 
-func (m *_OpcuaOpenResponse) GetTypeName() string {
+func (m *_OpcuaOpenResponse) GetPlx4xTypeName() string {
 	return "OpcuaOpenResponse"
 }
 

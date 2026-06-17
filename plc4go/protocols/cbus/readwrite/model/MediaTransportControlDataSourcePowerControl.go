@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -121,7 +122,7 @@ func (b *_MediaTransportControlDataSourcePowerControlBuilder) WithState(state by
 }
 
 func (b *_MediaTransportControlDataSourcePowerControlBuilder) Build() (MediaTransportControlDataSourcePowerControl, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MediaTransportControlDataSourcePowerControl.deepCopy(), nil
@@ -227,7 +228,7 @@ func CastMediaTransportControlDataSourcePowerControl(structType any) MediaTransp
 	return nil
 }
 
-func (m *_MediaTransportControlDataSourcePowerControl) GetTypeName() string {
+func (m *_MediaTransportControlDataSourcePowerControl) GetPlx4xTypeName() string {
 	return "MediaTransportControlDataSourcePowerControl"
 }
 

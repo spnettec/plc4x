@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_BACnetChannelValueNullBuilder) Build() (BACnetChannelValueNull, error)
 	if b.NullValue == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'nullValue' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetChannelValueNull.deepCopy(), nil
@@ -220,7 +221,7 @@ func CastBACnetChannelValueNull(structType any) BACnetChannelValueNull {
 	return nil
 }
 
-func (m *_BACnetChannelValueNull) GetTypeName() string {
+func (m *_BACnetChannelValueNull) GetPlx4xTypeName() string {
 	return "BACnetChannelValueNull"
 }
 

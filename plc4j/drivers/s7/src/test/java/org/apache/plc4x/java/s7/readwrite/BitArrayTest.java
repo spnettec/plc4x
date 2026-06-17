@@ -26,12 +26,12 @@ import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Verify BIT array (%DB1:2:BIT[10]) write → read consistency,
+ * Verify BIT array (%DB1:2:BOOL[10]) write → read consistency,
  * and that read-modify-write preserves unused bits in the last byte.
  */
 public class BitArrayTest {
 
-    private static final String TAG = "%DB1:2:BIT[10]";
+    private static final String TAG = "%DB1:2:BOOL[10]";
     private static final String RAW_TAG = "%DB1:2:BYTE[2]";
     private static final int BIT_COUNT = 10;
 

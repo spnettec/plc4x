@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -168,7 +169,7 @@ func (b *_BACnetLandingCallStatusBuilder) Build() (BACnetLandingCallStatus, erro
 	if b.Command == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'command' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetLandingCallStatus.deepCopy(), nil
@@ -236,7 +237,7 @@ func CastBACnetLandingCallStatus(structType any) BACnetLandingCallStatus {
 	return nil
 }
 
-func (m *_BACnetLandingCallStatus) GetTypeName() string {
+func (m *_BACnetLandingCallStatus) GetPlx4xTypeName() string {
 	return "BACnetLandingCallStatus"
 }
 

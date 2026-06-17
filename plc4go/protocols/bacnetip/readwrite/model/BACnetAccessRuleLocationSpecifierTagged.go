@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) Build() (BACnetAccessR
 	if b.Header == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'header' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetAccessRuleLocationSpecifierTagged.deepCopy(), nil
@@ -192,7 +193,7 @@ func CastBACnetAccessRuleLocationSpecifierTagged(structType any) BACnetAccessRul
 	return nil
 }
 
-func (m *_BACnetAccessRuleLocationSpecifierTagged) GetTypeName() string {
+func (m *_BACnetAccessRuleLocationSpecifierTagged) GetPlx4xTypeName() string {
 	return "BACnetAccessRuleLocationSpecifierTagged"
 }
 

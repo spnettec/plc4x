@@ -16,20 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.simulated.configuration;
 
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.config.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.config.annotations.defaults.StringDefaultValue;
 
-public class SimulatedConfiguration implements PlcConnectionConfiguration {
+/**
+ * Simulated driver configuration.
+ * Optional H2 MVStore persistence: {@code simulated://deviceName?file=/path/to/store&data=mapName}
+ */
+public class SimulatedConfiguration implements Configuration {
+
     @ConfigurationParameter("file")
     @StringDefaultValue("")
     private String file = "";
+
     @ConfigurationParameter("data")
     @StringDefaultValue("data")
-    private String data;
+    private String data = "data";
 
     public String getFile() {
         return file;

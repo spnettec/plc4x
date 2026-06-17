@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_BACnetConstructedDataMultiStateOutputAllBuilder) WithMandatoryFields()
 }
 
 func (b *_BACnetConstructedDataMultiStateOutputAllBuilder) Build() (BACnetConstructedDataMultiStateOutputAll, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataMultiStateOutputAll.deepCopy(), nil
@@ -183,7 +184,7 @@ func CastBACnetConstructedDataMultiStateOutputAll(structType any) BACnetConstruc
 	return nil
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputAll) GetTypeName() string {
+func (m *_BACnetConstructedDataMultiStateOutputAll) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataMultiStateOutputAll"
 }
 

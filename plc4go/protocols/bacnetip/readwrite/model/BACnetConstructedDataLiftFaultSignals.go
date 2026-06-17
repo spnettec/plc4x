@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataLiftFaultSignalsBuilder) WithFaultSignals(faultSi
 }
 
 func (b *_BACnetConstructedDataLiftFaultSignalsBuilder) Build() (BACnetConstructedDataLiftFaultSignals, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataLiftFaultSignals.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataLiftFaultSignals(structType any) BACnetConstructed
 	return nil
 }
 
-func (m *_BACnetConstructedDataLiftFaultSignals) GetTypeName() string {
+func (m *_BACnetConstructedDataLiftFaultSignals) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataLiftFaultSignals"
 }
 

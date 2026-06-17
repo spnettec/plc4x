@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -153,7 +154,7 @@ func (b *_CipConnectedResponseBuilder) WithOptionalDataBuilder(builderSupplier f
 }
 
 func (b *_CipConnectedResponseBuilder) Build() (CipConnectedResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipConnectedResponse.deepCopy(), nil
@@ -258,7 +259,7 @@ func CastCipConnectedResponse(structType any) CipConnectedResponse {
 	return nil
 }
 
-func (m *_CipConnectedResponse) GetTypeName() string {
+func (m *_CipConnectedResponse) GetPlx4xTypeName() string {
 	return "CipConnectedResponse"
 }
 

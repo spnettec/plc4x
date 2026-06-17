@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -129,7 +130,7 @@ func (b *_SecurityDataArmSystemBuilder) WithArmMode(armMode byte) SecurityDataAr
 }
 
 func (b *_SecurityDataArmSystemBuilder) Build() (SecurityDataArmSystem, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataArmSystem.deepCopy(), nil
@@ -259,7 +260,7 @@ func CastSecurityDataArmSystem(structType any) SecurityDataArmSystem {
 	return nil
 }
 
-func (m *_SecurityDataArmSystem) GetTypeName() string {
+func (m *_SecurityDataArmSystem) GetPlx4xTypeName() string {
 	return "SecurityDataArmSystem"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataOperationDirectionBuilder) Build() (BACnetConstru
 	if b.OperationDirection == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'operationDirection' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataOperationDirection.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataOperationDirection(structType any) BACnetConstruct
 	return nil
 }
 
-func (m *_BACnetConstructedDataOperationDirection) GetTypeName() string {
+func (m *_BACnetConstructedDataOperationDirection) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataOperationDirection"
 }
 

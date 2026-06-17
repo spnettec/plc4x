@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) WithActive
 }
 
 func (b *_BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder) Build() (BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataActiveCOVMultipleSubscriptions.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetConstructedDataActiveCOVMultipleSubscriptions(structType any) BAC
 	return nil
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetTypeName() string {
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataActiveCOVMultipleSubscriptions"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -140,7 +141,7 @@ func (b *_BACnetBinaryLightingPVTaggedBuilder) Build() (BACnetBinaryLightingPVTa
 	if b.Header == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'header' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetBinaryLightingPVTagged.deepCopy(), nil
@@ -223,7 +224,7 @@ func CastBACnetBinaryLightingPVTagged(structType any) BACnetBinaryLightingPVTagg
 	return nil
 }
 
-func (m *_BACnetBinaryLightingPVTagged) GetTypeName() string {
+func (m *_BACnetBinaryLightingPVTagged) GetPlx4xTypeName() string {
 	return "BACnetBinaryLightingPVTagged"
 }
 

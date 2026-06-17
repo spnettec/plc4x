@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_ReaderGroupTransportDataTypeBuilder) WithMandatoryFields() ReaderGroup
 }
 
 func (b *_ReaderGroupTransportDataTypeBuilder) Build() (ReaderGroupTransportDataType, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ReaderGroupTransportDataType.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastReaderGroupTransportDataType(structType any) ReaderGroupTransportDataTy
 	return nil
 }
 
-func (m *_ReaderGroupTransportDataType) GetTypeName() string {
+func (m *_ReaderGroupTransportDataType) GetPlx4xTypeName() string {
 	return "ReaderGroupTransportDataType"
 }
 

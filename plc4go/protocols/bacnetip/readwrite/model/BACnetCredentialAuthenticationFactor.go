@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -146,7 +147,7 @@ func (b *_BACnetCredentialAuthenticationFactorBuilder) Build() (BACnetCredential
 	if b.AuthenticationFactor == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'authenticationFactor' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetCredentialAuthenticationFactor.deepCopy(), nil
@@ -210,7 +211,7 @@ func CastBACnetCredentialAuthenticationFactor(structType any) BACnetCredentialAu
 	return nil
 }
 
-func (m *_BACnetCredentialAuthenticationFactor) GetTypeName() string {
+func (m *_BACnetCredentialAuthenticationFactor) GetPlx4xTypeName() string {
 	return "BACnetCredentialAuthenticationFactor"
 }
 

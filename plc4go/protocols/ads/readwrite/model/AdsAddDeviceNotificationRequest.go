@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -83,7 +84,7 @@ var _ AdsAddDeviceNotificationRequest = (*_AdsAddDeviceNotificationRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsAddDeviceNotificationRequest)(nil)
 
 // NewAdsAddDeviceNotificationRequest factory function for _AdsAddDeviceNotificationRequest
-func NewAdsAddDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, length uint32, transmissionMode AdsTransMode, maxDelayInMs uint32, cycleTimeInMs uint32) *_AdsAddDeviceNotificationRequest {
+func NewAdsAddDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, indexGroup uint32, indexOffset uint32, length uint32, transmissionMode AdsTransMode, maxDelayInMs uint32, cycleTimeInMs uint32) *_AdsAddDeviceNotificationRequest {
 	_result := &_AdsAddDeviceNotificationRequest{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		IndexGroup:        indexGroup,
@@ -182,7 +183,7 @@ func (b *_AdsAddDeviceNotificationRequestBuilder) WithCycleTimeInMs(cycleTimeInM
 }
 
 func (b *_AdsAddDeviceNotificationRequestBuilder) Build() (AdsAddDeviceNotificationRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsAddDeviceNotificationRequest.deepCopy(), nil
@@ -295,7 +296,7 @@ func CastAdsAddDeviceNotificationRequest(structType any) AdsAddDeviceNotificatio
 	return nil
 }
 
-func (m *_AdsAddDeviceNotificationRequest) GetTypeName() string {
+func (m *_AdsAddDeviceNotificationRequest) GetPlx4xTypeName() string {
 	return "AdsAddDeviceNotificationRequest"
 }
 

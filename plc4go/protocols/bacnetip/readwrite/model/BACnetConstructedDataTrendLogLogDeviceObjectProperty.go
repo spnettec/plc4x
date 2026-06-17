@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder) Build() (
 	if b.LogDeviceObjectProperty == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'logDeviceObjectProperty' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataTrendLogLogDeviceObjectProperty.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataTrendLogLogDeviceObjectProperty(structType any) BA
 	return nil
 }
 
-func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetTypeName() string {
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataTrendLogLogDeviceObjectProperty"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -132,7 +133,7 @@ func (b *_NodeIdGuidBuilder) WithId(id ...byte) NodeIdGuidBuilder {
 }
 
 func (b *_NodeIdGuidBuilder) Build() (NodeIdGuid, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._NodeIdGuid.deepCopy(), nil
@@ -246,7 +247,7 @@ func CastNodeIdGuid(structType any) NodeIdGuid {
 	return nil
 }
 
-func (m *_NodeIdGuid) GetTypeName() string {
+func (m *_NodeIdGuid) GetPlx4xTypeName() string {
 	return "NodeIdGuid"
 }
 

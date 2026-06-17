@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -120,7 +121,7 @@ func (b *_CipConnectedRequestBuilder) WithPathSegments(pathSegments ...byte) Cip
 }
 
 func (b *_CipConnectedRequestBuilder) Build() (CipConnectedRequest, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._CipConnectedRequest.deepCopy(), nil
@@ -217,7 +218,7 @@ func CastCipConnectedRequest(structType any) CipConnectedRequest {
 	return nil
 }
 
-func (m *_CipConnectedRequest) GetTypeName() string {
+func (m *_CipConnectedRequest) GetPlx4xTypeName() string {
 	return "CipConnectedRequest"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -117,7 +118,7 @@ func (b *_ModbusPDUReadCoilsResponseBuilder) WithValue(value ...byte) ModbusPDUR
 }
 
 func (b *_ModbusPDUReadCoilsResponseBuilder) Build() (ModbusPDUReadCoilsResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ModbusPDUReadCoilsResponse.deepCopy(), nil
@@ -214,7 +215,7 @@ func CastModbusPDUReadCoilsResponse(structType any) ModbusPDUReadCoilsResponse {
 	return nil
 }
 
-func (m *_ModbusPDUReadCoilsResponse) GetTypeName() string {
+func (m *_ModbusPDUReadCoilsResponse) GetPlx4xTypeName() string {
 	return "ModbusPDUReadCoilsResponse"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -222,7 +223,7 @@ func (b *_BACnetUnconfirmedServiceRequestIAmBuilder) Build() (BACnetUnconfirmedS
 	if b.VendorId == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'vendorId' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetUnconfirmedServiceRequestIAm.deepCopy(), nil
@@ -323,7 +324,7 @@ func CastBACnetUnconfirmedServiceRequestIAm(structType any) BACnetUnconfirmedSer
 	return nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestIAm) GetTypeName() string {
+func (m *_BACnetUnconfirmedServiceRequestIAm) GetPlx4xTypeName() string {
 	return "BACnetUnconfirmedServiceRequestIAm"
 }
 

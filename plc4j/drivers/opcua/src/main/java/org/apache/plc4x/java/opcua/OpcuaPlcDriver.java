@@ -18,24 +18,23 @@
  */
 package org.apache.plc4x.java.opcua;
 
-import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
-import org.apache.plc4x.java.opcua.optimizer.OpcuaOptimizer;
-import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.config.Configuration;
+import org.apache.plc4x.java.spi.drivers.ConnectionBase;
+import org.apache.plc4x.java.spi.drivers.DriverBase;
+import org.apache.plc4x.java.spi.transports.api.TransportInstance;
+import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
+import java.util.regex.Matcher;
 
-public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
+public class OpcuaPlcDriver extends DriverBase {
 
     @Override
     public String getProtocolCode() {
@@ -48,18 +47,18 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+    protected Class<? extends Configuration> getConfigurationClass() {
         return OpcuaConfiguration.class;
     }
 
     @Override
-    protected Optional<String> getDefaultTransportCode() {
+    public Optional<String> getDefaultTransportCode() {
         return Optional.of("tcp");
     }
 
     @Override
-    protected List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
+    public List<String> getSupportedTransportCodes() {
+        return List.of("tcp");
     }
 
     @Override
@@ -77,43 +76,44 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         return true;
     }
 
-    @Override
-    protected OpcuaOptimizer getOptimizer() {
-        return new OpcuaOptimizer();
-    }
-
-    @Override
-    protected boolean fireDiscoverEvent() {
-        return true;
-    }
-
-    @Override
-    protected boolean awaitDiscoverComplete() {
-        return true;
-    }
-
-
-    @Override
-    protected ProtocolStackConfigurer<OpcuaAPU> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(OpcuaAPU.class, io -> OpcuaAPU.staticParse(io, true, true))
-            .withProtocol(OpcuaProtocolLogic.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .withDriverContext(OpcuaDriverContext.class)
-            .littleEndian()
-            .build();
-    }
-
     /**
-     * Estimate the Length of a Packet
+     * Extracts the transport endpoint path (e.g. {@code "/milo"}) from the
+     * connection URL and passes it to the {@link OpcuaConnection} so the
+     * OPC UA HELLO message carries the correct endpoint URL.
+     *
+     * <p>The new SPI only hands {@code host:port} to the TCP transport —
+     * the path part is lost.  The pre-merge code parsed it inside
+     * {@link OpcuaDriverContext#setConfiguration} which received the full
+     * URL; we replicate that logic here.</p>
      */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
-        @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 8) {
-                return Integer.reverseBytes(byteBuf.getInt(byteBuf.readerIndex() + 4));
+    @Override
+    public PlcConnection getConnection(String connectionString, PlcAuthentication authentication)
+            throws PlcConnectionException {
+        // Parse transport endpoint path before the parent strips it
+        String transportEndpoint = "";
+        Matcher matcher = OpcuaDriverContext.URI_PATTERN.matcher(connectionString);
+        if (matcher.matches()) {
+            String te = matcher.group("transportEndpoint");
+            if (te != null) {
+                transportEndpoint = te;
             }
-            return -1;
         }
+
+        PlcConnection connection = super.getConnection(connectionString, authentication);
+        if (connection instanceof OpcuaConnection opcua) {
+            opcua.setTransportEndpoint(transportEndpoint);
+            if (authentication != null) {
+                opcua.setPlcAuthentication(authentication);
+            }
+        }
+        return connection;
+    }
+
+    @Override
+    protected ConnectionBase<?> getConnection(Configuration configuration,
+                                              TransportInstance<?> transportInstance,
+                                              AuditLog auditLog) {
+        return new OpcuaConnection((OpcuaConfiguration) configuration, transportInstance, auditLog);
     }
 
     @Override

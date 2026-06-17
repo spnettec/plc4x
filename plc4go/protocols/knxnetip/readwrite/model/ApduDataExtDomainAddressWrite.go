@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_ApduDataExtDomainAddressWriteBuilder) WithMandatoryFields() ApduDataEx
 }
 
 func (b *_ApduDataExtDomainAddressWriteBuilder) Build() (ApduDataExtDomainAddressWrite, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataExtDomainAddressWrite.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastApduDataExtDomainAddressWrite(structType any) ApduDataExtDomainAddressW
 	return nil
 }
 
-func (m *_ApduDataExtDomainAddressWrite) GetTypeName() string {
+func (m *_ApduDataExtDomainAddressWrite) GetPlx4xTypeName() string {
 	return "ApduDataExtDomainAddressWrite"
 }
 

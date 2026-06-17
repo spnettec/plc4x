@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -126,7 +127,7 @@ func (b *_S7ParameterUserDataItemBuilder) WithMandatoryFields() S7ParameterUserD
 }
 
 func (b *_S7ParameterUserDataItemBuilder) PartialBuild() (S7ParameterUserDataItemContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7ParameterUserDataItem.deepCopy(), nil
@@ -204,7 +205,7 @@ func CastS7ParameterUserDataItem(structType any) S7ParameterUserDataItem {
 	return nil
 }
 
-func (m *_S7ParameterUserDataItem) GetTypeName() string {
+func (m *_S7ParameterUserDataItem) GetPlx4xTypeName() string {
 	return "S7ParameterUserDataItem"
 }
 

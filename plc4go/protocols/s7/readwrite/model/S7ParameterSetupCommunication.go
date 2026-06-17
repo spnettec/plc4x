@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -141,7 +142,7 @@ func (b *_S7ParameterSetupCommunicationBuilder) WithPduLength(pduLength uint16) 
 }
 
 func (b *_S7ParameterSetupCommunicationBuilder) Build() (S7ParameterSetupCommunication, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._S7ParameterSetupCommunication.deepCopy(), nil
@@ -242,7 +243,7 @@ func CastS7ParameterSetupCommunication(structType any) S7ParameterSetupCommunica
 	return nil
 }
 
-func (m *_S7ParameterSetupCommunication) GetTypeName() string {
+func (m *_S7ParameterSetupCommunication) GetPlx4xTypeName() string {
 	return "S7ParameterSetupCommunication"
 }
 

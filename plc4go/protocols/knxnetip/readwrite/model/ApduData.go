@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -156,7 +157,7 @@ func (b *_ApduDataBuilder) WithMandatoryFields() ApduDataBuilder {
 }
 
 func (b *_ApduDataBuilder) PartialBuild() (ApduDataContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduData.deepCopy(), nil
@@ -384,7 +385,7 @@ func CastApduData(structType any) ApduData {
 	return nil
 }
 
-func (m *_ApduData) GetTypeName() string {
+func (m *_ApduData) GetPlx4xTypeName() string {
 	return "ApduData"
 }
 

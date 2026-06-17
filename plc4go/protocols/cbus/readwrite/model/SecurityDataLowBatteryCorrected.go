@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_SecurityDataLowBatteryCorrectedBuilder) WithMandatoryFields() Security
 }
 
 func (b *_SecurityDataLowBatteryCorrectedBuilder) Build() (SecurityDataLowBatteryCorrected, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._SecurityDataLowBatteryCorrected.deepCopy(), nil
@@ -175,7 +176,7 @@ func CastSecurityDataLowBatteryCorrected(structType any) SecurityDataLowBatteryC
 	return nil
 }
 
-func (m *_SecurityDataLowBatteryCorrected) GetTypeName() string {
+func (m *_SecurityDataLowBatteryCorrected) GetPlx4xTypeName() string {
 	return "SecurityDataLowBatteryCorrected"
 }
 

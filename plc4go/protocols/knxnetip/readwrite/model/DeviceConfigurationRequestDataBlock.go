@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -112,7 +113,7 @@ func (b *_DeviceConfigurationRequestDataBlockBuilder) WithSequenceCounter(sequen
 }
 
 func (b *_DeviceConfigurationRequestDataBlockBuilder) Build() (DeviceConfigurationRequestDataBlock, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._DeviceConfigurationRequestDataBlock.deepCopy(), nil
@@ -176,7 +177,7 @@ func CastDeviceConfigurationRequestDataBlock(structType any) DeviceConfiguration
 	return nil
 }
 
-func (m *_DeviceConfigurationRequestDataBlock) GetTypeName() string {
+func (m *_DeviceConfigurationRequestDataBlock) GetPlx4xTypeName() string {
 	return "DeviceConfigurationRequestDataBlock"
 }
 

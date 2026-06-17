@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -218,7 +219,7 @@ func (b *_VariantBuilder) WithArrayDimensions(arrayDimensions ...int32) VariantB
 }
 
 func (b *_VariantBuilder) PartialBuild() (VariantContract, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._Variant.deepCopy(), nil
@@ -572,7 +573,7 @@ func CastVariant(structType any) Variant {
 	return nil
 }
 
-func (m *_Variant) GetTypeName() string {
+func (m *_Variant) GetPlx4xTypeName() string {
 	return "Variant"
 }
 

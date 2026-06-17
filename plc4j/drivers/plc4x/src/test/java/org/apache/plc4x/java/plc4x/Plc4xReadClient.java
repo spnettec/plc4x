@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 public class Plc4xReadClient {
 
     public static void main(String[] args) throws Exception {
-        try (final PlcConnection connection = new DefaultPlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=s7://10.80.41.47")) {
+        try (final PlcConnection connection = new DefaultPlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=s7://10.80.41.57")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
             builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL"); // true
             builder.addTagAddress("bool-value-2", "%DB1:0.1:BOOL"); // false

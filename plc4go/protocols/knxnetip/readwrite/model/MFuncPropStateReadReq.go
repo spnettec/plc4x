@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -104,7 +105,7 @@ func (b *_MFuncPropStateReadReqBuilder) WithMandatoryFields() MFuncPropStateRead
 }
 
 func (b *_MFuncPropStateReadReqBuilder) Build() (MFuncPropStateReadReq, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._MFuncPropStateReadReq.deepCopy(), nil
@@ -179,7 +180,7 @@ func CastMFuncPropStateReadReq(structType any) MFuncPropStateReadReq {
 	return nil
 }
 
-func (m *_MFuncPropStateReadReq) GetTypeName() string {
+func (m *_MFuncPropStateReadReq) GetPlx4xTypeName() string {
 	return "MFuncPropStateReadReq"
 }
 

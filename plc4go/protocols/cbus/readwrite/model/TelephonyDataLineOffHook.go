@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -128,7 +129,7 @@ func (b *_TelephonyDataLineOffHookBuilder) WithNumber(number string) TelephonyDa
 }
 
 func (b *_TelephonyDataLineOffHookBuilder) Build() (TelephonyDataLineOffHook, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._TelephonyDataLineOffHook.deepCopy(), nil
@@ -217,7 +218,7 @@ func CastTelephonyDataLineOffHook(structType any) TelephonyDataLineOffHook {
 	return nil
 }
 
-func (m *_TelephonyDataLineOffHook) GetTypeName() string {
+func (m *_TelephonyDataLineOffHook) GetPlx4xTypeName() string {
 	return "TelephonyDataLineOffHook"
 }
 

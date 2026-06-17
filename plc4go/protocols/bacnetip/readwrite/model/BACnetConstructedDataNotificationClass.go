@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataNotificationClassBuilder) Build() (BACnetConstruc
 	if b.NotificationClass == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'notificationClass' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataNotificationClass.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataNotificationClass(structType any) BACnetConstructe
 	return nil
 }
 
-func (m *_BACnetConstructedDataNotificationClass) GetTypeName() string {
+func (m *_BACnetConstructedDataNotificationClass) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataNotificationClass"
 }
 

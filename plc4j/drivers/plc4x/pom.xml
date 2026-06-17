@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>plc4j-driver-plc4x</artifactId>
-
+      
   <name>PLC4J: Driver: PLC4X (Proxy)</name>
   <description>Implementation of a PLC4X driver for the PLC4X protocol, which is used for relaying PLC4X requests from one system to another.</description>
 
@@ -36,6 +36,7 @@
   </properties>
 
   <build>
+    <!-- Override the path of the sources roots until the code is ported  -->
     <plugins>
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
@@ -76,12 +77,12 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.plc4x.readwrite.Plc4xDriver
+            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.plc4x.Plc4xDriver
             </Export-Service>
             <Import-Package>
               *
             </Import-Package>
-            <SPI-consumer>*</SPI-consumer>
+            <SPI-consumer>*</SPI-consumer>            
           </instructions>
         </configuration>
       </plugin>
@@ -96,23 +97,53 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
+      <artifactId>plc4j-spi-buffers-api</artifactId>
       <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-tcp</artifactId>
+      <artifactId>plc4j-spi-buffers-byte</artifactId>
       <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
-
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-config</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-drivers</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-fields</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-api</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transports-tcp</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-audit-log-api</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-utils</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi-values</artifactId>
+      <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -146,12 +177,6 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4j-connection-cache</artifactId>
-          <version>0.14.0.B-SNAPSHOT</version>
-          <scope>test</scope>
-      </dependency>
   </dependencies>
 
   <profiles>
@@ -185,8 +210,7 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>0.14.0.B-SNAPSHOT</version>
+          <artifactId>plc4x-code-generation-language-java-jp</artifactId>          <version>0.14.0.B-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -137,7 +138,7 @@ func (b *_BACnetConstructedDataProtocolServicesSupportedBuilder) Build() (BACnet
 	if b.ProtocolServicesSupported == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'protocolServicesSupported' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._BACnetConstructedDataProtocolServicesSupported.deepCopy(), nil
@@ -245,7 +246,7 @@ func CastBACnetConstructedDataProtocolServicesSupported(structType any) BACnetCo
 	return nil
 }
 
-func (m *_BACnetConstructedDataProtocolServicesSupported) GetTypeName() string {
+func (m *_BACnetConstructedDataProtocolServicesSupported) GetPlx4xTypeName() string {
 	return "BACnetConstructedDataProtocolServicesSupported"
 }
 

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -135,7 +136,7 @@ func (b *_ApduDataOtherBuilder) Build() (ApduDataOther, error) {
 	if b.ExtendedApdu == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'extendedApdu' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._ApduDataOther.deepCopy(), nil
@@ -224,7 +225,7 @@ func CastApduDataOther(structType any) ApduDataOther {
 	return nil
 }
 
-func (m *_ApduDataOther) GetTypeName() string {
+func (m *_ApduDataOther) GetPlx4xTypeName() string {
 	return "ApduDataOther"
 }
 

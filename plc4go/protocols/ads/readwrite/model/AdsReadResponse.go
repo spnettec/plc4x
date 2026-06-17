@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
@@ -63,7 +64,7 @@ var _ AdsReadResponse = (*_AdsReadResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsReadResponse)(nil)
 
 // NewAdsReadResponse factory function for _AdsReadResponse
-func NewAdsReadResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, data []byte) *_AdsReadResponse {
+func NewAdsReadResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode ReturnCode, invokeId uint32, result ReturnCode, data []byte) *_AdsReadResponse {
 	_result := &_AdsReadResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,
@@ -130,7 +131,7 @@ func (b *_AdsReadResponseBuilder) WithData(data ...byte) AdsReadResponseBuilder 
 }
 
 func (b *_AdsReadResponseBuilder) Build() (AdsReadResponse, error) {
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._AdsReadResponse.deepCopy(), nil
@@ -227,7 +228,7 @@ func CastAdsReadResponse(structType any) AdsReadResponse {
 	return nil
 }
 
-func (m *_AdsReadResponse) GetTypeName() string {
+func (m *_AdsReadResponse) GetPlx4xTypeName() string {
 	return "AdsReadResponse"
 }
 

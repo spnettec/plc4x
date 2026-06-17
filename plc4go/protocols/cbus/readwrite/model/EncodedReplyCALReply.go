@@ -21,10 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/errors"
@@ -135,7 +138,7 @@ func (b *_EncodedReplyCALReplyBuilder) Build() (EncodedReplyCALReply, error) {
 	if b.CalReply == nil {
 		b.collectedErr = append(b.collectedErr, errors.New("mandatory field 'calReply' not set"))
 	}
-	if err := errors.Join(b.collectedErr...); err != nil {
+	if err := stdErrors.Join(b.collectedErr...); err != nil {
 		return nil, errors.Wrap(err, "error occurred during build")
 	}
 	return b._EncodedReplyCALReply.deepCopy(), nil
@@ -220,7 +223,7 @@ func CastEncodedReplyCALReply(structType any) EncodedReplyCALReply {
 	return nil
 }
 
-func (m *_EncodedReplyCALReply) GetTypeName() string {
+func (m *_EncodedReplyCALReply) GetPlx4xTypeName() string {
 	return "EncodedReplyCALReply"
 }
 
@@ -248,7 +251,7 @@ func (m *_EncodedReplyCALReply) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	calReply, err := ReadSimpleField[CALReply](ctx, "calReply", ReadComplex[CALReply](CALReplyParseWithBufferProducer[CALReply]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer))
+	calReply, err := ReadSimpleField[CALReply](ctx, "calReply", ReadComplex[CALReply](CALReplyParseWithBufferProducer[CALReply]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calReply' field"))
 	}
@@ -262,7 +265,7 @@ func (m *_EncodedReplyCALReply) parse(ctx context.Context, readBuffer utils.Read
 }
 
 func (m *_EncodedReplyCALReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -279,7 +282,7 @@ func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for EncodedReplyCALReply")
 		}
 
-		if err := WriteSimpleField[CALReply](ctx, "calReply", m.GetCalReply(), WriteComplex[CALReply](writeBuffer)); err != nil {
+		if err := WriteSimpleField[CALReply](ctx, "calReply", m.GetCalReply(), WriteComplex[CALReply](writeBuffer), codegen.WithEncoding("UTF8"), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'calReply' field")
 		}
 
