@@ -170,7 +170,7 @@ public class StringTest {
 
         System.out.printf("%n=== String Test: %d/%d passed ===%n",
                 total - failures, total);
-        plcConnectionManager.destroy();
+        plcConnectionManager.close();
         if (failures > 0) System.exit(1);
     }
 }

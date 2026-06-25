@@ -62,10 +62,9 @@ public class Plc4xDriver extends DriverBase {
 
     @Override
     public Optional<String> getDefaultTransportCode() {
-        // TLS is the default transport - the proxy carries credentials, so the channel should
-        // be encrypted by default. Plaintext TCP remains available as an explicit opt-in
-        // (e.g. "plc4x:tcp://...") for trusted networks or testing.
-        return Optional.of("tls");
+        // TCP is the default transport. TLS is available as an explicit opt-in
+        // (e.g. "plc4x:tls://...") when the server supports it and credentials are configured.
+        return Optional.of("tcp");
     }
 
     @Override

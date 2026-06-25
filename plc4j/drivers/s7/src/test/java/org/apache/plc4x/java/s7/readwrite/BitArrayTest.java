@@ -158,7 +158,7 @@ public class BitArrayTest {
         }
 
         System.out.printf("%n=== BIT Array Test: %d/%d passed ===%n", total - failures, total);
-        plcConnectionManager.destroy();
+        plcConnectionManager.close();
         if (failures > 0) System.exit(1);
     }
 

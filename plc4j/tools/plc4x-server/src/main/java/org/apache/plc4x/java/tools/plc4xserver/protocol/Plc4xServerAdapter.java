@@ -22,6 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -74,7 +75,9 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
     private final ConcurrentHashMap<Integer, String> connectionUrls;
 
     public Plc4xServerAdapter() {
-        connectionManager = CachedPlcConnectionManager.getBuilder().build();
+        connectionManager = CachedPlcConnectionManager.getBuilder()
+            .withConnectionManager((PlcConnectionManager) PlcDriverManager.getDefault())
+            .build();
         connectionIdGenerator = new AtomicInteger(1);
         connectionUrls = new ConcurrentHashMap<>();
     }

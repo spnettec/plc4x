@@ -20,12 +20,15 @@ package org.apache.plc4x.java.utils.cache;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionManagerClosedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.*;
@@ -136,7 +139,9 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         // Get or create connection atomically with validation
         // compute() ensures all validation happens atomically for the first thread
         // The returned ConnectionContainer is stored in the map
-        ConnectionContainer container = cachedConnections.computeIfAbsent(connectionString, (key) -> {
+        // Normalize serial URLs so symlink and canonical-path forms share one container
+        String cacheKey = normalizeCacheKey(connectionString);
+        ConnectionContainer container = cachedConnections.computeIfAbsent(cacheKey, (key) -> {
             LOGGER.debug("Creating new connection container for: {}", connectionString);
             return new ConnectionContainer(connectionString, () -> {
                 if (authentication != null) {
@@ -159,6 +164,11 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             throw new PlcConnectionException("Error acquiring lease for connection", e);
         }
+    }
+
+    @Override
+    public PlcDriverManager getDriverManager() {
+        return connectionManager.getDriverManager();
     }
 
     @Override
@@ -262,6 +272,46 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
             }
         }
         return true;
+    }
+
+    /**
+     * Override the default no-op: drop the cached container for {@code url} and close its
+     * underlying connection. Serial URLs are normalized before lookup so both symlink and
+     * canonical-path variants resolve to the same container.
+     */
+    @Override
+    public void invalidate(String url) {
+        removeCachedConnection(normalizeCacheKey(url));
+    }
+
+    /**
+     * Normalize a serial transport URL so symlink and canonical-path forms collapse to the same
+     * cache key. For non-serial transports (or any error resolving the path) the original URL is
+     * returned unchanged.
+     */
+    static String normalizeCacheKey(String url) {
+        if (url == null) {
+            return url;
+        }
+        int sep = url.indexOf("://");
+        if (sep < 0) {
+            return url;
+        }
+        // Scheme is "<protocol>" or "<protocol>:<transport>"; only canonicalize when transport == serial.
+        String scheme = url.substring(0, sep);
+        if (!scheme.endsWith(":serial") && !scheme.equals("serial")) {
+            return url;
+        }
+        int q = url.indexOf('?', sep + 3);
+        String path = (q < 0) ? url.substring(sep + 3) : url.substring(sep + 3, q);
+        String tail = (q < 0) ? "" : url.substring(q);
+        try {
+            String canonical = Paths.get(path).toRealPath().toString();
+            return url.substring(0, sep + 3) + canonical + tail;
+        } catch (IOException | RuntimeException e) {
+            // Device not yet present, no permission, or path invalid — leave key as-is.
+            return url;
+        }
     }
 
     /**

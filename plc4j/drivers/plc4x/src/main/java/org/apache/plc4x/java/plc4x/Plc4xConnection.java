@@ -125,9 +125,9 @@ public class Plc4xConnection extends ConnectionBase<Plc4xConfiguration> {
         });
 
         try {
-            // Authenticate first. The proxy mandates username/password auth; no operation is
-            // permitted until this exchange succeeds. We never log the credentials.
-            authenticate();
+            if (configuration.getUsername() != null && configuration.getPassword() != null) {
+                authenticate();
+            }
 
             // Open the underlying proxied connection.
             int requestId = txIdGenerator.getAndIncrement();
@@ -187,11 +187,6 @@ public class Plc4xConnection extends ConnectionBase<Plc4xConfiguration> {
         CompletableFuture<Plc4xMessage> future = registerPending(requestId);
         String username = configuration.getUsername();
         String password = configuration.getPassword();
-        if (username == null || password == null) {
-            pendingResponses.remove(requestId);
-            throw new PlcConnectionException(
-                "Username and password are required to connect to a PLC4X proxy server");
-        }
         try {
             messageCodec.send(new Plc4xAuthRequest(requestId, username, password));
         } catch (MessageCodecException e) {

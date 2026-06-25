@@ -78,19 +78,19 @@ public class BlockPerfTest {
         CachedPlcConnectionManager mgr0 = CachedPlcConnectionManager.getBuilder().build();
         System.out.println("=== No merge: gap=0 ===");
         double noMerge = benchmark(mgr0, noMergeUrl, "gap=0");
-        mgr0.destroy();
+        mgr0.close();
 
         // ── Fixed gap: gap=16 ────────────────────────────────────────
         CachedPlcConnectionManager mgr1 = CachedPlcConnectionManager.getBuilder().build();
         System.out.println("\n=== Fixed gap: gap=16 ===");
         double fixedGap = benchmark(mgr1, fixedGapUrl, "gap=16");
-        mgr1.destroy();
+        mgr1.close();
 
         // ── Auto: cost-based merge ───────────────────────────────────
         CachedPlcConnectionManager mgr2 = CachedPlcConnectionManager.getBuilder().build();
         System.out.println("\n=== Auto: cost-based block merge ===");
         double auto = benchmark(mgr2, autoUrl, "auto");
-        mgr2.destroy();
+        mgr2.close();
 
         // ── Report ────────────────────────────────────────────────────
         System.out.println("\n==============================================");

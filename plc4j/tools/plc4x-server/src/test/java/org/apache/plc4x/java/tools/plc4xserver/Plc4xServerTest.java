@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 public class Plc4xServerTest {
 
     private static final Plc4xServer SERVER = new Plc4xServer();
-    private static final String CONNECTION_STRING_TEMPLATE = "plc4x://localhost:%d?remote-connection-string=%s";
+    private static final String CONNECTION_STRING_TEMPLATE = "plc4x:tcp://localhost:%d?remote-connection-string=%s";
     private static final String CONNECTION_STRING_SIMULATED_ENCODED = "simulated%3A%2F%2Flocalhost";
     private static final long TIMEOUT_VALUE = 10;
     private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;

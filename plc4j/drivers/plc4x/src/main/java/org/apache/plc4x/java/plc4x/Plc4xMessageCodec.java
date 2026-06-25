@@ -92,30 +92,5 @@ public class Plc4xMessageCodec extends MessageCodecBase<Plc4xMessage> {
         return Plc4xMessage.staticParse(readBuffer);
     }
 
-    /**
-     * The generated serializers/parsers ask the buffer for an unsigned-binary integer encoding
-     * (and signed/float encodings) for fields that don't pass an explicit option. The default
-     * {@link MessageCodecBase} buffers do not pre-configure those, which trips field writers like
-     * {@code writeUnsignedShort}, so we supply the big-endian defaults the protocol expects.
-     */
-    @Override
-    protected WriteBufferByteBased createWriteBuffer(int size) {
-        return new WriteBufferByteBased(new byte[size],
-            WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
-            WithOption.WithSignedIntegerEncoding("twos-complement"),
-            WithOption.WithFloatEncoding("IEEE754"),
-            WithOption.WithStringEncoding("UTF8"),
-            WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
-    }
-
-    @Override
-    protected ReadBufferByteBased createReadBuffer(byte[] data) {
-        return new ReadBufferByteBased(data,
-            WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
-            WithOption.WithSignedIntegerEncoding("twos-complement"),
-            WithOption.WithFloatEncoding("IEEE754"),
-            WithOption.WithStringEncoding("UTF8"),
-            WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
-    }
 
 }

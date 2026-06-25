@@ -32,6 +32,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -84,6 +85,12 @@ class ConnectionContainer {
     // Used to detect and ignore stale callbacks from old leases that fire after a new
     // lease has been created (e.g., timeout-triggered return followed by stale invalidation).
     private long currentLeaseId;
+
+    // Throttle repeated WARN logs when the PLC is unreachable: first failure in each 30s
+    // window prints at WARN with full stack trace; subsequent failures demote to DEBUG.
+    private static final long LEASE_WARN_THROTTLE_NANOS = TimeUnit.SECONDS.toNanos(30);
+    private final AtomicLong leaseWarnLastNanos = new AtomicLong(0L);
+    private final AtomicLong leaseWarnSuppressed = new AtomicLong(0L);
 
     // Scheduled timeout tasks (must be canceled to prevent leaks)
     private volatile ScheduledFuture<?> idleTimeoutTask;
@@ -147,11 +154,7 @@ class ConnectionContainer {
                     try {
                         connection = connectionFactory.get();
                     } catch (PlcConnectionException e) {
-                        if (LOGGER.isTraceEnabled()) {
-                            LOGGER.warn("Exception while getting connection for lease", e);
-                        } else {
-                            LOGGER.warn("Exception while getting connection for lease: {}", e.getMessage());
-                        }
+                        logLeaseFailure(e);
                         connectionFuture.completeExceptionally(e);
                         return connectionFuture;
                     }
@@ -173,11 +176,7 @@ class ConnectionContainer {
                                 stateTracker.restoreState(connection);
                             }
                         } catch (PlcConnectionException e) {
-                            if (LOGGER.isTraceEnabled()) {
-                                LOGGER.warn("Exception while getting connection for lease", e);
-                            } else {
-                                LOGGER.warn("Exception while getting connection for lease: {}", e.getMessage());
-                            }
+                            logLeaseFailure(e);
                             connectionFuture.completeExceptionally(e);
                             return connectionFuture;
                         }
@@ -404,6 +403,29 @@ class ConnectionContainer {
                 LOGGER.warn("Connection ping failed '{}': {}", connectionString, e.getMessage());
             }
             return false;
+        }
+    }
+
+    /**
+     * Log a lease-failure exception with throttling: first failure in each 30-second window is
+     * logged at WARN with full stack trace; subsequent failures in the same window are demoted to
+     * DEBUG with a suppressed-count summary on the next WARN. This prevents a wire-driven
+     * poll-loop from flooding the log with identical stack traces when a PLC is unreachable.
+     */
+    private void logLeaseFailure(PlcConnectionException e) {
+        long now = System.nanoTime();
+        long last = leaseWarnLastNanos.get();
+        if (now - last >= LEASE_WARN_THROTTLE_NANOS && leaseWarnLastNanos.compareAndSet(last, now)) {
+            long suppressed = leaseWarnSuppressed.getAndSet(0L);
+            if (suppressed == 0L) {
+                LOGGER.warn("Exception while getting connection for lease", e);
+            } else {
+                LOGGER.warn("Exception while getting connection for lease (suppressed {} similar in last {}s)",
+                    suppressed, TimeUnit.NANOSECONDS.toSeconds(LEASE_WARN_THROTTLE_NANOS), e);
+            }
+        } else {
+            leaseWarnSuppressed.incrementAndGet();
+            LOGGER.debug("Exception while getting connection for lease", e);
         }
     }
 

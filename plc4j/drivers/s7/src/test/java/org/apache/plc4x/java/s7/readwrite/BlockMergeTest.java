@@ -146,7 +146,7 @@ public class BlockMergeTest {
         }
 
         System.out.printf("%n=== Block Merge Test: %d/%d passed ===%n", total, total - failures);
-        plcConnectionManager.destroy();
+        plcConnectionManager.close();
         if (failures > 0) System.exit(1);
     }
 }
