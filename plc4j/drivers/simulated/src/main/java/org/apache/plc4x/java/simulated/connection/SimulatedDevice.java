@@ -28,6 +28,8 @@ import org.apache.plc4x.java.simulated.readwrite.DataItem;
 import org.apache.plc4x.java.simulated.readwrite.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
 import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.h2.mvstore.MVMap;
 import org.h2.mvstore.MVStore;
 import org.apache.plc4x.java.spi.buffers.api.exceptions.BufferException;
@@ -39,8 +41,10 @@ import org.slf4j.LoggerFactory;
 
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -182,8 +186,26 @@ public class SimulatedDevice {
     }
 
     private PlcValue randomValue(SimulatedTag tag) {
-        short tagDataTypeSize = SimulatedDataTypeSizes.valueOf(tag.getPlcValueType().name()).getDataTypeSize();
         int numElements = tag.getArrayInfo().isEmpty() ? 1 : tag.getArrayInfo().get(0).getSize();
+        // Strings are length-prefixed, so feeding random bytes to the parser almost always
+        // yields a bogus length and a BufferException (which would surface as NOT_FOUND).
+        // Generate a valid random string directly instead - mirrors how the write path
+        // special-cases STRING/WSTRING in set().
+        switch (tag.getPlcValueType()) {
+            case STRING:
+            case WSTRING:
+                if (numElements == 1) {
+                    return new PlcSTRING(randomString());
+                }
+                List<PlcValue> elements = new ArrayList<>(numElements);
+                for (int i = 0; i < numElements; i++) {
+                    elements.add(new PlcSTRING(randomString()));
+                }
+                return new PlcList(elements);
+            default:
+                break;
+        }
+        short tagDataTypeSize = SimulatedDataTypeSizes.valueOf(tag.getPlcValueType().name()).getDataTypeSize();
         byte[] b = new byte[tagDataTypeSize * numElements];
         random.nextBytes(b);
         ReadBufferByteBased io = new ReadBufferByteBased(b);
@@ -192,6 +214,16 @@ public class SimulatedDevice {
         } catch (BufferException e) {
             return null;
         }
+    }
+
+    private String randomString() {
+        final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        int length = 1 + random.nextInt(10);
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(alphabet.charAt(random.nextInt(alphabet.length())));
+        }
+        return sb.toString();
     }
 
     @Override

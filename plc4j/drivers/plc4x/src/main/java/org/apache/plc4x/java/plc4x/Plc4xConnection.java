@@ -28,6 +28,8 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
+import org.apache.plc4x.java.plc4x.readwrite.Plc4xAuthRequest;
+import org.apache.plc4x.java.plc4x.readwrite.Plc4xAuthResponse;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xConnectRequest;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xConnectResponse;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xMessage;
@@ -122,29 +124,95 @@ public class Plc4xConnection extends ConnectionBase<Plc4xConfiguration> {
             }
         });
 
-        // Open the underlying proxied connection.
+        try {
+            // Authenticate first. The proxy mandates username/password auth; no operation is
+            // permitted until this exchange succeeds. We never log the credentials.
+            authenticate();
+
+            // Open the underlying proxied connection.
+            int requestId = txIdGenerator.getAndIncrement();
+            CompletableFuture<Plc4xMessage> future = registerPending(requestId);
+            try {
+                messageCodec.send(new Plc4xConnectRequest(requestId, configuration.getRemoteConnectionString()));
+            } catch (MessageCodecException e) {
+                pendingResponses.remove(requestId);
+                throw new PlcConnectionException("Failed to send proxy connect request", e);
+            }
+
+            try {
+                Plc4xMessage response = future
+                    .orTimeout(configuration.getRequestTimeout(), TimeUnit.MILLISECONDS)
+                    .get();
+                if (!(response instanceof Plc4xConnectResponse connectResponse)) {
+                    throw new PlcConnectionException("Unexpected response to proxy connect: " + response);
+                }
+                connectionId = connectResponse.getConnectionId();
+                handshakeComplete = true;
+            } catch (PlcConnectionException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new PlcConnectionException("Error establishing proxy connection", e);
+            }
+        } catch (PlcConnectionException | RuntimeException e) {
+            // A failed connect (e.g. rejected credentials) must not leak the receive loop or the
+            // underlying transport - otherwise the non-daemon transport reader thread keeps the
+            // JVM alive even though no usable connection was returned.
+            cleanupAfterFailedConnect();
+            throw e;
+        }
+    }
+
+    private void cleanupAfterFailedConnect() {
+        handshakeComplete = false;
+        stopReceiving();
+        if (messageCodec != null) {
+            try {
+                messageCodec.close();
+            } catch (Exception closeError) {
+                LOGGER.debug("Error closing codec after failed connect", closeError);
+            }
+        }
+        pendingResponses.values().forEach(f ->
+            f.completeExceptionally(new PlcRuntimeException("Connection setup failed")));
+        pendingResponses.clear();
+    }
+
+    /**
+     * Performs the mandatory username/password handshake with the proxy. Throws if the
+     * server rejects the credentials or the exchange does not complete in time. Credentials
+     * are taken from the connection configuration and are never logged.
+     */
+    private void authenticate() throws PlcConnectionException {
         int requestId = txIdGenerator.getAndIncrement();
         CompletableFuture<Plc4xMessage> future = registerPending(requestId);
+        String username = configuration.getUsername();
+        String password = configuration.getPassword();
+        if (username == null || password == null) {
+            pendingResponses.remove(requestId);
+            throw new PlcConnectionException(
+                "Username and password are required to connect to a PLC4X proxy server");
+        }
         try {
-            messageCodec.send(new Plc4xConnectRequest(requestId, configuration.getRemoteConnectionString()));
+            messageCodec.send(new Plc4xAuthRequest(requestId, username, password));
         } catch (MessageCodecException e) {
             pendingResponses.remove(requestId);
-            throw new PlcConnectionException("Failed to send proxy connect request", e);
+            throw new PlcConnectionException("Failed to send proxy authentication request", e);
         }
-
         try {
             Plc4xMessage response = future
                 .orTimeout(configuration.getRequestTimeout(), TimeUnit.MILLISECONDS)
                 .get();
-            if (!(response instanceof Plc4xConnectResponse connectResponse)) {
-                throw new PlcConnectionException("Unexpected response to proxy connect: " + response);
+            if (!(response instanceof Plc4xAuthResponse authResponse)) {
+                throw new PlcConnectionException("Unexpected response to proxy authentication: " + response);
             }
-            connectionId = connectResponse.getConnectionId();
-            handshakeComplete = true;
+            if (authResponse.getResponseCode() != Plc4xResponseCode.OK) {
+                throw new PlcConnectionException(
+                    "Authentication against PLC4X proxy server failed: " + authResponse.getResponseCode());
+            }
         } catch (PlcConnectionException e) {
             throw e;
         } catch (Exception e) {
-            throw new PlcConnectionException("Error establishing proxy connection", e);
+            throw new PlcConnectionException("Error during proxy authentication", e);
         }
     }
 
