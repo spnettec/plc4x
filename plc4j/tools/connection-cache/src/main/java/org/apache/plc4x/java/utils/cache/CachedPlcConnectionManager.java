@@ -503,7 +503,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
          */
         public CachedPlcConnectionManager build() {
             if (connectionManager == null) {
-                throw new IllegalStateException("PlcConnectionManager must be set using withConnectionManager()");
+                connectionManager = (PlcConnectionManager) PlcDriverManager.getDefault();
             }
             return new CachedPlcConnectionManager(
                 connectionManager,

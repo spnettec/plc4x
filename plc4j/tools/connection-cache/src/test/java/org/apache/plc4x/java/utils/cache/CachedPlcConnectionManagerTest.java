@@ -423,11 +423,13 @@ class CachedPlcConnectionManagerTest {
      * Test builder validation.
      */
     @Test
-    void testBuilder_RequiresDriver() {
-        // Act & Assert
-        assertThrows(IllegalStateException.class, () ->
-            CachedPlcConnectionManager.getBuilder().build()
-        );
+    void testBuilder_DefaultsToDriverManager() {
+        // Build without withConnectionManager — should default to PlcDriverManager.getDefault()
+        assertDoesNotThrow(() -> {
+            try (CachedPlcConnectionManager mgr = CachedPlcConnectionManager.getBuilder().build()) {
+                assertNotNull(mgr);
+            }
+        });
     }
 
     /**
