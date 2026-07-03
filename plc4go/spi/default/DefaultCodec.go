@@ -21,7 +21,6 @@ package _default
 
 import (
 	"context"
-	stdErrors "errors"
 	"runtime/debug"
 	"slices"
 	"sync"
@@ -544,13 +543,21 @@ func (m *defaultCodec) handleTransportError(workerLog zerolog.Logger, err error)
 	if err == nil {
 		return true
 	}
-	if stdErrors.Is(err, context.Canceled) {
+	// Defuse improperly constructed error chains (e.g. a typed-nil *net.OpError
+	// wrapped via %w) once at the entry point: everything below - classification,
+	// wrapping, expectation fan-out, logging - walks the chain repeatedly, and
+	// unguarded walks dereference such values, which killed the receive worker
+	// with a recovered nil-pointer panic in the field. A corrupt chain is
+	// flattened and tagged with errors.ErrCorruptErrorChain so the anomaly
+	// stays visible downstream instead of being silently swallowed.
+	err = errors.SanitizeError(err)
+	if transports.ErrorIs(err, context.Canceled) {
 		workerLog.Debug().Msg("receive aborted due to context cancellation")
 		return false
 	}
 
 	kind := transports.TransportErrorUnknown
-	if stdErrors.Is(err, context.DeadlineExceeded) {
+	if transports.ErrorIs(err, context.DeadlineExceeded) {
 		kind = transports.TransportErrorRetryable
 	} else if m.transportInstance != nil {
 		kind = m.transportInstance.ClassifyError(err)

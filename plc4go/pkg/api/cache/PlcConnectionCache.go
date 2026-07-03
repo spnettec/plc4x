@@ -77,6 +77,19 @@ func WithMaxWaitTime(maxWaitTime time.Duration) WithConnectionCacheOption {
 	}
 }
 
+// WithMaxIdleTime discards cached connections that sat idle for longer than
+// the given duration and re-establishes them on the next lease (0 = keep
+// forever, the default). Use this against remotes that silently reap idle
+// connections (half-open TCP): such a death is undetectable until the first
+// write fails, so connections past this age are replaced proactively. As a
+// side effect, connection slots on connection-limited remotes are freed
+// between bursts instead of being parked indefinitely.
+func WithMaxIdleTime(maxIdleTime time.Duration) WithConnectionCacheOption {
+	return func(plcConnectionCache *plcConnectionCache) {
+		plcConnectionCache.maxIdleTime = maxIdleTime
+	}
+}
+
 func WithTracer() WithConnectionCacheOption {
 	return func(plcConnectionCache *plcConnectionCache) {
 		plcConnectionCache.EnableTracer()
@@ -107,6 +120,9 @@ type plcConnectionCache struct {
 	// If the connection is used for a longer time, it is forcefully removed from the client.
 	maxLeaseTime time.Duration
 	maxWaitTime  time.Duration
+	// Maximum duration a connection may sit idle before being replaced on the
+	// next lease (0 = keep forever). See WithMaxIdleTime.
+	maxIdleTime time.Duration
 
 	cacheLock   *sync.RWMutex
 	connections map[string]*connectionContainer
@@ -124,7 +140,10 @@ func (c *plcConnectionCache) onConnectionEvent(event connectionEvent) {
 		if c.tracer != nil {
 			c.tracer.AddTrace("destroy-connection", errorEvent.getError().Error())
 		}
-		c.log.Debug().Str("connectionString", connectionContainerInstance.connectionString)
+		c.log.Debug().
+			Str("connectionString", connectionContainerInstance.connectionString).
+			Err(errorEvent.getError()).
+			Msg("Connection reported an error event")
 	}
 }
 
@@ -157,6 +176,7 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 		c.log.Debug().Str("connectionString", connectionString).Msg("Create new cached connection")
 		// Create a new connection container.
 		cc := newConnectionContainer(c.log, c.driverManager, connectionString)
+		cc.maxIdleTime = c.maxIdleTime
 		// Register for connection events (Like connection closed or error).
 		cc.addListener(c)
 		// Store the new connection container in the cache of connections.
@@ -180,10 +200,8 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 	}
 	connChan, errChan := connection.lease(ctx)
 	maximumWaitTimeout := time.NewTimer(c.maxWaitTime)
+	defer maximumWaitTimeout.Stop()
 	select {
-	case <-ctx.Done(): // abort on context cancel
-		return nil, ctx.Err()
-
 	case conn := <-connChan: // Wait till we get a lease.
 		c.log.Debug().
 			Str("connectionString", connectionString).
@@ -201,24 +219,37 @@ func (c *plcConnectionCache) GetConnection(ctx context.Context, connectionString
 	case err := <-errChan:
 		return nil, errors.Wrap(err, "error while trying to get lease on connection")
 
-	case <-ctx.Done():
+	case <-ctx.Done(): // abort on context cancel
+		// Drain the channels in the background: a lease may still be delivered to
+		// the (buffered) channel after we've given up. Without returning it, the
+		// connection would stay leased-to-nobody (StateInUse) forever.
+		c.drainAbandonedLease(connection, connChan, errChan)
 		return nil, ctx.Err()
 
 	case <-maximumWaitTimeout.C: // Timeout after the maximum waiting time.
 		// In this case we need to drain the chan and return it immediate
-		c.wg.Go(func() {
-			select {
-			case <-connChan:
-			case <-errChan:
-			}
-			_ = connection.returnConnection(ctx, StateIdle)
-		})
+		c.drainAbandonedLease(connection, connChan, errChan)
 		if c.tracer != nil {
 			c.tracer.AddTransactionalTrace(txId, "get-connection", "timeout")
 		}
 		c.log.Debug().Str("connectionString", connectionString).Msg("Timeout while waiting for connection.")
 		return nil, errors.New("timeout while waiting for connection")
 	}
+}
+
+// drainAbandonedLease waits in the background for the outcome of a lease request
+// whose caller has given up, and returns a delivered lease straight back to the
+// container. Errors just get discarded. The container guarantees every queued
+// request eventually receives either a lease or an error (even on failed
+// connects), so this goroutine always terminates.
+func (c *plcConnectionCache) drainAbandonedLease(connection *connectionContainer, connChan chan *plcConnectionLease, errChan chan error) {
+	c.wg.Go(func() {
+		select {
+		case <-connChan:
+			_ = connection.returnConnection(context.Background(), StateIdle)
+		case <-errChan:
+		}
+	})
 }
 
 func (c *plcConnectionCache) Close() error {

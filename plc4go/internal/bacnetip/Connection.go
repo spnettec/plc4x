@@ -88,6 +88,7 @@ func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, 
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
 		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
+		options.WithCustomLogger(customLogger),
 	)
 	return connection
 }
@@ -125,6 +126,12 @@ func (c *Connection) Connect(ctx context.Context) error {
 		c.log.Info().Msg("Ending incoming message transfer")
 	})
 	return nil
+}
+
+func (c *Connection) Close() error {
+	err := c.DefaultConnection.Close()
+	c.wg.Wait()
+	return err
 }
 
 func (c *Connection) passToDefaultIncomingMessageChannel() {

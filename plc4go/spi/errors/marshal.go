@@ -19,6 +19,8 @@
 
 package errors
 
+import "fmt"
+
 // Constants compatible with github.com/rs/zerolog/pkgerrors so callers can do
 // entry[errors.StackSourceFileName] and keep working when swapped over.
 const (
@@ -27,6 +29,10 @@ const (
 	StackSourceFunctionName = "func"
 )
 
+// StackMarshalPanicKey is the key under which MarshalStack reports a panic it
+// recovered while walking the error chain (instead of stack frames).
+const StackMarshalPanicKey = "error"
+
 // MarshalStack walks err's chain looking for a value that implements
 //
 //	interface{ StackTrace() StackTrace }
@@ -34,7 +40,22 @@ const (
 // and returns its frames as []map[string]string keyed by StackSource*Name.
 // Returns nil if no stack trace is found in the chain. Suitable for use as
 // zerolog.ErrorStackMarshaler.
-func MarshalStack(err error) any {
+//
+// The walk is panic-guarded: error chains can contain improperly constructed
+// values (e.g. a typed-nil *net.OpError wrapped via %w) whose Unwrap method
+// dereferences a nil receiver. This marshaler runs inside zerolog on every
+// logged error, so a panic here would take down whatever worker is logging.
+// Instead of swallowing the anomaly, the recovered panic is reported as the
+// marshaled payload - it lands under the "stack" key of the very log event
+// that was logging the error, so no logger is needed at this level.
+func MarshalStack(err error) (result any) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = []map[string]string{{
+				StackMarshalPanicKey: fmt.Sprintf("panic while extracting stack from error chain: %v", r),
+			}}
+		}
+	}()
 	type stackTracer interface {
 		StackTrace() StackTrace
 	}
