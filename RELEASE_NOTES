@@ -16,12 +16,57 @@ New Features
   requires mandatory username/password authentication
   (configured via the new "username" and "password" connection
   parameters).
+- The Go serial transport now supports the full set of serial
+  options in the connection string: data-bits, stop-bits, parity,
+  flow-control, dtr, rts, read-timeout and write-timeout.
+- The Go serial transport supports sharing one physical serial port
+  between multiple connections ("reuse-port", e.g. multi-slave Modbus
+  RTU) with broadcast reads and serialized writes, plus inter-frame
+  write pacing ("interframe-delay") on both shared and dedicated ports.
+- The Java serial transport's shared-port mode ("reuse-port") now uses a
+  single broadcast reader per physical port, fixing responses being split
+  between connections, and "interframe-delay" write pacing works on both
+  shared and dedicated ports (gap measured from the last write or
+  received data).
+- The Java Modbus RTU codec now frames responses by function code with
+  CRC validation and byte-wise resynchronization: batched deliveries
+  (e.g. on shared serial ports) yield every frame instead of only the
+  first, and partial or corrupted frames no longer discard buffered data.
+- Java Modbus serial connections (RTU/ASCII) now serialize their requests
+  per connection (single outstanding transaction, matching the protocol),
+  fixing concurrent same-unit requests receiving each other's responses;
+  unknown Modbus exception codes map to REMOTE_ERROR instead of failing;
+  shared serial ports dispatch each connection's callbacks on their own
+  thread, so one blocked callback no longer stalls the whole port.
+  Responses are additionally validated against the pending request's
+  function code (late responses from timed-out requests are discarded
+  instead of completing the wrong caller), and the request timeout now
+  covers the full time from submission, including queueing.
 
 Incompatible changes
 --------------------
 
 - Dropped support for Java 11, new baseline Java version is
   Java 21.
+- The Go serial transport's default baud-rate changed from 115200
+  to 9600 (aligning with common serial defaults and the Java
+  transport). Specify baud-rate explicitly if you relied on the
+  previous default.
+- Go serial reads/writes without an explicit context deadline are
+  now bounded by the new read-timeout/write-timeout options
+  (default 1000 ms; set to 0 for the previous blocking behavior),
+  and invalid serial option values now fail connection creation
+  instead of being silently ignored.
+- The Java serial transport removed the unused options
+  "break-enabled", "receive-buffer-size" and "send-buffer-size",
+  removed the combined "RTS_CTS_XON_XOFF" flow-control mode, and now
+  rejects invalid parity/flow-control values instead of silently
+  falling back to defaults. Option values are case-insensitive and
+  accept "-" or "_" as separator (canonical forms: none, odd, even,
+  mark, space; none, rts-cts, xon-xoff).
+- Acquiring a shared Java serial port ("reuse-port") with a configuration
+  differing from the first connection's now fails with an error instead
+  of silently reusing the first configuration.
 - The 'plc4x' proxy driver now defaults to the TLS transport
   instead of plaintext TCP. Existing plaintext connections must
   switch to an explicit transport prefix (e.g. "plc4x:tcp://...").

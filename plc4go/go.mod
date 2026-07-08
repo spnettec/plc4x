@@ -27,13 +27,12 @@ require (
 	github.com/ajankovic/xdiff v0.0.1
 	github.com/fatih/color v1.19.0
 	github.com/google/uuid v1.6.0
-	github.com/gopacket/gopacket v1.6.1
-	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
+	github.com/gopacket/gopacket v1.7.0
 	github.com/rs/zerolog v1.35.1
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/net v0.56.0
 	golang.org/x/sys v0.46.0
-	golang.org/x/text v0.38.0
+	golang.org/x/text v0.39.0
 	golang.org/x/tools v0.47.0
 )
 

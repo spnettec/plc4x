@@ -52,19 +52,19 @@ public class SerialTransportConfiguration implements TransportConfiguration {
     public int stopBits;
 
     /**
-     * Parity: NONE, ODD, EVEN, MARK, SPACE
+     * Parity: none, odd, even, mark, space (case-insensitive)
      */
     @ConfigurationParameter( "parity")
-    @Description( "Parity: NONE, ODD, EVEN, MARK, SPACE")
-    @StringDefaultValue("NONE")
+    @Description( "Parity: none, odd, even, mark, space (case-insensitive)")
+    @StringDefaultValue("none")
     public String parity;
 
     /**
-     * Flow control: NONE, RTS_CTS, XON_XOFF, RTS_CTS_XON_XOFF
+     * Flow control: none, rts-cts, xon-xoff (case-insensitive)
      */
     @ConfigurationParameter( "flow-control")
-    @Description( "Flow control: NONE, RTS_CTS, XON_XOFF, RTS_CTS_XON_XOFF")
-    @StringDefaultValue("NONE")
+    @Description( "Flow control: none, rts-cts, xon-xoff (case-insensitive)")
+    @StringDefaultValue("none")
     public String flowControl;
 
     /**
@@ -104,42 +104,20 @@ public class SerialTransportConfiguration implements TransportConfiguration {
      * When true, instances with the same port will share a connection.
      * This is useful for protocols where multiple logical connections share one serial port.
      * WARNING: Only use this when the protocol supports multiplexing (like Modbus RTU with different slave IDs).
+     * Connections sharing a port must target distinct unit ids; Modbus RTU responses carry no
+     * transaction ids, so same-unit traffic from multiple connections cannot be told apart.
      */
     @ConfigurationParameter( "reuse-port")
-    @Description( "Reuse the underlying serial port across multiple transport instances. When true, instances with the same port will share a connection. This is useful for protocols where multiple logical connections share one serial port.")
+    @Description( "Reuse the underlying serial port across multiple transport instances. When true, instances with the same port will share a connection. This is useful for protocols where multiple logical connections share one serial port. Connections sharing a port must target distinct unit ids; Modbus RTU responses carry no transaction ids, so same-unit traffic from multiple connections cannot be told apart.")
     @BooleanDefaultValue(false)
     public boolean reusePort;
 
     /**
-     * Receive buffer size in bytes. 0 uses system default.
-     */
-    @ConfigurationParameter( "receive-buffer-size")
-    @Description( "Receive buffer size in bytes. 0 uses system default.")
-    @IntDefaultValue(4096)
-    public int receiveBufferSize;
-
-    /**
-     * Send buffer size in bytes. 0 uses system default.
-     */
-    @ConfigurationParameter( "send-buffer-size")
-    @Description( "Send buffer size in bytes. 0 uses system default.")
-    @IntDefaultValue(4096)
-    public int sendBufferSize;
-
-    /**
-     * Enable break signal
-     */
-    @ConfigurationParameter( "break-enabled")
-    @Description( "Enable break signal")
-    @BooleanDefaultValue(false)
-    public boolean breakEnabled;
-
-    /**
      * Interframe delay in milliseconds for protocols that need spacing between messages.
-     * Only applies when reusePort is true.
+     * Applies to shared and dedicated ports; the gap is measured from the last write or received data.
      */
     @ConfigurationParameter( "interframe-delay")
-    @Description( "Interframe delay in milliseconds for protocols that need spacing between messages. Only applies when reusePort is true.")
+    @Description( "Interframe delay in milliseconds for protocols that need spacing between messages. Applies to shared and dedicated ports; the gap is measured from the last write or received data.")
     @IntDefaultValue(0)
     public int interframeDelay;
 }
