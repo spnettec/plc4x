@@ -106,7 +106,7 @@
               declaration sequence, and the parent's check-coverage would
               fire first.
             -->
-            <phase>after:integration-test</phase>
+            <phase>post-integration-test</phase>
             <goals>
               <goal>merge</goal>
             </goals>

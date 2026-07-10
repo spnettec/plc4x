@@ -77,6 +77,7 @@ public class ScraperConfigurationClassicImpl implements ScraperConfiguration {
     }
 
     @Override
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public List<ScrapeJob> getJobs() throws ScraperException {
         return ScraperConfigurationTriggeredImpl.getJobs(jobConfigurations,sources);
     }

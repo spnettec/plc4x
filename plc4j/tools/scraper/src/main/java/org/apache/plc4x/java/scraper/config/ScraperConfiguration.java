@@ -79,5 +79,6 @@ public interface ScraperConfiguration {
 
     List<JobConfigurationImpl> getJobConfigurations();
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     List<ScrapeJob> getJobs() throws ScraperException;
 }

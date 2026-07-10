@@ -131,6 +131,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
       <version>0.14.0.B-SNAPSHOT</version>
+      <type>pom</type>
       <scope>test</scope>
     </dependency>
     <dependency>

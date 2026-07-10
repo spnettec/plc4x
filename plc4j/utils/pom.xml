@@ -36,20 +36,20 @@
     <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
-  <subprojects>
-    <subproject>audit-log</subproject>
+  <modules>
+    <module>audit-log</module>
     <!-- Non-default input options -->
-    <subproject>pcap-replay</subproject>
-    <subproject>pcap-shared</subproject>
-    <subproject>raw-sockets</subproject>
+    <module>pcap-replay</module>
+    <module>pcap-shared</module>
+    <module>raw-sockets</module>
 
     <!-- Utilities for building tests -->
-    <subproject>test-generator</subproject>
-    <subproject>test-utils</subproject>
+    <module>test-generator</module>
+    <module>test-utils</module>
 
     <!-- Utilities for working with PLCs -->
     <!-- TODO: Re-Enable as soon as we have ported the driver logic -->
     <!--subproject>plc-simulator</subproject-->
-  </subprojects>
+  </modules>
 
 </project>

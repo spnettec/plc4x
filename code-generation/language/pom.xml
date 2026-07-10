@@ -39,23 +39,23 @@
   <profiles>
     <profile>
       <id>with-c</id>
-      <subprojects>
-        <subproject>c</subproject>
-      </subprojects>
+      <modules>
+        <module>c</module>
+      </modules>
     </profile>
 
     <profile>
       <id>with-dotnet</id>
-      <subprojects>
-        <subproject>cs</subproject>
-      </subprojects>
+      <modules>
+        <module>cs</module>
+      </modules>
     </profile>
 
     <profile>
       <id>with-go</id>
-      <subprojects>
-        <subproject>go</subproject>
-      </subprojects>
+      <modules>
+        <module>go</module>
+      </modules>
     </profile>
 
     <profile>
@@ -68,9 +68,9 @@
 
     <profile>
       <id>with-python</id>
-      <subprojects>
-        <subproject>python</subproject>
-      </subprojects>
+      <modules>
+        <module>python</module>
+      </modules>
     </profile>
   </profiles>
 

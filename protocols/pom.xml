@@ -71,7 +71,7 @@
           -->
           <execution>
             <id>before:integration-test</id>
-            <phase>before:integration-test</phase>
+            <phase>pre-integration-test</phase>
             <goals>
               <goal>prepare-agent-integration</goal>
             </goals>
