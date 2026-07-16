@@ -34,6 +34,22 @@ public class NullExtensionObjectWithMask extends ExtensionObjectWithMask impleme
   }
 
   /**
+   * Discriminator field encodingMaskXmlBody
+   */
+  @Override
+  public boolean getEncodingMaskXmlBody() {
+    return (boolean) false;
+  }
+
+  /**
+   * Discriminator field encodingMaskBinaryBody
+   */
+  @Override
+  public boolean getEncodingMaskBinaryBody() {
+    return (boolean) false;
+  }
+
+  /**
    * Virtual field body
    */
   public ExtensionObjectDefinition getBody() {
@@ -41,8 +57,7 @@ public class NullExtensionObjectWithMask extends ExtensionObjectWithMask impleme
   }
 
   public static ExtensionObjectWithMaskBuilder staticParseExtensionObjectWithMaskBuilder(
-      ReadBuffer readBuffer, int extensionId, boolean standardEncoding, boolean includeEncodingMask)
-      throws BufferException {
+      ReadBuffer readBuffer, int extensionId, boolean includeEncodingMask) throws BufferException {
     readBuffer.pushContext(WithOption.WithName("NullExtensionObjectWithMask"), WithOption.WithFloatEncoding("IEEE754"), WithOption.WithSignedIntegerEncoding("twos-complement"), WithOption.WithUnsignedIntegerEncoding("unsigned-binary"), WithOption.WithStringEncoding("UTF8"));
     int startPos = readBuffer.getPositionInBits();
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

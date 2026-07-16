@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.opcua.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.api.model.PlcQuery;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,12 +42,8 @@ class OpcuaPlcTagHandlerTest {
     }
 
     @Test
-    void parsesBrowseQuery() {
-        // Browsing is supported: parseQuery turns the browse expression into an OpcuaQuery
-        // carrying the start-address (or wildcard) string verbatim.
-        PlcQuery query = handler.parseQuery("ns=2;s=HelloWorld");
-        assertThat(query).isInstanceOf(OpcuaQuery.class);
-        assertThat(query.getQueryString()).isEqualTo("ns=2;s=HelloWorld");
+    void doesNotSupportBrowsing() {
+        assertThatThrownBy(() -> handler.parseQuery("anything"))
+            .isInstanceOf(UnsupportedOperationException.class);
     }
-
 }

@@ -110,11 +110,6 @@ public class OpcuaPlcDriver extends DriverBase {
     }
 
     @Override
-    protected boolean canBrowse() {
-        return true;
-    }
-
-    @Override
     protected ConnectionBase<?> getConnection(Configuration configuration,
                                               TransportInstance<?> transportInstance,
                                               AuditLog auditLog) {

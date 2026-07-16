@@ -79,7 +79,7 @@
             </goals>
             <phase>test-compile</phase>
             <configuration>
-              <includeGroupIds>org.eclipse.milo,io.netty,org.bouncycastle,com.digitalpetri.netty,org.slf4j,ch.qos.logback</includeGroupIds>
+              <includeGroupIds>org.eclipse.milo,io.netty,org.bouncycastle,org.slf4j,ch.qos.logback</includeGroupIds>
               <outputDirectory>${project.build.directory}/milo-testcontainer</outputDirectory>
             </configuration>
           </execution>
@@ -257,6 +257,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
+      <artifactId>milo-sdk-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.milo</groupId>
       <artifactId>milo-stack-core</artifactId>
       <scope>test</scope>
     </dependency>
@@ -310,6 +315,11 @@
       <dependency>
         <groupId>org.eclipse.milo</groupId>
         <artifactId>milo-sdk-server</artifactId>
+        <version>${milo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>milo-sdk-core</artifactId>
         <version>${milo.version}</version>
       </dependency>
       <dependency>
