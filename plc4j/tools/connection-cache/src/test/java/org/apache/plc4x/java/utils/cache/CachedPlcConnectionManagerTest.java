@@ -595,8 +595,11 @@ class CachedPlcConnectionManagerTest {
         PlcConnection connection1 = manager.getConnection("test:tcp://localhost");
         connection1.close();
 
-        // Wait for connection to become idle beyond threshold
-        Thread.sleep(600);
+        // Wait for the connection to become idle beyond the 500ms threshold. The ping decision is
+        // made deterministically from the idle duration at lease() time (no scheduled task
+        // involved), so any wall-clock margin over the threshold suffices; 800ms is comfortably
+        // clear of scheduling jitter on a loaded CI runner.
+        Thread.sleep(800);
 
         // Reset ping mock to track subsequent calls
         reset(mockConnection);

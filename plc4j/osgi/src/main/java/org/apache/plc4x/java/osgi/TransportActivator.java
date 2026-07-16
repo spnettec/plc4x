@@ -31,7 +31,7 @@ import java.util.ServiceLoader;
 
 public class TransportActivator implements BundleActivator {
 
-    private final List<ServiceRegistration<Transport>> registrations = new ArrayList<>();
+    private final List<ServiceRegistration<?>> registrations = new ArrayList<>();
     private final String TRANSPORT_CODE ="org.apache.plc4x.transport.code";
     private final String TRANSPORT_NAME ="org.apache.plc4x.transport.name";
 
@@ -39,7 +39,7 @@ public class TransportActivator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         ServiceLoader<Transport> transports = ServiceLoader.load(Transport.class, context.getBundle().adapt(BundleWiring.class).getClassLoader());
-        for (Transport transport : transports) {
+        for (Transport<?> transport : transports) {
             Hashtable<String, String> props = new Hashtable<>();
             props.put(TRANSPORT_CODE, transport.getTransportCode());
             props.put(TRANSPORT_NAME, transport.getTransportName());

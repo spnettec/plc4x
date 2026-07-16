@@ -307,7 +307,7 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-java-jp</artifactId>          <version>0.14.0.B-SNAPSHOT</version>
+          <artifactId>plc4x-code-generation-language-java</artifactId>          <version>0.14.0.B-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

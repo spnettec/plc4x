@@ -34,7 +34,8 @@ public class OpcuaPlcTagHandler implements PlcTagHandler {
 
     @Override
     public PlcQuery parseQuery(String query) {
-        throw new UnsupportedOperationException("This driver doesn't support browsing");
+        // The query is the address of the node to start browsing from (empty => Objects folder).
+        return new OpcuaQuery(query);
     }
 
 }

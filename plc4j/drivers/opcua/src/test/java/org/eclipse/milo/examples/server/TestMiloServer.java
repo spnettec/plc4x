@@ -19,10 +19,11 @@
 
 package org.eclipse.milo.examples.server;
 
-import static org.eclipse.milo.opcua.sdk.server.OpcUaServerConfig.USER_TOKEN_POLICY_ANONYMOUS;
-import static org.eclipse.milo.opcua.sdk.server.OpcUaServerConfig.USER_TOKEN_POLICY_USERNAME;
-import static org.eclipse.milo.opcua.sdk.server.OpcUaServerConfig.USER_TOKEN_POLICY_X509;
+import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_ANONYMOUS;
+import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_USERNAME;
+import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_X509;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,10 +39,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.eclipse.milo.opcua.sdk.server.EndpointConfig;
+import org.eclipse.milo.opcua.stack.core.Stack;
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
-import org.eclipse.milo.opcua.sdk.server.OpcUaServerConfig;
-import org.eclipse.milo.opcua.sdk.server.identity.AnonymousIdentityValidator;
+import org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig;
 import org.eclipse.milo.opcua.sdk.server.identity.CompositeValidator;
 import org.eclipse.milo.opcua.sdk.server.identity.UsernameIdentityValidator;
 import org.eclipse.milo.opcua.sdk.server.identity.X509IdentityValidator;
@@ -49,13 +49,8 @@ import org.eclipse.milo.opcua.sdk.server.util.HostnameUtil;
 import org.eclipse.milo.opcua.stack.core.StatusCodes;
 import org.eclipse.milo.opcua.stack.core.UaRuntimeException;
 import org.eclipse.milo.opcua.stack.core.channel.EncodingLimits;
-import org.eclipse.milo.opcua.stack.core.security.DefaultApplicationGroup;
 import org.eclipse.milo.opcua.stack.core.security.DefaultCertificateManager;
-import org.eclipse.milo.opcua.stack.core.security.DefaultServerCertificateValidator;
-import org.eclipse.milo.opcua.stack.core.security.FileBasedCertificateQuarantine;
-import org.eclipse.milo.opcua.stack.core.security.FileBasedTrustListManager;
-import org.eclipse.milo.opcua.stack.core.security.KeyStoreCertificateStore;
-import org.eclipse.milo.opcua.stack.core.security.RsaSha256CertificateFactory;
+import org.eclipse.milo.opcua.stack.core.security.DefaultTrustListManager;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
 import org.eclipse.milo.opcua.stack.core.transport.TransportProfile;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
@@ -64,8 +59,10 @@ import org.eclipse.milo.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import org.eclipse.milo.opcua.stack.core.types.structured.BuildInfo;
 import org.eclipse.milo.opcua.stack.core.util.CertificateUtil;
 import org.eclipse.milo.opcua.stack.core.util.NonceUtil;
-import org.eclipse.milo.opcua.stack.transport.server.tcp.OpcTcpServerTransport;
-import org.eclipse.milo.opcua.stack.transport.server.tcp.OpcTcpServerTransportConfig;
+import org.eclipse.milo.opcua.stack.core.util.SelfSignedCertificateGenerator;
+import org.eclipse.milo.opcua.stack.core.util.SelfSignedHttpsCertificateBuilder;
+import org.eclipse.milo.opcua.stack.server.EndpointConfiguration;
+import org.eclipse.milo.opcua.stack.server.security.DefaultServerCertificateValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,10 +77,17 @@ public class TestMiloServer {
     private final Logger logger = LoggerFactory.getLogger(TestMiloServer.class);
     private final OpcUaServer server;
     private final ExampleNamespace exampleNamespace;
+    private final Plc4xTestNamespace plc4xTestNamespace;
 
     static {
         // Required for SecurityPolicy.Aes256_Sha256_RsaPss
         Security.addProvider(new BouncyCastleProvider());
+
+        // The integration test opens many connections back-to-back (one per security
+        // policy, plus reconnection/subscription smoke tests). The stack's default
+        // connection rate limiter rejects more than 4 connection attempts per second,
+        // which has nothing to do with the driver under test, so disable it here.
+        Stack.ConnectionLimits.RATE_LIMIT_ENABLED = false;
 
         try {
             NonceUtil.blockUntilSecureRandomSeeded(10, TimeUnit.SECONDS);
@@ -115,46 +119,31 @@ public class TestMiloServer {
             throw new Exception("unable to create security temp dir: " + securityTempDir);
         }
 
-        Path pkiDir = securityTempDir.resolve("pki");
+        File pkiDir = securityTempDir.resolve("pki").toFile();
 
         logger.info("security dir: {}", securityTempDir.toAbsolutePath());
-        logger.info("security pki dir: {}", pkiDir.toAbsolutePath());
+        logger.info("security pki dir: {}", pkiDir.getAbsolutePath());
 
         KeyStoreLoader loader = new KeyStoreLoader().load(securityTempDir);
 
-        KeyStoreCertificateStore certificateStore = KeyStoreCertificateStore.createAndInitialize(
-            new KeyStoreCertificateStore.Settings(
-                securityTempDir.resolve("example-server.pfx"),
-                "password"::toCharArray,
-                alias -> "password".toCharArray()));
+        DefaultCertificateManager certificateManager = new DefaultCertificateManager(
+            loader.getServerKeyPair(),
+            loader.getServerCertificateChain()
+        );
 
-        FileBasedTrustListManager trustListManager = FileBasedTrustListManager.createAndInitialize(pkiDir);
-
-        FileBasedCertificateQuarantine certificateQuarantine =
-            FileBasedCertificateQuarantine.create(pkiDir.resolve("rejected").resolve("certs"));
-
-        RsaSha256CertificateFactory certificateFactory = new RsaSha256CertificateFactory() {
-            @Override
-            protected KeyPair createRsaSha256KeyPair() {
-                return loader.getServerKeyPair();
-            }
-
-            @Override
-            protected X509Certificate[] createRsaSha256CertificateChain(KeyPair keyPair) {
-                return loader.getServerCertificateChain();
-            }
-        };
-
+        DefaultTrustListManager trustListManager = new DefaultTrustListManager(pkiDir);
         DefaultServerCertificateValidator certificateValidator =
-            new DefaultServerCertificateValidator(trustListManager, certificateQuarantine);
+            new DefaultServerCertificateValidator(trustListManager);
 
-        DefaultApplicationGroup defaultGroup = DefaultApplicationGroup.createAndInitialize(
-            trustListManager, certificateStore, certificateFactory, certificateValidator);
+        KeyPair httpsKeyPair = SelfSignedCertificateGenerator.generateRsaKeyPair(2048);
 
-        DefaultCertificateManager certificateManager =
-            new DefaultCertificateManager(certificateQuarantine, defaultGroup);
+        SelfSignedHttpsCertificateBuilder httpsCertificateBuilder = new SelfSignedHttpsCertificateBuilder(httpsKeyPair);
+        httpsCertificateBuilder.setCommonName(HostnameUtil.getHostname());
+        HostnameUtil.getHostnames("0.0.0.0").forEach(httpsCertificateBuilder::addDnsName);
+        X509Certificate httpsCertificate = httpsCertificateBuilder.build();
 
         UsernameIdentityValidator identityValidator = new UsernameIdentityValidator(
+            true,
             authChallenge -> {
                 String username = authChallenge.getUsername();
                 String password = authChallenge.getPassword();
@@ -168,7 +157,11 @@ public class TestMiloServer {
 
         X509IdentityValidator x509IdentityValidator = new X509IdentityValidator(c -> true);
 
-        X509Certificate certificate = loader.getServerCertificate();
+        // If you need to use multiple certificates you'll have to be smarter than this.
+        X509Certificate certificate = certificateManager.getCertificates()
+            .stream()
+            .findFirst()
+            .orElseThrow(() -> new UaRuntimeException(StatusCodes.Bad_ConfigurationError, "no certificate found"));
 
         // The configured application URI must match the one in the certificate(s)
         String applicationUri = CertificateUtil
@@ -177,10 +170,11 @@ public class TestMiloServer {
                 StatusCodes.Bad_ConfigurationError,
                 "certificate is missing the application URI"));
 
-        Set<EndpointConfig> endpointConfigurations = createEndpointConfigs(certificate);
+        Set<EndpointConfiguration> endpointConfigurations = createEndpointConfigurations(certificate);
 
+        EncodingLimits limits = new EncodingLimits(8196, 64, 2097152, 128);
         OpcUaServerConfig serverConfig = OpcUaServerConfig.builder()
-            .setEncodingLimits(new EncodingLimits(8196, 64, 2097152, 128))
+            .setEncodingLimits(limits)
             .setApplicationUri(applicationUri)
             .setApplicationName(LocalizedText.english("Eclipse Milo OPC UA Example Server"))
             .setEndpoints(endpointConfigurations)
@@ -192,25 +186,30 @@ public class TestMiloServer {
                     OpcUaServer.SDK_VERSION,
                     "", DateTime.now()))
             .setCertificateManager(certificateManager)
-            .setIdentityValidator(new CompositeValidator(
-                AnonymousIdentityValidator.INSTANCE, identityValidator, x509IdentityValidator))
+            .setTrustListManager(trustListManager)
+            .setCertificateValidator(certificateValidator)
+            .setHttpsKeyPair(httpsKeyPair)
+            .setHttpsCertificateChain(new X509Certificate[]{httpsCertificate})
+            .setIdentityValidator(new CompositeValidator(identityValidator, x509IdentityValidator))
             .setProductUri("urn:eclipse:milo:example-server")
             .build();
 
-        server = new OpcUaServer(serverConfig, transportProfile -> {
-            OpcTcpServerTransportConfig transportConfig = OpcTcpServerTransportConfig.newBuilder().build();
-            return new OpcTcpServerTransport(transportConfig);
-        });
+        server = new OpcUaServer(serverConfig);
 
         exampleNamespace = new ExampleNamespace(server) {{
             // Set the EventNotifier bit on Server Node for Events.
             getLifecycleManager().addStartupTask(new EventNotifierTask(getServer()));
         }};
         exampleNamespace.startup();
+
+        // Second namespace (index 3) with the PLC4X addressing-variant test nodes
+        // (ns=3;s=Test/...): scalars, arrays and multi-dimensional matrices.
+        plc4xTestNamespace = new Plc4xTestNamespace(server);
+        plc4xTestNamespace.startup();
     }
 
-    private Set<EndpointConfig> createEndpointConfigs(X509Certificate certificate) {
-        Set<EndpointConfig> endpointConfigurations = new LinkedHashSet<>();
+    private Set<EndpointConfiguration> createEndpointConfigurations(X509Certificate certificate) {
+        Set<EndpointConfiguration> endpointConfigurations = new LinkedHashSet<>();
 
         List<String> bindAddresses = new ArrayList<>();
         bindAddresses.add("0.0.0.0");
@@ -222,7 +221,7 @@ public class TestMiloServer {
 
         for (String bindAddress : bindAddresses) {
             for (String hostname : hostnames) {
-                EndpointConfig.Builder builder = EndpointConfig.newBuilder()
+                EndpointConfiguration.Builder builder = EndpointConfiguration.newBuilder()
                     .setBindAddress(bindAddress)
                     .setHostname(hostname)
                     .setPath("/milo")
@@ -233,7 +232,7 @@ public class TestMiloServer {
                         USER_TOKEN_POLICY_X509
                     );
 
-                EndpointConfig.Builder noSecurityBuilder = builder.copy()
+                EndpointConfiguration.Builder noSecurityBuilder = builder.copy()
                     .setSecurityPolicy(SecurityPolicy.None)
                     .setSecurityMode(MessageSecurityMode.None);
                 endpointConfigurations.add(buildTcpEndpoint(noSecurityBuilder));
@@ -294,7 +293,7 @@ public class TestMiloServer {
                         .setSecurityMode(MessageSecurityMode.SignAndEncrypt))
                 );
 
-                EndpointConfig.Builder discoveryBuilder = builder.copy()
+                EndpointConfiguration.Builder discoveryBuilder = builder.copy()
                     .setPath("/milo/discovery")
                     .setSecurityPolicy(SecurityPolicy.None)
                     .setSecurityMode(MessageSecurityMode.None);
@@ -306,7 +305,7 @@ public class TestMiloServer {
         return endpointConfigurations;
     }
 
-    private static EndpointConfig buildTcpEndpoint(EndpointConfig.Builder base) {
+    private static EndpointConfiguration buildTcpEndpoint(EndpointConfiguration.Builder base) {
         return base.copy()
             .setTransportProfile(TransportProfile.TCP_UASC_UABINARY)
             .setBindPort(TCP_BIND_PORT)
@@ -322,6 +321,7 @@ public class TestMiloServer {
     }
 
     public CompletableFuture<OpcUaServer> shutdown() {
+        plc4xTestNamespace.shutdown();
         exampleNamespace.shutdown();
 
         return server.shutdown();
