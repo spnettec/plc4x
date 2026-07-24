@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,19 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-<<<<<<<< HEAD:plc4j/spi/buffers/ascii-box/src/main/java/org/apache/plc4x/java/spi/buffers/asciiboxbased/utils/ClassUtils.java
-
-package org.apache.plc4x.java.spi.utils;
-
-public class ClassUtils {
-    public static boolean classIsPresent(String className){
-        try{
-            Class.forName(className);
-            return true;
-        } catch (ClassNotFoundException e){
-            return false;
-        }
-========
 package org.apache.plc4x.java.slmp;
 
 import org.junit.jupiter.api.Test;
@@ -44,6 +31,5 @@ class SlmpDriverTest {
         // Same package as SlmpDriver, so the protected can* methods are directly accessible.
         assertTrue(driver.canRead(), "canRead should return true");
         assertTrue(driver.canWrite(), "canWrite should return true");
->>>>>>>> origin/develop:plc4j/drivers/slmp/src/test/java/org/apache/plc4x/java/slmp/SlmpDriverTest.java
     }
 }

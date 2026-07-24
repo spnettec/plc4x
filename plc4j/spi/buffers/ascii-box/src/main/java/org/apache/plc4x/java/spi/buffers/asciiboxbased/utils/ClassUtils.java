@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-<<<<<<<< HEAD:plc4j/spi/buffers/ascii-box/src/main/java/org/apache/plc4x/java/spi/buffers/asciiboxbased/utils/ClassUtils.java
 
 package org.apache.plc4x.java.spi.utils;
 
@@ -28,22 +27,5 @@ public class ClassUtils {
         } catch (ClassNotFoundException e){
             return false;
         }
-========
-package org.apache.plc4x.java.slmp;
-
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-class SlmpDriverTest {
-
-    private final SlmpDriver driver = new SlmpDriver();
-
-    @Test
-    void capabilities() {
-        // Same package as SlmpDriver, so the protected can* methods are directly accessible.
-        assertTrue(driver.canRead(), "canRead should return true");
-        assertTrue(driver.canWrite(), "canWrite should return true");
->>>>>>>> origin/develop:plc4j/drivers/slmp/src/test/java/org/apache/plc4x/java/slmp/SlmpDriverTest.java
     }
 }
