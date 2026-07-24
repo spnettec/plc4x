@@ -20,7 +20,7 @@
 package org.apache.plc4x.java.tools.eventpump.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

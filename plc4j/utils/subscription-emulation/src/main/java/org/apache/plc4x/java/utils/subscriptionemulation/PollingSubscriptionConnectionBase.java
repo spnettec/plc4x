@@ -21,6 +21,7 @@ package org.apache.plc4x.java.utils.subscriptionemulation;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
@@ -516,6 +517,11 @@ public abstract class PollingSubscriptionConnectionBase<C extends Configuration>
         @Override
         public PlcConnection getConnection(String connectionString, PlcAuthentication authentication) throws PlcConnectionException {
             return wrappedConnection;
+        }
+
+        @Override
+        public PlcDriverManager getDriverManager() {
+            return null;
         }
     }
 

@@ -19,8 +19,8 @@
 
 package org.apache.plc4x.java.tools.eventpump.config;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TagMapDeserializerTest {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final JsonMapper mapper = JsonMapper.builder().build();
 
     @Test
     void testDeserializeSimpleFormat() throws Exception {
@@ -40,11 +40,11 @@ class TagMapDeserializerTest {
             }
             """;
 
-        JsonParser parser = mapper.getFactory().createParser(json);
+        JsonParser parser = mapper.createParser(json);
         parser.nextToken(); // Move to start of object
 
         TagMapDeserializer deserializer = new TagMapDeserializer();
-        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper.getDeserializationContext());
+        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper._deserializationContext());
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -71,11 +71,11 @@ class TagMapDeserializerTest {
             }
             """;
 
-        JsonParser parser = mapper.getFactory().createParser(json);
+        JsonParser parser = mapper.createParser(json);
         parser.nextToken(); // Move to start of object
 
         TagMapDeserializer deserializer = new TagMapDeserializer();
-        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper.getDeserializationContext());
+        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper._deserializationContext());
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -102,11 +102,11 @@ class TagMapDeserializerTest {
             }
             """;
 
-        JsonParser parser = mapper.getFactory().createParser(json);
+        JsonParser parser = mapper.createParser(json);
         parser.nextToken(); // Move to start of object
 
         TagMapDeserializer deserializer = new TagMapDeserializer();
-        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper.getDeserializationContext());
+        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper._deserializationContext());
 
         assertNotNull(result);
         assertEquals(3, result.size());
@@ -139,13 +139,13 @@ class TagMapDeserializerTest {
             }
             """;
 
-        JsonParser parser = mapper.getFactory().createParser(json);
+        JsonParser parser = mapper.createParser(json);
         parser.nextToken(); // Move to start of object
 
         TagMapDeserializer deserializer = new TagMapDeserializer();
 
         assertThrows(Exception.class, () -> {
-            deserializer.deserialize(parser, mapper.getDeserializationContext());
+            deserializer.deserialize(parser, mapper._deserializationContext());
         });
     }
 
@@ -153,11 +153,11 @@ class TagMapDeserializerTest {
     void testDeserializeEmptyMap() throws Exception {
         String json = "{}";
 
-        JsonParser parser = mapper.getFactory().createParser(json);
+        JsonParser parser = mapper.createParser(json);
         parser.nextToken(); // Move to start of object
 
         TagMapDeserializer deserializer = new TagMapDeserializer();
-        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper.getDeserializationContext());
+        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper._deserializationContext());
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -173,11 +173,11 @@ class TagMapDeserializerTest {
             }
             """;
 
-        JsonParser parser = mapper.getFactory().createParser(json);
+        JsonParser parser = mapper.createParser(json);
         parser.nextToken(); // Move to start of object
 
         TagMapDeserializer deserializer = new TagMapDeserializer();
-        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper.getDeserializationContext());
+        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper._deserializationContext());
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -198,11 +198,11 @@ class TagMapDeserializerTest {
             }
             """;
 
-        JsonParser parser = mapper.getFactory().createParser(json);
+        JsonParser parser = mapper.createParser(json);
         parser.nextToken(); // Move to start of object
 
         TagMapDeserializer deserializer = new TagMapDeserializer();
-        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper.getDeserializationContext());
+        Map<String, TagConfiguration> result = deserializer.deserialize(parser, mapper._deserializationContext());
 
         assertNotNull(result);
         assertEquals(3, result.size());

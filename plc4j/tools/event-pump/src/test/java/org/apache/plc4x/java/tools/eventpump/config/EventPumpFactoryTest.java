@@ -21,6 +21,7 @@ package org.apache.plc4x.java.tools.eventpump.config;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
 import org.apache.plc4x.java.api.messages.PlcPingResponse;
@@ -67,6 +68,11 @@ class EventPumpFactoryTest {
             @Override
             public PlcConnection getConnection(String connectionString, org.apache.plc4x.java.api.authentication.PlcAuthentication authentication) throws PlcConnectionException {
                 return new StubPlcConnection();
+            }
+
+            @Override
+            public PlcDriverManager getDriverManager() {
+                return null;
             }
         };
     }

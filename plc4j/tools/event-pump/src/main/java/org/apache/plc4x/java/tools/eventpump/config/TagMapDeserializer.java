@@ -19,14 +19,12 @@
 
 package org.apache.plc4x.java.tools.eventpump.config;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -37,17 +35,18 @@ import java.util.Map;
  * - Simple format: "tagName": "address"
  * - Extended format: "tagName": { "address": "...", "transform": "..." }
  */
-public class TagMapDeserializer extends JsonDeserializer<Map<String, TagConfiguration>> {
+public class TagMapDeserializer extends StdDeserializer<Map<String, TagConfiguration>> {
+
+    public TagMapDeserializer() {
+        super(Map.class);
+    }
 
     @Override
-    public Map<String, TagConfiguration> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public Map<String, TagConfiguration> deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
         Map<String, TagConfiguration> tags = new LinkedHashMap<>();
-        ObjectMapper mapper = (ObjectMapper) p.getCodec();
-        JsonNode node = mapper.readTree(p);
+        JsonNode node = p.readValueAsTree();
 
-        Iterator<Map.Entry<String, JsonNode>> fields = node.fields();
-        while (fields.hasNext()) {
-            Map.Entry<String, JsonNode> entry = fields.next();
+        for (Map.Entry<String, JsonNode> entry : node.properties()) {
             String tagName = entry.getKey();
             JsonNode tagNode = entry.getValue();
 
@@ -57,9 +56,9 @@ public class TagMapDeserializer extends JsonDeserializer<Map<String, TagConfigur
                 tagConfig = new TagConfiguration(tagNode.asText());
             } else if (tagNode.isObject()) {
                 // Extended format: object with address and optional transform
-                tagConfig = mapper.treeToValue(tagNode, TagConfiguration.class);
+                tagConfig = ctxt.readTreeAsValue(tagNode, TagConfiguration.class);
             } else {
-                throw new IOException("Invalid tag configuration for '" + tagName + "': expected string or object");
+                throw new IllegalArgumentException("Invalid tag configuration for '" + tagName + "': expected string or object");
             }
 
             tags.put(tagName, tagConfig);

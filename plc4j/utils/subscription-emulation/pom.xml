@@ -17,12 +17,14 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.14.0.B-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-utils-subscription-emulation</artifactId>
@@ -79,33 +81,33 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi-config</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi-drivers</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transports-api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-audit-log-api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-tools-event-pump</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
 
     <!-- Logging -->
@@ -118,13 +120,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi-values</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.14.0.B-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.14.0.B-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
