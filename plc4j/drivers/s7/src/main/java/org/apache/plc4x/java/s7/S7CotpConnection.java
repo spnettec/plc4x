@@ -414,8 +414,14 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         S7Message request = new S7MessageRequest(getTpduId(),
             new S7ParameterReadVarRequest(Collections.singletonList(item)), null);
         return executeThrottled(() -> sendInternal(request))
-            .handle((resp, err) -> new DefaultPlcPingResponse(pingRequest,
-                err != null ? PlcResponseCode.INTERNAL_ERROR : PlcResponseCode.OK));
+            .handle((resp, err) -> {
+                if (err != null) {
+                    // Propagate transport error so the connection cache detects dead connections
+                    // instead of silently returning INTERNAL_ERROR (which skips validation).
+                    throw new PlcRuntimeException("Transport error during S7 ping", err);
+                }
+                return new DefaultPlcPingResponse(pingRequest, PlcResponseCode.OK);
+            });
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -499,12 +505,12 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         return executeThrottled(() -> sendInternal(request))
             .handle((response, error) -> {
                 if (error != null) {
-                    for (S7ReadChunk.Slot slot : chunk.slots()) {
-                        for (S7ReadChunk.Binding b : slot.bindings()) {
-                            mergeBindingFailure(out, b, PlcResponseCode.INTERNAL_ERROR);
-                        }
+                    // Propagate transport error so the connection cache detects dead connections
+                    // instead of silently returning INTERNAL_ERROR (which skips validation).
+                    if (error instanceof RuntimeException re) {
+                        throw re;
                     }
-                    return null;
+                    throw new PlcRuntimeException("Transport error during S7 read chunk", error);
                 }
                 applyChunkResponse(chunk, response, out);
                 return null;
@@ -776,8 +782,8 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
 
                 return executeThrottled(() -> sendInternal(request)).handle((response, error) -> {
                     if (error != null) {
-                        out.putIfAbsent(tagName, PlcResponseCode.INTERNAL_ERROR);
-                        return null;
+                        // Propagate transport error so the connection cache detects dead connections.
+                        throw new PlcRuntimeException("Transport error during S7 split write", error);
                     }
                     if (response instanceof S7MessageResponseData md
                             && (md.getErrorClass() != 0 || md.getErrorCode() != 0)) {
@@ -899,8 +905,8 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         return executeThrottled(() -> sendInternal(request))
             .handle((response, error) -> {
                 if (error != null) {
-                    for (String n : sentTagNames) out.put(n, PlcResponseCode.INTERNAL_ERROR);
-                    return null;
+                    // Propagate transport error so the connection cache detects dead connections.
+                    throw new PlcRuntimeException("Transport error during S7 write chunk", error);
                 }
                 short errorClass = 0, errorCode = 0;
                 if (response instanceof S7MessageResponseData md) {

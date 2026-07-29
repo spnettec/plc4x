@@ -102,6 +102,9 @@ public class DefaultPlcValueHandler implements PlcValueHandler {
                     throw new PlcRuntimeException(String.format("Expecting %d items, but got %d", arrayInfo.getSize(), plcRawByteArray.getRaw().length));
                 }
                 return plcRawByteArray;
+            } else if (values[0] instanceof byte[] byteArray) {
+                // Raw byte[] passed directly (e.g. BYTE[n] tag with byte[] value) — wrap as PlcRawByteArray.
+                return new PlcRawByteArray(byteArray);
             }
         }
 
