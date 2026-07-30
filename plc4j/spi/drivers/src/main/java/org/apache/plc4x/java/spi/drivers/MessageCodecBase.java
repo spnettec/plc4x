@@ -120,14 +120,38 @@ public abstract class MessageCodecBase<M extends Message> {
                 }
 
                 ReadBufferByteBased readBuffer = createReadBuffer(messageBytes);
-                M message = parseMessage(readBuffer);
-                messageHandler.accept(message);
+                try {
+                    M message = parseMessage(readBuffer);
+                    messageHandler.accept(message);
+                } catch (BufferException e) {
+                    // The raw bytes have already been consumed from the transport.
+                    // Subclasses can override handleParseError to deliver a synthetic error
+                    // response instead of throwing — this avoids a timeout → connection
+                    // destruction when only a single response was malformed.
+                    if (!handleParseError(messageBytes, e)) {
+                        throw e;
+                    }
+                    // else: error handled, continue processing any remaining messages
+                }
             }
         } catch (TransportException e) {
             throw new MessageCodecException("Failed to receive " + protocolName + " message", e);
         } catch (BufferException e) {
             throw new MessageCodecException("Failed to parse " + protocolName + " message", e);
         }
+    }
+
+    /**
+     * Called when a message cannot be parsed. Subclasses can override to deliver
+     * a synthetic error response to the message handler instead of throwing.
+     * The raw bytes have already been consumed from the transport.
+     *
+     * @param rawBytes the raw message bytes that failed to parse
+     * @param cause    the parse error
+     * @return true if the error was handled (skip and continue), false to re-throw
+     */
+    protected boolean handleParseError(byte[] rawBytes, BufferException cause) {
+        return false;
     }
 
     public boolean isOpen() {

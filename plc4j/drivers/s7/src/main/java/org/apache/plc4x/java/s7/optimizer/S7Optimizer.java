@@ -95,7 +95,12 @@ public class S7Optimizer {
 
             // Whole tag fits; either append to current chunk or roll over.
             if (responseItemSize <= context.getPduSize() - EMPTY_READ_RESPONSE_SIZE) {
-                if (curRequestSize + requestItemSize > context.getPduSize() ||
+                // Separate chunks by DB number so that a per-DB error (e.g. non-existent
+                // DB) from the PLC only affects tags in the same DB, not the entire chunk.
+                boolean dbChanged = !currentSlots.isEmpty()
+                    && dbChanged((S7Tag) currentSlots.get(0).fragmentTag(), s7Tag);
+                if (dbChanged ||
+                    curRequestSize + requestItemSize > context.getPduSize() ||
                     curResponseSize + responseItemSize > context.getPduSize()) {
                     if (!currentSlots.isEmpty()) {
                         chunks.add(new S7ReadChunk(currentSlots));
@@ -263,6 +268,22 @@ public class S7Optimizer {
         }
         return new S7AddressAny(transportSize, numElements, tag.getBlockNumber(),
             tag.getMemoryArea(), tag.getByteOffset(), tag.getBitOffset());
+    }
+
+    /**
+     * Returns true when two tags reference different DB blocks. When true, the tags should
+     * go into separate chunks so that a PLC-level per-DB error (e.g. non-existent DB) does
+     * not poison tags belonging to a valid DB.
+     */
+    private static boolean dbChanged(S7Tag a, S7Tag b) {
+        MemoryArea ma = a.getMemoryArea();
+        MemoryArea mb = b.getMemoryArea();
+        boolean aIsDb = ma == MemoryArea.DATA_BLOCKS || ma == MemoryArea.INSTANCE_DATA_BLOCKS;
+        boolean bIsDb = mb == MemoryArea.DATA_BLOCKS || mb == MemoryArea.INSTANCE_DATA_BLOCKS;
+        if (!aIsDb || !bIsDb) {
+            return false; // non-DB areas don't have per-block errors; keep them together
+        }
+        return a.getBlockNumber() != b.getBlockNumber();
     }
 
     protected static LinkedHashMap<String, PlcTag> toLinkedMap(PlcReadRequest request) {

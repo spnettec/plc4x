@@ -1569,6 +1569,13 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
     }
 
     private static PlcResponseCode mapPlcErrorCode(short errorClass, short errorCode) {
+        // 0x81: application relationship error
+        if (errorClass == 0x81) {
+            return switch (errorCode) {
+                case 4 -> PlcResponseCode.INVALID_ADDRESS;   // area / object does not exist
+                default -> PlcResponseCode.INTERNAL_ERROR;
+            };
+        }
         // Ported error mapping from s7-light: 129/4 means PUT/GET disabled.
         if (errorClass == 129 && errorCode == 4) return PlcResponseCode.ACCESS_DENIED;
         if (errorClass == 0x85) return PlcResponseCode.ACCESS_DENIED;

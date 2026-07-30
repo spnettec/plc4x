@@ -28,6 +28,7 @@ import org.apache.plc4x.java.spi.buffers.bytebased.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.drivers.MessageCodecBase;
 import org.apache.plc4x.java.spi.transports.api.TransportInstance;
 
+import java.util.Collections;
 import java.util.function.Consumer;
 
 /**
@@ -79,6 +80,27 @@ public class S7CotpMessageCodec extends MessageCodecBase<S7Message> {
     @Override
     protected S7Message parseMessage(ReadBufferByteBased readBuffer) throws BufferException {
         return S7Message.staticParse(readBuffer);
+    }
+
+    @Override
+    protected boolean handleParseError(byte[] rawBytes, BufferException cause) {
+        logger.warn("Malformed S7 response ({} bytes), delivering as error to caller: {}",
+            rawBytes.length, cause.toString());
+
+        // Extract tpduRef from raw bytes (S7 header bytes 4-5) to route the error
+        // response to the correct pending request. Without this, the pending request
+        // would timeout, triggering unnecessary connection destruction and reconnection.
+        if (rawBytes.length >= 6) {
+            int tpduRef = ((rawBytes[4] & 0xFF) << 8) | (rawBytes[5] & 0xFF);
+            S7MessageResponseData errorMsg = new S7MessageResponseData(
+                tpduRef,
+                new S7ParameterReadVarResponse((short) 0),
+                new S7PayloadReadVarResponse(Collections.emptyList()),
+                (short) 0x81,
+                (short) 0x04);  // 0x8104 = area/object does not exist
+            messageHandler.accept(errorMsg);
+        }
+        return true; // handled — skip this message, continue processing
     }
 
     /**
