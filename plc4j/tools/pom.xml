@@ -42,8 +42,7 @@
     <module>event-pump</module>
     <module>opm</module>
     <module>plc4x-server</module>
-    <module>scraper</module>
-    <!--module>scraper-ng</module-->
+    <!--module>scraper</module-->
   </modules>
 
 </project>

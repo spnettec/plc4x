@@ -26,7 +26,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>plc4j-connection-cache</artifactId>
+  <artifactId>plc4j-tools-connection-cache</artifactId>
 
   <name>PLC4J: Tools: Connection Cache</name>
   <description>An implementation of a connection cache.</description>
