@@ -46,7 +46,11 @@ public class ByteOrderManager {
     private final Map<String, ByteOrder> byteOrderMap;
 
     public ByteOrderManager() {
-        this(Thread.currentThread().getContextClassLoader());
+        // Use own classloader (the bundle's classloader in OSGi) rather than the
+        // thread-context classloader, which may not have visibility into this
+        // bundle's META-INF/services resources. Without this, getByteOrder()
+        // finds zero implementations and silently falls back to BIG_ENDIAN.
+        this(ByteOrderManager.class.getClassLoader());
     }
 
     public ByteOrderManager(ClassLoader classLoader) {

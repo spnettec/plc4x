@@ -46,7 +46,12 @@ public class EncodingManager {
     private final Map<String, Encoding> encodingMap;
 
     public EncodingManager() {
-        this(Thread.currentThread().getContextClassLoader());
+        // Use own classloader (the bundle's classloader in OSGi) rather than the
+        // thread-context classloader, which may not have visibility into this
+        // bundle's META-INF/services resources. Otherwise ServiceLoader finds
+        // zero Encoding implementations and every writeString/writeUnsignedInt
+        // etc. call fails with "No encoding defined for ...".
+        this(EncodingManager.class.getClassLoader());
     }
 
     public EncodingManager(ClassLoader classLoader) {
