@@ -161,7 +161,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-subscription-emulation</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.14.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
