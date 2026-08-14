@@ -44,7 +44,7 @@ To add polling-based subscription support to your driver:
 <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils-subscription-emulation</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.B-SNAPSHOT</version>
 </dependency>
 ```
 

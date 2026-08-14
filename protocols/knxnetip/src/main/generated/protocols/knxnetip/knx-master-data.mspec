@@ -1573,8 +1573,10 @@
     ['818' M_READYKNX ['879', '"readyKNX"']]
     ['819' M_SMARTVOS ['880', '"smartVOS"']]
     ['820' M_ISG_INDUSTRIELLE_STEUERUNGSTECHNIK_GMBH ['881', '"ISG Industrielle Steuerungstechnik GmbH"']]
-    ['821' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['822' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['821' M_CHINT ['883', '"CHINT"']]
+    ['822' M_BEEKER_TECH_GMBH_AND_CO__KG ['884', '"Beeker Tech GmbH & Co. KG"']]
+    ['823' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['824' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

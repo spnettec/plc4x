@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.14.0.B-SNAPSHOT</version>
+    <version>1.0.0.B-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -39,32 +39,32 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.14.0.B-SNAPSHOT</version>
+      <version>1.0.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi-config</artifactId>
-      <version>0.14.0.B-SNAPSHOT</version>
+      <version>1.0.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi-drivers</artifactId>
-      <version>0.14.0.B-SNAPSHOT</version>
+      <version>1.0.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi-values</artifactId>
-      <version>0.14.0.B-SNAPSHOT</version>
+      <version>1.0.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transports-api</artifactId>
-      <version>0.14.0.B-SNAPSHOT</version>
+      <version>1.0.0.B-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-audit-log-api</artifactId>
-      <version>0.14.0.B-SNAPSHOT</version>
+      <version>1.0.0.B-SNAPSHOT</version>
     </dependency>
 
     <dependency>

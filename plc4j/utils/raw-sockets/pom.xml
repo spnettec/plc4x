@@ -17,14 +17,13 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils</artifactId>
-    <version>0.14.0.B-SNAPSHOT</version>
+    <version>1.0.0.B-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>plc4j-utils-raw-sockets</artifactId>
 
@@ -45,13 +44,6 @@
           <usedDependencies>
             <usedDependency>org.pcap4j:pcap4j-packetfactory-static</usedDependency>
           </usedDependencies>
-          <ignoredDependencies combine.children="append">
-            <!--
-              For some reason we need to do this. The compiler needs it in order to compile,
-              but the plugin doesn't detect this.
-            -->
-            <ignoredDependency>io.netty:netty-common</ignoredDependency>
-          </ignoredDependencies>
         </configuration>
       </plugin>
 
@@ -76,25 +68,6 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.14.0.B-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-core</artifactId>
@@ -122,13 +95,6 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.14.0.B-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
