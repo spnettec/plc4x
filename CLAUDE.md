@@ -183,7 +183,7 @@ YOFC 自建的 PLC4X 代理服务器（`plc4j/tools/plc4x-server`），基于 Ne
 
 ## 工具链
 
-- Java 21（Temurin）+ Maven 3.9+
+- Java 21（Temurin）+ Maven 4（`~/apps/maven/apache-maven-4.0.0-rc-5`，项目已迁移 POM 4.1.0 schema + `<subprojects>`，Maven 3 无法构建）
 
 # Codebase Memory MCP — Code Intelligence
 
