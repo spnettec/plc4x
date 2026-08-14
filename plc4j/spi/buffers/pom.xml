@@ -17,19 +17,25 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-spi</artifactId>
     <version>1.0.0.B-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>plc4j-spi-buffers</artifactId>
   <packaging>pom</packaging>
 
   <name>PLC4J: SPI: Buffers</name>
+
+  <modules>
+    <module>api</module>
+    <module>ascii-box</module>
+    <module>byte</module>
+    <module>xml</module>
+  </modules>
 
   <properties>
     <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
