@@ -245,25 +245,20 @@ public class OpcuaSubscriptionHandle implements PlcSubscriptionHandle {
     /**
      * Stop the subscriber either on disconnect or on error
      */
-    public CompletableFuture<Void> stopSubscriber() {
-        if (publishTask != null) {
-            publishTask.cancel(true);
-            publishTask = null;
-        }
-
+    public void stopSubscriber() {
         RequestHeader requestHeader = conversation.createRequestHeader(this.revisedCycleTime * 10);
         List<Long> subscriptions = Collections.singletonList(subscriptionId);
         DeleteSubscriptionsRequest deleteSubscriptionRequest = new DeleteSubscriptionsRequest(requestHeader, subscriptions);
 
         //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
-        return conversation.submit(deleteSubscriptionRequest, DeleteSubscriptionsResponse.class)
+        conversation.submit(deleteSubscriptionRequest, DeleteSubscriptionsResponse.class)
+            .thenAccept(responseMessage -> publishTask.cancel(true))
             .whenComplete((result, error) -> {
                 if (error != null) {
                     logger.error("Deletion of subscription resulted in error", error);
                 }
                 plcSubscriber.removeSubscription(subscriptionId);
-            })
-            .thenApply(responseMessage -> null);
+            });
     }
 
     /**

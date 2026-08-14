@@ -18,11 +18,7 @@
  */
 package org.apache.plc4x.java.opcua;
 
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
-import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.config.Configuration;
 import org.apache.plc4x.java.spi.drivers.ConnectionBase;
@@ -32,7 +28,6 @@ import org.apache.plc4x.java.utils.auditlog.api.AuditLog;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
 
 public class OpcuaPlcDriver extends DriverBase {
 
@@ -76,37 +71,9 @@ public class OpcuaPlcDriver extends DriverBase {
         return true;
     }
 
-    /**
-     * Extracts the transport endpoint path (e.g. {@code "/milo"}) from the
-     * connection URL and passes it to the {@link OpcuaConnection} so the
-     * OPC UA HELLO message carries the correct endpoint URL.
-     *
-     * <p>The new SPI only hands {@code host:port} to the TCP transport —
-     * the path part is lost.  The pre-merge code parsed it inside
-     * {@link OpcuaDriverContext#setConfiguration} which received the full
-     * URL; we replicate that logic here.</p>
-     */
     @Override
-    public PlcConnection getConnection(String connectionString, PlcAuthentication authentication)
-            throws PlcConnectionException {
-        // Parse transport endpoint path before the parent strips it
-        String transportEndpoint = "";
-        Matcher matcher = OpcuaDriverContext.URI_PATTERN.matcher(connectionString);
-        if (matcher.matches()) {
-            String te = matcher.group("transportEndpoint");
-            if (te != null) {
-                transportEndpoint = te;
-            }
-        }
-
-        PlcConnection connection = super.getConnection(connectionString, authentication);
-        if (connection instanceof OpcuaConnection opcua) {
-            opcua.setTransportEndpoint(transportEndpoint);
-            if (authentication != null) {
-                opcua.setPlcAuthentication(authentication);
-            }
-        }
-        return connection;
+    protected boolean canBrowse() {
+        return true;
     }
 
     @Override
