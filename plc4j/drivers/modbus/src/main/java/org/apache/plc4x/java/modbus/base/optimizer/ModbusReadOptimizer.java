@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.modbus.base.optimizer;
 
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.base.tag.*;
@@ -32,6 +31,9 @@ import org.apache.plc4x.java.spi.buffers.bytebased.WithByteBasedOption;
 import org.apache.plc4x.java.spi.drivers.messages.items.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.drivers.messages.items.PlcResponseItem;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
+import org.apache.plc4x.java.spi.values.PlcList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -43,6 +45,8 @@ import java.util.*;
  * to serve each original tag.
  */
 public class ModbusReadOptimizer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModbusReadOptimizer.class);
 
     private final int maxCoilsPerRequest;
     private final int maxRegistersPerRequest;
@@ -121,12 +125,35 @@ public class ModbusReadOptimizer {
 
             try {
                 if (blockTag instanceof ModbusTagCoil || blockTag instanceof ModbusTagDiscreteInput) {
-                    // Coils/discrete inputs: bit-level extraction
-                    int bitPosition = originalTag.getAddress() - blockTag.getAddress();
-                    int bytePosition = bitPosition / 8;
-                    int bitPositionInByte = bitPosition % 8;
-                    boolean isBitSet = (blockData[bytePosition] & (1 << bitPositionInByte)) != 0;
-                    result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcBOOL(isBitSet)));
+                    // Coils/discrete inputs: bit-level extraction. An array tag (BOOL[n]) occupies
+                    // n consecutive coils - the block read already covers all of them (see
+                    // optimizeCoils), so every element has to be extracted, not just the first.
+                    if (originalTag.getDataType() != ModbusDataType.BOOL) {
+                        // A coil carries a single bit. Assembling coils into wider types is not
+                        // implemented - report that instead of silently returning the first bit.
+                        LOGGER.warn("Reading coils/discrete inputs as {} is not supported (tag '{}'), only BOOL is.",
+                            originalTag.getDataType(), tagName);
+                        result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
+                        continue;
+                    }
+                    int firstBitPosition = originalTag.getAddress() - blockTag.getAddress();
+                    int numberOfElements = originalTag.getNumberOfElements();
+                    int lastBytePosition = (firstBitPosition + numberOfElements - 1) / 8;
+                    if (lastBytePosition >= blockData.length) {
+                        // The device returned fewer coils than we asked for.
+                        result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                        continue;
+                    }
+                    List<PlcValue> values = new ArrayList<>(numberOfElements);
+                    for (int i = 0; i < numberOfElements; i++) {
+                        int bitPosition = firstBitPosition + i;
+                        int bytePosition = bitPosition / 8;
+                        int bitPositionInByte = bitPosition % 8;
+                        boolean isBitSet = (blockData[bytePosition] & (1 << bitPositionInByte)) != 0;
+                        values.add(new PlcBOOL(isBitSet));
+                    }
+                    PlcValue plcValue = numberOfElements == 1 ? values.getFirst() : new PlcList(values);
+                    result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue));
                 } else {
                     // Registers: byte-level extraction
                     int byteOffset = (originalTag.getAddress() - blockTag.getAddress()) * 2;
@@ -156,7 +183,7 @@ public class ModbusReadOptimizer {
                             WithOption.WithStringEncoding("UTF8"));
                     }
                     PlcValue plcValue = DataItem.staticParse(readBuffer, originalTag.getDataType(),
-                        originalTag.getNumberOfElements(), bigEndian);
+                        originalTag.getNumberOfElements(), bigEndian, originalTag.getStringLength());
                     result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue));
                 }
             } catch (BufferException e) {

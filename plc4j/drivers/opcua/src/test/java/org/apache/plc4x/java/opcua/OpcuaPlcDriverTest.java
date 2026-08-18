@@ -27,12 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.time.Duration;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcNullAuthentication;
@@ -82,9 +84,13 @@ public class OpcuaPlcDriverTest {
     private static final String APPLICATION_URI = "urn:org.apache:plc4x";
     private static final KeystoreGenerator SERVER_KEY_STORE_GENERATOR = new KeystoreGenerator("password", 2048, APPLICATION_URI);
     private static final KeystoreGenerator CLIENT_KEY_STORE_GENERATOR = new KeystoreGenerator("changeit", 2048, APPLICATION_URI, "plc4x_plus_milo", "client");
+    // A second client identity with a 4096-bit key. Several reports blamed connection failures on
+    // large certificates (GH-2013, GH-2196, GH-2286), so the size is covered explicitly.
+    private static final KeystoreGenerator CLIENT_KEY_STORE_4096_GENERATOR = new KeystoreGenerator("changeit", 4096, APPLICATION_URI, "plc4x_plus_milo", "client4096");
 
     private static final File SECURITY_DIR;
     private static final File CLIENT_KEY_STORE;
+    private static final File CLIENT_KEY_STORE_4096;
     // The server's certificate, exported so the client can pin trust to it. Since the
     // driver now rejects server certificates by default (no permissive fallback), every
     // secured connection needs an explicit trust anchor.
@@ -123,6 +129,15 @@ public class OpcuaPlcDriverTest {
             }
             try (FileOutputStream outputStream = new FileOutputStream(new File(trustedCerts, "plc4x.crt"))) {
                 CLIENT_KEY_STORE_GENERATOR.writeCertificateTo(outputStream);
+            }
+
+            // the same, for the 4096-bit client identity
+            CLIENT_KEY_STORE_4096 = Files.createTempFile("plc4x_opcua_client_4096_", ".p12").toAbsolutePath().toFile();
+            try (FileOutputStream outputStream = new FileOutputStream(CLIENT_KEY_STORE_4096)) {
+                CLIENT_KEY_STORE_4096_GENERATOR.writeKeyStoreTo(outputStream);
+            }
+            try (FileOutputStream outputStream = new FileOutputStream(new File(trustedCerts, "plc4x_4096.crt"))) {
+                CLIENT_KEY_STORE_4096_GENERATOR.writeCertificateTo(outputStream);
             }
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);
@@ -676,6 +691,75 @@ public class OpcuaPlcDriverTest {
                 }
             }
         }
+        /**
+         * A CYCLIC subscription has to report the value on every interval, even when it never
+         * changes - see GH-1102. OPC UA itself only notifies on change, so a static value used to
+         * produce exactly one event (the monitored item's initial value) and nothing after that.
+         */
+        @Test
+        public void cyclicSubscriptionReportsRepeatedly() throws Exception {
+            PlcConnectionManager connectionManager = new DefaultPlcDriverManager().getConnectionManager();
+
+            try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+                ConcurrentLinkedDeque<PlcSubscriptionEvent> events = new ConcurrentLinkedDeque<>();
+
+                PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
+                    // A value nobody is writing to - without the fix this reports once and stops.
+                    .addCyclicTagAddress("static", STRING_IDENTIFIER_READ_WRITE, Duration.ofMillis(500))
+                    .build();
+
+                PlcSubscriptionResponse response = request.execute().get(60, TimeUnit.SECONDS);
+                assertThat(response.getResponseCode("static")).isEqualTo(PlcResponseCode.OK);
+                response.getSubscriptionHandles().forEach(handle -> handle.register(events::add));
+
+                // Five cycles of head room for three expected reports.
+                for (int i = 0; i < 50 && events.size() < 3; i++) {
+                    Thread.sleep(100);
+                }
+
+                assertThat(events.size())
+                    .withFailMessage("expected repeated cyclic reports, got %d event(s)", events.size())
+                    .isGreaterThanOrEqualTo(3);
+                assertThat(events.getLast().getPlcValue("static")).isNotNull();
+
+                connection.unsubscriptionRequestBuilder()
+                    .addHandles(response.getSubscriptionHandles())
+                    .build()
+                    .execute();
+            }
+        }
+
+        /**
+         * A subscription covering several tags is served by a single handle, so
+         * getSubscriptionHandles() has to report exactly one - see GH-1896. Reporting it once per
+         * tag makes the documented "register a consumer on every handle" loop attach N consumers
+         * and deliver every event N times.
+         */
+        @Test
+        public void multiTagSubscriptionReportsOneHandle() throws Exception {
+            PlcConnectionManager connectionManager = new DefaultPlcDriverManager().getConnectionManager();
+
+            try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+                PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
+                    .addChangeOfStateTag("first", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
+                    .addChangeOfStateTag("second", OpcuaTag.of(BOOL_IDENTIFIER_READ_WRITE))
+                    .addChangeOfStateTag("third", OpcuaTag.of(INT32_IDENTIFIER_READ_WRITE))
+                    .build();
+
+                PlcSubscriptionResponse response = request.execute().get(60, TimeUnit.SECONDS);
+                assertThat(response.getResponseCode("first")).isEqualTo(PlcResponseCode.OK);
+                assertThat(response.getResponseCode("second")).isEqualTo(PlcResponseCode.OK);
+                assertThat(response.getResponseCode("third")).isEqualTo(PlcResponseCode.OK);
+
+                assertThat(response.getSubscriptionHandles()).hasSize(1);
+
+                connection.unsubscriptionRequestBuilder()
+                    .addHandles(response.getSubscriptionHandles())
+                    .build()
+                    .execute();
+            }
+        }
+
         @Test
         public void manySubscriptionsOnSingleConnection() throws Exception {
             final int numberOfSubscriptions = 3;
@@ -878,6 +962,123 @@ public class OpcuaPlcDriverTest {
 
                 assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
             }
+        }
+    }
+
+    /**
+     * Connecting with a 4096-bit client certificate. Several reports suspected large certificates
+     * of breaking the secure-channel handshake (GH-2013, GH-2196, GH-2286), so the key size is
+     * covered explicitly rather than only at the 2048 bits the rest of the suite uses.
+     */
+    @Nested
+    class LargeCertificates {
+
+        @ParameterizedTest
+        @MethodSource("org.apache.plc4x.java.opcua.OpcuaPlcDriverTest#getSecuredConnectionSecurityPolicies")
+        public void connectsWith4096BitClientCertificate(SecurityPolicy policy, MessageSecurity messageSecurity) throws Exception {
+            String connectionString = tcpConnectionAddress + PARAM_DIVIDER + params(
+                entry("key-store-file", CLIENT_KEY_STORE_4096.getAbsoluteFile().toString().replace("\\", "/")),
+                entry("key-store-password", "changeit"),
+                entry("key-store-type", "pkcs12"),
+                entry("server-certificate-file", SERVER_CERTIFICATE.toString().replace("\\", "/")),
+                entry("security-policy", policy.name()),
+                entry("message-security", messageSecurity.name()));
+
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(connectionString)) {
+                assertThat(connection.isConnected())
+                    .describedAs("4096-bit client certificate with %s/%s", policy, messageSecurity)
+                    .isTrue();
+
+                PlcReadResponse response = connection.readRequestBuilder()
+                    .addTagAddress("value", BOOL_IDENTIFIER_READ_WRITE)
+                    .build().execute().get(30, TimeUnit.SECONDS);
+                assertThat(response.getResponseCode("value")).isEqualTo(PlcResponseCode.OK);
+            }
+        }
+    }
+
+    /**
+     * Username/password authentication against the Milo test server, which accepts
+     * {@code user}/{@code password1} and {@code admin}/{@code password2}.
+     * <p>
+     * The password is encrypted with the algorithm named by the <em>user token policy</em> the
+     * server advertises, which is not necessarily the one securing the channel. The test server
+     * exercises both variants on purpose: its unsecured endpoint advertises the username policy
+     * with Basic128Rsa15 (RSA-PKCS#1 v1.5) while the secured endpoints use Milo's default
+     * Basic256 (RSA-OAEP). PLC4X used to hardcode RSA-OAEP, so the PKCS#1 case was rejected with
+     * BadIdentityTokenInvalid - see GH-2154.
+     */
+    @Nested
+    class Authentication {
+
+        @Test
+        public void usernamePasswordOverUnsecuredEndpoint() throws Exception {
+            // The unsecured endpoint's username token policy demands RSA-PKCS#1 v1.5.
+            try (PlcConnection connection = new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "user", "password1"))) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        @Test
+        public void secondUserAccountAlsoAuthenticates() throws Exception {
+            try (PlcConnection connection = new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "admin", "password2"))) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        @ParameterizedTest
+        @MethodSource("org.apache.plc4x.java.opcua.OpcuaPlcDriverTest#getConnectionSecurityPolicies")
+        public void usernamePasswordWithSecurityPolicy(SecurityPolicy policy, MessageSecurity messageSecurity) throws Exception {
+            String connectionString = credentials(getConnectionString(policy, messageSecurity), "user", "password1");
+
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(connectionString)) {
+                assertThat(connection.isConnected())
+                    .describedAs("authenticated connection with %s/%s", policy, messageSecurity)
+                    .isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        @Test
+        public void wrongPasswordIsRejected() {
+            assertThatThrownBy(() -> new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "user", "not-the-password")))
+                .isInstanceOf(PlcConnectionException.class);
+        }
+
+        @Test
+        public void unknownUserIsRejected() {
+            assertThatThrownBy(() -> new DefaultPlcDriverManager()
+                .getConnection(credentials(tcpConnectionAddress, "nobody", "password1")))
+                .isInstanceOf(PlcConnectionException.class);
+        }
+
+        /**
+         * Without credentials the driver has to fall back to the anonymous token policy.
+         */
+        @Test
+        public void noCredentialsConnectsAnonymously() throws Exception {
+            try (PlcConnection connection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress)) {
+                assertThat(connection.isConnected()).isTrue();
+                assertReadWorks(connection);
+            }
+        }
+
+        private String credentials(String connectionString, String username, String password) {
+            return connectionString + PARAM_DIVIDER + params(
+                entry("username", username),
+                entry("password", password));
+        }
+
+        private void assertReadWorks(PlcConnection connection) throws Exception {
+            PlcReadResponse response = connection.readRequestBuilder()
+                .addTagAddress("value", BOOL_IDENTIFIER_READ_WRITE)
+                .build().execute().get(30, TimeUnit.SECONDS);
+            assertThat(response.getResponseCode("value")).isEqualTo(PlcResponseCode.OK);
         }
     }
 
@@ -1106,6 +1307,12 @@ public class OpcuaPlcDriverTest {
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    /** The secured policies only - an unsecured channel never exchanges certificates. */
+    private static Stream<Arguments> getSecuredConnectionSecurityPolicies() {
+        return getConnectionSecurityPolicies()
+            .filter(arguments -> arguments.get()[0] != SecurityPolicy.NONE);
     }
 
     private static Stream<Arguments> getConnectionSecurityPolicies() {

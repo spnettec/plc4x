@@ -30,8 +30,11 @@ public class S7PlcTagHandler implements PlcTagHandler {
         if (S7AlarmTag.matches(tagAddress)) {
             return S7AlarmTag.of(tagAddress);
         }
-        if (S7StringTag.matches(tagAddress)) {
-            return S7StringTag.of(tagAddress);
+        if (S7StringFixedLengthTag.matches(tagAddress)) {
+            return S7StringFixedLengthTag.of(tagAddress);
+        }
+        if (S7StringVarLengthTag.matches(tagAddress)) {
+            return S7StringVarLengthTag.of(tagAddress);
         }
         if (S7Tag.matches(tagAddress)) {
             return S7Tag.of(tagAddress);

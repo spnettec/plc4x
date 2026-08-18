@@ -86,7 +86,7 @@ class S7TagSerializeTest {
 
     @Test
     void s7StringFixedLengthTag_serialize() throws Exception {
-        S7StringTag tag = S7StringTag.of("%DB1.DB0:STRING(20)");
+        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0:STRING(20)");
         WriteBufferByteBased buf = buffer();
         tag.serialize(buf);
         assertTrue(buf.getPositionInBits() > 0);
@@ -95,20 +95,20 @@ class S7TagSerializeTest {
 
     @Test
     void s7StringFixedLengthTag_wstring() {
-        S7StringTag tag = S7StringTag.of("%DB1.DB0:WSTRING(10)");
+        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0:WSTRING(10)");
         assertEquals(10, tag.getStringLength());
     }
 
     @Test
     void s7StringFixedLengthTag_array() {
-        S7StringTag tag = S7StringTag.of("%DB1.DB0:STRING(40)[3]");
+        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0:STRING(40)[3]");
         assertEquals(40, tag.getStringLength());
         assertEquals(3, tag.getNumberOfElements());
     }
 
     @Test
     void s7StringVarLengthTag_serialize() throws Exception {
-        S7StringTag tag = S7StringTag.of("%DB1.DB0:STRING");
+        S7StringVarLengthTag tag = S7StringVarLengthTag.of("%DB1.DB0:STRING");
         WriteBufferByteBased buf = buffer();
         tag.serialize(buf);
         assertTrue(buf.getPositionInBits() > 0);
@@ -116,18 +116,36 @@ class S7TagSerializeTest {
 
     @Test
     void s7StringVarLengthTag_wstring() {
-        S7StringTag tag = S7StringTag.of("%DB1.DB0:WSTRING");
+        S7StringVarLengthTag tag = S7StringVarLengthTag.of("%DB1.DB0:WSTRING");
         assertNotNull(tag);
     }
 
     @Test
     void s7StringVarLengthTag_equalsAndHashCode() {
-        S7StringTag a = S7StringTag.of("%DB1.DB0:STRING");
-        S7StringTag b = S7StringTag.of("%DB1.DB0:STRING");
-        S7StringTag c = S7StringTag.of("%DB1.DB0:WSTRING");
+        S7StringVarLengthTag a = S7StringVarLengthTag.of("%DB1.DB0:STRING");
+        S7StringVarLengthTag b = S7StringVarLengthTag.of("%DB1.DB0:STRING");
+        S7StringVarLengthTag c = S7StringVarLengthTag.of("%DB1.DB0:WSTRING");
         assertEquals(a, b);
         assertNotEquals(a, c);
         assertEquals(a.hashCode(), b.hashCode());
         assertNotNull(a.toString());
+    }
+
+    @Test
+    void s7StringFixedLengthTag_serializeWithEncoding() throws Exception {
+        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0:STRING(20)|GBK");
+        WriteBufferByteBased buf = buffer();
+        tag.serialize(buf);
+        assertTrue(buf.getPositionInBits() > 0);
+        assertEquals("GBK", tag.getStringEncoding());
+    }
+
+    @Test
+    void s7StringVarLengthTag_serializeWithEncoding() throws Exception {
+        S7StringVarLengthTag tag = S7StringVarLengthTag.of("%DB1.DB0:WSTRING|UTF-16");
+        WriteBufferByteBased buf = buffer();
+        tag.serialize(buf);
+        assertTrue(buf.getPositionInBits() > 0);
+        assertEquals("UTF-16", tag.getStringEncoding());
     }
 }

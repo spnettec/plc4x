@@ -23,8 +23,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.s7.context.S7DriverContext;
-import org.apache.plc4x.java.s7.tag.S7StringTag;
-import org.apache.plc4x.java.s7.tag.S7StringTag;
+import org.apache.plc4x.java.s7.tag.S7StringFixedLengthTag;
 import org.apache.plc4x.java.s7.tag.S7Tag;
 
 import java.util.ArrayList;
@@ -70,9 +69,8 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                 continue;
             }
             PlcTag plcTag = request.getTag(tagName);
-            if (!(plcTag instanceof S7Tag s7Tag) || plcTag instanceof S7StringTag) {
-                // Block-merging is unsafe for var-length strings (response size is dynamic);
-                // delegate them to the base optimizer.
+            if (!(plcTag instanceof S7Tag s7Tag)) {
+                // Non-S7 tags can't be block-merged; delegate them to the base optimizer.
                 passthrough.put(tagName, plcTag);
                 continue;
             }
@@ -204,9 +202,10 @@ public class S7BlockReadOptimizer extends S7Optimizer {
         if (tag.getDataType() == TransportSize.BOOL) {
             return Math.max(1, (tag.getNumberOfElements() + 7) / 8);
         }
-        if (tag instanceof S7StringTag fixed) {
-            int bytesPerChar = fixed.getDataType() == TransportSize.WSTRING ? 2 : 1;
-            return tag.getNumberOfElements() * (fixed.getStringLength() + 2) * bytesPerChar;
+        if (tag.getDataType() == TransportSize.STRING || tag.getDataType() == TransportSize.WSTRING) {
+            int bytesPerChar = tag.getDataType() == TransportSize.WSTRING ? 2 : 1;
+            int stringLength = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+            return tag.getNumberOfElements() * (stringLength + 2) * bytesPerChar;
         }
         return tag.getNumberOfElements() * tag.getDataType().getSizeInBytes();
     }
