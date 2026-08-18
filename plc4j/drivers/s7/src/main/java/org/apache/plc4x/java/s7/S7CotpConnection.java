@@ -1600,12 +1600,10 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         // 0x81: application relationship error
         if (errorClass == 0x81) {
             return switch (errorCode) {
-                case 4 -> PlcResponseCode.INVALID_ADDRESS;   // area / object does not exist
+                case 4 -> PlcResponseCode.ACCESS_DENIED;   // PUT/GET disabled (GH-599)
                 default -> PlcResponseCode.INTERNAL_ERROR;
             };
         }
-        // Ported error mapping from s7-light: 129/4 means PUT/GET disabled.
-        if (errorClass == 0x81 && errorCode == 4) return PlcResponseCode.ACCESS_DENIED;
         // An S7-300 reports the same refusal as 0x83/0x04 rather than 0x81/0x04 (GH-599). The
         // generic reading of class 0x83 is "no resources available", so only this exact pairing
         // is treated as a refusal - anything else in that class keeps falling through.
