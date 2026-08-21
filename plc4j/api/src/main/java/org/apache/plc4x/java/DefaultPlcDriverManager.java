@@ -118,11 +118,6 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionF
         return connection;
     }
 
-    @Override
-    public PlcDriverManager getDriverManager() {
-        return this;
-    }
-
     /**
      * Returns the codes of all the drivers which are currently registered at the PlcDriverManager
      * @return Set of driver codes for all drivers registered
