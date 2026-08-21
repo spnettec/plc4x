@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.profinet.context;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.junit.jupiter.api.DisplayName;
