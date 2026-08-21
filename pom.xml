@@ -88,6 +88,16 @@
   <properties>
     <java.version>21</java.version>
 
+    <!-- Declared so ${skipTests} always resolves; surefire reads the same property, so -DskipTests
+         still works exactly as before. -->
+    <skipTests>false</skipTests>
+    <!-- A coverage gate cannot be satisfied by a build that ran no tests: jacoco records nothing,
+         the ratio comes out at zero and the check fails on modules that halt on failure. Defaulting
+         jacoco's own skip property to whatever skipTests says keeps -DskipTests a usable fast build.
+         This is a default, not a hard-coded plugin setting, so -Djacoco.skip=true still overrides it
+         and coverage still runs - and still gates - in any build that executes tests. -->
+    <jacoco.skip>${skipTests}</jacoco.skip>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
 
@@ -108,7 +118,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.85</bouncycastle.version>
-    <byte-buddy.version>1.18.11</byte-buddy.version>
+    <byte-buddy.version>1.18.12</byte-buddy.version>
     <cmake.version>3.31.5-b1</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.11.0</commons-cli.version>
@@ -125,7 +135,7 @@
     <equalsverifier.version>4.5</equalsverifier.version>
     <freemarker.version>2.3.34</freemarker.version>
     <groovy.version>5.1.0</groovy.version>
-    <guava.version>33.6.0-jre</guava.version>
+    <guava.version>33.7.1-jre</guava.version>
     <h2.version>2.3.232</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
@@ -142,7 +152,7 @@
     <jserialcom.version>2.11.4</jserialcom.version>
     <junit.jupiter.version>6.1.3</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.6.2</logback.version>
+    <logback.version>1.6.3</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <mockito.version>5.23.0</mockito.version>
     <!-- Netty 4.2.x serial transport issues fixed in SerialChannel/SerialPollingSelector (YOFC) -->
@@ -491,7 +501,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20260719</version>
+        <version>20260814</version>
       </dependency>
 
       <dependency>
@@ -642,7 +652,6 @@
           </execution>
         </executions>
         <configuration>
-          <useMavenDefaultExcludes>true</useMavenDefaultExcludes>
           <inputExcludes>
             <!-- Git related files -->
             <inputExclude>**/.gitnexusignore</inputExclude>
@@ -761,9 +770,12 @@
             <!-- Exclude Node related files -->
             <inputExclude>ui/frontend/project/dist/**</inputExclude>
             <inputExclude>ui/frontend/project/node/**</inputExclude>
-            <inputExclude>ui/frontend/project/node_modules/**</inputExclude>
 
-            <inputExclude>website/node_modules/**</inputExclude>
+            <!-- Depth independent, because rat runs per module: from the reactor root the npm trees
+                 are website/node_modules and ui/frontend/project/node_modules, but when the plugin
+                 runs inside those modules their own basedir is the root it reports paths against, so
+                 a path anchored at the reactor root never matches. -->
+            <inputExclude>**/node_modules/**</inputExclude>
 
             <inputExclude>.mvn/**</inputExclude>
 

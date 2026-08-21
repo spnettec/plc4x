@@ -47,6 +47,7 @@ import org.apache.plc4x.java.s7.userdata.S7BrowseService;
 import org.apache.plc4x.java.s7.userdata.S7CyclicSubscriptionHandle;
 import org.apache.plc4x.java.s7.userdata.S7CyclicSubscriptionService;
 import org.apache.plc4x.java.s7.userdata.S7SzlService;
+import org.apache.plc4x.java.s7.userdata.S7SzlService.S7DeviceIdentification;
 import org.apache.plc4x.java.s7.userdata.S7UserDataPushDispatcher;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseRequestInterceptor;
@@ -100,6 +101,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 /**
@@ -112,6 +114,9 @@ import java.util.stream.IntStream;
  * for response correlation.
  */
 public class S7CotpConnection extends ConnectionBase<S7Configuration> {
+
+    /** Safety net so a device that always claims "more data" cannot loop forever. */
+    private static final int MAX_SZL_CONTINUATIONS = 16;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(S7CotpConnection.class);
 
@@ -266,13 +271,159 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
 
     private S7SzlService.ProbeResult trySzlProbe(SzlId szlId, int szlIndex) {
         try {
-            S7Message request = S7SzlService.buildRequest(getTpduId(), szlId, szlIndex);
-            S7Message response = sendInternal(request).get(driverContext.getReadTimeout(), TimeUnit.MILLISECONDS);
-            return S7SzlService.parseProbeResponse(response);
+            // Draining matters even for the probe: a chained response the driver walks away
+            // from leaves the sequence open, and the CPU then refuses every later SZL read on
+            // this connection with 0xD406.
+            byte[] szlData = readSzlData(szlId, szlIndex, this::sendInternal)
+                .get(driverContext.getReadTimeout() * (MAX_SZL_CONTINUATIONS + 1L),
+                    TimeUnit.MILLISECONDS);
+            return S7SzlService.parseProbeResponse(szlData);
         } catch (Exception e) {
             LOGGER.debug("SZL {}/{} probe failed: {}", szlId.getSublistList(), szlIndex, e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * Read one SZL list, following the chain if the PLC splits it across several PDUs.
+     *
+     * <p>A response with {@code lastDataUnit} set means the CPU is holding the rest of the
+     * list. Continuation chunks carry no header of their own - they simply continue the byte
+     * stream, possibly starting mid-record - so the chunks are concatenated and parsed as one.
+     *
+     * @param sender how to dispatch each request; the connect-time probe sends directly,
+     *               while normal operation goes through the request throttle.
+     */
+    private CompletableFuture<byte[]> readSzlData(SzlId szlId, int szlIndex,
+            Function<S7Message, CompletableFuture<S7Message>> sender) {
+        S7Message request = S7SzlService.buildRequest(getTpduId(), szlId, szlIndex);
+        return sender.apply(request).thenCompose(response -> {
+            failOnHeaderError(response);
+            return appendSzlChunks(szlId, szlIndex, response,
+                S7SzlService.szlDataOf(response), 0, sender);
+        });
+    }
+
+    private CompletableFuture<byte[]> appendSzlChunks(SzlId szlId, int szlIndex, S7Message response,
+            byte[] soFar, int continuations,
+            Function<S7Message, CompletableFuture<S7Message>> sender) {
+        if (!S7SzlService.moreDataFollows(response)) {
+            return CompletableFuture.completedFuture(soFar);
+        }
+        if (continuations >= MAX_SZL_CONTINUATIONS) {
+            // Give up rather than loop forever. The sequence stays open, so later SZL reads on
+            // this connection will fail - worth a warning rather than silent truncation.
+            LOGGER.warn("SZL {}/{} still reports more data after {} continuations; giving up "
+                + "with {} bytes. Further SZL reads on this connection may be refused.",
+                szlId.getSublistList(), szlIndex, continuations, soFar.length);
+            return CompletableFuture.completedFuture(soFar);
+        }
+        S7Message next = S7SzlService.buildContinuationRequest(getTpduId(), szlId, szlIndex,
+            S7SzlService.sequenceNumberOf(response));
+        return sender.apply(next).thenCompose(chunk ->
+            appendSzlChunks(szlId, szlIndex, chunk, concat(soFar, S7SzlService.szlDataOf(chunk)),
+                continuations + 1, sender));
+    }
+
+    /**
+     * A controller that refuses the request outright answers at the S7 header level rather
+     * than with an SZL error - the same refusal path reads and writes take. Class 0x81 code
+     * 0x04 is a CPU with PUT/GET communication disabled.
+     */
+    private static void failOnHeaderError(S7Message response) {
+        short errorClass = 0;
+        short errorCode = 0;
+        if (response instanceof S7MessageResponseData md) {
+            errorClass = md.getErrorClass();
+            errorCode = md.getErrorCode();
+        } else if (response instanceof S7MessageResponse mr) {
+            errorClass = mr.getErrorClass();
+            errorCode = mr.getErrorCode();
+        }
+        if (errorClass == 0 && errorCode == 0) {
+            return;
+        }
+        String label = mapPlcErrorCode(errorClass, errorCode) == PlcResponseCode.ACCESS_DENIED
+            ? "access denied" : "refused by PLC";
+        throw new IllegalStateException(
+            String.format("%s (0x%02X/0x%02X)", label, errorClass, errorCode));
+    }
+
+    private static byte[] concat(byte[] first, byte[] second) {
+        byte[] combined = new byte[first.length + second.length];
+        System.arraycopy(first, 0, combined, 0, first.length);
+        System.arraycopy(second, 0, combined, first.length, second.length);
+        return combined;
+    }
+
+    /**
+     * Read everything the CPU is willing to tell us about itself: order code, hardware and
+     * firmware version, the configured names, the serial number and — where the device
+     * implements it — the protection level currently in force.
+     *
+     * <p>The connect-time probe deliberately keeps only what the driver itself needs; this is
+     * the on-demand version for callers building a device inventory. Three SZL lists are read
+     * one after the other and merged. Each one is best-effort: devices implement different
+     * subsets (S7-1200/1500 typically reject the protection-status list), so a rejected or
+     * unanswered list leaves its fields {@code null} instead of failing the whole call.
+     *
+     * @return the merged identification, never {@code null}; {@link S7DeviceIdentification#EMPTY}
+     * if the device answered none of the lists.
+     */
+    public CompletableFuture<S7DeviceIdentification> readDeviceIdentification() {
+        return readSzl(S7SzlService.MODULE_IDENTIFICATION, 0x0000,
+            S7SzlService::parseModuleIdentification,
+            // A refusal here is what a CPU that won't serve unauthenticated callers looks
+            // like, so the reason is worth keeping rather than collapsing to "nothing".
+            S7DeviceIdentification::identificationUnavailable)
+            .thenCompose(module -> readSzl(S7SzlService.COMPONENT_IDENTIFICATION, 0x0000,
+                S7SzlService::parseComponentIdentification)
+                .thenApply(module::mergedWith))
+            .thenCompose(identification -> readSzl(S7SzlService.PROTECTION_STATUS, 0x0004,
+                S7SzlService::parseProtectionStatus,
+                // Record why the level is missing. "Not implemented" (what S7-1200/1500 say)
+                // must not be presented as "no protection configured".
+                S7DeviceIdentification::protectionUnavailable)
+                .thenApply(identification::mergedWith));
+    }
+
+    /**
+     * Issue one SZL read and parse it, collapsing every failure mode — transport error, PLC
+     * rejection, unparsable payload, no answer at all — into an empty identification. The
+     * timeout matters: a device that simply ignores an SZL it doesn't implement would
+     * otherwise leave the caller waiting forever.
+     */
+    private CompletableFuture<S7DeviceIdentification> readSzl(
+            SzlId szlId, int szlIndex, Function<byte[], S7DeviceIdentification> parser) {
+        return readSzl(szlId, szlIndex, parser, reason -> S7DeviceIdentification.EMPTY);
+    }
+
+    /**
+     * @param onFailure builds the result from a human-readable reason when the list could not
+     *                  be read, for callers that need to distinguish "not implemented" from
+     *                  "refused" rather than just seeing nothing.
+     */
+    private CompletableFuture<S7DeviceIdentification> readSzl(
+            SzlId szlId, int szlIndex, Function<byte[], S7DeviceIdentification> parser,
+            Function<String, S7DeviceIdentification> onFailure) {
+        return readSzlData(szlId, szlIndex, request -> executeThrottled(() -> sendInternal(request))
+                .orTimeout(driverContext.getReadTimeout(), TimeUnit.MILLISECONDS))
+            .handle((szlData, error) -> {
+                if (error != null) {
+                    String reason = S7SzlService.describeFailure(error);
+                    LOGGER.debug("SZL {}/{} read failed: {}",
+                        szlId.getSublistList(), szlIndex, reason);
+                    return onFailure.apply(reason);
+                }
+                try {
+                    return parser.apply(szlData);
+                } catch (Exception e) {
+                    String reason = S7SzlService.describeFailure(e);
+                    LOGGER.debug("SZL {}/{} response could not be parsed: {}",
+                        szlId.getSublistList(), szlIndex, reason);
+                    return onFailure.apply(reason);
+                }
+            });
     }
 
     private CompletableFuture<Void> doSetupCommunication() {

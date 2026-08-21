@@ -21,7 +21,8 @@ package org.apache.plc4x.java.s7.readwrite;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.utils.cache.PlcConnectionCache;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class StringTest {
 
     public static void main(String[] args) throws Exception {
-        CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
+        PlcConnectionCache plcConnectionManager = PlcConnectionCache.getBuilder().withConnectionFactory(PlcDriverManager.getDefault().getConnectionFactory()).build();
         String url = args.length > 0 ? args[0] : "s7://10.80.41.57";
 
         // ── Step 1: Read original values ──────────────────────────────

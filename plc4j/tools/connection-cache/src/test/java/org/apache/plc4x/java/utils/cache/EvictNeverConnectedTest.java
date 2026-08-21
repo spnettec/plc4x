@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.utils.cache;
 
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.junit.jupiter.api.AfterEach;
@@ -48,9 +49,9 @@ class EvictNeverConnectedTest {
     private static final String URL = "test:tcp://localhost";
 
     @Mock
-    private PlcConnectionManager mockConnectionManager;
+    private PlcConnectionFactory mockConnectionFactory;
 
-    private CachedPlcConnectionManager manager;
+    private PlcConnectionCache cache;
     private ScheduledExecutorService scheduler;
     private AutoCloseable mocks;
 
@@ -62,8 +63,8 @@ class EvictNeverConnectedTest {
 
     @AfterEach
     void tearDown() throws Exception {
-        if (manager != null) {
-            manager.close();
+        if (cache != null) {
+            cache.close();
         }
         scheduler.shutdownNow();
         mocks.close();
@@ -71,21 +72,21 @@ class EvictNeverConnectedTest {
 
     @Test
     void evictsAContainerWhoseConnectNeverSucceeded() throws Exception {
-        when(mockConnectionManager.getConnection(anyString()))
+        when(mockConnectionFactory.getConnection(anyString()))
             .thenThrow(new PlcConnectionException("device is unreachable"));
 
-        manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+        cache = PlcConnectionCache.getBuilder()
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
         // The device is down, so this fails and leaves a container that never held a connection.
-        assertThrows(PlcConnectionException.class, () -> manager.getConnection(URL));
+        assertThrows(PlcConnectionException.class, () -> cache.getConnection(URL));
 
         // This is what the reporter does from the error handler of the read/write loop.
-        assertDoesNotThrow(() -> manager.removeCachedConnection(URL));
-        assertEquals(0, manager.getCachedConnectionCount(), "no dead container is left behind");
-        assertEquals(0, manager.getActiveLeaseCount());
+        assertDoesNotThrow(() -> cache.removeCachedConnection(URL));
+        assertEquals(0, cache.getCachedConnectionCount(), "no dead container is left behind");
+        assertEquals(0, cache.getActiveLeaseCount());
     }
 
     /**
@@ -96,19 +97,19 @@ class EvictNeverConnectedTest {
     void evictsAfterTheConnectionWasAlreadyDropped() throws Exception {
         PlcConnection connection = mock(PlcConnection.class);
         when(connection.isConnected()).thenReturn(true);
-        when(mockConnectionManager.getConnection(anyString())).thenReturn(connection);
+        when(mockConnectionFactory.getConnection(anyString())).thenReturn(connection);
 
-        manager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager(mockConnectionManager)
+        cache = PlcConnectionCache.getBuilder()
+            .withConnectionFactory(mockConnectionFactory)
             .withScheduler(scheduler)
             .build();
 
-        manager.getConnection(URL).close();
-        assertEquals(1, manager.getCachedConnectionCount());
+        cache.getConnection(URL).close();
+        assertEquals(1, cache.getCachedConnectionCount());
 
-        assertDoesNotThrow(() -> manager.removeCachedConnection(URL));
+        assertDoesNotThrow(() -> cache.removeCachedConnection(URL));
         // A second eviction of the same, now absent, connection must not blow up either.
-        assertDoesNotThrow(() -> manager.removeCachedConnection(URL));
-        assertEquals(0, manager.getCachedConnectionCount());
+        assertDoesNotThrow(() -> cache.removeCachedConnection(URL));
+        assertEquals(0, cache.getCachedConnectionCount());
     }
 }

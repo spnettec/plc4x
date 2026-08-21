@@ -30,7 +30,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.readwrite.*;
-import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
+import org.apache.plc4x.java.utils.cache.PlcConnectionCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,8 +75,8 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
     private final ConcurrentHashMap<Integer, String> connectionUrls;
 
     public Plc4xServerAdapter() {
-        connectionManager = CachedPlcConnectionManager.getBuilder()
-            .withConnectionManager((PlcConnectionManager) PlcDriverManager.getDefault())
+        connectionManager = PlcConnectionCache.getBuilder()
+            .withConnectionFactory(PlcDriverManager.getDefault().getConnectionFactory())
             .build();
         connectionIdGenerator = new AtomicInteger(1);
         connectionUrls = new ConcurrentHashMap<>();

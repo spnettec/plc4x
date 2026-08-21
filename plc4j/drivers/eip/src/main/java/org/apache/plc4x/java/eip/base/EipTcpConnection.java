@@ -91,7 +91,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     private final NullAddressItem nullAddressItem = new NullAddressItem();
     private final List<PathSegment> routingAddress = new ArrayList<>();
     private short connectionPathSize = 0;
-    private final int connectionSerialNumber = ThreadLocalRandom.current().nextInt(1, 0x10000);
+    private final int connectionSerialNumber;
 
     public EipTcpConnection(EIPConfiguration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
         this(configuration, transportInstance, auditLog, configuration.isBigEndian());
@@ -100,6 +100,11 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
     public EipTcpConnection(EIPConfiguration configuration, TransportInstance<?> transportInstance, AuditLog auditLog, boolean bigEndian) {
         super(configuration, transportInstance, auditLog);
         this.bigEndian = bigEndian;
+        // CIP wants the Forward_Open serial number unique per connection, so it is random unless
+        // the user pins it (which recorded driver tests need in order to stay reproducible).
+        this.connectionSerialNumber = configuration.getConnectionSerialNumber() > 0
+            ? configuration.getConnectionSerialNumber()
+            : ThreadLocalRandom.current().nextInt(1, 0x10000);
         initRoutingAddress();
     }
 
@@ -220,7 +225,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             this.sessionHandle = sessionResponse.getSessionHandle();
             LOGGER.debug("Got assigned with Session handle {}", sessionHandle);
 
-            // 3) GetAttributeAll on the message router to probe capabilities.
+            // 3) Probe connection-manager and message-router capabilities.
             //    Skipped when the user has already committed to the unconnected
             //    path — the probe is only useful for choosing between the
             //    connection-manager and message-router code paths, and some
@@ -229,7 +234,7 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             if (getConfiguration().isForceUnconnectedOperation()) {
                 return CompletableFuture.completedFuture(null);
             }
-            return probeAttributes().thenCompose(v -> {
+            return probeClassObjectSupport().thenCompose(v -> {
                 if (useConnectionManager) {
                     return openConnectionManager();
                 }
@@ -238,8 +243,9 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         });
     }
 
-    private CompletableFuture<Void> probeAttributes() {
-        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 2));
+    // Using this method to continue having the GetAttributeAll that can be useful in the future
+    private CompletableFuture<Void> checkClassObjectAttributes(CIPClassID classId) {
+        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) classId.getValue()));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
         UnConnectedDataItem exchange = new UnConnectedDataItem(
             new GetAttributeAllRequest(classSegment, instanceSegment));
@@ -248,40 +254,71 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
             DEFAULT_SENDER_CONTEXT, 0L, EMPTY_INTERFACE_HANDLE, 0, typeIds);
 
         return sendRequest(eipWrapper).thenAccept(response -> {
-            if (!(response instanceof CipRRData rr) || rr.getStatus() != CIPStatus.Success.getValue()) {
-                return;
+
+            if (extractCipService(response) instanceof GetAttributeAllResponse gar &&
+                gar.getStatus() == CIPStatus.Success.getValue() &&
+                gar.getAttributes() != null) {
+                LOGGER.debug("Identity getNumberActive {}", gar.getAttributes().getNumberActive());
             }
-            UnConnectedDataItem dataItem = (UnConnectedDataItem) rr.getTypeIds().get(1);
-            if (!(dataItem.getService() instanceof GetAttributeAllResponse gar)) {
-                return;
-            }
-            if (gar.getStatus() == CIPStatus.ServiceNotSupported.getValue()) {
-                return;
-            }
-            if (gar.getAttributes() != null) {
-                for (Integer classId : gar.getAttributes().getClassId()) {
-                    if (CIPClassID.enumForValue(classId) == CIPClassID.MessageRouter) {
-                        this.useMessageRouter = true;
-                    }
-                    if (CIPClassID.enumForValue(classId) == CIPClassID.ConnectionManager) {
-                        this.useConnectionManager = true;
-                    }
-                }
-            }
+        });
+    }
+
+    private CipService extractCipService(EipPacket response) {
+        if (response instanceof CipRRData rr
+            && rr.getStatus() == CIPStatus.Success.getValue()
+            && rr.getTypeIds().size() > 1
+            && rr.getTypeIds().get(1) instanceof UnConnectedDataItem di) {
+            return di.getService();
+        }
+        return null;
+    }
+
+    private CompletableFuture<Void> probeClassObjectSupport() {
+
+        return checkClassObjectSupport(CIPClassID.ConnectionManager).thenCompose(hasSupport -> {
+            useConnectionManager = hasSupport;
+            return checkClassObjectSupport(CIPClassID.MessageRouter);
+        }).thenCompose(hasSupport -> {
+            useMessageRouter = hasSupport;
+            return checkClassObjectAttributes(CIPClassID.Identity);
         }).exceptionally(e -> {
             // Treat any probe failure (timeout, parse error, malformed response,
-            // ServiceNotSupported) as "device has no message router / connection
-            // manager" and fall through to the unconnected code path. This keeps
+            // ServiceNotSupported) as the state that was achieved. This keeps
             // the handshake working against non-Logix devices and simulators.
-            LOGGER.debug("GetAttributeAll probe failed, falling back to unconnected mode", e);
+            LOGGER.debug("probeClassObjectSupport probe failed, keeping the state achieved", e);
             return null;
+        });
+    }
+
+    private CompletableFuture<Boolean> checkClassObjectSupport(CIPClassID classId) {
+        UnConnectedDataItem exchange = new UnConnectedDataItem(new GetAttributeSingleRequest(
+            new LogicalSegment(new ClassID((byte) 0, (short) classId.getValue())),
+            new LogicalSegment(new InstanceID((byte) 0, (short) 0)), // Class level discovery
+            new LogicalSegment(new AttributeID((byte) 0, (short) 1))) // Attribute ID 1: Revision
+        );
+        List<TypeId> typeIds = Arrays.asList(nullAddressItem, exchange);
+        CipRRData eipWrapper = new CipRRData(sessionHandle, CIPStatus.Success.getValue(),
+            DEFAULT_SENDER_CONTEXT, 0L, EMPTY_INTERFACE_HANDLE, 0, typeIds);
+
+        return sendRequest(eipWrapper).thenCompose(response -> {
+
+            // Every CIP response carries the general status in the header shared by all of them,
+            // so the concrete response type is irrelevant here: a device that answers a
+            // class-level Get_Attribute_Single with some other response still tells us whether
+            // the class exists.
+            if (extractCipService(response) instanceof CipServiceResponse resp) {
+                boolean hasSupport = resp.getStatus() == CIPStatus.Success.getValue();
+                LOGGER.debug("ClassId: {} status: {} hasSupport: {}", classId, resp.getStatus(), hasSupport);
+                return CompletableFuture.completedFuture(hasSupport);
+            }
+            return CompletableFuture.completedFuture(false);
         });
     }
 
     private CompletableFuture<Void> openConnectionManager() {
         UnConnectedDataItem exchange = new UnConnectedDataItem(
             new CipConnectionManagerRequest(
-                new LogicalSegment(new ClassID((byte) 0, (short) 6)),
+                new LogicalSegment(new ClassID((byte) 0, (short) CIPClassID.ConnectionManager.getValue())),
                 new LogicalSegment(new InstanceID((byte) 0, (short) 1)),
                 (byte) 0, (byte) 10, (short) 14, 536870914L, 33944L,
                 this.connectionSerialNumber, 4919, 42L, (short) 3, 2101812L,
@@ -299,9 +336,16 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
                 throw new PlcRuntimeException("Got status code while opening Connection Manager [" + response.getStatus() + "]");
             }
             UnConnectedDataItem dataItem = (UnConnectedDataItem) rr.getTypeIds().get(1);
-            if (dataItem.getService() instanceof CipConnectionManagerResponse cmr) {
+            // A rejected Forward_Open replies in CIP's shorter "unsuccessful" format, which the
+            // model now describes as its own type, so the reply's type tells us the outcome and
+            // only the successful one actually carries a connection id.
+            if (dataItem.getService() instanceof CipConnectionManagerResponseSuccess cmr) {
                 this.connectionId = cmr.getOtConnectionId();
                 LOGGER.debug("Got assigned with Connection Id {}", this.connectionId);
+            } else if (dataItem.getService() instanceof CipConnectionManagerResponseFailure failure) {
+                throw new PlcRuntimeException("Device rejected the Forward_Open [status "
+                    + failure.getStatus() + ", extended status " + failure.getExtStatus()
+                    + ", remaining connection path " + failure.getRemainingPathSize() + " words]");
             }
         });
     }
@@ -640,11 +684,10 @@ public class EipTcpConnection extends PollingSubscriptionConnectionBase<EIPConfi
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
-        Map<String, PlcResponseCode> values = new ConcurrentHashMap<>();
 
         List<CompletableFuture<Void>> tagFutures = new ArrayList<>();
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
-        values.putAll(rejectedWriteTags(request));
+        Map<String, PlcResponseCode> values = new ConcurrentHashMap<>(rejectedWriteTags(request));
         for (String fieldName : sendableTagNames(request)) {
             EipTag field = (EipTag) request.getTag(fieldName);
             PlcValue value = request.getPlcValue(fieldName);

@@ -120,9 +120,9 @@ public abstract class MessageCodecBase<M extends Message> {
                 }
 
                 ReadBufferByteBased readBuffer = createReadBuffer(messageBytes);
+                M message;
                 try {
-                    M message = parseMessage(readBuffer);
-                    messageHandler.accept(message);
+                    message = parseMessage(readBuffer);
                 } catch (BufferException e) {
                     // The raw bytes have already been consumed from the transport.
                     // Subclasses can override handleParseError to deliver a synthetic error
@@ -132,7 +132,14 @@ public abstract class MessageCodecBase<M extends Message> {
                         throw e;
                     }
                     // else: error handled, continue processing any remaining messages
+                    continue;
+                } catch (RuntimeException e) {
+                    // Adversarial input can trip an unchecked failure inside a generated parser.
+                    // Report it as the parse failure it is, rather than letting it escape past
+                    // the caller's error handling and out of whatever thread we are running on.
+                    throw new MessageCodecException("Failed to parse " + protocolName + " message", e);
                 }
+                messageHandler.accept(message);
             }
         } catch (TransportException e) {
             throw new MessageCodecException("Failed to receive " + protocolName + " message", e);

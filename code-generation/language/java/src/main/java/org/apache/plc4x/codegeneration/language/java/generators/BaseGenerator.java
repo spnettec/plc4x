@@ -408,6 +408,13 @@ public abstract class BaseGenerator<T> {
                     .append(toParseExpression(null, null, argumentType, paramTerm, null))
                     .append(")");
             }
+            // A field declared with a subtype of a discriminated type is parsed by the base type's
+            // parser, which discriminates on the data - so the value coming back is not necessarily
+            // of the declared type. Check the cast instead of asserting it, so that a mismatch is
+            // reported as a parse failure rather than thrown as a ClassCastException.
+            if (parserResultTypeString instanceof ClassName) {
+                return CodeBlock.of("$T.readComplex(() -> $T.castToDeclaredType($T.class, $T.staticParse(readBuffer" + paramsString + ")), readBuffer)", dataReaderFactory, dataReaderFactory, parserResultTypeString, parserTypeString);
+            }
             return CodeBlock.of("$T.readComplex(() -> ($T) $T.staticParse(readBuffer" + paramsString + "), readBuffer)", dataReaderFactory, parserResultTypeString, parserTypeString);
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
@@ -654,10 +661,15 @@ public abstract class BaseGenerator<T> {
             }
             case VariableLiteral variableLiteral -> {
                 if ("curPos".equals(variableLiteral.getName())) {
+                    // curPos counts bytes, as it does in the Go and C generators, and as every
+                    // mspec using it assumes: it is compared against byte lengths taken off the
+                    // wire. Emitting the bit position instead made those comparisons wrong by a
+                    // factor of eight, which for a subtraction went negative and silently produced
+                    // an empty array.
                     if (isParse) {
-                        return CodeBlock.of("(readBuffer.getPositionInBits() - startPos)");
+                        return CodeBlock.of("((readBuffer.getPositionInBits() - startPos) / 8)");
                     } else {
-                        return CodeBlock.of("(writeBuffer.getPositionInBits() - startPos)");
+                        return CodeBlock.of("((writeBuffer.getPositionInBits() - startPos) / 8)");
                     }
                 }
                 // If this literal references an Enum type, then we have to output it differently.

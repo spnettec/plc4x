@@ -20,7 +20,8 @@ package org.apache.plc4x.java.s7.readwrite;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.utils.cache.PlcConnectionCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,19 +76,19 @@ public class BlockPerfTest {
         String autoUrl = "s7://" + host + "?gap=-1";
 
         // ── No merge: baseline ───────────────────────────────────────
-        CachedPlcConnectionManager mgr0 = CachedPlcConnectionManager.getBuilder().build();
+        PlcConnectionCache mgr0 = PlcConnectionCache.getBuilder().withConnectionFactory(PlcDriverManager.getDefault().getConnectionFactory()).build();
         System.out.println("=== No merge: gap=0 ===");
         double noMerge = benchmark(mgr0, noMergeUrl, "gap=0");
         mgr0.close();
 
         // ── Fixed gap: gap=16 ────────────────────────────────────────
-        CachedPlcConnectionManager mgr1 = CachedPlcConnectionManager.getBuilder().build();
+        PlcConnectionCache mgr1 = PlcConnectionCache.getBuilder().withConnectionFactory(PlcDriverManager.getDefault().getConnectionFactory()).build();
         System.out.println("\n=== Fixed gap: gap=16 ===");
         double fixedGap = benchmark(mgr1, fixedGapUrl, "gap=16");
         mgr1.close();
 
         // ── Auto: cost-based merge ───────────────────────────────────
-        CachedPlcConnectionManager mgr2 = CachedPlcConnectionManager.getBuilder().build();
+        PlcConnectionCache mgr2 = PlcConnectionCache.getBuilder().withConnectionFactory(PlcDriverManager.getDefault().getConnectionFactory()).build();
         System.out.println("\n=== Auto: cost-based block merge ===");
         double auto = benchmark(mgr2, autoUrl, "auto");
         mgr2.close();
@@ -108,7 +109,7 @@ public class BlockPerfTest {
         System.out.println("==============================================");
     }
 
-    private static double benchmark(CachedPlcConnectionManager mgr, String url, String label)
+    private static double benchmark(PlcConnectionCache mgr, String url, String label)
             throws Exception {
 
         List<Long> times = new ArrayList<>(ITERATIONS);

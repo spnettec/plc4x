@@ -20,8 +20,7 @@
 package org.apache.plc4x.java.tools.eventpump.config;
 
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
-import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
 import org.apache.plc4x.java.api.messages.PlcPingResponse;
@@ -56,12 +55,12 @@ class EventPumpFactoryTest {
     @TempDir
     File tempDir;
 
-    private PlcConnectionManager connectionManager;
+    private PlcConnectionFactory connectionFactory;
 
     @BeforeEach
     void setUp() throws Exception {
         // Create a stub connection manager
-        connectionManager = new PlcConnectionManager() {
+        connectionFactory = new PlcConnectionFactory() {
             @Override
             public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
                 return new StubPlcConnection();
@@ -70,11 +69,6 @@ class EventPumpFactoryTest {
             @Override
             public PlcConnection getConnection(String connectionString, org.apache.plc4x.java.api.authentication.PlcAuthentication authentication) throws PlcConnectionException {
                 return new StubPlcConnection();
-            }
-
-            @Override
-            public PlcDriverManager getDriverManager() {
-                return null;
             }
         };
     }
@@ -149,7 +143,7 @@ class EventPumpFactoryTest {
         TagBatch.TagBatchListener listener = (batch, response) -> {};
 
         // Act
-        EventPump pump = EventPumpFactory.create(config, connectionManager, listener);
+        EventPump pump = EventPumpFactory.create(config, connectionFactory, listener);
 
         // Assert
         assertNotNull(pump);
@@ -167,7 +161,7 @@ class EventPumpFactoryTest {
         EventPumpConfiguration config = createTestConfiguration();
 
         // Act
-        EventPump pump = EventPumpFactory.create(config, connectionManager, null);
+        EventPump pump = EventPumpFactory.create(config, connectionFactory, null);
 
         // Assert
         assertNotNull(pump);
@@ -201,7 +195,7 @@ class EventPumpFactoryTest {
         // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> EventPumpFactory.create(config, connectionManager, null)
+            () -> EventPumpFactory.create(config, connectionFactory, null)
         );
         assertTrue(exception.getMessage().contains("Connection 'nonexistent' not found"));
     }
@@ -231,7 +225,7 @@ class EventPumpFactoryTest {
         batch.setTrigger(trigger);
         config.getBatches().add(batch);
 
-        EventPump pump = EventPumpFactory.create(config, connectionManager, null);
+        EventPump pump = EventPumpFactory.create(config, connectionFactory, null);
 
         TimerTrigger timerTrigger = (TimerTrigger) pump.getBatch("batch1").getTrigger();
         assertEquals(250, timerTrigger.getIntervalMs());
@@ -252,7 +246,7 @@ class EventPumpFactoryTest {
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> EventPumpFactory.create(config, connectionManager, null)
+            () -> EventPumpFactory.create(config, connectionFactory, null)
         );
         assertTrue(exception.getMessage().contains("intervalSeconds"));
         assertTrue(exception.getMessage().contains("intervalMillis"));
@@ -272,7 +266,7 @@ class EventPumpFactoryTest {
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> EventPumpFactory.create(config, connectionManager, null)
+            () -> EventPumpFactory.create(config, connectionFactory, null)
         );
         assertTrue(exception.getMessage().contains("initialDelaySeconds"));
         assertTrue(exception.getMessage().contains("initialDelayMillis"));
@@ -289,7 +283,7 @@ class EventPumpFactoryTest {
             trigger.setInitialDelaySeconds(2L);
         });
 
-        EventPump pump = EventPumpFactory.create(config, connectionManager, null);
+        EventPump pump = EventPumpFactory.create(config, connectionFactory, null);
 
         TimerTrigger timerTrigger = (TimerTrigger) pump.getBatch("batch1").getTrigger();
         assertEquals(250, timerTrigger.getIntervalMs());
@@ -346,7 +340,7 @@ class EventPumpFactoryTest {
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> EventPumpFactory.create(config, connectionManager, null)
+            () -> EventPumpFactory.create(config, connectionFactory, null)
         );
         assertTrue(exception.getMessage().contains("intervalSeconds or intervalMillis"));
     }
@@ -378,7 +372,7 @@ class EventPumpFactoryTest {
         // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> EventPumpFactory.create(config, connectionManager, null)
+            () -> EventPumpFactory.create(config, connectionFactory, null)
         );
         assertTrue(exception.getMessage().contains("Unknown trigger type"));
     }
@@ -412,7 +406,7 @@ class EventPumpFactoryTest {
         // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> EventPumpFactory.create(config, connectionManager, null)
+            () -> EventPumpFactory.create(config, connectionFactory, null)
         );
         assertTrue(exception.getMessage().contains("Subscription trigger requires tagName and tagAddress"));
     }
@@ -427,7 +421,7 @@ class EventPumpFactoryTest {
         TagBatch.TagBatchListener listener = (batch, response) -> {};
 
         // Act
-        EventPump pump = EventPumpFactory.fromYaml(yamlFile, connectionManager, listener);
+        EventPump pump = EventPumpFactory.fromYaml(yamlFile, connectionFactory, listener);
 
         // Assert
         assertNotNull(pump);
@@ -447,7 +441,7 @@ class EventPumpFactoryTest {
         TagBatch.TagBatchListener listener = (batch, response) -> {};
 
         // Act
-        EventPump pump = EventPumpFactory.fromJson(jsonFile, connectionManager, listener);
+        EventPump pump = EventPumpFactory.fromJson(jsonFile, connectionFactory, listener);
 
         // Assert
         assertNotNull(pump);
@@ -467,7 +461,7 @@ class EventPumpFactoryTest {
         TagBatch.TagBatchListener listener = (batch, response) -> {};
 
         // Act
-        EventPump pump = EventPumpFactory.fromXml(xmlFile, connectionManager, listener);
+        EventPump pump = EventPumpFactory.fromXml(xmlFile, connectionFactory, listener);
 
         // Assert
         assertNotNull(pump);
@@ -504,7 +498,7 @@ class EventPumpFactoryTest {
         config.getBatches().add(batch);
 
         // Act
-        EventPump pump = EventPumpFactory.create(config, connectionManager, null);
+        EventPump pump = EventPumpFactory.create(config, connectionFactory, null);
 
         // Assert
         assertNotNull(pump);
@@ -542,7 +536,7 @@ class EventPumpFactoryTest {
         config.getBatches().add(batch);
 
         // Act
-        EventPump pump = EventPumpFactory.create(config, connectionManager, null);
+        EventPump pump = EventPumpFactory.create(config, connectionFactory, null);
 
         // Assert
         assertNotNull(pump);

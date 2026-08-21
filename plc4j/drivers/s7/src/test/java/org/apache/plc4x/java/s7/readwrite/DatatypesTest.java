@@ -21,12 +21,13 @@ package org.apache.plc4x.java.s7.readwrite;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.utils.cache.PlcConnectionCache;
 
 public class DatatypesTest {
 
     public static void main(String[] args) throws Exception {
-        CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
+        PlcConnectionCache plcConnectionManager = PlcConnectionCache.getBuilder().withConnectionFactory(PlcDriverManager.getDefault().getConnectionFactory()).build();
         //PlcConnectionManager plcConnectionManager = new DefaultPlcDriverManager();
 
         Runtime runtime = Runtime.getRuntime();
