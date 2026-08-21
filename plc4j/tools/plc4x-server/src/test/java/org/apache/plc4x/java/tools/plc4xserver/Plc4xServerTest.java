@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcConnectionFactory;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -46,7 +46,7 @@ public class Plc4xServerTest {
     private static final long TIMEOUT_VALUE = 10;
     private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
 
-    private final PlcConnectionManager connectionManager = new DefaultPlcDriverManager();
+    private final PlcConnectionFactory connectionManager = new DefaultPlcDriverManager();
 
     @BeforeAll
     public static void setUp() throws ExecutionException, InterruptedException, TimeoutException {
