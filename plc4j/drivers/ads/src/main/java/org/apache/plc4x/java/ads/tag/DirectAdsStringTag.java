@@ -33,7 +33,10 @@ import java.util.regex.Pattern;
  */
 public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
 
-    private static final Pattern RESOURCE_STRING_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
+    private static final Pattern RESOURCE_STRING_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]{1,8}))|(?<indexGroup>\\d{1,10}))" +
+            "/((0[xX](?<indexOffsetHex>[0-9a-fA-F]{1,8}))|(?<indexOffset>\\d{1,10}))" +
+            ":(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)" +
+            "(\\[(?<numberOfElements>\\d{1,10})])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private final int stringLength;
 
@@ -66,19 +69,8 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
         String indexOffsetStringHex = matcher.group("indexOffsetHex");
         String indexOffsetString = matcher.group("indexOffset");
 
-        long indexGroup;
-        if (indexGroupStringHex != null) {
-            indexGroup = Long.parseLong(indexGroupStringHex, 16);
-        } else {
-            indexGroup = Long.parseLong(indexGroupString);
-        }
-
-        long indexOffset;
-        if (indexOffsetStringHex != null) {
-            indexOffset = Long.parseLong(indexOffsetStringHex, 16);
-        } else {
-            indexOffset = Long.parseLong(indexOffsetString);
-        }
+        long indexGroup = parseUint32("indexGroup", indexGroupString, indexGroupStringHex);
+        long indexOffset = parseUint32("indexOffset", indexOffsetString, indexOffsetStringHex);
 
         String adsDataTypeName = matcher.group("adsDataType");
 
@@ -86,7 +78,9 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
         int stringLength = stringLengthString != null ? Integer.parseInt(stringLengthString) : 0;
 
         String numberOfElementsString = matcher.group("numberOfElements");
-        Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
+        Integer numberOfElements = numberOfElementsString != null
+            ? parseElementCount(numberOfElementsString) : null;
+
         String stringEncoding = matcher.group("stringEncoding");
         if (stringEncoding == null || stringEncoding.isEmpty())
         {

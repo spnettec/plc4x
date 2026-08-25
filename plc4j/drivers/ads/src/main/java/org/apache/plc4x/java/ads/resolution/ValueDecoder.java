@@ -34,7 +34,9 @@ import org.apache.plc4x.java.spi.values.PlcWSTRING;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 
 /**
@@ -73,7 +75,7 @@ public final class ValueDecoder {
             if (dataType == null) {
                 throw new BufferException("Unknown array data type: " + tag.dataTypeName());
             }
-            return decodePartialArray(rb, dataType, tag.remainingArrayInfo(), tag.stringEncoding());
+            return decodePartialArray(rb, dataType, tag.remainingArrayInfo(), new LinkedHashSet<>(), tag.stringEncoding());
         }
 
         // Full-leaf decode based on plcValueType.
@@ -82,7 +84,7 @@ public final class ValueDecoder {
             if (dataType == null) {
                 throw new BufferException("Unknown struct data type: " + tag.dataTypeName());
             }
-            return decodeStruct(rb, dataType, tag.stringEncoding());
+            return decodeStruct(rb, dataType, new LinkedHashSet<>(), tag.stringEncoding());
         }
         if (tag.plcValueType() == PlcValueType.List) {
             // Whole array — type table has the dimensions.
@@ -90,7 +92,7 @@ public final class ValueDecoder {
             if (dataType == null) {
                 throw new BufferException("Unknown array data type: " + tag.dataTypeName());
             }
-            return decodePartialArray(rb, dataType, dataType.getArrayInfo(), tag.stringEncoding());
+            return decodePartialArray(rb, dataType, dataType.getArrayInfo(), new LinkedHashSet<>(), tag.stringEncoding());
         }
         return parseLeaf(rb, tag.plcValueType(), tag.stringLength(), tag.stringEncoding());
     }
@@ -102,9 +104,10 @@ public final class ValueDecoder {
     private PlcValue decodePartialArray(ReadBuffer rb,
                                         AdsDataTypeTableEntry arrayDataType,
                                         List<AdsDataTypeArrayInfo> dims,
+                                        Set<String> expanding,
                                         String stringEncoding) throws BufferException {
         if (dims.isEmpty()) {
-            return decodeArrayElement(rb, arrayDataType, stringEncoding);
+            return decodeArrayElement(rb, arrayDataType, expanding, stringEncoding);
         }
         AdsDataTypeArrayInfo cur = dims.get(0);
         List<AdsDataTypeArrayInfo> rest = dims.subList(1, dims.size());
@@ -120,7 +123,7 @@ public final class ValueDecoder {
         }
         List<PlcValue> elements = new ArrayList<>((int) Math.min(count, MAX_INITIAL_CAPACITY));
         for (long i = 0; i < count; i++) {
-            elements.add(decodePartialArray(rb, arrayDataType, rest, stringEncoding));
+            elements.add(decodePartialArray(rb, arrayDataType, rest, expanding, stringEncoding));
         }
         return new PlcList(elements);
     }
@@ -130,13 +133,14 @@ public final class ValueDecoder {
      */
     private PlcValue decodeArrayElement(ReadBuffer rb,
                                         AdsDataTypeTableEntry arrayDataType,
+                                        Set<String> expanding,
                                         String stringEncoding) throws BufferException {
         String elementTypeName = arrayDataType.getSecondaryName();
         AdsDataTypeTableEntry elementType = dataTypeTable.get(elementTypeName);
         if (elementType != null) {
             // Struct element → recurse; otherwise primitive via DataItem.
             if (!elementType.getChildren().isEmpty()) {
-                return decodeStruct(rb, elementType, stringEncoding);
+                return decodeStruct(rb, elementType, expanding, stringEncoding);
             }
             // Primitive element described by a data type table entry (e.g. STRING(80))
             int stringLen = stringLengthForLeaf(elementType);
@@ -159,8 +163,39 @@ public final class ValueDecoder {
         return parseLeaf(rb, plcType, stringLen, stringEncoding);
     }
 
+    /** Visible for tests: decodes a struct from a fresh path. */
+    PlcValue decodeStructForTest(ReadBuffer rb, AdsDataTypeTableEntry dataType) throws BufferException {
+        return decodeStruct(rb, dataType, new LinkedHashSet<>(), null);
+    }
+
+    /**
+     * Decodes a struct, refusing to descend into a type already being decoded on the way here.
+     *
+     * <p>The data type table is uploaded from the device, and a field's type is a name looked up in
+     * it - so a struct can have a field of its own type, directly or round a longer loop. Nothing
+     * about the table's shape prevents it, and the bound on how deeply the table may nest when it
+     * is parsed does not apply: this recursion follows names into a flat map, not nesting.</p>
+     *
+     * @param expanding the type names already being decoded on this path
+     */
     private PlcValue decodeStruct(ReadBuffer rb, AdsDataTypeTableEntry dataType,
+                                  Set<String> expanding,
                                   String stringEncoding) throws BufferException {
+        String typeName = dataType.getMainName();
+        if (!expanding.add(typeName)) {
+            throw new BufferException("The data type table describes '" + typeName
+                + "' as containing itself, so decoding it does not terminate");
+        }
+        try {
+            return decodeStructFields(rb, dataType, expanding, stringEncoding);
+        } finally {
+            expanding.remove(typeName);
+        }
+    }
+
+    private PlcValue decodeStructFields(ReadBuffer rb, AdsDataTypeTableEntry dataType,
+                                        Set<String> expanding,
+                                        String stringEncoding) throws BufferException {
         Map<String, PlcValue> properties = new LinkedHashMap<>();
         int startBytePos = rb.getPositionInBits() / 8;
         int totalSize = (int) dataType.getSize();
@@ -199,10 +234,10 @@ public final class ValueDecoder {
                 value = parseLeaf(rb, plcType, stringLen, stringEncoding);
             } else if (!childType.getArrayInfo().isEmpty()) {
                 // Field is an array — fully read it.
-                value = decodePartialArray(rb, childType, childType.getArrayInfo(), stringEncoding);
+                value = decodePartialArray(rb, childType, childType.getArrayInfo(), expanding, stringEncoding);
             } else if (!childType.getChildren().isEmpty()) {
                 // Nested struct.
-                value = decodeStruct(rb, childType, stringEncoding);
+                value = decodeStruct(rb, childType, expanding, stringEncoding);
             } else {
                 // Primitive field with a data type table entry (e.g. STRING(80)).
                 int stringLen = stringLengthForLeaf(childType);
