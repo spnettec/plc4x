@@ -230,7 +230,7 @@ cd plc4go && $GO build ./... && $GO vet ./...     # exit 0 才算过
 
 （`go vet` 会报一批 `ReadByte`/`WriteByte` 签名不匹配的 style 警告，那是上游自带的，不是错误。）
 
-例外：这几个目录的 `pom.xml` **版本号仍要保持 `1.0.0.B-SNAPSHOT`**，否则父 pom 解析不到。2026-09 合并后，`plc4go`/`plc4c`/`plc4py`/`plc4net` 与上游的差异只剩这些 pom 版本行，外加一个没人引用的 `plc4go/spi/values/PlcBIT.go`。
+例外：这几个目录的 `pom.xml` **版本号仍要保持 `1.0.0.B-SNAPSHOT`**，否则父 pom 解析不到。2026-09 合并后，`plc4go`/`plc4c`/`plc4py`/`plc4net` 与上游的差异**只剩这些 pom 版本行**——这 4 个目录应当与上游保持零差异。
 
 ## 工具链
 
