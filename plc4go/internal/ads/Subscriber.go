@@ -263,7 +263,7 @@ func (m *Connection) handleIncomingDeviceNotificationRequest(deviceNotificationR
 
 			// Parse the data according to theÏ type data stored in the tag
 			directTag := adsSubscriptionHandler.GetDirectTag()
-			plcValue, err := m.parsePlcValue(directTag.DataType, directTag.DataType.GetArrayInfo(), readBuffer, directTag.GetStringEncoding())
+			plcValue, err := m.parsePlcValue(directTag.DataType, directTag.DataType.GetArrayInfo(), readBuffer)
 			if err != nil {
 				continue
 			}

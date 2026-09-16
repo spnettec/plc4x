@@ -42,7 +42,6 @@ type PlcTag interface {
 	GetMemoryArea() readWriteModel.MemoryArea
 	GetByteOffset() uint16
 	GetBitOffset() uint8
-	GetStringEncoding() string
 }
 
 type plcTag struct {
@@ -54,28 +53,26 @@ type plcTag struct {
 	NumElements uint16
 	// ExplicitRange records whether the address wrote the selection as a range. A one-element
 	// range is still a range - [4] is a scalar and [4..4] a list of one - which no count can say.
-	ExplicitRange  bool
-	Datatype       readWriteModel.TransportSize
-	StringEncoding string
+	ExplicitRange bool
+	Datatype      readWriteModel.TransportSize
 }
 
-func NewTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcTag {
-	return NewTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, datatype, numElements > 1, stringEncoding)
+func NewTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize) PlcTag {
+	return NewTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, datatype, numElements > 1)
 }
 
 // NewTagWithShape is NewTag plus what the address said about its shape: a range is an array even
 // when it spans one element, which the element count alone cannot carry.
-func NewTagWithShape(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize, explicitRange bool, stringEncoding string) PlcTag {
+func NewTagWithShape(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize, explicitRange bool) PlcTag {
 	return plcTag{
-		ExplicitRange:  explicitRange,
-		TagType:        S7Tag,
-		MemoryArea:     memoryArea,
-		BlockNumber:    blockNumber,
-		ByteOffset:     byteOffset,
-		BitOffset:      bitOffset,
-		NumElements:    numElements,
-		Datatype:       datatype,
-		StringEncoding: stringEncoding,
+		ExplicitRange: explicitRange,
+		TagType:       S7Tag,
+		MemoryArea:    memoryArea,
+		BlockNumber:   blockNumber,
+		ByteOffset:    byteOffset,
+		BitOffset:     bitOffset,
+		NumElements:   numElements,
+		Datatype:      datatype,
 	}
 }
 
@@ -84,24 +81,23 @@ type PlcStringTag struct {
 	stringLength uint16
 }
 
-func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcStringTag {
-	return NewStringTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, datatype, numElements > 1, stringEncoding)
+func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize) PlcStringTag {
+	return NewStringTagWithShape(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, datatype, numElements > 1)
 }
 
 // NewStringTagWithShape is NewStringTag plus what the address said about its shape: a range is an array even
 // when it spans one element, which the element count alone cannot carry.
-func NewStringTagWithShape(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize, explicitRange bool, stringEncoding string) PlcStringTag {
+func NewStringTagWithShape(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize, explicitRange bool) PlcStringTag {
 	return PlcStringTag{
-		TagType:        S7StringTag,
-		MemoryArea:     memoryArea,
-		BlockNumber:    blockNumber,
-		ByteOffset:     byteOffset,
-		BitOffset:      bitOffset,
-		NumElements:    numElements,
-		ExplicitRange:  explicitRange,
-		Datatype:       datatype,
-		StringEncoding: stringEncoding,
-		stringLength:   stringLength,
+		TagType:       S7StringTag,
+		MemoryArea:    memoryArea,
+		BlockNumber:   blockNumber,
+		ByteOffset:    byteOffset,
+		BitOffset:     bitOffset,
+		NumElements:   numElements,
+		ExplicitRange: explicitRange,
+		Datatype:      datatype,
+		stringLength:  stringLength,
 	}
 }
 
@@ -190,10 +186,6 @@ func (m plcTag) Serialize() ([]byte, error) {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
-}
-
-func (m plcTag) GetStringEncoding() string {
-	return m.StringEncoding
 }
 
 func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {

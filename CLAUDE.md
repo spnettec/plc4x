@@ -45,7 +45,7 @@ mvn verify -f plc4j/drivers/<driver>/pom.xml
 
 ## Jackson 3 迁移
 
-上游从 Jackson 2 迁移到 Jackson 3（`3.2.0`）。**所有 YOFC 自定义代码也必须同步**。
+**方向：YOFC 从 Jackson 2 迁到了 Jackson 3（`tools.jackson`, `3.2.0`），上游停在 Jackson 2。** 这是 fork 的永久性偏离，不是「跟随上游」。合并时上游的 Jackson 2 代码要迁到 3，反向不成立。详见文末「上游同步 → Jackson 3 方向」。
 
 ### 迁移检查清单
 
@@ -61,7 +61,16 @@ mvn verify -f plc4j/drivers/<driver>/pom.xml
 
 ### 常见遗漏
 
-合并后如果看到 `package com.fasterxml.jackson.* does not exist`，说明该文件是 YOFC 自定义的、没有被上游改过，需要手动迁移 import + API 调用。典型例子：`AuditLogImpl.java`。
+合并后如果看到 `package com.fasterxml.jackson.databind.* does not exist` / `... .core.*`，说明上游在这轮改了该文件，把它的 Jackson 2 import 带了进来，需要手动迁到 `tools.jackson.*`。
+
+先跑一次全树扫描定位，比逐个看编译错误快：
+
+```bash
+grep -rn 'import com\.fasterxml\.jackson\.' --include='*.java' plc4j/ \
+  | grep -v 'com\.fasterxml\.jackson\.annotation\.'      # 有输出才需要迁移
+```
+
+`com.fasterxml.jackson.annotation.*` 是 Jackson 3 的正常用法，**不要**动。2026-09 那次合并该扫描为空。
 
 ## JaCoCo 覆盖率
 
@@ -181,9 +190,52 @@ YOFC 自建的 PLC4X 代理服务器（`plc4j/tools/plc4x-server`），基于 Ne
 - 常见冲突类型：`protocols/bacnetip/.../bacnet-vendorids.mspec` 这类注册表型表追加，upstream 追加新 vendor，YOFC 那侧空白 → take-theirs。同时取上游对应的 Java/Go 生成产物
 - merge 完跑一次完整 root build + `git status` clean 验证 → push：`git push heyoulin heyoulin`
 
+### 版本号约定
+
+YOFC 保持自己的 `1.0.0.B-SNAPSHOT`，**不跟上游的版本号**（上游 2026-09 起为 `1.1.0-SNAPSHOT`）。`yofc-iot` 的 `com.yofc.iot.apps.opcuaserver` 等 pom 把 `plc4j-*` 依赖钉在 `1.0.0.B-SNAPSHOT`，改这个版本号会连带改下游。
+
+冲突表现：~100 个 `pom.xml` 的 `<version>` 行冲突。判据是「只有版本/时间戳差异」→ 取 ours；「上游单方面新增的行」→ 取 theirs 但把 `1.1.0-SNAPSHOT` 换回 `1.0.0.B-SNAPSHOT`。merge 后务必 grep 一遍 `1\.1\.0-SNAPSHOT` 和 `1\.0\.0-SNAPSHOT`（没有 `.B`）：上游新增的 `<parent>` version、新依赖的 version 都不会冲突，会静默带进来，直到构建报 "Non-resolvable parent POM" 才暴露。
+
+### 构建：**不要用 `-T 1C`**
+
+`apache-rat-plugin:0.18` 在并行模块构建下会抛 `ConcurrentModificationException`，或报假的 `Unexpected count for UNAPPROVED`（不同模块、不同次数，非确定性）。用串行：
+
+```bash
+mvn install -Pwith-java -pl '!website' -DskipTests          # 95 个模块，串行约 2-3 分钟
+mvn test   -Pwith-java -pl '!website' -DskipITs=true --fail-at-end   # 11564 个测试
+```
+
+跑测试务必加 `--fail-at-end`，否则 Maven 在第一个失败模块就中止，后面模块一个都没跑，会看不到其余失败。
+
+### Jackson 3 方向（2026-09 复核）
+
+上游在 **Jackson 2**（`com.fasterxml.jackson`, 2.22.x）；YOFC 在 **Jackson 3**（`tools.jackson`, 3.2.0）。方向是 YOFC 单方面前进，不是「跟随上游迁移」——上游做过 3.x 试验后回退了。合并时不要接受上游的 Jackson 2 groupId/版本。
+
+- `com.fasterxml.jackson.annotation.*` 是**对的**（Jackson 3 仍用这个包名放注解 + `jackson-annotations` 这个 artifact），不要"迁移"掉
+- `jackson-datatype-jsr310` 在 Jackson 3 下**没有 3.2.0 版本**（central 只到 3.0.0-rc2）：java.time 支持已并入 `jackson-databind`（`tools/jackson/databind/ext/javatime/`）。上游加的 `com.fasterxml.jackson.datatype:jackson-datatype-jsr310` 依赖要**删掉**而不是改 groupId
+
+### 非 Java 语言绑定：**一律取上游**（政策，2026-09 明确）
+
+YOFC 的定制只在 **Java** 上。`plc4go` / `plc4c` / `plc4py` / `plc4net` 里 YOFC 那侧的改动当初只是为了**让它们能编译过**（跟随 mspec 变更的连带修改），不是功能需求。所以：
+
+- 这些目录的冲突**一律 take-theirs**，不要像 Java 那样做 union
+- 也不要保留 YOFC 在这些目录里的历史定制（例：`plc4go` 的 `|stringEncoding` 透传）。它们依赖协议自动生成的代码，而生成物是按上游 mspec 出的，留着就对不上、编译不过
+
+**为什么不能靠构建发现**：`-Pwith-java` 只把 `plc4j` 拉进 reactor，这些目录根本不被编译。合并后要单独验：
+
+```bash
+GO=~/.mvnGoLang/go1.26.0.darwin-arm64/bin/go
+cd plc4go && $GO build ./... && $GO vet ./...     # exit 0 才算过
+```
+
+（`go vet` 会报一批 `ReadByte`/`WriteByte` 签名不匹配的 style 警告，那是上游自带的，不是错误。）
+
+例外：这几个目录的 `pom.xml` **版本号仍要保持 `1.0.0.B-SNAPSHOT`**，否则父 pom 解析不到。2026-09 合并后，`plc4go`/`plc4c`/`plc4py`/`plc4net` 与上游的差异只剩这些 pom 版本行，外加一个没人引用的 `plc4go/spi/values/PlcBIT.go`。
+
 ## 工具链
 
-- Java 21（Temurin）+ Maven 4（`~/apps/maven/apache-maven-4.0.0-rc-5`，项目已迁移 POM 4.1.0 schema + `<subprojects>`，Maven 3 无法构建）
+- Java 21（Temurin）+ Maven 4（`~/apps/maven/apache-maven-4.0.0-rc-6`——root pom 的 enforcer 要求 `[4.0.0-rc-6,)`；项目已迁移 POM 4.1.0 schema + `<subprojects>`，Maven 3 无法构建）
+- 默认 `java` 是 26；构建要显式 `JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home`
 
 # Codebase Memory MCP — Code Intelligence
 

@@ -43,18 +43,18 @@ type TagHandler struct {
 // NewTagHandler this constructor creates a version of the TagHandler that's detached from a connection and can't provide context-sensitive feedback.
 func NewTagHandler() TagHandler {
 	return TagHandler{
-		directAdsStringTag: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+))` + spiModel.ArrayGroupPattern + `:(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?$`),
-		directAdsTag:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+))` + spiModel.ArrayGroupPattern + `:(?P<adsDataType>\w+)(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?$`),
-		symbolicAdsTag:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)` + spiModel.ArrayGroupPattern + `(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?$`),
+		directAdsStringTag: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+))` + spiModel.ArrayGroupPattern + `:(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)$`),
+		directAdsTag:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+))` + spiModel.ArrayGroupPattern + `:(?P<adsDataType>\w+)$`),
+		symbolicAdsTag:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)` + spiModel.ArrayGroupPattern + `$`),
 	}
 }
 
 // NewTagHandlerWithDriverContext this constructor creates a version of the TagHandler that is connected to a connection and can provide context-sensitive feedback.
 func NewTagHandlerWithDriverContext(driverContext *DriverContext) TagHandler {
 	return TagHandler{
-		directAdsStringTag: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+))` + spiModel.ArrayGroupPattern + `:(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?$`),
-		directAdsTag:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+))` + spiModel.ArrayGroupPattern + `:(?P<adsDataType>\w+)(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?$`),
-		symbolicAdsTag:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)` + spiModel.ArrayGroupPattern + `(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?$`),
+		directAdsStringTag: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+))` + spiModel.ArrayGroupPattern + `:(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)$`),
+		directAdsTag:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+))` + spiModel.ArrayGroupPattern + `:(?P<adsDataType>\w+)$`),
+		symbolicAdsTag:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)` + spiModel.ArrayGroupPattern + `$`),
 		driverContext:      driverContext,
 	}
 }
@@ -94,7 +94,6 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			indexOffset = uint32(parsedIndexOffset)
 		}
 		adsDataTypeName := match["adsDataType"]
-		stringEncoding := match["stringEncoding"]
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
@@ -123,7 +122,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			return nil, err
 		}
 
-		return model.NewDirectAdsPlcTag(indexGroup, indexOffset, plcValueType, stringLength, stringEncoding, arrayInfo)
+		return model.NewDirectAdsPlcTag(indexGroup, indexOffset, plcValueType, stringLength, arrayInfo)
 	} else if match := utils.GetSubgroupMatches(m.directAdsTag, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
@@ -158,7 +157,6 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			indexOffset = uint32(parsedIndexOffset)
 		}
 		adsDataTypeName := match["adsDataType"]
-		stringEncoding := match["stringEncoding"]
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
@@ -178,7 +176,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			return nil, err
 		}
 
-		return model.NewDirectAdsPlcTag(indexGroup, indexOffset, plcValueType, model.NONE, stringEncoding, arrayInfo)
+		return model.NewDirectAdsPlcTag(indexGroup, indexOffset, plcValueType, model.NONE, arrayInfo)
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsTag, query); match != nil {
 		// A symbolic address is anything that is not a direct one, so an address that looks
 		// direct but does not parse would otherwise be accepted here as a symbol name of its

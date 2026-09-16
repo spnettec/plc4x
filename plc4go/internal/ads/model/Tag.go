@@ -56,12 +56,11 @@ func NeedsResolving(plcTag apiModel.PlcTag) bool {
 type DirectPlcTag struct {
 	PlcTag
 
-	IndexGroup     uint32
-	IndexOffset    uint32
-	ValueType      apiValues.PlcValueType
-	StringLength   int32
-	StringEncoding string
-	DataType       readWriteModel.AdsDataTypeTableEntry
+	IndexGroup   uint32
+	IndexOffset  uint32
+	ValueType    apiValues.PlcValueType
+	StringLength int32
+	DataType     readWriteModel.AdsDataTypeTableEntry
 
 	// SelectedArrayInfo is the shape to transfer and decode when the address selected part of a
 	// location, rather than the whole of what DataType declares. It is nil when the address
@@ -104,18 +103,13 @@ func (m DirectPlcTag) DecodeArrayInfo() []readWriteModel.AdsDataTypeArrayInfo {
 	return m.DataType.GetArrayInfo()
 }
 
-func (m DirectPlcTag) GetStringEncoding() string {
-	return m.StringEncoding
-}
-
-func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType apiValues.PlcValueType, stringLength int32, stringEncoding string, arrayInfo []apiModel.ArrayInfo) (apiModel.PlcTag, error) {
+func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType apiValues.PlcValueType, stringLength int32, arrayInfo []apiModel.ArrayInfo) (apiModel.PlcTag, error) {
 	return DirectPlcTag{
-		IndexGroup:     indexGroup,
-		IndexOffset:    indexOffset,
-		ValueType:      valueType,
-		StringLength:   stringLength,
-		StringEncoding: stringEncoding,
-		ArrayInfo:      arrayInfo,
+		IndexGroup:   indexGroup,
+		IndexOffset:  indexOffset,
+		ValueType:    valueType,
+		StringLength: stringLength,
+		ArrayInfo:    arrayInfo,
 	}, nil
 }
 

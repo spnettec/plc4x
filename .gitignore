@@ -223,5 +223,10 @@ DartConfiguration.tcl
 /plc4c/.idea/.name
 
 /website/node_modules/
+
+# IntelliJ IDEA state, wherever a module is opened from. Note that upstream deliberately
+# tracks a handful of files below .idea/fileTemplates (code style / file header templates);
+# a tracked file is unaffected by an ignore rule, so those stay in the repository.
+**/.idea/
 /.idea/
 .gitnexus

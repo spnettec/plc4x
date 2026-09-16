@@ -230,7 +230,6 @@ struct plc4c_data_t {
   size_t size;
   union {
     bool bool_value;
-    bool bit_value;
     uint8_t byte_value;
     uint16_t word_value;
     uint32_t dword_value;
