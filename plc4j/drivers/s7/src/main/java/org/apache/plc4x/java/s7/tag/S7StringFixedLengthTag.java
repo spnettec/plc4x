@@ -77,7 +77,10 @@ public class S7StringFixedLengthTag extends S7Tag {
     public String getAddressString() {
         // The base form ends in ":STRING"; the declared length belongs directly behind it.
         String address = super.getAddressString() + "(" + stringLength + ")";
-        if (stringEncoding != null && !stringEncoding.isEmpty()) {
+        // A WSTRING is UTF-16 whether or not the address says so, so spelling that default out
+        // would stop the rendered form from matching the address the user wrote.
+        String implicit = getDataType() == TransportSize.WSTRING ? "UTF-16" : null;
+        if (stringEncoding != null && !stringEncoding.isEmpty() && !stringEncoding.equals(implicit)) {
             address += "|" + stringEncoding;
         }
         return address;

@@ -127,7 +127,10 @@ class EipTagPathTest {
                 assertTrue(Modifier.isFinal(field.getModifiers()), () -> field.getName() + " should be final");
             }
         }
-        assertEquals(0, java.util.Arrays.stream(EipTag.class.getMethods())
+        // getDeclaredMethods, not getMethods: YOFC's PlcTag declares a no-op default
+        // setPlcValueType for the proxy driver to override, so every tag in this fork inherits a
+        // public setter that mutates nothing. What this test is about is the tag class itself.
+        assertEquals(0, java.util.Arrays.stream(EipTag.class.getDeclaredMethods())
             .filter(m -> m.getName().startsWith("set"))
             .count(), "EipTag should expose no setters");
     }

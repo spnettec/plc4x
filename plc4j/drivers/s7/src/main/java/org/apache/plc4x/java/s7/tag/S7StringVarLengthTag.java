@@ -62,12 +62,13 @@ public class S7StringVarLengthTag extends S7Tag {
 
     @Override
     public String getAddressString() {
-        String address = String.format("%%DB%d.DB%d:%s",
-            getBlockNumber(), getByteOffset(), getDataType().name());
-        if (getNumberOfElements() != 1) {
-            address += "[" + getNumberOfElements() + "]";
-        }
-        if (stringEncoding != null && !stringEncoding.isEmpty()) {
+        // The base form already spells the block, the selection and the ":STRING" tail; a
+        // variable-length string adds nothing to it beyond YOFC's encoding suffix.
+        String address = super.getAddressString();
+        // A WSTRING is UTF-16 whether or not the address says so, so spelling that default out
+        // would stop the rendered form from matching the address the user wrote.
+        String implicit = getDataType() == TransportSize.WSTRING ? "UTF-16" : null;
+        if (stringEncoding != null && !stringEncoding.isEmpty() && !stringEncoding.equals(implicit)) {
             address += "|" + stringEncoding;
         }
         return address;

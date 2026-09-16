@@ -262,7 +262,7 @@ public class S7Tag implements PlcTag, Serializable {
             byte bitOffset = 0;
             if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
-            } else if (dataType == TransportSize.BOOL && matcher.group(NUM_ELEMENTS) == null) {
+            } else if (dataType == TransportSize.BOOL && matcher.group(ARRAY) == null) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
@@ -287,7 +287,7 @@ public class S7Tag implements PlcTag, Serializable {
             byte bitOffset = 0;
             if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
-            } else if (dataType == TransportSize.BOOL && matcher.group(NUM_ELEMENTS) == null) {
+            } else if (dataType == TransportSize.BOOL && matcher.group(ARRAY) == null) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
@@ -326,7 +326,7 @@ public class S7Tag implements PlcTag, Serializable {
             byte bitOffset = 0;
             if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
-            } else if (dataType == TransportSize.BOOL && matcher.group(NUM_ELEMENTS) == null) {
+            } else if (dataType == TransportSize.BOOL && matcher.group(ARRAY) == null) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
