@@ -31,7 +31,7 @@
   <description>Code generation template for generating Java code</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -141,7 +141,6 @@
     <dependency>
       <groupId>com.palantir.javapoet</groupId>
       <artifactId>javapoet</artifactId>
-      <version>0.17.0</version>
     </dependency>
   </dependencies>
 

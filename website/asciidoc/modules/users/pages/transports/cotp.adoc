@@ -1,0 +1,48 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+= COTP
+
+COTP (Connection-Oriented Transport Protocol, ISO 8073 / RFC 905) layered over TPKT and TCP -
+the "ISO on TCP" stack that Siemens S7 equipment speaks. It is a TCP transport that performs the
+COTP connection handshake and negotiates a TPDU size before the driver sees the connection.
+
+Because the handshake carries the TSAPs that address a specific rack and slot, this transport is
+what the xref:protocols/s7.adoc[S7 driver] uses by default. Drivers normally derive the TSAP
+values themselves - override them only if you know the device expects something else.
+
+== Transport syntax
+
+----
+{IP address or hostname}[:{port}]
+----
+
+The port defaults to the driver's default, which is 102 for S7.
+
+.Example
+[source]
+----
+s7://10.0.0.1
+s7:cotp://10.0.0.1:102?cotp.tpdu-size=1024
+----
+
+include::partial$transport-cotp.adoc[]
+
+The socket options are inherited from the xref:transports/tcp.adoc[TCP transport] and behave
+identically.

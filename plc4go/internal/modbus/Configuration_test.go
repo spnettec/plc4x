@@ -44,19 +44,22 @@ func TestParseFromOptions_defaults(t *testing.T) {
 	assert.Equal(t, BigEndianOrder, configuration.defaultPayloadByteOrder)
 	assert.Equal(t, "4x00001:BOOL", configuration.pingAddress)
 	assert.Equal(t, 5*time.Second, configuration.requestTimeout)
+	assert.Equal(t, uint16(2000), configuration.maxCoilsPerRequest)
+	assert.Equal(t, uint16(125), configuration.maxRegistersPerRequest)
 	assert.Equal(t, DefaultConfiguration(), configuration)
 }
 
 // plc4j spells the option default-unit-identifier, the Go driver has always called it
 // unit-identifier. Both work, so that neither an existing connection string nor one copied from
 // plc4j breaks.
-func TestParseFromOptions_unitIdentifierAndItsAlias(t *testing.T) {
-	assert.Equal(t, uint8(9), parseConfiguration(t, map[string][]string{"unit-identifier": {"9"}}).unitIdentifier)
+// One name, the same one plc4j declares. This driver used to accept "unit-identifier" as well,
+// which plc4j never did - so that connection string set the unit here and was silently ignored
+// there. It is now reported as an unknown option like any other name nothing reads.
+func TestParseFromOptions_unitIdentifier(t *testing.T) {
 	assert.Equal(t, uint8(9), parseConfiguration(t, map[string][]string{"default-unit-identifier": {"9"}}).unitIdentifier)
 
-	// With both spelled out the plc4j one wins.
-	both := parseConfiguration(t, map[string][]string{"unit-identifier": {"9"}, "default-unit-identifier": {"3"}})
-	assert.Equal(t, uint8(3), both.unitIdentifier)
+	// The old spelling no longer binds; the default stands.
+	assert.Equal(t, defaultUnitIdentifier, parseConfiguration(t, map[string][]string{"unit-identifier": {"9"}}).unitIdentifier)
 }
 
 func TestParseFromOptions_defaultPayloadByteOrder(t *testing.T) {
@@ -77,23 +80,79 @@ func TestParseFromOptions_pingAddress(t *testing.T) {
 
 // The request timeout is stated in milliseconds, as it is in plc4j.
 func TestParseFromOptions_requestTimeout(t *testing.T) {
-	configuration := parseConfiguration(t, map[string][]string{"request-timeout": {"250"}})
+	configuration := parseConfiguration(t, map[string][]string{"request-timeout-ms": {"250"}})
 	assert.Equal(t, 250*time.Millisecond, configuration.requestTimeout)
+}
+
+// The two ceilings the read optimizer merges within. plc4j has declared and documented them since
+// 0.13.0; this driver never read them, so a connection string that named them was ignored here.
+func TestParseFromOptions_maxPerRequest(t *testing.T) {
+	configuration := parseConfiguration(t, map[string][]string{
+		"max-coils-per-request":     {"64"},
+		"max-registers-per-request": {"20"},
+	})
+	assert.Equal(t, uint16(64), configuration.maxCoilsPerRequest)
+	assert.Equal(t, uint16(20), configuration.maxRegistersPerRequest)
+
+	// Each stands on its own; naming one leaves the other at its default.
+	assert.Equal(t, defaultMaxRegistersPerRequest,
+		parseConfiguration(t, map[string][]string{"max-coils-per-request": {"64"}}).maxRegistersPerRequest)
+	assert.Equal(t, defaultMaxCoilsPerRequest,
+		parseConfiguration(t, map[string][]string{"max-registers-per-request": {"20"}}).maxCoilsPerRequest)
 }
 
 // An option the driver can't make sense of is an error - silently falling back to a default would
 // leave the caller talking to the device in a way they didn't ask for.
+// TestParseFromOptions_clampsPerRequestCeilings covers a value that is usable but out of range.
+//
+// These are CLAMPED rather than rejected, deliberately. plc4j declares both options as plain ints
+// with no validation, so a connection string that opens a connection there has to open one here -
+// refusing it would make the option less portable than it was while plc4go ignored it entirely,
+// which is the opposite of the point of supporting it. It also cannot break an existing
+// deployment: a connection string carrying a nonsense ceiling works today (silently ignored) and
+// must keep working. The value is pinned to something usable and the reason is logged.
+//
+// Values that are not numbers at all are still an error - see TestParseFromOptions_rejectsBadValues.
+func TestParseFromOptions_clampsPerRequestCeilings(t *testing.T) {
+	for _, test := range []struct {
+		name         string
+		options      map[string][]string
+		wantCoils    uint16
+		wantRegister uint16
+	}{
+		{"zero reads nothing, so the default stands", map[string][]string{
+			"max-coils-per-request": {"0"}, "max-registers-per-request": {"0"}},
+			maxCoilQuantity, maxRegisterQuantity},
+		{"beyond what one request can carry is clamped", map[string][]string{
+			"max-coils-per-request": {"2001"}, "max-registers-per-request": {"126"}},
+			maxCoilQuantity, maxRegisterQuantity},
+		{"a usable value is taken as given", map[string][]string{
+			"max-coils-per-request": {"8"}, "max-registers-per-request": {"1"}},
+			8, 1},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			configuration, err := ParseFromOptions(zerolog.Nop(), test.options)
+			require.NoError(t, err, "a usable-but-out-of-range ceiling must not stop the connection opening")
+			assert.Equal(t, test.wantCoils, configuration.maxCoilsPerRequest)
+			assert.Equal(t, test.wantRegister, configuration.maxRegistersPerRequest)
+		})
+	}
+}
+
 func TestParseFromOptions_rejectsBadValues(t *testing.T) {
 	for _, test := range []struct {
 		name              string
 		connectionOptions map[string][]string
 	}{
-		{"unit identifier beyond a byte", map[string][]string{"unit-identifier": {"256"}}},
+		{"unit identifier beyond a byte", map[string][]string{"default-unit-identifier": {"256"}}},
 		{"unit identifier that isn't a number", map[string][]string{"default-unit-identifier": {"nope"}}},
 		{"unknown byte order", map[string][]string{"default-payload-byte-order": {"MIDDLE_ENDIAN"}}},
 		{"unparsable ping address", map[string][]string{"ping-address": {"this is not an address"}}},
-		{"request timeout that isn't a number", map[string][]string{"request-timeout": {"soon"}}},
-		{"request timeout of zero", map[string][]string{"request-timeout": {"0"}}},
+		{"request timeout that isn't a number", map[string][]string{"request-timeout-ms": {"soon"}}},
+		{"request timeout of zero", map[string][]string{"request-timeout-ms": {"0"}}},
+		{"coils per request that isn't a number", map[string][]string{"max-coils-per-request": {"lots"}}},
+		{"registers per request that isn't a number", map[string][]string{"max-registers-per-request": {"lots"}}},
+		{"coils per request beyond a uint16", map[string][]string{"max-coils-per-request": {"65536"}}},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			_, err := ParseFromOptions(zerolog.Nop(), test.connectionOptions)

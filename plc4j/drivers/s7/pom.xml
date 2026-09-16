@@ -31,7 +31,7 @@
   <description>Implementation of a PLC4X driver for the classic Step7 S7 protocol.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -240,7 +240,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi-buffers-xml</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0.B-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>

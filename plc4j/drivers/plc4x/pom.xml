@@ -31,7 +31,7 @@
   <description>Implementation of a PLC4X driver for the PLC4X protocol, which is used for relaying PLC4X requests from one system to another.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -169,7 +169,6 @@
     <dependency>
       <groupId>org.skyscreamer</groupId>
       <artifactId>jsonassert</artifactId>
-      <version>1.5.3</version>
       <scope>test</scope>
     </dependency>
 
@@ -214,7 +213,8 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-java</artifactId>          <version>1.0.0.B-SNAPSHOT</version>
+          <artifactId>plc4x-code-generation-language-java</artifactId>
+          <version>1.0.0.B-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

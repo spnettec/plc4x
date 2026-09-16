@@ -44,7 +44,7 @@
 +++
 <h4>raw-socket</h4>
 +++
-|`raw-socket.interface-name` |STRING | | |Network interface name to use (e.g., "eth0", "en0", "\\Device\\NPF_{GUID}" on Windows). If not specified, will use the first available interface.
+|`raw-socket.interface-name` |STRING | | |Network interface name to use (e.g., "eth0", "en0", "\\Device\\NPF_\{GUID}" on Windows). Alternative to naming the interface in the address segment of the connection string, which takes precedence. If neither names one, the first available interface is used.
 |`raw-socket.local-address` |STRING | | |Local MAC address to send from. If not set, uses interface's MAC address.
 |`raw-socket.remote-address` |STRING | |required |Remote MAC address to send to.
 |`raw-socket.protocol-id` |INT | |required |EtherType / Protocol number (e.g., 0x88B5 for PROFINET, 0x88CC for LLDP, custom values)
@@ -52,11 +52,12 @@
 |`raw-socket.capture-timeout` |INT |1000| |Packet capture timeout in milliseconds.
 |`raw-socket.snapshot-length` |INT |65536| |Snapshot length - maximum bytes to capture per packet. 0 means capture entire packet.
 |`raw-socket.buffer-size` |INT |1048576| |Buffer size for packet capture in bytes.
+|`raw-socket.receive-queue-size` |INT |1048576| |Bytes of captured frames that may wait for a consumer before frames are dropped.
 |`raw-socket.vlan-id` |INT |0| |VLAN ID (0 means no VLAN tag). Range: 0-4095
 |`raw-socket.vlan-priority` |INT |0| |VLAN priority (0-7). Only used if vlanId > 0.
 |`raw-socket.reuse-interface` |BOOLEAN |false| |Reuse the underlying network interface across multiple transport instances. When true, instances with the same interface and protocol will share a pcap handle. This is useful for protocols where multiple logical connections share one Ethernet type.
 |`raw-socket.bpf-filter` |STRING | | |BPF (Berkeley Packet Filter) expression to filter packets.
 |`raw-socket.max-frame-size` |INT |1500| |Maximum frame size (MTU) in bytes.
-|`raw-socket.read-timeout` |INT |0| |Read timeout for blocking reads in milliseconds.
+|`raw-socket.read-timeout-ms` |INT |0| |Read timeout for blocking reads in milliseconds.
 |`raw-socket.include-ethernet-header` |BOOLEAN |false| |Deliver full Ethernet frames to the driver and accept raw Ethernet frames on send. Required for L2 protocols that build their own Ethernet headers.
 |===

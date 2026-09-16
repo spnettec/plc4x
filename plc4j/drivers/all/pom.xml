@@ -32,7 +32,7 @@
   <description>Meta package to include all standard drivers</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -61,13 +61,63 @@
           </dependency>
           <dependency>
             <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-spi</artifactId>
+            <artifactId>plc4j-spi-config</artifactId>
             <version>1.0.0.B-SNAPSHOT</version>
           </dependency>
           <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>3.9.16</version>
+            <version>${maven-artifact.version}</version>
+          </dependency>
+          <!--
+            Drivers that are not deployed (they are not marked as fully supported
+            for Java in website/asciidoc/modules/users/pages/protocols/index.adoc)
+            are not dependencies of this meta-package, as the released artifact
+            would then reference artifacts nobody can resolve. They are needed
+            here so their configuration tables keep being generated.
+          -->
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-bacnet</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-c-bus</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-open-protocol</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-profinet-ng</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+          </dependency>
+          <!--
+            The transport tables are generated from whatever transports the ServiceLoader finds
+            here. Every other transport arrives transitively through one of the drivers above;
+            these three reach no deployed driver at compile scope (the PCAP replay transport is a
+            debugging tool, and the CAN driver depends on the two CAN transports at test scope
+            only), so without naming them their pages would silently stop being generated - and
+            the CAN drivers' own tables would keep showing those transports with no options.
+          -->
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-pcap-replay</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-can-socketcan</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-can-virtualcan</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -85,18 +135,6 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-bacnet</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-c-bus</artifactId>
       <version>1.0.0.B-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
@@ -138,12 +176,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-open-protocol</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
       <version>1.0.0.B-SNAPSHOT</version>
       <scope>runtime</scope>
@@ -162,12 +194,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-profinet-ng</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
       <version>1.0.0.B-SNAPSHOT</version>
       <scope>runtime</scope>
@@ -175,6 +201,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
+      <version>1.0.0.B-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-slmp</artifactId>
       <version>1.0.0.B-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>

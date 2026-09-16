@@ -1,0 +1,48 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+= Virtual CAN
+
+An in-memory CAN bus. Every transport instance naming the same bus exchanges frames with the
+others directly, with no kernel, no hardware and no driver installation involved.
+
+It is the counterpart to the xref:transports/socketcan.adoc[SocketCAN transport] for tests,
+demonstrations and development: two connections on one bus can talk to each other on a laptop that
+has no CAN hardware at all.
+
+== Transport syntax
+
+----
+{name of the virtual bus}
+----
+
+Instances naming the same bus see each other's frames. The bus is created on first use, so any
+name will do as long as both ends agree on it.
+
+.Example
+[source]
+----
+canopen:can-virtualcan://test-bus
+genericcan:can-virtualcan://test-bus
+----
+
+The bus can also be named with the `can-virtualcan.bus-name` option instead; the address segment
+wins if both name one. Naming neither connects to the bus called `default`.
+
+include::partial$transport-can-virtualcan.adoc[]

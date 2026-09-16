@@ -33,10 +33,10 @@ import java.util.regex.Pattern;
 public class S7StringFixedLengthTag extends S7Tag {
 
     public static final Pattern DATA_BLOCK_STRING_FIXED_LENGTH_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d{1,7})])?(\\|(?<stringEncoding>[a-zA-Z0-9_-]+))?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\|(?<stringEncoding>[a-zA-Z0-9_-]+))?");
 
     public static final Pattern DATA_BLOCK_STRING_FIXED_LENGTH_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d{1,7})])?(\\|(?<stringEncoding>[a-zA-Z0-9_-]+))?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\|(?<stringEncoding>[a-zA-Z0-9_-]+))?");
 
     private final int stringLength;
     private final String stringEncoding;
@@ -68,13 +68,15 @@ public class S7StringFixedLengthTag extends S7Tag {
         return stringEncoding;
     }
 
+    /**
+     * Spells the tag the way {@link #of(String)} parses it back, which means carrying the
+     * declared length: without it the address reads as a variable-length string, and the length
+     * is what decides the layout when the string is read or written.
+     */
     @Override
     public String getAddressString() {
-        String address = String.format("%%DB%d.DB%d:%s(%d)",
-            getBlockNumber(), getByteOffset(), getDataType().name(), getStringLength());
-        if (getNumberOfElements() != 1) {
-            address += "[" + getNumberOfElements() + "]";
-        }
+        // The base form ends in ":STRING"; the declared length belongs directly behind it.
+        String address = super.getAddressString() + "(" + stringLength + ")";
         if (stringEncoding != null && !stringEncoding.isEmpty()) {
             address += "|" + stringEncoding;
         }
@@ -163,12 +165,11 @@ public class S7StringFixedLengthTag extends S7Tag {
             } else if (dataType == TransportSize.BOOL) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = checkNumElements(Integer.parseInt(matcher.group(NUM_ELEMENTS)),
-                    bytesPerString(dataType, stringLength),
-                    dataType.name() + "(" + stringLength + ")");
-            }
+            int[] selection = selectionOf(matcher, address);
+            byteOffset = resolveByteOffset(byteOffset, selection[0], bytesPerString(dataType, stringLength));
+            int numElements = checkNumElements(selection[1],
+                bytesPerString(dataType, stringLength),
+                dataType.name() + "(" + stringLength + ")");
 
             String stringEncoding = matcher.group("stringEncoding");
             if (stringEncoding == null || stringEncoding.isEmpty()) {
@@ -188,12 +189,11 @@ public class S7StringFixedLengthTag extends S7Tag {
             int blockNumber = checkDataBlockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = checkNumElements(Integer.parseInt(matcher.group(NUM_ELEMENTS)),
-                    bytesPerString(dataType, stringLength),
-                    dataType.name() + "(" + stringLength + ")");
-            }
+            int[] selection = selectionOf(matcher, address);
+            byteOffset = resolveByteOffset(byteOffset, selection[0], bytesPerString(dataType, stringLength));
+            int numElements = checkNumElements(selection[1],
+                bytesPerString(dataType, stringLength),
+                dataType.name() + "(" + stringLength + ")");
 
             String stringEncoding = matcher.group("stringEncoding");
             if (stringEncoding == null || stringEncoding.isEmpty()) {

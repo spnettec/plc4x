@@ -32,7 +32,7 @@
   <description>Implementation of the protocol adapters for usage as Go(lang) library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
     <!-- Tell Sonar where to find the sources -->
     <sonar.sources>.</sonar.sources>
     <sonar.inclusions>**</sonar.inclusions>
@@ -49,7 +49,7 @@
 
     <go.cover.flag>-coverprofile=target/coverage.out</go.cover.flag>
 
-    <go.version>1.26.0</go.version>
+    <go.version>1.27.0</go.version>
   </properties>
 
   <build>
@@ -256,7 +256,6 @@
       <plugin>
         <groupId>com.igormaznitsa</groupId>
         <artifactId>gosdk-wrapper-maven-plugin</artifactId>
-        <version>1.1.2</version>
         <executions>
           <!-- Run the go code-generation -->
           <execution>
@@ -514,6 +513,22 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
+      <version>1.0.0.B-SNAPSHOT</version>
+      <type>test-jar</type>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-slmp</artifactId>
+      <version>1.0.0.B-SNAPSHOT</version>
+      <type>test-jar</type>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-iec-60870</artifactId>
       <version>1.0.0.B-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
@@ -810,21 +825,21 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-umas</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.0.0.B-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-slmp</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.0.0.B-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-iec-60870</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.0.0.B-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

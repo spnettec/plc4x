@@ -90,7 +90,7 @@ func TestParsePlcValueSingleBOOL(t *testing.T) {
 
 func TestParsePlcValueDINTArray(t *testing.T) {
 	raw := []byte{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00}
-	value, err := parsePlcValue(mustTag(t, "%arr[0]:DINT:2"), raw, readWriteModel.CIPDataTypeCode_DINT)
+	value, err := parsePlcValue(mustTag(t, "%arr[0..1]:DINT"), raw, readWriteModel.CIPDataTypeCode_DINT)
 	require.NoError(t, err)
 	require.True(t, value.IsList())
 	list := value.GetList()
@@ -101,7 +101,7 @@ func TestParsePlcValueDINTArray(t *testing.T) {
 
 func TestParsePlcValueShortReplyIsError(t *testing.T) {
 	// 2 DINT elements requested but only 4 bytes returned: must error, not panic (GH-954 thread)
-	_, err := parsePlcValue(mustTag(t, "%arr[0]:DINT:2"), []byte{0x01, 0x00, 0x00, 0x00}, readWriteModel.CIPDataTypeCode_DINT)
+	_, err := parsePlcValue(mustTag(t, "%arr[0..1]:DINT"), []byte{0x01, 0x00, 0x00, 0x00}, readWriteModel.CIPDataTypeCode_DINT)
 	require.Error(t, err)
 }
 
@@ -160,13 +160,49 @@ func TestEncodeValueBOOL(t *testing.T) {
 	assert.Equal(t, []byte{0x01}, raw)
 }
 
+// This used to assert a payload of {0x02, 0x00, 0x00, 0x00, 'A', 'B'} - a bare 4-byte length
+// followed by the characters. That is not the structure the read path parses: it has no structure
+// handle, so decoding it back reported an unsupported structured type. The encoding now matches
+// what parseStructured expects, which the round trip below pins down.
 func TestEncodeValueSTRING(t *testing.T) {
-	raw, err := encodeValue(spiValues.NewPlcSTRING("AB"), readWriteModel.CIPDataTypeCode_STRING)
+	raw, err := encodeValue(spiValues.NewPlcSTRING("AB"), readWriteModel.CIPDataTypeCode_STRUCTURED)
 	require.NoError(t, err)
-	assert.Equal(t, []byte{0x02, 0x00, 0x00, 0x00, 0x41, 0x42}, raw)
+	assert.Equal(t, uint16(readWriteModel.CIPStructTypeCode_STRING), binary.LittleEndian.Uint16(raw))
+	assert.Equal(t, uint32(2), binary.LittleEndian.Uint32(raw[stringLenOffset:]))
+	assert.Equal(t, []byte{0x41, 0x42}, raw[stringDataOffset:stringDataOffset+2])
+
+	decoded, err := parsePlcValue(mustTag(t, "%s:STRUCTURED"), raw, readWriteModel.CIPDataTypeCode_STRUCTURED)
+	require.NoError(t, err)
+	assert.Equal(t, "AB", decoded.GetString())
 }
 
 func TestDecodeResponseCode(t *testing.T) {
 	assert.Equal(t, apiModel.PlcResponseCode_OK, decodeResponseCode(0))
 	assert.Equal(t, apiModel.PlcResponseCode_INTERNAL_ERROR, decodeResponseCode(5))
+}
+
+// What the caller receives has to match what GetArrayInfo promises: a one-element range is a list
+// of one, a bare index is a scalar. The decoder used to decide from the element count, so both
+// came back as scalars and the response contradicted the tag.
+func TestParsePlcValue_shapeFollowsTheTagNotTheCount(t *testing.T) {
+	handler := NewTagHandler()
+	fourBytes := []byte{0x2A, 0x00, 0x00, 0x00}
+
+	scalar, err := handler.ParseTag("%rate[4]:DINT")
+	require.NoError(t, err)
+	value, err := parsePlcValue(scalar.(PlcTag), fourBytes, readWriteModel.CIPDataTypeCode_DINT)
+	require.NoError(t, err)
+	assert.False(t, value.IsList(), "a bare index selects one element and yields a scalar")
+	assert.Equal(t, int32(42), value.GetInt32())
+
+	oneElementRange, err := handler.ParseTag("%rate[4..4]:DINT")
+	require.NoError(t, err)
+	value, err = parsePlcValue(oneElementRange.(PlcTag), fourBytes, readWriteModel.CIPDataTypeCode_DINT)
+	require.NoError(t, err)
+	assert.True(t, value.IsList(), "a range is a list even when it spans one element")
+	require.Len(t, value.GetList(), 1)
+	assert.Equal(t, int32(42), value.GetList()[0].GetInt32())
+
+	// And the shape the tag reports is the one the value has.
+	assert.Equal(t, len(oneElementRange.GetArrayInfo()) > 0, value.IsList())
 }

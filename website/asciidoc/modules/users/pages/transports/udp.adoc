@@ -19,36 +19,26 @@
 
 = UDP
 
+A connectionless UDP socket. Used by protocols that broadcast, that talk to devices which never
+open a connection of their own, or that were simply specified on top of UDP.
 
+== Transport syntax
 
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
-
-|Code
-2+|`udp`
-
-|Name
-2+|UDP Socket Communication
-
-|Maven Dependency
-2+|
-[subs=attributes+]
 ----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-transports-udp</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
+{IP address or hostname}[:{port}]
 ----
 
-|Transport Syntax:
-|
-----
-{IP address or hostname}:{port}
-----
-|The port can be omitted, if the protocol provides a default port value.
+The port may be omitted if the driver declares a default port for the protocol.
 
-|Options:
-2+|*none*
-|===
+.Example
+[source]
+----
+knxnet-ip://192.168.1.10
+modbus-tcp:udp://192.168.1.100:502
+----
+
+include::partial$transport-udp.adoc[]
+
+Set `udp.broadcast=true` to send to a broadcast address, and `udp.share-socket=true` when several
+connections have to share one local port - which is what protocols that answer on a fixed port
+require.

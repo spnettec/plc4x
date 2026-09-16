@@ -42,7 +42,7 @@
   </modules>
 
   <properties>
-    <project.build.outputTimestamp>2025-08-02T13:55:11Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -95,7 +95,6 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>5.1.0</version>
         <executions>
           <execution>
             <id>compile-groovy-tests</id>
