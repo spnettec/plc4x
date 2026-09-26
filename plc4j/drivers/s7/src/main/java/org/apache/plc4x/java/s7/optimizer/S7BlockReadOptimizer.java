@@ -87,7 +87,15 @@ public class S7BlockReadOptimizer extends S7Optimizer {
 
         // 2. Within each area, sort by byte offset and build merge groups.
         LinkedHashMap<String, PlcTag> merged = new LinkedHashMap<>();
-        Map<String, List<S7ReadChunk.Binding>> blockBindings = new LinkedHashMap<>();
+        // Keep a parallel side-table mapping synthetic block-tag names to their bindings.
+        Map<String, Block> blockBindings = new LinkedHashMap<>();
+
+        // A block has to stay small enough to come back in a single response item. The base
+        // optimizer splits anything bigger into PDU-sized fragments, and a fragment only carries
+        // part of the block - the per-tag offsets collected here are relative to the start of the
+        // whole block, so they would address the wrong bytes of it (GH-2762).
+        int maxBlockBytes = maxBlockBytes(context);
+
         int blockCounter = 0;
 
         for (Map.Entry<String, List<TagEntry>> e : tagsPerArea.entrySet()) {
@@ -109,6 +117,12 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                     TagEntry next = entries.get(idx);
                     int nextStart = next.tag.getByteOffset();
                     int nextEnd = nextStart + tagSizeInBytes(next.tag);
+                    // Regardless of the merge strategy, a block may only grow while it still
+                    // fits into one response item; the next tag simply starts a new block (GH-2762).
+                    // Entries are offset-sorted, so nextStart >= blockStart.
+                    if (Math.max(blockEnd, nextEnd) - blockStart > maxBlockBytes) {
+                        break;
+                    }
                     if (autoMerge) {
                         // Auto cost-based: close the group when merging is no longer cheaper.
                         int candidateStart = Math.min(blockStart, nextStart);
@@ -147,7 +161,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                         bindings.add(new S7ReadChunk.Binding(te.tagName, te.tag,
                             te.tag.getByteOffset() - blockStart, 0, false));
                     }
-                    blockBindings.put(blockName, bindings);
+                    blockBindings.put(blockName, new Block(blockStart, bindings));
                 }
             }
         }
@@ -166,14 +180,38 @@ public class S7BlockReadOptimizer extends S7Optimizer {
             List<S7ReadChunk.Slot> rewritten = new ArrayList<>(chunk.slots().size());
             for (S7ReadChunk.Slot slot : chunk.slots()) {
                 S7ReadChunk.Binding b0 = slot.bindings().get(0);
-                List<S7ReadChunk.Binding> blockBs = blockBindings.get(b0.tagName());
-                if (blockBs != null) {
-                    rewritten.add(new S7ReadChunk.Slot(slot.requestItem(), slot.fragmentTag(), blockBs));
-                } else {
+                Block block = blockBindings.get(b0.tagName());
+                if (block == null) {
                     rewritten.add(slot);
+                    continue;
                 }
+                // The bindings are relative to the start of the block, the slot may cover only a
+                // part of it. "maxBlockBytes" above keeps blocks to a single slot, so the window
+                // is the whole block in practice; rebasing on it anyway means a block that does
+                // get fragmented decodes the bytes it actually received instead of the ones the
+                // unshifted offsets would have pointed at.
+                int windowStart = slot.fragmentTag().getByteOffset() - block.blockStart();
+                int windowLength = slot.fragmentTag().getNumberOfElements();
+                List<S7ReadChunk.Binding> visible = new ArrayList<>(block.bindings().size());
+                for (S7ReadChunk.Binding b : block.bindings()) {
+                    int offsetInWindow = b.payloadByteOffset() - windowStart;
+                    // A tag the window does not hold completely is left to the null-check in the
+                    // connection, which reports it as an error rather than a half-decoded value.
+                    if (offsetInWindow < 0 || offsetInWindow + tagSizeInBytes(b.originalTag()) > windowLength) {
+                        continue;
+                    }
+                    visible.add(new S7ReadChunk.Binding(b.tagName(), b.originalTag(),
+                        offsetInWindow, b.elementOffset(), b.isSplitFragment()));
+                }
+                if (visible.isEmpty()) {
+                    // Nothing in this slot can be decoded, so there is no point in requesting it.
+                    continue;
+                }
+                rewritten.add(new S7ReadChunk.Slot(slot.requestItem(), slot.fragmentTag(), visible));
             }
-            out.add(new S7ReadChunk(rewritten));
+            if (!rewritten.isEmpty()) {
+                out.add(new S7ReadChunk(rewritten));
+            }
         }
         return out;
     }
@@ -188,6 +226,16 @@ public class S7BlockReadOptimizer extends S7Optimizer {
         int response = 4 + tagSizeInBytes(tag);
         if (response % 2 == 1) response++;
         return S7_ADDRESS_ANY_SIZE + response;
+    }
+
+    /**
+     * The largest block that still comes back as a single response item, so that the base
+     * optimizer never has to fragment it. Mirrors the response accounting in
+     * {@link S7Optimizer#splitReadFromMap}: four bytes of item header, and the payload is
+     * padded to an even length.
+     */
+    private static int maxBlockBytes(S7DriverContext context) {
+        return Math.max(1, context.getPduSize() - EMPTY_READ_RESPONSE_SIZE - 5);
     }
 
     private static String areaKey(S7Tag s7Tag) {
@@ -211,4 +259,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
     }
 
     private record TagEntry(String tagName, S7Tag tag) {}
+
+    /** The tags merged into one synthetic block-read, with the byte offset that block starts at. */
+    private record Block(int blockStart, List<S7ReadChunk.Binding> bindings) {}
 }

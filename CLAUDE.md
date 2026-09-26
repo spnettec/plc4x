@@ -4,6 +4,9 @@ YOFC 维护的 Apache PLC4X fork（默认 `heyoulin` 分支，~1118+ commit ahea
 
 ## Build
 
+- **必须用 Maven 4**（enforcer 要求 ≥4.0.0-rc-5，root pom 用 `<subprojects>` 语法，Maven 3 直接报 "Unrecognised tag"）。本机装在 `~/apps/maven/apache-maven-4.0.0-rc-6/`（PATH 上的 `mvn` 是 brew 的 3.9，不能用于本仓库）；也可用上游新加的 `./mvnw`（rc-5）。
+- **不要用 `-T 1C`**：`apache-rat-plugin 0.18` 并行下抛 `ConcurrentModificationException` 或误报 UNAPPROVED（每次挂在不同模块）。串行构建。
+- **跑测试必须 `--fail-at-end`**，否则首个模块失败即中止，后面的模块全没跑。
 - 默认 root modules：`code-generation`、`protocols`、`website`
 - `plc4j`（含 51 个子模块）只在 `-Pwith-java` profile 下进 reactor
 - 不构建：`plc4go` / `plc4net` / `plc4c` / `plc4py`，以及通常没必要的 `website`
@@ -11,20 +14,19 @@ YOFC 维护的 Apache PLC4X fork（默认 `heyoulin` 分支，~1118+ commit ahea
 **常用入口：**
 
 ```bash
-# 完整 build（推荐）
-mvn install -Pwith-java -pl '!website' -DskipTests -T 1C
+MVN4=~/apps/maven/apache-maven-4.0.0-rc-6/bin/mvn
 
-# 完整 build 含测试（合并上游后用）
-RUN_TESTS=1 mvn install -Pwith-java -pl '!website' -DskipITs=true -T 1C
+# 完整 build（推荐，串行）
+$MVN4 install -Pwith-java -pl '!website' -DskipTests
 
-# 跑单元测试
-mvn test -Pwith-java -pl '!website' -DskipITs=true -T 1C
+# 全量单元测试（合并上游后必跑）
+$MVN4 test -Pwith-java -pl '!website' --fail-at-end
 
 # 仅 plc4j 子树（只在已经跑过完整 build、~/.m2 fresh 的前提下用）
-cd plc4j && mvn install -DskipTests -T 1C
+cd plc4j && $MVN4 install -DskipTests
 
 # 单独验证某个模块的 JaCoCo 覆盖率
-mvn verify -f plc4j/drivers/<driver>/pom.xml
+$MVN4 verify -f plc4j/drivers/<driver>/pom.xml
 ```
 
 ## SPI 结构（合并后）
