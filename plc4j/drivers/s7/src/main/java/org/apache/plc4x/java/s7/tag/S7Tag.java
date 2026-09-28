@@ -48,18 +48,27 @@ public class S7Tag implements PlcTag, Serializable {
     /** The shared array notation, which sits between the address and the type. */
     protected static final String ARRAY_EXPRESSION = ArrayNotationParser.ARRAY_GROUP;
 
+    /**
+     * The legacy YOFC count suffix {@code :TYPE[n]}, where {@code n} is the number of elements.
+     * Kept alongside the unified prefix notation because deployed gateway configurations and
+     * field-test harnesses carry addresses in this shape.
+     */
+    protected static final String POSTFIX_ARRAY = "(?<postfixArray>\\[\\d{1,7}])?";
+
     protected static final String ARRAY = "array";
+
+    protected static final String POSTFIX = "postfixArray";
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)" + POSTFIX_ARRAY);
 
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)" + POSTFIX_ARRAY);
 
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>(S5)?[a-zA-Z_]+)" + POSTFIX_ARRAY);
 
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
         Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
@@ -90,6 +99,14 @@ public class S7Tag implements PlcTag, Serializable {
      */
     private final boolean explicitRange;
 
+    /**
+     * Whether the array selection is rendered in the unified prefix notation
+     * {@code address[range]:TYPE} rather than the legacy count suffix {@code address:TYPE[n]}.
+     * An address round-trips in the form it was written in; tags built in code render the
+     * prefix form.
+     */
+    private final boolean prefixNotation;
+
     public S7Tag(TransportSize dataType, MemoryArea memoryArea,
                     int blockNumber, int byteOffset,
                     byte bitOffset, int numElements) {
@@ -101,7 +118,16 @@ public class S7Tag implements PlcTag, Serializable {
                     int blockNumber, int byteOffset,
                     byte bitOffset, int numElements,
                     boolean explicitRange) {
+        this(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, explicitRange,
+            true);
+    }
+
+    public S7Tag(TransportSize dataType, MemoryArea memoryArea,
+                    int blockNumber, int byteOffset,
+                    byte bitOffset, int numElements,
+                    boolean explicitRange, boolean prefixNotation) {
         this.explicitRange = explicitRange;
+        this.prefixNotation = prefixNotation;
         this.dataType = dataType;
         this.memoryArea = memoryArea;
         this.blockNumber = blockNumber;
@@ -144,8 +170,25 @@ public class S7Tag implements PlcTag, Serializable {
         if (dataType == TransportSize.BOOL) {
             sb.append('.').append(bitOffset);
         }
-        sb.append(ArrayNotationParser.render(getArrayInfo()));
-        return sb.append(':').append(dataType.name()).toString();
+        if (prefixNotation) {
+            sb.append(ArrayNotationParser.render(getArrayInfo()));
+        }
+        sb.append(':').append(dataType.name());
+        sb.append(typeSuffix());
+        if (!prefixNotation && numElements != 1) {
+            sb.append('[').append(numElements).append(']');
+        }
+        return sb.append(encodingSuffix()).toString();
+    }
+
+    /** What the type name itself carries beyond its name, e.g. a string's declared length. */
+    protected String typeSuffix() {
+        return "";
+    }
+
+    /** The trailing encoding suffix, which always comes last in the address. */
+    protected String encodingSuffix() {
+        return "";
     }
 
     /**
@@ -229,8 +272,7 @@ public class S7Tag implements PlcTag, Serializable {
     }
 
     public static boolean matches(String tagString) {
-        return S7StringFixedLengthTag.matches(tagString) ||
-            S7StringVarLengthTag.matches(tagString) ||
+        return S7StringVarLengthTag.matches(tagString) ||
             DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString).matches() ||
             DATA_BLOCK_SHORT_PATTERN.matcher(tagString).matches() ||
             PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches() ||
@@ -243,9 +285,6 @@ public class S7Tag implements PlcTag, Serializable {
         // patterns below accept. Delegate those to the dedicated subtypes, the same way
         // S7PlcTagHandler.parseTag() does, so both entry points parse the same address space and
         // the declared length isn't lost (it decides the string layout when reading/writing).
-        if (S7StringFixedLengthTag.matches(tagString)) {
-            return S7StringFixedLengthTag.of(tagString);
-        }
         if (S7StringVarLengthTag.matches(tagString)) {
             return S7StringVarLengthTag.of(tagString);
         }
@@ -262,7 +301,8 @@ public class S7Tag implements PlcTag, Serializable {
             byte bitOffset = 0;
             if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
-            } else if (dataType == TransportSize.BOOL && matcher.group(ARRAY) == null) {
+            } else if (dataType == TransportSize.BOOL && matcher.group(ARRAY) == null
+                && matcher.group(POSTFIX) == null) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
@@ -274,7 +314,8 @@ public class S7Tag implements PlcTag, Serializable {
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
 
-            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, selection[2] == 1);
+            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, selection[2] == 1,
+                matcher.group(ARRAY) != null);
         } else if ((matcher = DATA_BLOCK_SHORT_PATTERN.matcher(tagString)).matches()) {
             String dataTypeName = matcher.group(DATA_TYPE);
             if("RAW_BYTE_ARRAY".equals(dataTypeName)) {
@@ -287,14 +328,16 @@ public class S7Tag implements PlcTag, Serializable {
             byte bitOffset = 0;
             if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
-            } else if (dataType == TransportSize.BOOL && matcher.group(ARRAY) == null) {
+            } else if (dataType == TransportSize.BOOL && matcher.group(ARRAY) == null
+                && matcher.group(POSTFIX) == null) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
             byteOffset = resolveByteOffset(byteOffset, selection[0], dataType.getSizeInBytes());
             int numElements = checkNumElements(dataType, selection[1]);
 
-            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, selection[2] == 1);
+            return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, selection[2] == 1,
+                matcher.group(ARRAY) != null);
         } else if (PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches()) {
             try {
                 String hex = tagString.replace("-", "");
@@ -326,7 +369,8 @@ public class S7Tag implements PlcTag, Serializable {
             byte bitOffset = 0;
             if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
-            } else if (dataType == TransportSize.BOOL && matcher.group(ARRAY) == null) {
+            } else if (dataType == TransportSize.BOOL && matcher.group(ARRAY) == null
+                && matcher.group(POSTFIX) == null) {
                 throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
             }
             int[] selection = selectionOf(matcher, tagString);
@@ -341,7 +385,8 @@ public class S7Tag implements PlcTag, Serializable {
                 throw new PlcInvalidTagException("A bit offset other than 0 is only supported for type BOOL");
             }
 
-            return new S7Tag(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements, selection[2] == 1);
+            return new S7Tag(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements, selection[2] == 1,
+                matcher.group(ARRAY) != null);
         }
         throw ArrayNotationParser.invalidAddress(tagString,
             "%{area}{offset}[selection]:{TYPE} - for example %DB42:28.0[0..3]:BYTE");
@@ -383,13 +428,21 @@ public class S7Tag implements PlcTag, Serializable {
      */
     protected static int[] selectionOf(Matcher matcher, String address) {
         String expression = matcher.group(ARRAY);
-        if (expression == null) {
-            return new int[]{0, 1, 0};
+        if (expression != null) {
+            ArrayInfo dimension = ArrayNotationParser
+                .parse(expression, address, AddressConstraints.SINGLE_DIMENSION).get(0);
+            return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize(),
+                dimension.isRange() ? 1 : 0};
         }
-        ArrayInfo dimension = ArrayNotationParser
-            .parse(expression, address, AddressConstraints.SINGLE_DIMENSION).get(0);
-        return new int[]{dimension.getLowerBound() - dimension.getBase(), dimension.getSize(),
-            dimension.isRange() ? 1 : 0};
+        // The legacy suffix TYPE[n] counts elements rather than selecting an index, so it is
+        // the range [0..n-1]: an array of n elements starting at the address itself. A count of
+        // one stays a scalar, the way the pre-migration form behaved.
+        String postfix = matcher.group(POSTFIX);
+        if (postfix != null) {
+            int count = Integer.parseInt(postfix.substring(1, postfix.length() - 1));
+            return new int[]{0, count, count != 1 ? 1 : 0};
+        }
+        return new int[]{0, 1, 0};
     }
 
     protected static int checkNumElements(TransportSize dataType, int numElements) {

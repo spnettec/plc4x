@@ -33,10 +33,10 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 public class S7StringVarLengthTag extends S7Tag {
     
     public static final Pattern DATA_BLOCK_STRING_VAR_LENGTH_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>STRING|WSTRING)(\\|(?<stringEncoding>[a-zA-Z0-9_-]+))?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>STRING|WSTRING)" + POSTFIX_ARRAY + "(\\|(?<stringEncoding>[a-zA-Z0-9_-]+))?");
 
     public static final Pattern DATA_BLOCK_STRING_VAR_LENGTH_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>STRING|WSTRING)(\\|(?<stringEncoding>[a-zA-Z0-9_-]+))?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?" + ARRAY_EXPRESSION + ":(?<dataType>STRING|WSTRING)" + POSTFIX_ARRAY + "(\\|(?<stringEncoding>[a-zA-Z0-9_-]+))?");
 
     private final String stringEncoding;
 
@@ -50,7 +50,15 @@ public class S7StringVarLengthTag extends S7Tag {
     protected S7StringVarLengthTag(TransportSize dataType, MemoryArea memoryArea,
                                    int blockNumber, int byteOffset,
                                    byte bitOffset, int numElements, String stringEncoding) {
-        super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+        this(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding, true);
+    }
+
+    protected S7StringVarLengthTag(TransportSize dataType, MemoryArea memoryArea,
+                                   int blockNumber, int byteOffset,
+                                   byte bitOffset, int numElements, String stringEncoding,
+                                   boolean prefixNotation) {
+        super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements,
+            numElements != 1, prefixNotation);
         this.stringEncoding = stringEncoding != null ? stringEncoding
             : (dataType == TransportSize.WSTRING ? "UTF-16" : null);
     }
@@ -60,18 +68,19 @@ public class S7StringVarLengthTag extends S7Tag {
         return stringEncoding;
     }
 
+    /**
+     * The base form already spells the block, the selection, the ":STRING" tail and the legacy
+     * count suffix; a variable-length string adds nothing beyond YOFC's encoding suffix.
+     */
     @Override
-    public String getAddressString() {
-        // The base form already spells the block, the selection and the ":STRING" tail; a
-        // variable-length string adds nothing to it beyond YOFC's encoding suffix.
-        String address = super.getAddressString();
+    protected String encodingSuffix() {
         // A WSTRING is UTF-16 whether or not the address says so, so spelling that default out
         // would stop the rendered form from matching the address the user wrote.
         String implicit = getDataType() == TransportSize.WSTRING ? "UTF-16" : null;
         if (stringEncoding != null && !stringEncoding.isEmpty() && !stringEncoding.equals(implicit)) {
-            address += "|" + stringEncoding;
+            return "|" + stringEncoding;
         }
-        return address;
+        return "";
     }
 
     public static boolean matches(String address) {
@@ -166,7 +175,8 @@ public class S7StringVarLengthTag extends S7Tag {
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
 
-            return new S7StringVarLengthTag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
+            return new S7StringVarLengthTag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding,
+                matcher.group(ARRAY) != null);
         } else if ((matcher = DATA_BLOCK_STRING_VAR_LENGTH_SHORT_PATTERN.matcher(address)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
@@ -184,7 +194,7 @@ public class S7StringVarLengthTag extends S7Tag {
             }
 
             return new S7StringVarLengthTag(dataType, memoryArea, blockNumber,
-                byteOffset, bitOffset, numElements, stringEncoding);
+                byteOffset, bitOffset, numElements, stringEncoding, matcher.group(ARRAY) != null);
         }
 
         throw new PlcInvalidTagException("Unable to parse address: " + address);

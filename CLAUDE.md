@@ -4,7 +4,7 @@ YOFC 维护的 Apache PLC4X fork（默认 `heyoulin` 分支，~1118+ commit ahea
 
 ## Build
 
-- **必须用 Maven 4**（enforcer 要求 ≥4.0.0-rc-5，root pom 用 `<subprojects>` 语法，Maven 3 直接报 "Unrecognised tag"）。本机装在 `~/apps/maven/apache-maven-4.0.0-rc-6/`（PATH 上的 `mvn` 是 brew 的 3.9，不能用于本仓库）；也可用上游新加的 `./mvnw`（rc-5）。
+- **Maven 3.9 / 4 双兼容**（2026-09-28 起）：全部 pom 已回退到 4.0.0 命名空间 + 显式 `<modelVersion>` + `<modules>`（上游推的是 4.1.0 NS + 无 modelVersion + `<subprojects>`，M3 直接解析失败；M4 对旧写法完全兼容）。enforcer 放宽为 `[3.9,)`。**IDEA（内置 Maven 3）可正常导入调试**；命令行可用 brew `mvn`（3.9，注意 JAVA_HOME 用 21——JDK 27 会崩 yofc 的 EndPosTable）或 `~/apps/maven/apache-maven-4.0.0-rc-6/bin/mvn`。合并上游时这 111 个 pom 的 NS/modelVersion/subprojects 又会冲突——机械地按本侧回退即可。
 - **不要用 `-T 1C`**：`apache-rat-plugin 0.18` 并行下抛 `ConcurrentModificationException` 或误报 UNAPPROVED（每次挂在不同模块）。串行构建。
 - **跑测试必须 `--fail-at-end`**，否则首个模块失败即中止，后面的模块全没跑。
 - 默认 root modules：`code-generation`、`protocols`、`website`
@@ -146,9 +146,41 @@ if (type == null || type == PlcValueType.NULL) {
 
 ## YOFC 特有功能
 
+### S7 地址数组语法（双语法，生产关键）
+
+YOFC 生产地址用**后缀计数**形式 `%DB1:36:DINT[2]`（`n` = 元素个数）；上游 2026-09 起
+只认**前缀范围**形式 `%DB1.DB36[0..1]:DINT`（`[4]` = 第 5 个元素，语义不同！）。
+两个形式现在都支持（`S7Tag.POSTFIX_ARRAY` + `selectionOf`），tag 按输入形式渲染回写。
+**上游的 `S7LegacyAddressTest` 断言后缀形式必须被拒绝——与 YOFC 冲突，已删除**；合并
+上游时它会回来，删掉即可。
+
+**S7 字符串只有变长形式**：`%DB1:56:STRING`、`STRING[2]`、`STRING|GBK`（编码后缀在
+最后）。上游的定长 `STRING(20)`（`S7StringFixedLengthTag`，上游无法处理变长才造的）
+已整体删除——main 里 11 处 `instanceof ... getStringLength() : 254` 引用全部塌缩为
+`254`（变长假定最大长度）。合并上游时该类会回来，直接删除并按此处理。
+
 ### stringEncoding（ADS / S7）
 
 ADS 和 S7 tag 支持 `|encoding` 后缀指定字符串编码（如 `Main.value|UTF-16`）。这是 YOFC 独有特性，上游没有。合并上游时注意保留 tag 解析中的 encoding 分支。
+
+### 真机验证（合并后必跑）
+
+`plc4j/drivers/s7/src/test/.../readwrite/` 下的 main() 测试类连真实 PLC（工厂测试机
+`s7://10.80.41.57`，S7-1200 6ES7 211-1BE40-0XB0，pdu-size=240），surefire 不会跑它们，
+但它们才是数组语法/字符串解码的真正关卡：
+
+```bash
+cd plc4j/drivers/s7
+mvn test-compile dependency:build-classpath -Dmdep.outputFile=target/cp.txt -DincludeScope=test
+CP="target/test-classes:target/classes:$(cat target/cp.txt)"
+java -cp "$CP" org.apache.plc4x.java.s7.readwrite.BlockMergeTest   # 5/5
+java -cp "$CP" org.apache.plc4x.java.s7.readwrite.StringTest        # 写读回环+编码
+java -cp "$CP" org.apache.plc4x.java.s7.readwrite.BitArrayTest     # 7/7
+java -cp "$CP" org.apache.plc4x.java.s7.readwrite.BlockPerfTest     # gap 性能对比
+java -cp "$CP" org.apache.plc4x.java.s7.readwrite.DatatypesTest    # soak（while(true)）
+```
+
+注意 `WriteDatatypesTest` 的地址曾是过期的 `100.64.0.7`，已改为 `10.80.41.57`。
 
 ### SimulatedDevice FILE 模式
 

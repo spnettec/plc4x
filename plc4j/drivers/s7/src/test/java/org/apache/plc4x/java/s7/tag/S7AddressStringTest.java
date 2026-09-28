@@ -43,9 +43,6 @@ class S7AddressStringTest {
         "%DB1.DB20[0..3]:INT",
         "%DB1.DB0.0:BOOL",
         "%DB42.DB28[0..7]:BYTE",
-        "%DB1.DB0:STRING(20)",
-        "%DB1.DB0[0..2]:STRING(20)",
-        "%DB1.DB0:WSTRING(10)",
         "%DB69.DB68:STRING",
     })
     void anAddressRendersAsItselfAndParsesBack(String address) {
@@ -74,9 +71,9 @@ class S7AddressStringTest {
      */
     @Test
     void theTransferSizeCodeIsNotPartOfTheCanonicalForm() {
-        S7Tag tag = S7Tag.of("%DB69.DBX68[0..2]:WSTRING(254)");
+        S7Tag tag = S7Tag.of("%DB69.DBX68[0..2]:WSTRING");
 
-        assertEquals("%DB69.DB68[0..2]:WSTRING(254)", tag.getAddressString());
+        assertEquals("%DB69.DB68[0..2]:WSTRING", tag.getAddressString());
         assertEquals(tag, S7Tag.of(tag.getAddressString()));
     }
 

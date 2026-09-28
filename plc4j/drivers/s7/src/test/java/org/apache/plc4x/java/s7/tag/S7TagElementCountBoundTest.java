@@ -71,18 +71,7 @@ public class S7TagElementCountBoundTest {
         assertEquals(800, S7Tag.of("%DB1:0[100]:LREAL").getByteOffset());
     }
 
-    @Test
-    void aFixedLengthStringCountIsBoundedByWhatOneStringCosts() {
-        // 9999 strings of 254 characters plus their two length bytes is past the area; the
-        // optimizer would have multiplied that out in an int before anybody looked at it.
-        assertThrows(PlcInvalidTagException.class,
-            () -> S7StringFixedLengthTag.of("%DB1:0[0..9998]:STRING(254)"));
-    }
 
-    @Test
-    void aFixedLengthStringCountThatFitsStillParses() {
-        assertEquals(8000, S7StringFixedLengthTag.of("%DB1:0[0..7999]:STRING(254)").getNumberOfElements());
-    }
 
     @Test
     void aVarLengthStringCountIsBoundedByTheLengthTheDriverAssumes() {
@@ -90,13 +79,6 @@ public class S7TagElementCountBoundTest {
             () -> S7StringVarLengthTag.of("%DB1:0[0..9998]:STRING"));
     }
 
-    @Test
-    void aWideStringCostsTwiceAsMuchPerElement() {
-        // The same count that fits as STRING does not fit as WSTRING.
-        assertEquals(8000, S7StringFixedLengthTag.of("%DB1:0[0..7999]:STRING(254)").getNumberOfElements());
-        assertThrows(PlcInvalidTagException.class,
-            () -> S7StringFixedLengthTag.of("%DB1:0[0..7999]:WSTRING(254)"));
-    }
 
     @Test
     void aPlausibleCountStillParses() {

@@ -37,7 +37,6 @@ import org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.s7.context.S7DriverContext;
-import org.apache.plc4x.java.s7.tag.S7StringFixedLengthTag;
 import org.apache.plc4x.java.s7.tag.S7Tag;
 
 import java.util.ArrayList;
@@ -216,7 +215,7 @@ public class S7Optimizer {
         }
         if (s7Tag.getDataType() == TransportSize.STRING || s7Tag.getDataType() == TransportSize.WSTRING) {
             int bytesPerChar = s7Tag.getDataType() == TransportSize.WSTRING ? 2 : 1;
-            int stringLength = (s7Tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+            int stringLength = 254;
             return s7Tag.getNumberOfElements() * (stringLength + 2) * bytesPerChar;
         }
         return s7Tag.getNumberOfElements() * s7Tag.getDataType().getSizeInBytes();
@@ -224,7 +223,7 @@ public class S7Optimizer {
 
     protected static int elementSizeBytes(S7Tag s7Tag) {
         if (s7Tag.getDataType() == TransportSize.STRING || s7Tag.getDataType() == TransportSize.WSTRING) {
-            int chars = ((s7Tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254) + 2;
+            int chars = (254) + 2;
             return s7Tag.getDataType() == TransportSize.WSTRING ? chars * 2 : chars;
         }
         return s7Tag.getDataType().getSizeInBytes();
@@ -236,7 +235,7 @@ public class S7Optimizer {
         }
         if (s7Tag.getDataType() == TransportSize.STRING || s7Tag.getDataType() == TransportSize.WSTRING) {
             int bytesPerChar = s7Tag.getDataType() == TransportSize.WSTRING ? 2 : 1;
-            int stringLength = (s7Tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+            int stringLength = 254;
             return s7Tag.getNumberOfElements() * (stringLength + 2) * bytesPerChar;
         }
         return s7Tag.getNumberOfElements() * s7Tag.getDataType().getSizeInBytes();
@@ -258,11 +257,11 @@ public class S7Optimizer {
         int numElements = tag.getNumberOfElements();
         if (transportSize == TransportSize.STRING) {
             transportSize = TransportSize.CHAR;
-            int len = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+            int len = 254;
             numElements = numElements * (len + 2);
         } else if (transportSize == TransportSize.WSTRING) {
             transportSize = TransportSize.CHAR;
-            int len = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+            int len = 254;
             numElements = numElements * (len + 2) * 2;
         } else if (transportSize == TransportSize.BOOL && numElements > 1) {
             numElements = (numElements + 7) / 8;

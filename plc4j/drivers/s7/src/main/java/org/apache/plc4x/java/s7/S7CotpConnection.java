@@ -36,7 +36,6 @@ import org.apache.plc4x.java.s7.optimizer.S7BlockReadOptimizer;
 import org.apache.plc4x.java.s7.optimizer.S7Optimizer;
 import org.apache.plc4x.java.s7.optimizer.S7ReadChunk;
 import org.apache.plc4x.java.s7.optimizer.S7WriteChunk;
-import org.apache.plc4x.java.s7.tag.S7StringFixedLengthTag;
 import org.apache.plc4x.java.s7.tag.S7Tag;
 import org.apache.plc4x.java.s7.tag.S7PlcTagHandler;
 import org.apache.plc4x.java.s7.tag.S7AlarmTag;
@@ -777,7 +776,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         }
         if (tag.getDataType() == TransportSize.STRING || tag.getDataType() == TransportSize.WSTRING) {
             int bytesPerChar = tag.getDataType() == TransportSize.WSTRING ? 2 : 1;
-            int stringLength = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+            int stringLength = 254;
             return tag.getNumberOfElements() * (stringLength + 2) * bytesPerChar;
         }
         return tag.getNumberOfElements() * tag.getDataType().getSizeInBytes();
@@ -1126,11 +1125,11 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         int numElements = s7Tag.getNumberOfElements();
         if (transportSize == TransportSize.STRING) {
             transportSize = TransportSize.CHAR;
-            int stringLength = (s7Tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+            int stringLength = 254;
             numElements = numElements * (stringLength + 2);
         } else if (transportSize == TransportSize.WSTRING) {
             transportSize = TransportSize.CHAR;
-            int stringLength = (s7Tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+            int stringLength = 254;
             numElements = numElements * (stringLength + 2) * 2;
         } else if ((transportSize == TransportSize.BOOL) && (s7Tag.getNumberOfElements() > 1)) {
             numElements = (s7Tag.getNumberOfElements() + 7) / 8;
@@ -1147,7 +1146,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
     private S7VarPayloadDataItem serializePlcValue(S7Tag tag, PlcValue plcValue) {
         try {
             DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
-            int stringLength = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+            int stringLength = 254;
             ByteBuffer byteBuffer = null;
             if (tag.getDataType() == TransportSize.BYTE && tag.getNumberOfElements() > 1) {
                 byteBuffer = ByteBuffer.allocate(tag.getNumberOfElements());
@@ -1217,7 +1216,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
             WithOption.WithSignedIntegerEncoding("twos-complement"),
             WithOption.WithFloatEncoding("IEEE754"),
             WithByteBasedOption.WithByteOrder("BIG_ENDIAN"));
-        int stringLength = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+        int stringLength = 254;
         String stringEncoding = tag.getStringEncoding();
 
         // STRING/WSTRING: call StaticHelper directly to honour the tag's encoding

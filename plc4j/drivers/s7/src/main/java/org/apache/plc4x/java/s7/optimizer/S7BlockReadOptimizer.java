@@ -23,7 +23,6 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.s7.context.S7DriverContext;
-import org.apache.plc4x.java.s7.tag.S7StringFixedLengthTag;
 import org.apache.plc4x.java.s7.tag.S7Tag;
 
 import java.util.ArrayList;
@@ -252,7 +251,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
         }
         if (tag.getDataType() == TransportSize.STRING || tag.getDataType() == TransportSize.WSTRING) {
             int bytesPerChar = tag.getDataType() == TransportSize.WSTRING ? 2 : 1;
-            int stringLength = (tag instanceof S7StringFixedLengthTag f) ? f.getStringLength() : 254;
+            int stringLength = 254;
             return tag.getNumberOfElements() * (stringLength + 2) * bytesPerChar;
         }
         return tag.getNumberOfElements() * tag.getDataType().getSizeInBytes();

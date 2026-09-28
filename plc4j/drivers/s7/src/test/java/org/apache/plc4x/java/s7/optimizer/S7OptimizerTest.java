@@ -25,7 +25,6 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.s7.context.S7DriverContext;
-import org.apache.plc4x.java.s7.tag.S7StringFixedLengthTag;
 import org.apache.plc4x.java.s7.tag.S7Tag;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.drivers.messages.DefaultPlcWriteRequest;
@@ -63,11 +62,9 @@ class S7OptimizerTest {
     }
 
     @Test
-    void splitReadFixedLengthString() {
+    void splitReadString() {
         LinkedHashMap<String, PlcTagItem<PlcTag>> tags = new LinkedHashMap<>();
-        S7StringFixedLengthTag stringTag = new S7StringFixedLengthTag(
-            TransportSize.STRING, MemoryArea.DATA_BLOCKS, 1, 0, (byte) 0, 1, 80);
-        tags.put("s", new DefaultPlcTagItem<>(stringTag));
+        tags.put("s", new DefaultPlcTagItem<>(S7Tag.of("%DB1.DB0:STRING")));
         PlcReadRequest req = new DefaultPlcReadRequest(null, tags);
         List<S7ReadChunk> chunks = optimizer.splitReadRequest(req, context);
         assertEquals(1, chunks.size());
@@ -89,7 +86,7 @@ class S7OptimizerTest {
         LinkedHashMap<String, PlcTagValueItem<PlcTag>> tags = new LinkedHashMap<>();
         tags.put("flag", new DefaultPlcTagValueItem<>(S7Tag.of("%M0.0:BOOL"), PlcBOOL.of(true)));
         tags.put("name", new DefaultPlcTagValueItem<>(
-            new S7StringFixedLengthTag(TransportSize.STRING, MemoryArea.DATA_BLOCKS, 1, 0, (byte) 0, 1, 16),
+            S7Tag.of("%DB1.DB0:STRING"),
             new PlcSTRING("hello")));
         tags.put("count", new DefaultPlcTagValueItem<>(S7Tag.of("%MW0:INT"), new PlcINT((short) 42)));
         PlcWriteRequest req = new DefaultPlcWriteRequest(null, tags);

@@ -84,27 +84,8 @@ class S7TagSerializeTest {
             () -> "expected area/block info in toString: " + s);
     }
 
-    @Test
-    void s7StringFixedLengthTag_serialize() throws Exception {
-        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0:STRING(20)");
-        WriteBufferByteBased buf = buffer();
-        tag.serialize(buf);
-        assertTrue(buf.getPositionInBits() > 0);
-        assertEquals(20, tag.getStringLength());
-    }
 
-    @Test
-    void s7StringFixedLengthTag_wstring() {
-        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0:WSTRING(10)");
-        assertEquals(10, tag.getStringLength());
-    }
 
-    @Test
-    void s7StringFixedLengthTag_array() {
-        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0[0..2]:STRING(40)");
-        assertEquals(40, tag.getStringLength());
-        assertEquals(3, tag.getNumberOfElements());
-    }
 
     @Test
     void s7StringVarLengthTag_serialize() throws Exception {
@@ -131,14 +112,6 @@ class S7TagSerializeTest {
         assertNotNull(a.toString());
     }
 
-    @Test
-    void s7StringFixedLengthTag_serializeWithEncoding() throws Exception {
-        S7StringFixedLengthTag tag = S7StringFixedLengthTag.of("%DB1.DB0:STRING(20)|GBK");
-        WriteBufferByteBased buf = buffer();
-        tag.serialize(buf);
-        assertTrue(buf.getPositionInBits() > 0);
-        assertEquals("GBK", tag.getStringEncoding());
-    }
 
     @Test
     void s7StringVarLengthTag_serializeWithEncoding() throws Exception {
