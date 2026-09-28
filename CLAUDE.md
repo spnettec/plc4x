@@ -29,6 +29,18 @@ cd plc4j && $MVN4 install -DskipTests
 $MVN4 verify -f plc4j/drivers/<driver>/pom.xml
 ```
 
+**`update-generated-code` profile**：drivers 对 `plc4x-code-generation-language-java` 的
+provided 依赖只在这个 profile 里生效，而该 artifact 只能由 `code-generation/language`
+（同样被 profile 门控）构建——常规 reactor 从不构建它。IDEA 里勾了这个 profile 或
+m2 被清后构建会报 `Could not find ...plc4x-code-generation-language-java`，修法：
+
+```bash
+cd code-generation/language && mvn install -Pwith-java -DskipTests
+```
+
+平时在 IDEA Maven 面板**不要勾选** `update-generated-code`（勾上会重新生成协议代码，
+可能弄脏工作树）。
+
 ## SPI 结构（合并后）
 
 上游把单体 `plc4j-spi` 拆分成多个子模块：
