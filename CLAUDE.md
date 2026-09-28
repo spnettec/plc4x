@@ -38,8 +38,12 @@ m2 被清后构建会报 `Could not find ...plc4x-code-generation-language-java`
 cd code-generation/language && mvn install -Pwith-java -DskipTests
 ```
 
-平时在 IDEA Maven 面板**不要勾选** `update-generated-code`（勾上会重新生成协议代码，
-可能弄脏工作树）。
+**只在仓库根的全量 reactor 里开 `update-generated-code`**（`mvn install
+-Pwith-java,update-generated-code`）：从根构建时 mspec 取自 reactor 内的本地
+`protocols` 模块；在 IDEA 对单个 driver 模块构建时，codegen 的 `plc4x-protocols-*`
+依赖从 `~/.m2` 解析——那里躺着老的 0.14.0/1.0.0-SNAPSHOT（apache-snapshots 来源），
+**用旧 mspec 再生成会把代码往上游方向漂移**，与合并状态脱钩。生成后 `git diff`
+审查生成物再提交。
 
 ## SPI 结构（合并后）
 
