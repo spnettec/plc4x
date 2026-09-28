@@ -40,15 +40,11 @@
     <module>language-base-freemarker</module>
     <module>protocol-base-mspec</module>
     <module>protocol-test</module>
+    <!-- YOFC: language is a default module so every -Pwith-java build installs
+         plc4x-code-generation-language-java into ~/.m2 - the drivers' provided
+         dependency (update-generated-code profile) then resolves without a
+         manual pre-build. Upstream keeps it behind the profile. -->
+    <module>language</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>update-generated-code</id>
-      <modules>
-        <module>language</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

@@ -36,6 +36,14 @@
     <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
   </properties>
 
+  <!-- YOFC: java is a default module so every -Pwith-java build installs
+       plc4x-code-generation-language-java into ~/.m2 - the drivers' provided
+       dependency (update-generated-code profile) then resolves without a
+       manual pre-build. Upstream gates it behind the with-java profile. -->
+  <modules>
+    <module>java</module>
+  </modules>
+
   <profiles>
     <profile>
       <id>with-c</id>
@@ -55,13 +63,6 @@
       <id>with-go</id>
       <modules>
         <module>go</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>with-java</id>
-      <modules>
-        <module>java</module>
       </modules>
     </profile>
 
