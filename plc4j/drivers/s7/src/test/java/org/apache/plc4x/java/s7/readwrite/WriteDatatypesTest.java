@@ -40,7 +40,7 @@ public class WriteDatatypesTest {
             final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
             builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL",true); // true
             builder.addTagAddress("bool-value-2", "%DB1:0.1:BOOL",true); // false
-            //builder.addTagAddress("bool-array", "%DB1:2:BOOL[16]",true,false,true,true,false,true,true,false,true,true,false,true,true,false,true,true);
+            builder.addTagAddress("bool-array", "%DB1:2:BOOL[16]",true,false,true,true,false,true,true,false,true,true,false,true,true,false,true,true);
             builder.addTagAddress("byte-value", "%DB1:4:BYTE",'a');
             builder.addTagAddress("byte-array", "%DB1:6:BYTE[2]",'a','b');
             builder.addTagAddress("word-value", "%DB1:8:WORD",42424);

@@ -1150,7 +1150,15 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
             ByteBuffer byteBuffer = null;
             if (tag.getDataType() == TransportSize.BYTE && tag.getNumberOfElements() > 1) {
                 byteBuffer = ByteBuffer.allocate(tag.getNumberOfElements());
-                byteBuffer.put(plcValue.getRaw());
+                if (plcValue instanceof PlcList plcList) {
+                    // The value handler builds a list when the caller passes the elements
+                    // individually; PlcList has no raw form, so serialize element by element.
+                    for (int i = 0; i < tag.getNumberOfElements(); i++) {
+                        byteBuffer.put((byte) plcList.getIndex(i).getLong());
+                    }
+                } else {
+                    byteBuffer.put(plcValue.getRaw());
+                }
             } else if (tag.getDataType() == TransportSize.BOOL && tag.getNumberOfElements() > 1) {
                 if (!(plcValue instanceof PlcList plcList)) {
                     throw new PlcRuntimeException("Expected PlcList for multi-element BOOL");

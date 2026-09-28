@@ -47,6 +47,11 @@ public class PlcBYTE extends PlcIECValue<Short> {
         if (value instanceof Short i) {
             return new PlcBYTE(i);
         }
+        if (value instanceof Character c) {
+            // A char is an unsigned 16-bit code unit; for BYTE only the low half is addressable,
+            // and the constructor's range check rejects anything above 255 rather than truncating.
+            return new PlcBYTE((short) (int) c.charValue());
+        }
         if (value instanceof Integer i) {
             return new PlcBYTE(i);
         }
