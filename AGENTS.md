@@ -1,9 +1,12 @@
-# CLAUDE.md — plc4x-yofc
+# AGENTS.md — plc4x-yofc
 
 YOFC 维护的 Apache PLC4X fork（默认 `heyoulin` 分支，~1118+ commit ahead of `apache/develop`）。下游 `yofc-iot` 通过 `~/.m2` 消费 `plc4j-*` artifact。
 
 ## Build
 
+- **Maven 3.9 / 4 双兼容**（2026-09-28 起）：全部 pom 已回退到 4.0.0 命名空间 + 显式 `<modelVersion>` + `<modules>`（上游推的是 4.1.0 NS + 无 modelVersion + `<subprojects>`，M3 直接解析失败；M4 对旧写法完全兼容）。enforcer 放宽为 `[3.9,)`。**IDEA（内置 Maven 3）可正常导入调试**；命令行可用 brew `mvn`（3.9，注意 JAVA_HOME 用 21——JDK 27 会崩 yofc 的 EndPosTable）或 `~/apps/maven/apache-maven-4.0.0-rc-6/bin/mvn`。合并上游时这 111 个 pom 的 NS/modelVersion/subprojects 又会冲突——机械地按本侧回退即可。
+- **不要用 `-T 1C`**：`apache-rat-plugin 0.18` 并行下抛 `ConcurrentModificationException` 或误报 UNAPPROVED（每次挂在不同模块）。串行构建。
+- **跑测试必须 `--fail-at-end`**，否则首个模块失败即中止，后面的模块全没跑。
 - 默认 root modules：`code-generation`、`protocols`、`website`
 - `plc4j`（含 51 个子模块）只在 `-Pwith-java` profile 下进 reactor
 - 不构建：`plc4go` / `plc4net` / `plc4c` / `plc4py`，以及通常没必要的 `website`
@@ -11,21 +14,36 @@ YOFC 维护的 Apache PLC4X fork（默认 `heyoulin` 分支，~1118+ commit ahea
 **常用入口：**
 
 ```bash
-# 完整 build（推荐）
-mvn install -Pwith-java -pl '!website' -DskipTests -T 1C
+MVN4=~/apps/maven/apache-maven-4.0.0-rc-6/bin/mvn
 
-# 完整 build 含测试（合并上游后用）
-RUN_TESTS=1 mvn install -Pwith-java -pl '!website' -DskipITs=true -T 1C
+# 完整 build（推荐，串行）
+$MVN4 install -Pwith-java -pl '!website' -DskipTests
 
-# 跑单元测试
-mvn test -Pwith-java -pl '!website' -DskipITs=true -T 1C
+# 全量单元测试（合并上游后必跑）
+$MVN4 test -Pwith-java -pl '!website' --fail-at-end
 
 # 仅 plc4j 子树（只在已经跑过完整 build、~/.m2 fresh 的前提下用）
-cd plc4j && mvn install -DskipTests -T 1C
+cd plc4j && $MVN4 install -DskipTests
 
 # 单独验证某个模块的 JaCoCo 覆盖率
-mvn verify -f plc4j/drivers/<driver>/pom.xml
+$MVN4 verify -f plc4j/drivers/<driver>/pom.xml
 ```
+
+**`update-generated-code` profile**：drivers 对 `plc4x-code-generation-language-java` 的
+provided 依赖只在这个 profile 里生效，而该 artifact 只能由 `code-generation/language`
+（同样被 profile 门控）构建——常规 reactor 从不构建它。IDEA 里勾了这个 profile 或
+m2 被清后构建会报 `Could not find ...plc4x-code-generation-language-java`，修法：
+
+```bash
+cd code-generation/language && mvn install -Pwith-java -DskipTests
+```
+
+**只在仓库根的全量 reactor 里开 `update-generated-code`**（`mvn install
+-Pwith-java,update-generated-code`）：从根构建时 mspec 取自 reactor 内的本地
+`protocols` 模块；在 IDEA 对单个 driver 模块构建时，codegen 的 `plc4x-protocols-*`
+依赖从 `~/.m2` 解析——那里躺着老的 0.14.0/1.0.0-SNAPSHOT（apache-snapshots 来源），
+**用旧 mspec 再生成会把代码往上游方向漂移**，与合并状态脱钩。生成后 `git diff`
+审查生成物再提交。
 
 ## SPI 结构（合并后）
 
@@ -45,7 +63,7 @@ mvn verify -f plc4j/drivers/<driver>/pom.xml
 
 ## Jackson 3 迁移
 
-上游从 Jackson 2 迁移到 Jackson 3（`3.2.0`）。**所有 YOFC 自定义代码也必须同步**。
+**方向：YOFC 从 Jackson 2 迁到了 Jackson 3（`tools.jackson`, `3.2.0`），上游停在 Jackson 2。** 这是 fork 的永久性偏离，不是「跟随上游」。合并时上游的 Jackson 2 代码要迁到 3，反向不成立。详见文末「上游同步 → Jackson 3 方向」。
 
 ### 迁移检查清单
 
@@ -61,7 +79,16 @@ mvn verify -f plc4j/drivers/<driver>/pom.xml
 
 ### 常见遗漏
 
-合并后如果看到 `package com.fasterxml.jackson.* does not exist`，说明该文件是 YOFC 自定义的、没有被上游改过，需要手动迁移 import + API 调用。典型例子：`AuditLogImpl.java`。
+合并后如果看到 `package com.fasterxml.jackson.databind.* does not exist` / `... .core.*`，说明上游在这轮改了该文件，把它的 Jackson 2 import 带了进来，需要手动迁到 `tools.jackson.*`。
+
+先跑一次全树扫描定位，比逐个看编译错误快：
+
+```bash
+grep -rn 'import com\.fasterxml\.jackson\.' --include='*.java' plc4j/ \
+  | grep -v 'com\.fasterxml\.jackson\.annotation\.'      # 有输出才需要迁移
+```
+
+`com.fasterxml.jackson.annotation.*` 是 Jackson 3 的正常用法，**不要**动。2026-09 那次合并该扫描为空。
 
 ## JaCoCo 覆盖率
 
@@ -135,9 +162,41 @@ if (type == null || type == PlcValueType.NULL) {
 
 ## YOFC 特有功能
 
+### S7 地址数组语法（双语法，生产关键）
+
+YOFC 生产地址用**后缀计数**形式 `%DB1:36:DINT[2]`（`n` = 元素个数）；上游 2026-09 起
+只认**前缀范围**形式 `%DB1.DB36[0..1]:DINT`（`[4]` = 第 5 个元素，语义不同！）。
+两个形式现在都支持（`S7Tag.POSTFIX_ARRAY` + `selectionOf`），tag 按输入形式渲染回写。
+**上游的 `S7LegacyAddressTest` 断言后缀形式必须被拒绝——与 YOFC 冲突，已删除**；合并
+上游时它会回来，删掉即可。
+
+**S7 字符串只有变长形式**：`%DB1:56:STRING`、`STRING[2]`、`STRING|GBK`（编码后缀在
+最后）。上游的定长 `STRING(20)`（`S7StringFixedLengthTag`，上游无法处理变长才造的）
+已整体删除——main 里 11 处 `instanceof ... getStringLength() : 254` 引用全部塌缩为
+`254`（变长假定最大长度）。合并上游时该类会回来，直接删除并按此处理。
+
 ### stringEncoding（ADS / S7）
 
 ADS 和 S7 tag 支持 `|encoding` 后缀指定字符串编码（如 `Main.value|UTF-16`）。这是 YOFC 独有特性，上游没有。合并上游时注意保留 tag 解析中的 encoding 分支。
+
+### 真机验证（合并后必跑）
+
+`plc4j/drivers/s7/src/test/.../readwrite/` 下的 main() 测试类连真实 PLC（工厂测试机
+`s7://10.80.41.57`，S7-1200 6ES7 211-1BE40-0XB0，pdu-size=240），surefire 不会跑它们，
+但它们才是数组语法/字符串解码的真正关卡：
+
+```bash
+cd plc4j/drivers/s7
+mvn test-compile dependency:build-classpath -Dmdep.outputFile=target/cp.txt -DincludeScope=test
+CP="target/test-classes:target/classes:$(cat target/cp.txt)"
+java -cp "$CP" org.apache.plc4x.java.s7.readwrite.BlockMergeTest   # 5/5
+java -cp "$CP" org.apache.plc4x.java.s7.readwrite.StringTest        # 写读回环+编码
+java -cp "$CP" org.apache.plc4x.java.s7.readwrite.BitArrayTest     # 7/7
+java -cp "$CP" org.apache.plc4x.java.s7.readwrite.BlockPerfTest     # gap 性能对比
+java -cp "$CP" org.apache.plc4x.java.s7.readwrite.DatatypesTest    # soak（while(true)）
+```
+
+注意 `WriteDatatypesTest` 的地址曾是过期的 `100.64.0.7`，已改为 `10.80.41.57`。
 
 ### SimulatedDevice FILE 模式
 
@@ -181,50 +240,71 @@ YOFC 自建的 PLC4X 代理服务器（`plc4j/tools/plc4x-server`），基于 Ne
 - 常见冲突类型：`protocols/bacnetip/.../bacnet-vendorids.mspec` 这类注册表型表追加，upstream 追加新 vendor，YOFC 那侧空白 → take-theirs。同时取上游对应的 Java/Go 生成产物
 - merge 完跑一次完整 root build + `git status` clean 验证 → push：`git push heyoulin heyoulin`
 
+### 版本号约定
+
+YOFC 保持自己的 `1.0.0.B-SNAPSHOT`，**不跟上游的版本号**（上游 2026-09 起为 `1.1.0-SNAPSHOT`）。`yofc-iot` 的 `com.yofc.iot.apps.opcuaserver` 等 pom 把 `plc4j-*` 依赖钉在 `1.0.0.B-SNAPSHOT`，改这个版本号会连带改下游。
+
+冲突表现：~100 个 `pom.xml` 的 `<version>` 行冲突。判据是「只有版本/时间戳差异」→ 取 ours；「上游单方面新增的行」→ 取 theirs 但把 `1.1.0-SNAPSHOT` 换回 `1.0.0.B-SNAPSHOT`。merge 后务必 grep 一遍 `1\.1\.0-SNAPSHOT` 和 `1\.0\.0-SNAPSHOT`（没有 `.B`）：上游新增的 `<parent>` version、新依赖的 version 都不会冲突，会静默带进来，直到构建报 "Non-resolvable parent POM" 才暴露。
+
+### 构建：**不要用 `-T 1C`**
+
+`apache-rat-plugin:0.18` 在并行模块构建下会抛 `ConcurrentModificationException`，或报假的 `Unexpected count for UNAPPROVED`（不同模块、不同次数，非确定性）。用串行：
+
+```bash
+mvn install -Pwith-java -pl '!website' -DskipTests          # 95 个模块，串行约 2-3 分钟
+mvn test   -Pwith-java -pl '!website' -DskipITs=true --fail-at-end   # 11564 个测试
+```
+
+跑测试务必加 `--fail-at-end`，否则 Maven 在第一个失败模块就中止，后面模块一个都没跑，会看不到其余失败。
+
+### Jackson 3 方向（2026-09 复核）
+
+上游在 **Jackson 2**（`com.fasterxml.jackson`, 2.22.x）；YOFC 在 **Jackson 3**（`tools.jackson`, 3.2.0）。方向是 YOFC 单方面前进，不是「跟随上游迁移」——上游做过 3.x 试验后回退了。合并时不要接受上游的 Jackson 2 groupId/版本。
+
+- `com.fasterxml.jackson.annotation.*` 是**对的**（Jackson 3 仍用这个包名放注解 + `jackson-annotations` 这个 artifact），不要"迁移"掉
+- `jackson-datatype-jsr310` 在 Jackson 3 下**没有 3.2.0 版本**（central 只到 3.0.0-rc2）：java.time 支持已并入 `jackson-databind`（`tools/jackson/databind/ext/javatime/`）。上游加的 `com.fasterxml.jackson.datatype:jackson-datatype-jsr310` 依赖要**删掉**而不是改 groupId
+
+### 非 Java 语言绑定：**一律取上游**（政策，2026-09 明确）
+
+YOFC 的定制只在 **Java** 上。`plc4go` / `plc4c` / `plc4py` / `plc4net` 里 YOFC 那侧的改动当初只是为了**让它们能编译过**（跟随 mspec 变更的连带修改），不是功能需求。所以：
+
+- 这些目录的冲突**一律 take-theirs**，不要像 Java 那样做 union
+- 也不要保留 YOFC 在这些目录里的历史定制（例：`plc4go` 的 `|stringEncoding` 透传）。它们依赖协议自动生成的代码，而生成物是按上游 mspec 出的，留着就对不上、编译不过
+
+**为什么不能靠构建发现**：`-Pwith-java` 只把 `plc4j` 拉进 reactor，这些目录根本不被编译。合并后要单独验：
+
+```bash
+GO=~/.mvnGoLang/go1.26.0.darwin-arm64/bin/go
+cd plc4go && $GO build ./... && $GO vet ./...     # exit 0 才算过
+```
+
+（`go vet` 会报一批 `ReadByte`/`WriteByte` 签名不匹配的 style 警告，那是上游自带的，不是错误。）
+
+例外：这几个目录的 `pom.xml` **版本号仍要保持 `1.0.0.B-SNAPSHOT`**，否则父 pom 解析不到。2026-09 合并后，`plc4go`/`plc4c`/`plc4py`/`plc4net` 与上游的差异**只剩这些 pom 版本行**——这 4 个目录应当与上游保持零差异。
+
 ## 工具链
 
-- Java 21（Temurin）+ Maven 3.9+
+- Java 21（Temurin）构建；默认 `java` 是 26，构建要显式 `JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home`（JDK 27 会崩 yofc 的 EndPosTable）
+- Maven 3.9 / 4 均可构建（2026-09-28 起双兼容，enforcer `[3.9,)`，详见顶部 Build 节）：brew `mvn`（3.9）或 `~/apps/maven/apache-maven-4.0.0-rc-6/bin/mvn`
 
-<!-- gitnexus:start -->
-# GitNexus — Code Intelligence
+# Codebase Memory MCP — Code Intelligence
 
-This project is indexed by GitNexus as **plc4x** (24105 symbols, 65721 relationships, 300 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by **codebase-memory-mcp**. Always use it BEFORE grep/find or reading files when you need to understand or locate code. The skill at `~/.claude/skills/codebase-memory/` contains the full decision matrix and workflow.
 
-> If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
+## Quick Reference
 
-## Always Do
+| Question | Tool |
+|----------|------|
+| Who calls X? | `trace_path(direction="inbound")` |
+| What does X call? | `trace_path(direction="outbound")` |
+| Find by name | `search_graph(name_pattern="...")` |
+| Dead code | `search_graph(max_degree=0)` |
+| Impact of changes | `detect_changes()` |
+| Architecture overview | `get_architecture(aspects=["all"])` |
+| Read source | `get_code_snippet(qualified_name="...")` |
 
-- **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `gitnexus_impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
-- **MUST run `gitnexus_detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows.
-- **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
-- When exploring unfamiliar code, use `gitnexus_query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
-- When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `gitnexus_context({name: "symbolName"})`.
+## Exploration Workflow
 
-## Never Do
+`list_projects` → `get_graph_schema` → `search_graph` → `get_code_snippet`
 
-- NEVER edit a function, class, or method without first running `gitnexus_impact` on it.
-- NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
-- NEVER rename symbols with find-and-replace — use `gitnexus_rename` which understands the call graph.
-- NEVER commit changes without running `gitnexus_detect_changes()` to check affected scope.
-
-## Resources
-
-| Resource | Use for |
-|----------|---------|
-| `gitnexus://repo/plc4x/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/plc4x/clusters` | All functional areas |
-| `gitnexus://repo/plc4x/processes` | All execution flows |
-| `gitnexus://repo/plc4x/process/{name}` | Step-by-step execution trace |
-
-## CLI
-
-| Task | Read this skill file |
-|------|---------------------|
-| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
-| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
-| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
-| Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
-| Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
-| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
-
-<!-- gitnexus:end -->
+> If the repository hasn't been indexed yet, run: `codebase-memory-mcp cli index_repository '{"repo_path": "/path/to/repo"}'`
