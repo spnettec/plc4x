@@ -132,7 +132,7 @@
     <commons-compress.version>1.28.0</commons-compress.version>
     <commons-configuration2.version>2.15.1</commons-configuration2.version>
     <commons-io.version>2.22.0</commons-io.version>
-    <commons-lang3.version>3.20.0</commons-lang3.version>
+    <commons-lang3.version>3.21.0</commons-lang3.version>
     <commons-net.version>3.13.0</commons-net.version>
     <commons-text.version>1.15.0</commons-text.version>
     <commons-csv.version>1.14.1</commons-csv.version>
@@ -165,10 +165,10 @@
     <jsoup.version>1.22.2</jsoup.version>
     <jssc.version>2.10.4</jssc.version>
     <junit.jupiter.version>6.1.3</junit.jupiter.version>
-    <logback.version>1.6.3</logback.version>
-    <maven-artifact.version>3.9.16</maven-artifact.version>
+    <logback.version>1.6.4</logback.version>
+    <maven-artifact.version>3.10.0</maven-artifact.version>
     <maven-dependency-tree.version>3.3.0</maven-dependency-tree.version>
-    <mockito.version>5.23.0</mockito.version>
+    <mockito.version>5.24.0</mockito.version>
     <!-- Netty 4.2.x serial transport issues fixed in SerialChannel/SerialPollingSelector (YOFC) -->
     <netty.version>4.2.16.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
@@ -178,7 +178,7 @@
     <reflow.skin.version>2.3.3</reflow.skin.version>
     <saxon.version>13.0</saxon.version>
     <semver4j.version>3.1.0</semver4j.version>
-    <slf4j.version>2.0.19</slf4j.version>
+    <slf4j.version>2.0.20</slf4j.version>
     <testcontainers.version>2.0.5</testcontainers.version>
     <testcontainers-virtualavr.version>0.0.2</testcontainers-virtualavr.version>
     <xmlunit.version>2.14.0</xmlunit.version>
@@ -1156,7 +1156,7 @@
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.4.11</version>
+          <version>4.4.12</version>
         </plugin>
 
         <plugin>
