@@ -1205,7 +1205,7 @@ public enum KnxManufacturer {
 
   M_DONGGUAN_MUHCCI_ELECTRICAL((int) 589, (int) 645, "Dongguan Muhcci Electrical"),
 
-  M_SDEKE((int) 590, (int) 646, "Sdeke"),
+  M_SIDEKE((int) 590, (int) 646, "Sideke"),
 
   M_ARIGO_SOFTWARE_GMBH((int) 591, (int) 647, "ARIGO Software GmbH"),
 
@@ -1601,7 +1601,7 @@ public enum KnxManufacturer {
 
   M_HOLFMANN_CULTURE_ART_CO__LTD((int) 787, (int) 848, "Holfmann Culture Art Co.,LTD"),
 
-  M_GUANGZHOU_BAITE_IOT_TECHNOLOGY_CO___LTD((int) 788, (int) 849, "Guangzhou Baite IoT Technology Co., Ltd"),
+  M_GUANGZHOU_BETTER_IOT_TECHNOLOGY_CO___LTD((int) 788, (int) 849, "Guangzhou Better IoT Technology Co., Ltd"),
 
   M_OWL_AUTOMATA((int) 789, (int) 850, "OWL Automata"),
 
@@ -1695,9 +1695,21 @@ public enum KnxManufacturer {
 
   M_LE_ETS_AI((int) 834, (int) 896, "LE-ETS-AI"),
 
-  M_ABB___RESERVED((int) 835, (int) 43954, "ABB - reserved"),
+  M_GUANGZHOU_CANTU_ELECTRONIC_TECHNOLOGY_CO___LTD_((int) 835, (int) 897, "Guangzhou Cantu Electronic Technology Co., Ltd."),
 
-  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 836, (int) 43959, "Busch-Jaeger Elektro - reserved");
+  M_PELEPHANT_GMBH((int) 836, (int) 898, "Pelephant GmbH"),
+
+  M_ALEXANDROS_GOUNAROPOULOS((int) 837, (int) 899, "Alexandros Gounaropoulos"),
+
+  M_ENTIA((int) 838, (int) 900, "ENTIA"),
+
+  M_CONIT_SRL((int) 839, (int) 901, "Conit Srl"),
+
+  M_KASTRO_KABLO_SAN_TIC__A_S_((int) 840, (int) 902, "Kastro Kablo San.Tic. A.S."),
+
+  M_ABB___RESERVED((int) 841, (int) 43954, "ABB - reserved"),
+
+  M_BUSCH_JAEGER_ELEKTRO___RESERVED((int) 842, (int) 43959, "Busch-Jaeger Elektro - reserved");
 
   private static final Map<Integer, KnxManufacturer> map;
 

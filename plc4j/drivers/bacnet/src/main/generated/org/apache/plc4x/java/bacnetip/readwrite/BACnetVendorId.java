@@ -2923,7 +2923,7 @@ public enum BACnetVendorId {
 
   AETERLINK_CORPORATION((int) 1457, (int) 1457, "Aeterlink Corporation"),
 
-  ALPHA_EPSILON_AUTOMATION((int) 1458, (int) 1458, "Alpha Epsilon Automation"),
+  AETHER_ENERGY_ALLIANCELLC((int) 1458, (int) 1458, "Aether Energy Alliance, LLC"),
 
   ASTRALITE_INC((int) 1459, (int) 1459, "Astralite Inc."),
 
@@ -3332,6 +3332,22 @@ public enum BACnetVendorId {
   COOLER_MASTER_CO_LTD((int) 1663, (int) 1663, "Cooler Master Co., Ltd."),
 
   BES_TECH_INC((int) 1664, (int) 1664, "Bes-Tech, Inc."),
+
+  TOTAL_SOLUTION_GMBH((int) 1665, (int) 1665, "Total Solution GmbH"),
+
+  JAMBHEKAR_AUTOMATION_SOLUTIONS_PVT_LTD((int) 1666, (int) 1666, "Jambhekar Automation Solutions Pvt. Ltd."),
+
+  NASSAR_ELECTRONICSS_ADECV((int) 1667, (int) 1667, "Nassar Electronics, S.A. de C.V."),
+
+  B_TUNE_LIMITED((int) 1668, (int) 1668, "BTune Limited"),
+
+  PT_NAVICOM_INDONESIA((int) 1669, (int) 1669, "PT Navicom Indonesia"),
+
+  HOT_DASH_SYSTEMS_INC((int) 1670, (int) 1670, "HotDash Systems, Inc."),
+
+  V_VSRO((int) 1671, (int) 1671, "2VV s.r.o."),
+
+  SHENZHEN_BEILAI_TECHNOLOGY_CO_LTD((int) 1672, (int) 1672, "Shenzhen Beilai Technology Co., Ltd."),
 
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, "Unknown");
 
