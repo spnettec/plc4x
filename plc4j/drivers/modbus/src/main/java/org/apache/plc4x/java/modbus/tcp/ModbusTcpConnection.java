@@ -67,7 +67,14 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
 
     private final AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
     private ModbusTcpMessageCodec messageCodec;
-    private final Map<Integer, CompletableFuture<ModbusTcpADU>> pendingRequests = new ConcurrentHashMap<>();
+    private final Map<Integer, PendingRequest> pendingRequests = new ConcurrentHashMap<>();
+
+    /**
+     * A dispatched request awaiting its response: the future plus the unit identifier the
+     * request was addressed to, which the response has to echo. Package-private for tests.
+     */
+    record PendingRequest(short unitIdentifier, CompletableFuture<ModbusTcpADU> future) {
+    }
 
     public ModbusTcpConnection(ModbusTcpConfiguration configuration, TransportInstance<?> transportInstance, AuditLog auditLog) {
         super(configuration, transportInstance, auditLog);
@@ -103,8 +110,8 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
         if (messageCodec != null) {
             messageCodec.close();
         }
-        pendingRequests.values().forEach(future ->
-            future.completeExceptionally(new PlcRuntimeException("Connection closed")));
+        pendingRequests.values().forEach(pending ->
+            pending.future().completeExceptionally(new PlcRuntimeException("Connection closed")));
         pendingRequests.clear();
         super.close();
         LOGGER.info("Modbus TCP connection closed");
@@ -122,7 +129,7 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
         int pendingCount = pendingRequests.size();
         if (pendingCount > 0) {
             LOGGER.warn("Failing {} pending requests due to transport disconnect", pendingCount);
-            pendingRequests.values().forEach(future -> future.completeExceptionally(exception));
+            pendingRequests.values().forEach(pending -> pending.future().completeExceptionally(exception));
             pendingRequests.clear();
         }
     }
@@ -142,18 +149,32 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
         return 1;
     }
 
+    /**
+     * Correlates a received frame to the pending request with its transaction identifier.
+     * The unit identifier has to match too: behind a TCP-to-serial gateway it names the
+     * slave, so a frame for another unit is not the answer even if the transaction id fits.
+     * Such a frame is discarded without touching the pending entry - the request keeps
+     * waiting for a matching response until it times out, and is never re-sent.
+     */
     private void handleIncomingMessage(ModbusTcpADU modbusMessage) {
         int transactionId = modbusMessage.getTransactionIdentifier();
+        short unitIdentifier = modbusMessage.getUnitIdentifier();
         if (auditLog.isEnabled()) {
             auditLog.write(AuditLogEventType.INCOMING_MESSAGE,
-                "Received Modbus TCP response, txId=" + transactionId);
+                "Received Modbus TCP response, txId=" + transactionId + ", unitId=" + unitIdentifier);
         }
-        CompletableFuture<ModbusTcpADU> future = pendingRequests.remove(transactionId);
-        if (future != null) {
-            future.complete(modbusMessage);
-        } else {
+        PendingRequest pending = pendingRequests.get(transactionId);
+        if (pending == null) {
             LOGGER.warn("Received response for unknown transaction ID: {}", transactionId);
+            return;
         }
+        if (unitIdentifier != pending.unitIdentifier()) {
+            LOGGER.warn("Discarding response for transaction ID {} from unit {} while waiting for unit {}",
+                transactionId, unitIdentifier, pending.unitIdentifier());
+            return;
+        }
+        pendingRequests.remove(transactionId, pending);
+        pending.future().complete(modbusMessage);
     }
 
     private int nextTransactionId() {
@@ -166,7 +187,7 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
 
     private CompletableFuture<ModbusTcpADU> sendRequest(ModbusTcpADU request, int transactionId) {
         CompletableFuture<ModbusTcpADU> responseFuture = new CompletableFuture<>();
-        pendingRequests.put(transactionId, responseFuture);
+        pendingRequests.put(transactionId, new PendingRequest(request.getUnitIdentifier(), responseFuture));
 
         try {
             if (auditLog.isEnabled()) {
@@ -246,7 +267,11 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (ModbusReadOptimizer.OptimizedRead optimizedRead : optimizedReads) {
             CompletableFuture<Map<String, PlcResponseItem<PlcValue>>> blockFuture =
-                chain.thenComposeAsync(v -> executeOptimizedRead(optimizer, optimizedRead));
+                chain.thenComposeAsync(v -> executeOptimizedRead(optimizer, optimizedRead))
+                    .exceptionallyCompose(e -> isTimeout(e)
+                        ? CompletableFuture.completedFuture(
+                            optimizer.splitResponse(optimizedRead, PlcResponseCode.REQUEST_TIMEOUT, null))
+                        : CompletableFuture.failedFuture(e));
             blockFutures.add(blockFuture);
             chain = blockFuture.handle((r, e) -> null);
         }
@@ -332,7 +357,10 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
             PlcTag tag = request.getTag(tagName);
             PlcValue value = request.getPlcValue(tagName);
             CompletableFuture<PlcResponseCode> tagFuture =
-                chain.thenComposeAsync(v -> writeSingleTag(tagName, tag, value));
+                chain.thenComposeAsync(v -> writeSingleTag(tagName, tag, value))
+                    .exceptionallyCompose(e -> isTimeout(e)
+                        ? CompletableFuture.completedFuture(PlcResponseCode.REQUEST_TIMEOUT)
+                        : CompletableFuture.failedFuture(e));
             tagFutures.put(tagName, tagFuture);
             chain = tagFuture.handle((r, e) -> null);
         }
@@ -585,6 +613,16 @@ public class ModbusTcpConnection extends PollingSubscriptionConnectionBase<Modbu
             case GATEWAY_PATH_UNAVAILABLE -> PlcResponseCode.INTERNAL_ERROR;
             case GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND -> PlcResponseCode.REMOTE_ERROR;
         };
+    }
+
+    /**
+     * Whether a transaction failed by running into the request timeout. Such a failure is
+     * reported as {@link PlcResponseCode#REQUEST_TIMEOUT} for the tags the transaction covered,
+     * so the rest of the request keeps its results; any other failure still fails the request.
+     */
+    private static boolean isTimeout(Throwable error) {
+        Throwable cause = error instanceof CompletionException && error.getCause() != null ? error.getCause() : error;
+        return cause instanceof TimeoutException;
     }
 
     private ModbusByteOrder getEffectiveByteOrder(ModbusTag tag) {

@@ -37,12 +37,21 @@ namespace org.apache.plc4net.tools.codegen.output
         private readonly Protocol _protocol;
         private readonly string _namespace;
         private readonly string _protocolName;
+        private readonly bool _manualStaticCalls;
 
-        public CSharpGenerator(Protocol protocol, string protocolName, string namespaceName)
+        /// <param name="manualStaticCalls">
+        /// Leave each <c>STATIC_CALL</c> this generator has no implementation for to a hand-written
+        /// part of the protocol's partial <c>StaticHelper</c> class, as plc4j and plc4go do: the calls
+        /// are generated as the mspec writes them and the compiler fails the build for a function that
+        /// is missing. Without it, such a call fails the generation.
+        /// </param>
+        public CSharpGenerator(
+            Protocol protocol, string protocolName, string namespaceName, bool manualStaticCalls = false)
         {
             _protocol = protocol;
             _protocolName = protocolName;
             _namespace = namespaceName;
+            _manualStaticCalls = manualStaticCalls;
         }
 
         /// <summary>Generates every file; key is a relative path.</summary>
@@ -137,10 +146,11 @@ namespace org.apache.plc4net.tools.codegen.output
             CollectStaticCalls(staticCalls);
             foreach (var name in staticCalls.Keys)
             {
-                if (!IsGeneratedStaticCall(name))
+                if (!_manualStaticCalls && !IsGeneratedStaticCall(name))
                 {
                     throw new NotSupportedException(
-                        $"{_protocolName}.mspec uses STATIC_CALL '{name}', but no C# implementation is available");
+                        $"{_protocolName}.mspec uses STATIC_CALL '{name}', but no C# implementation is available; "
+                        + "pass --manual-static-calls if the hand-written part of the static helper supplies it");
                 }
             }
         }
@@ -254,6 +264,7 @@ namespace org.apache.plc4net.tools.codegen.output
             {
                 var values = type.DiscriminatorValues ?? Array.Empty<Term>();
                 var discriminators = DiscriminatorList(p, r);
+                var retained = RetainedDiscriminators(type).Select(d => d.Name).ToHashSet();
                 var emitted = false;
                 for (var i = 0; i < discriminators.Count; i++)
                 {
@@ -262,11 +273,18 @@ namespace org.apache.plc4net.tools.codegen.output
                     {
                         continue; // property field or dotted path - no accessor
                     }
+                    if (retained.Contains(d.AccessorName))
+                    {
+                        // The case does not pin this wire discriminator, so the
+                        // value the parent read is kept and written back.
+                        c.Line($"public override {CSharpTypeMapper.CSharpType(d.Type)} {Pascal(d.AccessorName)} {{ get; }}");
+                        emitted = true;
+                        continue;
+                    }
                     var pinned = values.Count > i && values[i] != null;
-                    // An unpinned discriminator (the case listed fewer values,
-                    // or a null slot) takes the type's default, matching plc4j:
-                    // ModbusPDUError leaves functionFlag / response unspecified
-                    // and its accessors return 0 / false.
+                    // An unpinned discriminator that is not read from the wire (a
+                    // parser argument such as Modbus' `response`) takes the type's
+                    // default, as in plc4j.
                     var rhs = pinned
                         ? RenderDiscriminatorValue(values[i], d.Type, r)
                         : $"default({CSharpTypeMapper.CSharpType(d.Type)})";
@@ -303,7 +321,8 @@ namespace org.apache.plc4net.tools.codegen.output
         private void EmitConstructor(CodeWriter c, ComplexTypeDefinition type)
         {
             var all = AllValueFields(type);
-            if (all.Count == 0)
+            var retained = RetainedDiscriminators(type);
+            if (all.Count == 0 && retained.Count == 0)
             {
                 return;
             }
@@ -311,7 +330,9 @@ namespace org.apache.plc4net.tools.codegen.output
             var own = type.PropertyFields.ToList();
             var inherited = ParentPrefixFields(type).Concat(ParentSuffixFields(type)).ToList();
 
-            var pars = string.Join(", ", all.Select(f => $"{PropertyType(f)} {Camel(f.Name)}"));
+            var pars = string.Join(", ", all
+                .Select(f => $"{PropertyType(f)} {Camel(f.Name)}")
+                .Concat(retained.Select(d => $"{CSharpTypeMapper.CSharpType(d.Type)} {Camel(d.Name)}")));
             var mod = type.IsDiscriminatedParent ? "protected" : "public";
             var baseCall = inherited.Count > 0
                 ? " : base(" + string.Join(", ", inherited.Select(f => Camel(f.Name))) + ")"
@@ -323,6 +344,10 @@ namespace org.apache.plc4net.tools.codegen.output
             foreach (var f in own)
             {
                 c.Line($"{Pascal(f.Name)} = {Camel(f.Name)};");
+            }
+            foreach (var d in retained)
+            {
+                c.Line($"{Pascal(d.Name)} = {Camel(d.Name)};");
             }
             c.Outdent();
             c.Line("}");
@@ -338,7 +363,9 @@ namespace org.apache.plc4net.tools.codegen.output
             // `new` only when the child's StaticParse has the same signature as
             // the base's (no extra context parameters) - otherwise it neither
             // hides anything (CS0109) nor needs to.
-            var hide = type.IsDiscriminatedChild && ParentContextFields(type).Count == 0
+            var hide = type.IsDiscriminatedChild
+                       && ParentContextFields(type).Count == 0
+                       && RetainedDiscriminators(type).Count == 0
                 ? "new "
                 : "";
             c.Line($"public static {hide}{type.Name} StaticParse(ReadBuffer readBuffer{Comma(args)})");
@@ -362,7 +389,8 @@ namespace org.apache.plc4net.tools.codegen.output
             if (!type.IsDiscriminatedParent)
             {
                 // prefix (passed in), own + suffix (read above), in wire order.
-                var ctorArgs = string.Join(", ", AllValueFields(type).Select(f => Camel(f.Name)));
+                var ctorArgs = string.Join(", ", AllValueFields(type).Select(f => Camel(f.Name))
+                    .Concat(RetainedDiscriminators(type).Select(d => Camel(d.Name))));
                 c.Line($"return new {type.Name}({ctorArgs});");
             }
 
@@ -538,6 +566,9 @@ namespace org.apache.plc4net.tools.codegen.output
                 {
                     childArgs = childArgs.Append("_startPos");
                 }
+                // The wire discriminators this case leaves unpinned are handed down
+                // so the child can write them back (see RetainedDiscriminators).
+                childArgs = childArgs.Concat(RetainedDiscriminators(child).Select(d => Camel(d.Name)));
                 c.Line($"if ({test})");
                 c.Line("{");
                 c.Indent();
@@ -1850,6 +1881,10 @@ namespace org.apache.plc4net.tools.codegen.output
             c.Line("public static ushort BinToBcd12(int value) => (ushort) ((value / 100) * 256 + ((value / 10) % 10) * 16 + (value % 10));");
             foreach (var (name, retType) in staticCalls)
             {
+                if (!IsGeneratedStaticCall(name))
+                {
+                    continue; // supplied by the hand-written part of the partial class
+                }
                 c.Line();
                 EmitStaticCall(c, name, retType);
             }
@@ -2161,6 +2196,42 @@ namespace org.apache.plc4net.tools.codegen.output
             return result;
         }
 
+        /// <summary>
+        /// The discriminators a case leaves unpinned that are fields of the parent,
+        /// read from the wire (Modbus' <c>ModbusPDUError</c> pins <c>errorFlag</c>
+        /// but not <c>functionFlag</c>). plc4j keeps the value as it was read, so
+        /// the message serializes back to the same bytes; the child takes it as a
+        /// trailing constructor and <c>StaticParse</c> parameter and returns it from
+        /// the discriminator accessor. Without it the value would be lost, and
+        /// anything computed from the serialized form - such as a checksum over the
+        /// PDU - would disagree with the bytes that were received.
+        /// A parser argument is not a wire field and is not retained.
+        /// </summary>
+        private List<(string Name, TypeReference Type)> RetainedDiscriminators(ComplexTypeDefinition child)
+        {
+            var result = new List<(string Name, TypeReference Type)>();
+            if (!child.IsDiscriminatedChild || _protocol.FindType(child.ParentName) is not { } parent)
+            {
+                return result;
+            }
+
+            var values = child.DiscriminatorValues ?? Array.Empty<Term>();
+            var discriminators = DiscriminatorList(parent);
+            for (var i = 0; i < discriminators.Count; i++)
+            {
+                var d = discriminators[i];
+                if (d.AccessorName == null || (values.Count > i && values[i] != null))
+                {
+                    continue;
+                }
+                if (parent.Fields.OfType<DiscriminatorField>().Any(f => f.Name == d.AccessorName))
+                {
+                    result.Add((d.AccessorName, d.Type));
+                }
+            }
+            return result;
+        }
+
         private IEnumerable<string> ParserArgDiscriminatorNames(ComplexTypeDefinition parent) =>
             DiscriminatorList(parent)
                 .Where(d => d.AccessorName != null
@@ -2318,6 +2389,8 @@ namespace org.apache.plc4net.tools.codegen.output
             {
                 args.Add("int _startPos");
             }
+            args.AddRange(RetainedDiscriminators(type)
+                .Select(d => $"{CSharpTypeMapper.CSharpType(d.Type)} {Camel(d.Name)}"));
             if (UsesLastItem(type))
             {
                 args.Add("bool _lastItem = false");

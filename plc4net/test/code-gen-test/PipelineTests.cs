@@ -211,6 +211,68 @@ namespace org.apache.plc4net.test.codegen
         }
 
         [Fact]
+        public void A_wire_discriminator_a_case_leaves_unpinned_is_kept_and_written_back()
+        {
+            // Modbus' ModbusPDUError pins errorFlag but not functionFlag. The value
+            // the parent read has to survive: a serialized exception response that
+            // lost its function code would not match the bytes that were received.
+            var model = MspecModelBuilder.Build(@"
+[discriminatedType Pdu(bit response)
+    [discriminator bit errorFlag]
+    [discriminator uint 7 functionFlag]
+    [typeSwitch errorFlag,functionFlag
+        ['true' PduError
+            [simple uint 8 exceptionCode]
+        ]
+        ['false','0x03' PduRead
+            [simple uint 16 startingAddress]
+        ]
+    ]
+]
+");
+            var files = new CSharpGenerator(model, "demo", "demo.readwrite").Generate();
+            var parent = files["model/Pdu.cs"];
+            var error = files["model/PduError.cs"];
+            var read = files["model/PduRead.cs"];
+
+            // The unpinned discriminator is a stored value, handed down by the parent.
+            Assert.Contains("public override byte FunctionFlag { get; }", error);
+            Assert.Contains("public PduError(byte exceptionCode, byte functionFlag)", error);
+            Assert.Contains("StaticParse(ReadBuffer readBuffer, bool response, byte functionFlag)", error);
+            Assert.Contains("return new PduError(exceptionCode, functionFlag);", error);
+            Assert.Contains("return PduError.StaticParse(readBuffer, response, functionFlag);", parent);
+
+            // The pinned one stays a constant, and the pinned case needs no extra parameter.
+            Assert.Contains("public override bool ErrorFlag => true;", error);
+            Assert.Contains("public override byte FunctionFlag => (byte) (0x03);", read);
+            Assert.DoesNotContain("functionFlag", read);
+            Assert.Contains("return PduRead.StaticParse(readBuffer, response);", parent);
+        }
+
+        [Fact]
+        public void A_parser_argument_discriminator_a_case_leaves_unpinned_is_not_a_wire_value()
+        {
+            // `response` is an argument of the parse, not a field read from the wire,
+            // so there is nothing to keep: it takes the type's default, as in plc4j.
+            var model = MspecModelBuilder.Build(@"
+[discriminatedType Pdu(bit response)
+    [discriminator uint 8 functionFlag]
+    [typeSwitch functionFlag,response
+        ['0x01' PduA
+            [simple uint 8 a]
+        ]
+    ]
+]
+");
+            var code = new CSharpGenerator(model, "demo", "demo.readwrite").Generate()["model/PduA.cs"];
+
+            Assert.Contains("public override bool Response => default(bool);", code);
+            // Nothing was added to the constructor or to StaticParse.
+            Assert.Contains("public PduA(byte a)", code);
+            Assert.Contains("public static new PduA StaticParse(ReadBuffer readBuffer, bool response)", code);
+        }
+
+        [Fact]
         public void Enum_accessors_deduplicate_duplicate_underlying_values()
         {
             var model = MspecModelBuilder.Build(@"
@@ -421,12 +483,8 @@ namespace org.apache.plc4net.test.codegen
         }
 
         [Fact]
-        public void The_real_s7_mspec_fails_loudly_when_a_static_helper_is_missing()
+        public void The_real_s7_mspec_fails_loudly_unless_its_static_calls_are_declared_manual()
         {
-            // s7.mspec's TransportSize has COUNTER and DATE_AND_TIME both at
-            // 0x1C. Both enum members remain declared, while the generated
-            // accessor keeps only the first arm because C# rejects duplicate
-            // switch patterns.
             var repoRoot = RepoPaths.FindRepoRoot();
             Assert.NotNull(repoRoot);
             var model = MspecModelBuilder.BuildFiles(Path.Combine(repoRoot!,
@@ -436,6 +494,67 @@ namespace org.apache.plc4net.test.codegen
 
             Assert.Contains("STATIC_CALL", ex.Message);
             Assert.Contains("EventItemLength", ex.Message);
+            Assert.Contains("--manual-static-calls", ex.Message);
+        }
+
+        [Fact]
+        public void With_manual_static_calls_the_real_s7_mspec_generates_and_leaves_the_functions_to_hand_written_code()
+        {
+            var repoRoot = RepoPaths.FindRepoRoot();
+            Assert.NotNull(repoRoot);
+            var model = MspecModelBuilder.BuildFiles(Path.Combine(repoRoot!,
+                "protocols", "s7", "src", "main", "resources", "protocols", "s7", "s7.mspec"));
+
+            var files = new CSharpGenerator(
+                model, "s7", "org.apache.plc4net.drivers.s7.readwrite", manualStaticCalls: true).Generate();
+
+            // The call is generated as the mspec writes it ...
+            Assert.Contains(
+                "S7StaticHelper.EventItemLength(readBuffer, valueLength)", files["model/AssociatedValueType.cs"]);
+            // ... and the generated half of the helper does not declare the function.
+            Assert.DoesNotContain("EventItemLength", files["model/S7StaticHelper.cs"]);
+        }
+
+        [Fact]
+        public void A_manual_static_call_is_called_as_written_and_not_declared_by_the_generated_helper()
+        {
+            const string Mspec = @"
+[type Packet
+    [manual uint 8 value 'STATIC_CALL(""readValue"", readBuffer)' 'STATIC_CALL(""writeValue"", writeBuffer, value)' '1']
+]
+";
+
+            var ex = Assert.Throws<System.NotSupportedException>(
+                () => new CSharpGenerator(MspecModelBuilder.Build(Mspec), "demo", "demo.readwrite").Generate());
+            Assert.Contains("ReadValue", ex.Message);
+
+            var files = new CSharpGenerator(
+                MspecModelBuilder.Build(Mspec), "demo", "demo.readwrite", manualStaticCalls: true).Generate();
+            var packet = files["model/Packet.cs"];
+            Assert.Contains("DemoStaticHelper.ReadValue(readBuffer)", packet);
+            Assert.Contains("DemoStaticHelper.WriteValue(writeBuffer,", packet);
+            Assert.DoesNotContain("ReadValue", files["model/DemoStaticHelper.cs"]);
+            Assert.DoesNotContain("WriteValue", files["model/DemoStaticHelper.cs"]);
+        }
+
+        [Fact]
+        public void Manual_static_calls_change_nothing_for_a_protocol_whose_calls_are_all_generated()
+        {
+            var repoRoot = RepoPaths.FindRepoRoot();
+            Assert.NotNull(repoRoot);
+            var mspec = Path.Combine(repoRoot!, "protocols", "modbus", "src", "main", "resources",
+                "protocols", "modbus", "modbus.mspec");
+            const string Namespace = "org.apache.plc4net.drivers.modbus.readwrite";
+
+            var without = new CSharpGenerator(MspecModelBuilder.BuildFile(mspec), "modbus", Namespace).Generate();
+            var with = new CSharpGenerator(
+                MspecModelBuilder.BuildFile(mspec), "modbus", Namespace, manualStaticCalls: true).Generate();
+
+            Assert.Equal(without.Keys.OrderBy(k => k, StringComparer.Ordinal), with.Keys.OrderBy(k => k, StringComparer.Ordinal));
+            foreach (var (path, source) in without)
+            {
+                Assert.True(source == with[path], $"{path} differs");
+            }
         }
 
         [Fact]

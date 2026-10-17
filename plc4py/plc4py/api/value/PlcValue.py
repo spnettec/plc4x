@@ -74,3 +74,6 @@ class PlcResponseCode(Enum):
     UNSUPPORTED = auto()
     RESPONSE_PENDING = auto()
     NOT_CONNECTED = auto()
+    REQUEST_TIMEOUT = auto()
+    NOT_READY = auto()
+    OUT_OF_RANGE = auto()

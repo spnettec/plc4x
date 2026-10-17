@@ -329,3 +329,40 @@ void plc4c_driver_plc4x_destroy_plc4x_write_request(plc4c_plc4x_read_write_plc4x
 
 
 
+
+plc4c_response_code plc4c_driver_plc4x_map_response_code(
+    plc4c_plc4x_read_write_plc4x_response_code response_code) {
+  switch (response_code) {
+    case plc4c_plc4x_read_write_plc4x_response_code_OK:
+      return PLC4C_RESPONSE_CODE_OK;
+    case plc4c_plc4x_read_write_plc4x_response_code_NOT_FOUND:
+      return PLC4C_RESPONSE_CODE_NOT_FOUND;
+    case plc4c_plc4x_read_write_plc4x_response_code_ACCESS_DENIED:
+      return PLC4C_RESPONSE_CODE_ACCESS_DENIED;
+    case plc4c_plc4x_read_write_plc4x_response_code_INVALID_ADDRESS:
+      return PLC4C_RESPONSE_CODE_INVALID_ADDRESS;
+    case plc4c_plc4x_read_write_plc4x_response_code_INVALID_DATATYPE:
+      return PLC4C_RESPONSE_CODE_INVALID_DATATYPE;
+    case plc4c_plc4x_read_write_plc4x_response_code_INVALID_DATA:
+      return PLC4C_RESPONSE_CODE_INVALID_DATA;
+    case plc4c_plc4x_read_write_plc4x_response_code_INTERNAL_ERROR:
+      return PLC4C_RESPONSE_CODE_INTERNAL_ERROR;
+    case plc4c_plc4x_read_write_plc4x_response_code_REMOTE_BUSY:
+      return PLC4C_RESPONSE_CODE_REMOTE_BUSY;
+    case plc4c_plc4x_read_write_plc4x_response_code_REMOTE_ERROR:
+      return PLC4C_RESPONSE_CODE_REMOTE_ERROR;
+    case plc4c_plc4x_read_write_plc4x_response_code_UNSUPPORTED:
+      return PLC4C_RESPONSE_CODE_UNSUPPORTED;
+    case plc4c_plc4x_read_write_plc4x_response_code_RESPONSE_PENDING:
+      return PLC4C_RESPONSE_CODE_RESPONSE_PENDING;
+    case plc4c_plc4x_read_write_plc4x_response_code_NOT_READY:
+      return PLC4C_RESPONSE_CODE_NOT_READY;
+    case plc4c_plc4x_read_write_plc4x_response_code_OUT_OF_RANGE:
+      return PLC4C_RESPONSE_CODE_OUT_OF_RANGE;
+    case plc4c_plc4x_read_write_plc4x_response_code_REQUEST_TIMEOUT:
+      return PLC4C_RESPONSE_CODE_REQUEST_TIMEOUT;
+    default:
+      // Not a code the proxy protocol defines.
+      return PLC4C_RESPONSE_CODE_INTERNAL_ERROR;
+  }
+}

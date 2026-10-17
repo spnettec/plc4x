@@ -77,4 +77,16 @@
     </plugin>
   </plugins>
   </build>
+  <!--
+    Every driver bundle declares Bundle-Activator: org.apache.plc4x.java.osgi.DriverActivator. Compile
+    scope, as the Karaf feature generator only picks up those.
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-osgi</artifactId>
+      <version>1.0.0.B-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
 </project>

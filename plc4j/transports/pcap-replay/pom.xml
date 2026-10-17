@@ -83,6 +83,15 @@
           </usedDependencies>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-Activator>org.apache.plc4x.java.osgi.TransportActivator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -122,6 +131,13 @@
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-packetfactory-static</artifactId>
+    </dependency>
+
+    <!-- Holds the Bundle-Activator. Compile scope, as the Karaf feature generator only picks up those -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-osgi</artifactId>
+      <version>1.0.0.B-SNAPSHOT</version>
     </dependency>
 
     <!-- Test Dependencies -->

@@ -36,9 +36,11 @@
   </properties>
 
   <dependencies>
+    <!-- Provided by the framework: don't drag it onto the class path of every driver user -->
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>osgi.core</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -49,6 +51,24 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transports-api</artifactId>
       <version>1.0.0.B-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-audit-log-api</artifactId>
+      <version>1.0.0.B-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.framework</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

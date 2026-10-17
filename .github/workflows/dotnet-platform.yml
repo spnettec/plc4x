@@ -24,14 +24,22 @@ on:
     paths:
       - plc4net/**
       - code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/**
+      - protocols/modbus/**
+      - protocols/s7/**
       - .github/workflows/dotnet-platform.yml
   pull_request:
     branches: [develop, plc4net]
     paths:
       - plc4net/**
       - code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/**
+      - protocols/modbus/**
+      - protocols/s7/**
       - .github/workflows/dotnet-platform.yml
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -39,7 +47,7 @@ permissions:
 jobs:
   parser-generation:
     name: Generated parser artifacts
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
@@ -59,6 +67,25 @@ jobs:
           key: ${{ runner.os }}-antlr-4.13.2
       - name: Verify generated parser artifacts
         run: python plc4net/tools/code-gen/generate_parsers.py --check
+
+  protocol-model-generation:
+    name: Generated protocol models
+    runs-on: ubuntu-slim
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 21
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+      - name: Verify generated protocol models
+        run: ./mvnw -B -f plc4net/pom.xml -Pcheck-generated-code generate-sources
 
   test:
     name: Build and test (${{ matrix.os }})

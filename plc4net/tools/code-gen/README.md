@@ -28,17 +28,36 @@ C# `io-template` was never migrated, so it only ever produced data classes).
 
 ```bash
 dotnet run --project plc4net/tools/code-gen -c Release -- \
-  <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace]
+  <protocol> <mspec-source[;mspec-source...]> <output-dir> [namespace] [--manual-static-calls]
 ```
 
 Each source can be one `.mspec` file or a directory containing `.mspec`
 files. Separate multiple sources with semicolons.
 
 Generation is staged and then replaces `<output-dir>/model`, so a failed
-write leaves the previous generated model intact. Regenerating these protocol model files is an explicit
+write leaves the previous generated model intact. The files follow the
+repository's `.editorconfig`: LF line endings and no final newline. Regenerating these protocol model files is an explicit
 driver-maintenance step; the driver slices that consume them commit the
 result. This is separate from the checked-in ANTLR parser artifacts below,
 whose reproducibility is enforced by CI.
+
+### Regenerating protocol models
+
+From the repository root, use the Maven wrapper profiles to regenerate the
+checked-in Modbus and S7 protocol models or to verify that they have not
+drifted from their `.mspec` sources:
+
+```bash
+./mvnw -f plc4net/pom.xml -Pupdate-generated-code generate-sources
+./mvnw -f plc4net/pom.xml -Pcheck-generated-code generate-sources
+```
+
+The first command updates the checked-in model directories. The second writes
+only to a temporary directory and fails when generated output differs from the
+checked-in files; CI runs that check.
+
+The profiles use `python` by default. On a system where Python 3 is exposed
+only as `python3`, add `-Dpython.executable=python3` to either command.
 
 ## Supported subset and fail-fast behavior
 
@@ -51,8 +70,26 @@ layout or deferring a missing implementation to production.
 
 Counted and byte-length arrays are supported; byte arrays with a byte-length
 use the buffer bulk-read path. Modbus `rtuCrcCheck` and `asciiLrcCheck` are
-generated as concrete helpers. Other protocol-specific static helpers remain
-an explicit generator gap and cause a diagnostic failure until implemented.
+generated as concrete helpers. Any other `STATIC_CALL` fails the generation,
+unless `--manual-static-calls` is given.
+
+With `--manual-static-calls`, every `STATIC_CALL` the generator has no
+implementation for is left to the hand-written part of the protocol's partial
+`<Protocol>StaticHelper` class, the way plc4j and plc4go keep their `StaticHelper`
+by hand. The generated code calls `<Protocol>StaticHelper.<Function>(...)` as the
+mspec writes it, and the generated half of the class does not declare the
+function, so a function that nobody wrote fails the compile of the driver
+instead of the generation. S7 is generated this way: its string, time and date
+codings live in `S7StaticHelper.Manual.cs` next to the generated model.
+
+A case of a discriminated type that does not pin a discriminator read from the
+wire keeps the value it was parsed with, as plc4j does: Modbus'
+`ModbusPDUError` pins `errorFlag` but not `functionFlag`, so it takes the
+function code as an extra trailing constructor and `StaticParse` parameter and
+returns it from the discriminator accessor. The message then serializes back to
+the bytes it was parsed from, which a checksum over the serialized form relies
+on. A discriminator that is a parser argument rather than a wire field is not
+kept; it takes the type's default.
 
 ## Grammars and the checked-in parsers
 
