@@ -161,13 +161,6 @@
             <version>1.0.0.B-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- bit-io: needed by plc4j-spi-buffers-byte but missing from its pom after SPI split -->
-        <dependency>
-            <groupId>com.github.jinahya</groupId>
-            <artifactId>bit-io</artifactId>
-            <version>${bit-io.version}</version>
-            <scope>runtime</scope>
-        </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-buffer</artifactId>
