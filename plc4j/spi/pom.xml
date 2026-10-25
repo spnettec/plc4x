@@ -18,35 +18,30 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-spi</artifactId>
-  <packaging>pom</packaging>
-
-  <name>PLC4J: SPI</name>
-  <description>Internal API Module.</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <modules>
-    <module>buffers</module>
-    <module>config</module>
-    <module>drivers</module>
-    <module>fields</module>
-    <module>utils</module>
-    <module>values</module>
-  </modules>
-
-  <!-- plc4j-spi is now pom-only (aggregator). Consumers must depend on
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-spi</artifactId>
+    <packaging>pom</packaging>
+    <name>PLC4J: SPI</name>
+    <description>Internal API Module.</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <modules>
+        <module>buffers</module>
+        <module>config</module>
+        <module>drivers</module>
+        <module>fields</module>
+        <module>utils</module>
+        <module>values</module>
+    </modules>
+    <!-- plc4j-spi is now pom-only (aggregator). Consumers must depend on
        the specific sub-modules they need: plc4j-spi-drivers, plc4j-spi-buffers-byte,
        plc4j-spi-values, etc. Declaring sub-modules as dependencies here causes
        Maven self-reference errors in the reactor. -->
 </project>
+

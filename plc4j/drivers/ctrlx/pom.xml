@@ -18,38 +18,33 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-drivers</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-driver-ctrlx</artifactId>
-
-  <name>PLC4J: Driver: CtrlX</name>
-  <description>Implementation of a driver able to communicate with Boschrexroth CtrlX controllers.</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-    <!--
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j-drivers</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-driver-ctrlx</artifactId>
+    <name>PLC4J: Driver: CtrlX</name>
+    <description>Implementation of a driver able to communicate with Boschrexroth CtrlX controllers.</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+        <!--
       This driver is not marked as fully supported for Java in the protocol
       support table (website/asciidoc/modules/users/pages/protocols/index.adoc),
       so it is built and installed locally, but not published to a repository.
       Remove this once the driver is marked with a green check for Java.
     -->
-    <maven.deploy.skip>true</maven.deploy.skip>
-  </properties>
-
-  <build>
-    <plugins>
-      <!--
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+    <build>
+        <plugins>
+            <!--
         In theory, we should be able to generate the API from the openApi specs, however are
         there multiple bugs preventing this. So I generate it, copy the generated code and then
         manually fix the broken things.
       -->
-      <!--plugin>
+            <!--plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
         <!- - When using a newer version, there's a bug causing one type to fail to generate - ->
@@ -75,173 +70,169 @@
           </execution>
         </executions>
       </plugin-->
-      <plugin>
-        <groupId>org.apache.karaf.tooling</groupId>
-        <artifactId>karaf-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-feature-xml</id>
-            <phase>compile</phase>
-            <goals>
-              <!-- Generate the feature.xml -->
-              <goal>features-generate-descriptor</goal>
-            </goals>
-            <configuration>
-              <enableGeneration>true</enableGeneration>
-              <aggregateFeatures>true</aggregateFeatures>
-            </configuration>
-          </execution>
-          <execution>
-            <id>build-kar</id>
-            <phase>package</phase>
-            <goals>
-              <!--
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-feature-xml</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <!-- Generate the feature.xml -->
+                            <goal>features-generate-descriptor</goal>
+                        </goals>
+                        <configuration>
+                            <enableGeneration>true</enableGeneration>
+                            <aggregateFeatures>true</aggregateFeatures>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-kar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <!--
                 Build a kar archive (Jar containing the feature.xml
                 as well as the module content and it's dependencies.
               -->
-              <goal>kar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>report</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <excludes combine.children="append">
-                <!-- OpenAPI-generated REST client for the ctrlX Data Layer REST API. -->
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/rest/**</exclude>
-                <!-- I/O-heavy driver-shell classes. -->
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/CtrlXDriver.class</exclude>
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/connection/CtrlXConnection*.class</exclude>
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/discovery/CtrlXPlcDiscoverer*.class</exclude>
-                <!-- REST + OAuth glue; requires live HTTPS service. -->
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/ApiClientFactory.class</exclude>
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/OauthHelper.class</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>check-coverage</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <excludes combine.children="append">
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/rest/**</exclude>
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/CtrlXDriver.class</exclude>
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/connection/CtrlXConnection*.class</exclude>
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/discovery/CtrlXPlcDiscoverer*.class</exclude>
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/ApiClientFactory.class</exclude>
-                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/OauthHelper.class</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.ctrlx.CtrlXDriver</Export-Service>
-            <Import-Package>
+                            <goal>kar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <excludes combine.children="append">
+                                <!-- OpenAPI-generated REST client for the ctrlX Data Layer REST API. -->
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/rest/**</exclude>
+                                <!-- I/O-heavy driver-shell classes. -->
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/CtrlXDriver.class</exclude>
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/connection/CtrlXConnection*.class</exclude>
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/discovery/CtrlXPlcDiscoverer*.class</exclude>
+                                <!-- REST + OAuth glue; requires live HTTPS service. -->
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/ApiClientFactory.class</exclude>
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/OauthHelper.class</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>check-coverage</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <excludes combine.children="append">
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/rest/**</exclude>
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/CtrlXDriver.class</exclude>
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/connection/CtrlXConnection*.class</exclude>
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/discovery/CtrlXPlcDiscoverer*.class</exclude>
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/ApiClientFactory.class</exclude>
+                                <exclude>org/apache/plc4x/java/ctrlx/readwrite/utils/OauthHelper.class</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
+                        <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.ctrlx.CtrlXDriver</Export-Service>
+                        <Import-Package>
               *
             </Import-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-config</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-drivers</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-values</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>jakarta.annotation</groupId>
-      <artifactId>jakarta.annotation-api</artifactId>
-      <version>3.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpmime</artifactId>
-      <version>4.5.14</version>
-    </dependency>
-    <dependency>
-      <groupId>tools.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>tools.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.hrakaroo</groupId>
-      <artifactId>glob</artifactId>
-      <version>0.9.0</version>
-    </dependency>
-
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-    </dependency>
-  </dependencies>
-
-  <dependencyManagement>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
-      <dependency>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-stdlib</artifactId>
-        <version>2.4.0</version>
-      </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-config</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-drivers</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-values</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hrakaroo</groupId>
+            <artifactId>glob</artifactId>
+            <version>0.9.0</version>
+        </dependency>
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
     </dependencies>
-  </dependencyManagement>
-
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib</artifactId>
+                <version>2.4.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
+

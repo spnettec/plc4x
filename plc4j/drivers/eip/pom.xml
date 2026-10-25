@@ -18,56 +18,51 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-drivers</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-driver-eip</artifactId>
-
-  <name>PLC4J: Driver: EtherNet/IP</name>
-  <description>Implementation of a PLC4X driver able to speak using the EthernetIP Protocol with CIP Encapsulation.
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j-drivers</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-driver-eip</artifactId>
+    <name>PLC4J: Driver: EtherNet/IP</name>
+    <description>Implementation of a PLC4X driver able to speak using the EthernetIP Protocol with CIP Encapsulation.
   </description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.karaf.tooling</groupId>
-        <artifactId>karaf-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-feature-xml</id>
-            <phase>compile</phase>
-            <goals>
-              <!-- Generate the feature.xml -->
-              <goal>features-generate-descriptor</goal>
-            </goals>
-            <configuration>
-              <enableGeneration>true</enableGeneration>
-              <aggregateFeatures>true</aggregateFeatures>
-            </configuration>
-          </execution>
-          <execution>
-            <id>build-kar</id>
-            <phase>package</phase>
-            <goals>
-              <!--
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-feature-xml</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <!-- Generate the feature.xml -->
+                            <goal>features-generate-descriptor</goal>
+                        </goals>
+                        <configuration>
+                            <enableGeneration>true</enableGeneration>
+                            <aggregateFeatures>true</aggregateFeatures>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-kar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <!--
                 Build a kar archive (Jar containing the feature.xml
                 as well as the module content and it's dependencies.
               -->
-              <goal>kar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!--
+                            <goal>kar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
         Coverage overrides for the EIP driver module.
 
         Exclusions:
@@ -84,254 +79,246 @@
         remaining surface is the tag + tag handler — small and fully unit
         testable, so we match the project-wide 0.80 threshold.
       -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <!--
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <!--
             Merge the unit-test (jacoco.exec) and integration-test
             (jacoco-it.exec) coverage files into a single dataset so the
             coverage check below sees the full picture. Without this the
             check only loads jacoco.exec and the IT-only paths
             (EipDockerIT) don't count.
           -->
-          <execution>
-            <id>merge-exec-files</id>
-            <!--
+                    <execution>
+                        <id>merge-exec-files</id>
+                        <!--
               Run the merge in after:integration-test so it completes before
               the inherited check-coverage execution (which fires in verify).
               Both running in 'verify' would tie ordering to the inherited
               declaration sequence, and the parent's check-coverage would
               fire first.
             -->
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>merge</goal>
-            </goals>
-            <configuration>
-              <destFile>${project.build.directory}/jacoco-merged.exec</destFile>
-              <fileSets>
-                <fileSet>
-                  <directory>${project.build.directory}</directory>
-                  <includes>
-                    <include>jacoco.exec</include>
-                    <include>jacoco-it.exec</include>
-                  </includes>
-                </fileSet>
-              </fileSets>
-            </configuration>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
-              <excludes combine.children="append">
-                <!-- I/O-heavy driver-shell classes; exercised by EipDockerIT
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-merged.exec</destFile>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>jacoco.exec</include>
+                                        <include>jacoco-it.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
+                            <excludes combine.children="append">
+                                <!-- I/O-heavy driver-shell classes; exercised by EipDockerIT
                      against cpppo when Docker is available, not by unit tests. -->
-                <exclude>org/apache/plc4x/java/eip/base/EipTcpConnection.class</exclude>
-                <exclude>org/apache/plc4x/java/eip/base/EipTcpMessageCodec.class</exclude>
-                <exclude>org/apache/plc4x/java/eip/base/EIPDriver.class</exclude>
-                <!-- Opens raw UDP sockets across every NIC; not unit-testable. -->
-                <exclude>**/discovery/EipPlcDiscoverer*.class</exclude>
-                <!-- Configuration POJOs (only the URL params that appear in a
+                                <exclude>org/apache/plc4x/java/eip/base/EipTcpConnection.class</exclude>
+                                <exclude>org/apache/plc4x/java/eip/base/EipTcpMessageCodec.class</exclude>
+                                <exclude>org/apache/plc4x/java/eip/base/EIPDriver.class</exclude>
+                                <!-- Opens raw UDP sockets across every NIC; not unit-testable. -->
+                                <exclude>**/discovery/EipPlcDiscoverer*.class</exclude>
+                                <!-- Configuration POJOs (only the URL params that appear in a
                      test get exercised; unused getters/setters skew coverage). -->
-                <exclude>**/configuration/*.class</exclude>
-                <!-- Thin alias over EIPDriver. -->
-                <exclude>**/logix/LogixDriver.class</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>check-coverage</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
-              <excludes combine.children="append">
-                <!-- I/O-heavy driver-shell classes; see report execution above. -->
-                <exclude>org/apache/plc4x/java/eip/base/EipTcpConnection.class</exclude>
-                <exclude>org/apache/plc4x/java/eip/base/EipTcpMessageCodec.class</exclude>
-                <exclude>org/apache/plc4x/java/eip/base/EIPDriver.class</exclude>
-                <exclude>**/discovery/EipPlcDiscoverer*.class</exclude>
-                <exclude>**/configuration/*.class</exclude>
-                <exclude>**/logix/LogixDriver.class</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.eip.base.EIPDriver
+                                <exclude>**/configuration/*.class</exclude>
+                                <!-- Thin alias over EIPDriver. -->
+                                <exclude>**/logix/LogixDriver.class</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>check-coverage</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
+                            <excludes combine.children="append">
+                                <!-- I/O-heavy driver-shell classes; see report execution above. -->
+                                <exclude>org/apache/plc4x/java/eip/base/EipTcpConnection.class</exclude>
+                                <exclude>org/apache/plc4x/java/eip/base/EipTcpMessageCodec.class</exclude>
+                                <exclude>org/apache/plc4x/java/eip/base/EIPDriver.class</exclude>
+                                <exclude>**/discovery/EipPlcDiscoverer*.class</exclude>
+                                <exclude>**/configuration/*.class</exclude>
+                                <exclude>**/logix/LogixDriver.class</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
+                        <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.eip.base.EIPDriver
             </Export-Service>
-            <Import-Package>
+                        <Import-Package>
               com.fasterxml.jackson.annotation;resolution:=optional,
               *
             </Import-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-buffers-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-buffers-byte</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-config</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-fields</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-utils</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-values</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-drivers</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-subscription-emulation</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-tcp</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-audit-log-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-eip</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Testcontainers-based integration tests against a cpppo EIP simulator. -->
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers-junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <profiles>
-    <profile>
-      <id>update-generated-code</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.plc4x.plugins</groupId>
-            <artifactId>plc4x-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>test</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>generate-driver</goal>
-                </goals>
-                <configuration>
-                  <protocolName>eip</protocolName>
-                  <languageName>java</languageName>
-                  <outputFlavor>read-write</outputFlavor>
-                  <outputDir>src/main/generated</outputDir>
+                    </instructions>
                 </configuration>
-              </execution>
-            </executions>
-          </plugin>
+            </plugin>
         </plugins>
-      </build>
-
-      <dependencies>
+    </build>
+    <dependencies>
         <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>1.0.0.B-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
         </dependency>
-
         <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-protocols-eip</artifactId>
-          <version>1.0.0.B-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-buffers-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
         </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
-
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-buffers-byte</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-config</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-fields</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-utils</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-values</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-drivers</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-utils-subscription-emulation</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-tcp</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-utils-audit-log-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-utils-test-utils</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4x-protocols-eip</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <!-- Testcontainers-based integration tests against a cpppo EIP simulator. -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <profiles>
+        <profile>
+            <id>update-generated-code</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.plc4x.plugins</groupId>
+                        <artifactId>plc4x-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>test</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate-driver</goal>
+                                </goals>
+                                <configuration>
+                                    <protocolName>eip</protocolName>
+                                    <languageName>java</languageName>
+                                    <outputFlavor>read-write</outputFlavor>
+                                    <outputDir>src/main/generated</outputDir>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.plc4x</groupId>
+                    <artifactId>plc4x-code-generation-language-java</artifactId>
+                    <version>1.0.0.B-SNAPSHOT</version>
+                    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.plc4x</groupId>
+                    <artifactId>plc4x-protocols-eip</artifactId>
+                    <version>1.0.0.B-SNAPSHOT</version>
+                    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
+

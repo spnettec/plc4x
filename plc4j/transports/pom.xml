@@ -18,63 +18,59 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-transports</artifactId>
-  <packaging>pom</packaging>
-
-  <name>PLC4J: Transports</name>
-  <description>Collection of base-types for implementing different types of drivers.</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <modules>
-    <module>api</module>
-    <module>can</module>
-    <module>can-socketcan</module>
-    <module>can-virtualcan</module>
-    <module>cotp</module>
-    <module>pcap-replay</module>
-    <module>raw-socket</module>
-    <module>serial</module>
-    <module>test</module>
-    <module>tls</module>
-    <module>tcp</module>
-    <module>udp</module>
-  </modules>
-  <dependencies>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-classes-epoll</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-classes-kqueue</artifactId>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <SPI-Provider>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-transports</artifactId>
+    <packaging>pom</packaging>
+    <name>PLC4J: Transports</name>
+    <description>Collection of base-types for implementing different types of drivers.</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <modules>
+        <module>api</module>
+        <module>can</module>
+        <module>can-socketcan</module>
+        <module>can-virtualcan</module>
+        <module>cotp</module>
+        <module>pcap-replay</module>
+        <module>raw-socket</module>
+        <module>serial</module>
+        <module>test</module>
+        <module>tls</module>
+        <module>tcp</module>
+        <module>udp</module>
+    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport-classes-epoll</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport-classes-kqueue</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <SPI-Provider>
               *
             </SPI-Provider>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
+

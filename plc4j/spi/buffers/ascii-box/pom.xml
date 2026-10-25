@@ -18,28 +18,23 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-spi-buffers</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-spi-buffers-ascii-box</artifactId>
-
-  <name>PLC4J: SPI: Buffers: ASCII-box</name>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-buffers-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
-
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j-spi-buffers</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-spi-buffers-ascii-box</artifactId>
+    <name>PLC4J: SPI: Buffers: ASCII-box</name>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-buffers-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
+

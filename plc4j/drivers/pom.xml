@@ -18,75 +18,69 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-drivers</artifactId>
-  <packaging>pom</packaging>
-
-  <name>PLC4J: Drivers</name>
-  <description>Wrapper project for all PLC4J driver implementations.</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <modules>
-    <module>ab-eth</module>
-    <module>ads</module>
-    <module>bacnet</module>
-    <module>c-bus</module>
-    <module>can</module>
-    <module>canopen</module>
-    <module>ctrlx</module>
-    <module>eip</module>
-    <module>firmata</module>
-    <module>iec-60870</module>
-    <module>knxnetip</module>
-    <module>mock</module>
-    <module>open-protocol</module>
-    <module>modbus</module>
-    <module>opcua</module>
-    <module>plc4x</module>
-    <module>profinet</module>
-    <module>profinet-ng</module>
-    <module>s7</module>
-    <module>simulated</module>
-    <module>slmp</module>
-    <module>umas</module>
-    <module>all</module>
-  </modules>
-
-  <build>
-  <plugins>
-    <plugin>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>maven-bundle-plugin</artifactId>
-      <configuration>
-        <instructions>
-          <SPI-Provider>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-drivers</artifactId>
+    <packaging>pom</packaging>
+    <name>PLC4J: Drivers</name>
+    <description>Wrapper project for all PLC4J driver implementations.</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <modules>
+        <module>ab-eth</module>
+        <module>ads</module>
+        <module>bacnet</module>
+        <module>c-bus</module>
+        <module>can</module>
+        <module>canopen</module>
+        <module>ctrlx</module>
+        <module>eip</module>
+        <module>firmata</module>
+        <module>iec-60870</module>
+        <module>knxnetip</module>
+        <module>mock</module>
+        <module>open-protocol</module>
+        <module>modbus</module>
+        <module>opcua</module>
+        <module>plc4x</module>
+        <module>profinet</module>
+        <module>profinet-ng</module>
+        <module>s7</module>
+        <module>simulated</module>
+        <module>slmp</module>
+        <module>umas</module>
+        <module>all</module>
+    </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <SPI-Provider>
             *
           </SPI-Provider>
-        </instructions>
-      </configuration>
-    </plugin>
-  </plugins>
-  </build>
-  <!--
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <!--
     Every driver bundle declares Bundle-Activator: org.apache.plc4x.java.osgi.DriverActivator. Compile
     scope, as the Karaf feature generator only picks up those.
   -->
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-osgi</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-osgi</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
+

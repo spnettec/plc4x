@@ -18,86 +18,81 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-drivers</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-driver-all</artifactId>
-  <packaging>pom</packaging>
-
-  <name>PLC4J: All Drivers</name>
-  <description>Meta package to include all standard drivers</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>groovy-maven-plugin</artifactId>
-        <executions>
-          <!-- Generate the default config tables for the driver documentation -->
-          <execution>
-            <id>generate-config-table-documentation</id>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <configuration>
-              <source>${pom.basedir}/src/site/groovy/generate-config-documentation.groovy</source>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-api</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-spi-config</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-artifact</artifactId>
-            <version>${maven-artifact.version}</version>
-          </dependency>
-          <!--
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j-drivers</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-driver-all</artifactId>
+    <packaging>pom</packaging>
+    <name>PLC4J: All Drivers</name>
+    <description>Meta package to include all standard drivers</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <executions>
+                    <!-- Generate the default config tables for the driver documentation -->
+                    <execution>
+                        <id>generate-config-table-documentation</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>${pom.basedir}/src/site/groovy/generate-config-documentation.groovy</source>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.plc4x</groupId>
+                        <artifactId>plc4j-api</artifactId>
+                        <version>1.0.0.B-SNAPSHOT</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.plc4x</groupId>
+                        <artifactId>plc4j-spi-config</artifactId>
+                        <version>1.0.0.B-SNAPSHOT</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven</groupId>
+                        <artifactId>maven-artifact</artifactId>
+                        <version>${maven-artifact.version}</version>
+                    </dependency>
+                    <!--
             Drivers that are not deployed (they are not marked as fully supported
             for Java in website/asciidoc/modules/users/pages/protocols/index.adoc)
             are not dependencies of this meta-package, as the released artifact
             would then reference artifacts nobody can resolve. They are needed
             here so their configuration tables keep being generated.
           -->
-          <dependency>
-            <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-driver-bacnet</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-driver-c-bus</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-driver-open-protocol</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-driver-profinet-ng</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
-          </dependency>
-          <!--
+                    <dependency>
+                        <groupId>org.apache.plc4x</groupId>
+                        <artifactId>plc4j-driver-bacnet</artifactId>
+                        <version>1.0.0.B-SNAPSHOT</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.plc4x</groupId>
+                        <artifactId>plc4j-driver-c-bus</artifactId>
+                        <version>1.0.0.B-SNAPSHOT</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.plc4x</groupId>
+                        <artifactId>plc4j-driver-open-protocol</artifactId>
+                        <version>1.0.0.B-SNAPSHOT</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.plc4x</groupId>
+                        <artifactId>plc4j-driver-profinet-ng</artifactId>
+                        <version>1.0.0.B-SNAPSHOT</version>
+                    </dependency>
+                    <!--
             The transport tables are generated from whatever transports the ServiceLoader finds
             here. Every other transport arrives transitively through one of the drivers above;
             these three reach no deployed driver at compile scope (the PCAP replay transport is a
@@ -105,124 +100,123 @@
             only), so without naming them their pages would silently stop being generated - and
             the CAN drivers' own tables would keep showing those transports with no options.
           -->
-          <dependency>
+                    <dependency>
+                        <groupId>org.apache.plc4x</groupId>
+                        <artifactId>plc4j-transports-pcap-replay</artifactId>
+                        <version>1.0.0.B-SNAPSHOT</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.plc4x</groupId>
+                        <artifactId>plc4j-transports-can-socketcan</artifactId>
+                        <version>1.0.0.B-SNAPSHOT</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.plc4x</groupId>
+                        <artifactId>plc4j-transports-can-virtualcan</artifactId>
+                        <version>1.0.0.B-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- Include all non-mock drivers to produce a meta-package -->
+        <dependency>
             <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-transports-pcap-replay</artifactId>
+            <artifactId>plc4j-driver-ab-eth</artifactId>
             <version>1.0.0.B-SNAPSHOT</version>
-          </dependency>
-          <dependency>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-transports-can-socketcan</artifactId>
+            <artifactId>plc4j-driver-ads</artifactId>
             <version>1.0.0.B-SNAPSHOT</version>
-          </dependency>
-          <dependency>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.plc4x</groupId>
-            <artifactId>plc4j-transports-can-virtualcan</artifactId>
+            <artifactId>plc4j-driver-can</artifactId>
             <version>1.0.0.B-SNAPSHOT</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-    </plugins>
-  </build>
-
-  <dependencies>
-    <!-- Include all non-mock drivers to produce a meta-package -->
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ads</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-can</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-canopen</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-eip</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-firmata</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-iec-60870</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-modbus</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-opcua</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-plc4x</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-s7</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-simulated</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-slmp</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-umas</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-serial</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-canopen</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-eip</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-firmata</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-iec-60870</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-knxnetip</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-modbus</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-opcua</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-plc4x</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-s7</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-simulated</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-slmp</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-umas</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-serial</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
 </project>
+

@@ -18,33 +18,28 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4x-code-generation</artifactId>
-  <packaging>pom</packaging>
-
-  <name>Code-Generation</name>
-  <description>Home of the PLC4X code-generation framework.</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <modules>
-    <module>language-base-freemarker</module>
-    <module>protocol-base-mspec</module>
-    <module>protocol-test</module>
-    <!-- YOFC: language is a default module so every -Pwith-java build installs
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4x-parent</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4x-code-generation</artifactId>
+    <packaging>pom</packaging>
+    <name>Code-Generation</name>
+    <description>Home of the PLC4X code-generation framework.</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <modules>
+        <module>language-base-freemarker</module>
+        <module>protocol-base-mspec</module>
+        <module>protocol-test</module>
+        <!-- YOFC: language is a default module so every -Pwith-java build installs
          plc4x-code-generation-language-java into ~/.m2 - the drivers' provided
          dependency (update-generated-code profile) then resolves without a
          manual pre-build. Upstream keeps it behind the profile. -->
-    <module>language</module>
-  </modules>
-
+        <module>language</module>
+    </modules>
 </project>
+

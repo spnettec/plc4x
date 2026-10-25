@@ -18,61 +18,56 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4c</artifactId>
-  <packaging>pom</packaging>
-
-  <name>PLC4C</name>
-  <description>Implementation of the protocol adapters for usage as C library.</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-    <unity.version>2.5.2</unity.version>
-    <!-- Tell Sonar where to find the sources -->
-    <!--sonar.sources></sonar.sources-->
-    <sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
-    <sonar.cfamily.build-wrapper-output>${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-output>
-    <option.with-proxies>OFF</option.with-proxies>
-  </properties>
-
-  <build>
-    <sources>
-      <source>
-        <scope>main</scope>
-        <directory>${project.basedir}</directory>
-      </source>
-    </sources>
-    <plugins>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
-          <!--
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4x-parent</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4c</artifactId>
+    <packaging>pom</packaging>
+    <name>PLC4C</name>
+    <description>Implementation of the protocol adapters for usage as C library.</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+        <unity.version>2.5.2</unity.version>
+        <!-- Tell Sonar where to find the sources -->
+        <!--sonar.sources></sonar.sources-->
+        <sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
+        <sonar.cfamily.build-wrapper-output>${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-output>
+        <option.with-proxies>OFF</option.with-proxies>
+    </properties>
+    <build>
+        <sources>
+            <source>
+                <scope>main</scope>
+                <directory>${project.basedir}</directory>
+            </source>
+        </sources>
+        <plugins>
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <executions>
+                    <!--
             Get additional stuff we need for the build.
           -->
-          <execution>
-            <id>get-unity</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://github.com/ThrowTheSwitch/Unity/archive/v${unity.version}.zip</url>
-              <unpack>true</unpack>
-              <outputDirectory>${project.build.directory}/dependency</outputDirectory>
-            </configuration>
-          </execution>
-          <!--
+                    <execution>
+                        <id>get-unity</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/ThrowTheSwitch/Unity/archive/v${unity.version}.zip</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!--
             Get ClangFormat.cmake
           -->
-          <!--execution>
+                    <!--execution>
             <id>get-clang-format</id>
             <phase>generate-sources</phase>
             <goals>
@@ -84,15 +79,14 @@
               <outputDirectory>${project.build.directory}/dependency/clang-format</outputDirectory>
             </configuration>
           </execution-->
-        </executions>
-      </plugin>
-
-      <!-- Transform the ParserSerializer tests into c code -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>xml-maven-plugin</artifactId>
-        <executions>
-          <!--execution>
+                </executions>
+            </plugin>
+            <!-- Transform the ParserSerializer tests into c code -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xml-maven-plugin</artifactId>
+                <executions>
+                    <!--execution>
             <id>generate-modbus-tests</id>
             <phase>process-resources</phase>
             <goals>
@@ -114,70 +108,69 @@
               </transformationSets>
             </configuration>
           </execution-->
-          <execution>
-            <id>generate-plc4x-tests</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>transform</goal>
-            </goals>
-            <configuration>
-              <transformationSets>
-                <transformationSet>
-                  <dir>../protocols/plc4x/src/test/resources/protocols/plc4x</dir>
-                  <includes>ParserSerializerTestsuite.xml</includes>
-                  <stylesheet>build-utils/parser-serializer-testcase-generator.xsl</stylesheet>
-                  <outputDir>generated-sources/plc4x/test</outputDir>
-                  <fileMappers>
-                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                      <targetExtension>.c</targetExtension>
-                    </fileMapper>
-                  </fileMappers>
-                </transformationSet>
-              </transformationSets>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-s7-tests</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>transform</goal>
-            </goals>
-            <configuration>
-              <transformationSets>
-                <transformationSet>
-                  <dir>../protocols/s7/src/test/resources/protocols/s7</dir>
-                  <includes>ParserSerializerTestsuite.xml</includes>
-                  <stylesheet>build-utils/parser-serializer-testcase-generator.xsl</stylesheet>
-                  <outputDir>generated-sources/s7/test</outputDir>
-                  <fileMappers>
-                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                      <targetExtension>.c</targetExtension>
-                    </fileMapper>
-                  </fileMappers>
-                </transformationSet>
-              </transformationSets>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>Saxon-HE</artifactId>
-            <version>${saxon.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-      <!--
+                    <execution>
+                        <id>generate-plc4x-tests</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                        <configuration>
+                            <transformationSets>
+                                <transformationSet>
+                                    <dir>../protocols/plc4x/src/test/resources/protocols/plc4x</dir>
+                                    <includes>ParserSerializerTestsuite.xml</includes>
+                                    <stylesheet>build-utils/parser-serializer-testcase-generator.xsl</stylesheet>
+                                    <outputDir>generated-sources/plc4x/test</outputDir>
+                                    <fileMappers>
+                                        <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                                            <targetExtension>.c</targetExtension>
+                                        </fileMapper>
+                                    </fileMappers>
+                                </transformationSet>
+                            </transformationSets>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-s7-tests</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                        <configuration>
+                            <transformationSets>
+                                <transformationSet>
+                                    <dir>../protocols/s7/src/test/resources/protocols/s7</dir>
+                                    <includes>ParserSerializerTestsuite.xml</includes>
+                                    <stylesheet>build-utils/parser-serializer-testcase-generator.xsl</stylesheet>
+                                    <outputDir>generated-sources/s7/test</outputDir>
+                                    <fileMappers>
+                                        <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                                            <targetExtension>.c</targetExtension>
+                                        </fileMapper>
+                                    </fileMappers>
+                                </transformationSet>
+                            </transformationSets>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.saxon</groupId>
+                        <artifactId>Saxon-HE</artifactId>
+                        <version>${saxon.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!--
         Do the actual build.
       -->
-      <plugin>
-        <groupId>com.googlecode.cmake-maven-project</groupId>
-        <artifactId>cmake-maven-plugin</artifactId>
-        <executions>
-          <!-- TODO: Commented out for now as when running in jenkins for code analysis, the second run would overwrite the results of the first -->
-          <!-- Generate the configuration for the main compilation -->
-          <!--execution>
+            <plugin>
+                <groupId>com.googlecode.cmake-maven-project</groupId>
+                <artifactId>cmake-maven-plugin</artifactId>
+                <executions>
+                    <!-- TODO: Commented out for now as when running in jenkins for code analysis, the second run would overwrite the results of the first -->
+                    <!-- Generate the configuration for the main compilation -->
+                    <!--execution>
             <id>cmake-generate-compile</id>
             <phase>compile</phase>
             <goals>
@@ -192,247 +185,242 @@
               <goal>compile</goal>
             </goals>
           </execution-->
-          <!-- Generate the configuration for the test compilation -->
-          <execution>
-            <id>cmake-generate-test-compile</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <configuration>
-              <options>
-                <option>-DUNITY_VERSION:STRING=${unity.version}</option>
-                <option>-DBUILD_PHASE=test-compile</option>
-              </options>
-            </configuration>
-          </execution>
-          <!-- Compile the test code -->
-          <execution>
-            <id>cmake-execute-test-compile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <!-- Execute the tests -->
-          <execution>
-            <id>cmake-run-tests</id>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <buildDirectory>${project.build.directory}/build</buildDirectory>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <!--
+                    <!-- Generate the configuration for the test compilation -->
+                    <execution>
+                        <id>cmake-generate-test-compile</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <options>
+                                <option>-DUNITY_VERSION:STRING=${unity.version}</option>
+                                <option>-DBUILD_PHASE=test-compile</option>
+                            </options>
+                        </configuration>
+                    </execution>
+                    <!-- Compile the test code -->
+                    <execution>
+                        <id>cmake-execute-test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <!-- Execute the tests -->
+                    <execution>
+                        <id>cmake-run-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <buildDirectory>${project.build.directory}/build</buildDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--
             Actually the path to the CMakeList.txt file which then again
             tells to tool where to find the sources.
           -->
-          <sourcePath>${project.basedir}</sourcePath>
-          <!--
+                    <sourcePath>${project.basedir}</sourcePath>
+                    <!--
             Path to where the build configuration is generated
             (This directory is then used in the compile step to actually perform the build)
           -->
-          <targetPath>${project.build.directory}/build</targetPath>
-          <!--
+                    <targetPath>${project.build.directory}/build</targetPath>
+                    <!--
             Name of the generator the compile step will be executing.
           -->
-          <generator>${cmake.generator}</generator>
-          <!-- The directory where the "generate" step generated the build configuration -->
-          <projectDirectory>${project.build.directory}/build</projectDirectory>
-        </configuration>
-      </plugin>
-
-      <!-- Create a source bundle, so we can use this in the extras build -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>package-sources</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>build-utils/source-bundle-descriptor.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <!--
+                    <generator>${cmake.generator}</generator>
+                    <!-- The directory where the "generate" step generated the build configuration -->
+                    <projectDirectory>${project.build.directory}/build</projectDirectory>
+                </configuration>
+            </plugin>
+            <!-- Create a source bundle, so we can use this in the extras build -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>package-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>build-utils/source-bundle-descriptor.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <!--
       Developers working in plc4c will probably use an IDE like CLion to edit just this
       Part of the project. These IDEs generate some work-directories we need to exclude.
     -->
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <configuration>
-            <inputExcludes combine.children="append">
-              <inputExclude>cmake-*/**</inputExclude>
-              <inputExclude>.cmake/**</inputExclude>
-            </inputExcludes>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>update-generated-code</id>
-      <build>
-        <plugins>
-          <!--
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.rat</groupId>
+                    <artifactId>apache-rat-plugin</artifactId>
+                    <configuration>
+                        <inputExcludes combine.children="append">
+                            <inputExclude>cmake-*/**</inputExclude>
+                            <inputExclude>.cmake/**</inputExclude>
+                        </inputExcludes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <profiles>
+        <profile>
+            <id>update-generated-code</id>
+            <build>
+                <plugins>
+                    <!--
             Generate the driver code.
           -->
-          <plugin>
-            <groupId>org.apache.plc4x.plugins</groupId>
-            <artifactId>plc4x-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>generate-driver-modbus</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>generate-driver</goal>
-                </goals>
-                <configuration>
-                  <protocolName>modbus</protocolName>
-                  <languageName>c</languageName>
-                  <outputFlavor>read-write</outputFlavor>
-                  <outputDir>${project.basedir}/generated-sources</outputDir>
-                </configuration>
-              </execution>
-              <execution>
-                <id>generate-driver-plc4x</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>generate-driver</goal>
-                </goals>
-                <configuration>
-                  <protocolName>plc4x</protocolName>
-                  <protocolVersion>0</protocolVersion>
-                  <languageName>c</languageName>
-                  <outputFlavor>read-write</outputFlavor>
-                  <outputDir>${project.basedir}/generated-sources</outputDir>
-                </configuration>
-              </execution>
-              <execution>
-                <id>generate-driver-s7</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>generate-driver</goal>
-                </goals>
-                <configuration>
-                  <protocolName>s7</protocolName>
-                  <languageName>c</languageName>
-                  <outputFlavor>read-write</outputFlavor>
-                  <outputDir>${project.basedir}/generated-sources</outputDir>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-c</artifactId>
-          <version>1.0.0.B-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-protocols-modbus</artifactId>
-          <version>1.0.0.B-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-protocols-plc4x</artifactId>
-          <version>1.0.0.B-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-protocols-s7</artifactId>
-          <version>1.0.0.B-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <!-- When running on jenkins, download the sonar build-wrapper, so we can do a code analysis -->
-    <profile>
-      <id>jenkins-build</id>
-      <!-- This is needed by the groovy hack script -->
-      <properties>
-        <cmake.root>${project.build.directory}/dependency/cmake/bin</cmake.root>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.googlecode.maven-download-plugin</groupId>
-            <artifactId>download-maven-plugin</artifactId>
-            <executions>
-              <!-- Get the build-wrapper from our sonarcloud server -->
-              <execution>
-                <id>get-build-wrapper</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>wget</goal>
-                </goals>
-                <configuration>
-                  <skipCache>true</skipCache>
-                  <url>https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip</url>
-                  <unpack>true</unpack>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                  <skipCache>true</skipCache>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.gmaven</groupId>
-            <artifactId>groovy-maven-plugin</artifactId>
-            <executions>
-              <!-- rename the cmake binary and generate a script that adds the sonar build-wrapper -->
-              <execution>
-                <id>modify-cmake</id>
-                <phase>process-test-sources</phase>
-                <goals>
-                  <goal>execute</goal>
-                </goals>
-                <configuration>
-                  <source>${project.basedir}/SonarcloudBuildWrapperHack.groovy</source>
-                </configuration>
-              </execution>
-            </executions>
+                    <plugin>
+                        <groupId>org.apache.plc4x.plugins</groupId>
+                        <artifactId>plc4x-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate-driver-modbus</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate-driver</goal>
+                                </goals>
+                                <configuration>
+                                    <protocolName>modbus</protocolName>
+                                    <languageName>c</languageName>
+                                    <outputFlavor>read-write</outputFlavor>
+                                    <outputDir>${project.basedir}/generated-sources</outputDir>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>generate-driver-plc4x</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate-driver</goal>
+                                </goals>
+                                <configuration>
+                                    <protocolName>plc4x</protocolName>
+                                    <protocolVersion>0</protocolVersion>
+                                    <languageName>c</languageName>
+                                    <outputFlavor>read-write</outputFlavor>
+                                    <outputDir>${project.basedir}/generated-sources</outputDir>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>generate-driver-s7</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate-driver</goal>
+                                </goals>
+                                <configuration>
+                                    <protocolName>s7</protocolName>
+                                    <languageName>c</languageName>
+                                    <outputFlavor>read-write</outputFlavor>
+                                    <outputDir>${project.basedir}/generated-sources</outputDir>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
             <dependencies>
-              <dependency>
-                <groupId>org.apache.groovy</groupId>
-                <artifactId>groovy</artifactId>
-                <version>${groovy.version}</version>
-              </dependency>
+                <dependency>
+                    <groupId>org.apache.plc4x</groupId>
+                    <artifactId>plc4x-code-generation-language-c</artifactId>
+                    <version>1.0.0.B-SNAPSHOT</version>
+                    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.plc4x</groupId>
+                    <artifactId>plc4x-protocols-modbus</artifactId>
+                    <version>1.0.0.B-SNAPSHOT</version>
+                    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.plc4x</groupId>
+                    <artifactId>plc4x-protocols-plc4x</artifactId>
+                    <version>1.0.0.B-SNAPSHOT</version>
+                    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.plc4x</groupId>
+                    <artifactId>plc4x-protocols-s7</artifactId>
+                    <version>1.0.0.B-SNAPSHOT</version>
+                    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+                    <scope>provided</scope>
+                </dependency>
             </dependencies>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
+        </profile>
+        <!-- When running on jenkins, download the sonar build-wrapper, so we can do a code analysis -->
+        <profile>
+            <id>jenkins-build</id>
+            <!-- This is needed by the groovy hack script -->
+            <properties>
+                <cmake.root>${project.build.directory}/dependency/cmake/bin</cmake.root>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <executions>
+                            <!-- Get the build-wrapper from our sonarcloud server -->
+                            <execution>
+                                <id>get-build-wrapper</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <skipCache>true</skipCache>
+                                    <url>https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip</url>
+                                    <unpack>true</unpack>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <skipCache>true</skipCache>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.gmaven</groupId>
+                        <artifactId>groovy-maven-plugin</artifactId>
+                        <executions>
+                            <!-- rename the cmake binary and generate a script that adds the sonar build-wrapper -->
+                            <execution>
+                                <id>modify-cmake</id>
+                                <phase>process-test-sources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${project.basedir}/SonarcloudBuildWrapperHack.groovy</source>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.groovy</groupId>
+                                <artifactId>groovy</artifactId>
+                                <version>${groovy.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
+

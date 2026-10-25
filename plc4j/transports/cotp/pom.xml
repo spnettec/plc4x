@@ -18,155 +18,140 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-transports</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-transports-cotp</artifactId>
-
-  <name>PLC4J: Transports: COTP</name>
-  <description>COTP (Connection Oriented Transport Protocol) transport layer over TCP with TPKT framing</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-config</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-audit-log-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-
-    <!-- TCP Transport (COTP wraps TCP) -->
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-tcp</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-
-    <!-- Generated COTP protocol code dependencies -->
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-buffers-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-buffers-byte</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-fields</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-utils</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-
-    <!-- Holds the Bundle-Activator. Compile scope, as the Karaf feature generator only picks up those -->
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-osgi</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-
-    <!-- Test Dependencies -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-Activator>org.apache.plc4x.java.osgi.TransportActivator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>update-generated-code</id>
-      <build>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j-transports</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-transports-cotp</artifactId>
+    <name>PLC4J: Transports: COTP</name>
+    <description>COTP (Connection Oriented Transport Protocol) transport layer over TCP with TPKT framing</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-config</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-utils-audit-log-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <!-- TCP Transport (COTP wraps TCP) -->
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-tcp</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <!-- Generated COTP protocol code dependencies -->
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-buffers-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-buffers-byte</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-fields</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-utils</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!-- Holds the Bundle-Activator. Compile scope, as the Karaf feature generator only picks up those -->
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-osgi</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
         <plugins>
-          <plugin>
-            <groupId>org.apache.plc4x.plugins</groupId>
-            <artifactId>plc4x-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>generate-sources</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>generate-driver</goal>
-                </goals>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
-                  <protocolName>cotp</protocolName>
-                  <languageName>java</languageName>
-                  <outputFlavor>read-write</outputFlavor>
-                  <outputDir>src/main/generated</outputDir>
+                    <instructions>
+                        <Bundle-Activator>org.apache.plc4x.java.osgi.TransportActivator</Bundle-Activator>
+                    </instructions>
                 </configuration>
-              </execution>
-            </executions>
-          </plugin>
+            </plugin>
         </plugins>
-      </build>
-
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>1.0.0.B-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-protocols-cotp</artifactId>
-          <version>1.0.0.B-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
-
+    </build>
+    <profiles>
+        <profile>
+            <id>update-generated-code</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.plc4x.plugins</groupId>
+                        <artifactId>plc4x-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate-sources</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate-driver</goal>
+                                </goals>
+                                <configuration>
+                                    <protocolName>cotp</protocolName>
+                                    <languageName>java</languageName>
+                                    <outputFlavor>read-write</outputFlavor>
+                                    <outputDir>src/main/generated</outputDir>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.plc4x</groupId>
+                    <artifactId>plc4x-code-generation-language-java</artifactId>
+                    <version>1.0.0.B-SNAPSHOT</version>
+                    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.plc4x</groupId>
+                    <artifactId>plc4x-protocols-cotp</artifactId>
+                    <version>1.0.0.B-SNAPSHOT</version>
+                    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
+

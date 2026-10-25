@@ -18,56 +18,48 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-code-generation-language</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4x-code-generation-language-cs</artifactId>
-
-  <name>Code-Generation: Language: C#</name>
-  <description>Code generation template for generating C# code</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <dependencies>
-    <!-- We are using the Freemarker module to generate Java code -->
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-base-freemarker</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x.plugins</groupId>
-      <artifactId>plc4x-code-generation-types-base</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.freemarker</groupId>
-      <artifactId>freemarker</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-text</artifactId>
-    </dependency>
-  </dependencies>
-
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4x-code-generation-language</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4x-code-generation-language-cs</artifactId>
+    <name>Code-Generation: Language: C#</name>
+    <description>Code generation template for generating C# code</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- We are using the Freemarker module to generate Java code -->
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4x-code-generation-language-base-freemarker</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-code-generation-types-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+        </dependency>
+    </dependencies>
 </project>
+

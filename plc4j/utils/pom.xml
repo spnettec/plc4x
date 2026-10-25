@@ -18,32 +18,26 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-utils</artifactId>
-  <packaging>pom</packaging>
-
-  <name>PLC4J: Utils</name>
-  <description>A collection of utilities used internally.</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <modules>
-    <module>audit-log</module>
-    <module>subscription-emulation</module>
-    <module>raw-sockets</module>
-
-    <!-- Utilities for building tests -->
-    <module>test-generator</module>
-    <module>test-utils</module>
-  </modules>
-
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-utils</artifactId>
+    <packaging>pom</packaging>
+    <name>PLC4J: Utils</name>
+    <description>A collection of utilities used internally.</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <modules>
+        <module>audit-log</module>
+        <module>subscription-emulation</module>
+        <module>raw-sockets</module>
+        <!-- Utilities for building tests -->
+        <module>test-generator</module>
+        <module>test-utils</module>
+    </modules>
 </project>
+

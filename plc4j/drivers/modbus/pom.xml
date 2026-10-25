@@ -18,55 +18,50 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-drivers</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j-driver-modbus</artifactId>
-
-  <name>PLC4J: Driver: Modbus</name>
-  <description>Implementation of a PLC4X driver for the Modbus protocol.</description>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.karaf.tooling</groupId>
-        <artifactId>karaf-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-feature-xml</id>
-            <phase>compile</phase>
-            <goals>
-              <!-- Generate the feature.xml -->
-              <goal>features-generate-descriptor</goal>
-            </goals>
-            <configuration>
-              <enableGeneration>true</enableGeneration>
-              <aggregateFeatures>true</aggregateFeatures>
-            </configuration>
-          </execution>
-          <execution>
-            <id>build-kar</id>
-            <phase>package</phase>
-            <goals>
-              <!--
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j-drivers</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-driver-modbus</artifactId>
+    <name>PLC4J: Driver: Modbus</name>
+    <description>Implementation of a PLC4X driver for the Modbus protocol.</description>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-feature-xml</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <!-- Generate the feature.xml -->
+                            <goal>features-generate-descriptor</goal>
+                        </goals>
+                        <configuration>
+                            <enableGeneration>true</enableGeneration>
+                            <aggregateFeatures>true</aggregateFeatures>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-kar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <!--
                 Build a kar archive (Jar containing the feature.xml
                 as well as the module content and it's dependencies.
               -->
-              <goal>kar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!--
+                            <goal>kar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
         Coverage overrides for the Modbus driver module.
 
         Exclusion: ModbusPlcDiscoverer uses pcap4j raw sockets and ARP scanning,
@@ -80,248 +75,239 @@
         covered by the existing DriverTestsuite integration tests (ModbusDriverIT,
         ModbusTcpAllDatatypesIT, etc.) rather than unit tests.
       -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>check-coverage</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <haltOnFailure>true</haltOnFailure>
-              <excludes>
-                <exclude>META-INF/versions/**</exclude>
-                <exclude>module-info.class</exclude>
-                <exclude>**/*$*Listener.class</exclude>
-                <exclude>**/readwrite/*.class</exclude>
-                <exclude>**/with*.class</exclude>
-                <!-- Requires pcap4j native libraries and network access; not unit-testable -->
-                <exclude>**/discovery/ModbusPlcDiscoverer.class</exclude>
-              </excludes>
-              <rules>
-                <rule implementation="org.jacoco.maven.RuleConfiguration">
-                  <element>BUNDLE</element>
-                  <limits>
-                    <limit implementation="org.jacoco.report.check.Limit">
-                      <counter>INSTRUCTION</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.70</minimum>
-                    </limit>
-                    <limit implementation="org.jacoco.report.check.Limit">
-                      <counter>CLASS</counter>
-                      <value>MISSEDCOUNT</value>
-                      <maximum>0</maximum>
-                    </limit>
-                  </limits>
-                </rule>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.modbus.tcp.ModbusTcpDriver</Export-Service>
-            <Import-Package>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check-coverage</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <haltOnFailure>true</haltOnFailure>
+                            <excludes>
+                                <exclude>META-INF/versions/**</exclude>
+                                <exclude>module-info.class</exclude>
+                                <exclude>**/*$*Listener.class</exclude>
+                                <exclude>**/readwrite/*.class</exclude>
+                                <exclude>**/with*.class</exclude>
+                                <!-- Requires pcap4j native libraries and network access; not unit-testable -->
+                                <exclude>**/discovery/ModbusPlcDiscoverer.class</exclude>
+                            </excludes>
+                            <rules>
+                                <rule implementation="org.jacoco.maven.RuleConfiguration">
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit implementation="org.jacoco.report.check.Limit">
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.70</minimum>
+                                        </limit>
+                                        <limit implementation="org.jacoco.report.check.Limit">
+                                            <counter>CLASS</counter>
+                                            <value>MISSEDCOUNT</value>
+                                            <maximum>0</maximum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
+                        <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.modbus.tcp.ModbusTcpDriver</Export-Service>
+                        <Import-Package>
               *
             </Import-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-buffers-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-buffers-byte</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-config</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-fields</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-utils</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-values</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi-drivers</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-subscription-emulation</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-audit-log-api</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-raw-sockets</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-serial</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-tcp</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-udp</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transports-tls</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-    </dependency>
-
-    <!-- Needed for TLS -->
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bctls-jdk18on</artifactId>
-    </dependency>
-
-    <!-- For the discovery via ARP scan -->
-    <dependency>
-      <groupId>org.pcap4j</groupId>
-      <artifactId>pcap4j-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-
-    <!-- Core Testcontainers -->
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers-junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.docker-java</groupId>
-      <artifactId>docker-java-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>1.0.0.B-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <profiles>
-    <profile>
-      <id>update-generated-code</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.plc4x.plugins</groupId>
-            <artifactId>plc4x-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>generate-driver</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>generate-driver</goal>
-                </goals>
-                <configuration>
-                  <protocolName>modbus</protocolName>
-                  <languageName>java</languageName>
-                  <outputFlavor>read-write</outputFlavor>
-                  <outputDir>src/main/generated</outputDir>
+                    </instructions>
                 </configuration>
-              </execution>
-            </executions>
-          </plugin>
+            </plugin>
         </plugins>
-      </build>
-
-      <dependencies>
+    </build>
+    <dependencies>
         <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-java</artifactId>
-          <version>1.0.0.B-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
         </dependency>
-
         <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-protocols-modbus</artifactId>
-          <version>1.0.0.B-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-buffers-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
         </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
-
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-buffers-byte</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-config</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-fields</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-utils</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-values</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi-drivers</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-utils-subscription-emulation</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-utils-audit-log-api</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-utils-raw-sockets</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-serial</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-tcp</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-udp</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transports-tls</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+        </dependency>
+        <!-- Needed for TLS -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bctls-jdk18on</artifactId>
+        </dependency>
+        <!-- For the discovery via ARP scan -->
+        <dependency>
+            <groupId>org.pcap4j</groupId>
+            <artifactId>pcap4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <!-- Core Testcontainers -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.docker-java</groupId>
+            <artifactId>docker-java-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-utils-test-utils</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4x-protocols-modbus</artifactId>
+            <version>1.0.0.B-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <profiles>
+        <profile>
+            <id>update-generated-code</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.plc4x.plugins</groupId>
+                        <artifactId>plc4x-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate-driver</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate-driver</goal>
+                                </goals>
+                                <configuration>
+                                    <protocolName>modbus</protocolName>
+                                    <languageName>java</languageName>
+                                    <outputFlavor>read-write</outputFlavor>
+                                    <outputDir>src/main/generated</outputDir>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.plc4x</groupId>
+                    <artifactId>plc4x-code-generation-language-java</artifactId>
+                    <version>1.0.0.B-SNAPSHOT</version>
+                    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.plc4x</groupId>
+                    <artifactId>plc4x-protocols-modbus</artifactId>
+                    <version>1.0.0.B-SNAPSHOT</version>
+                    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
+

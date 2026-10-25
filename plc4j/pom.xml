@@ -18,41 +18,35 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-parent</artifactId>
-    <version>1.0.0.B-SNAPSHOT</version>
-  </parent>
-
-  <artifactId>plc4j</artifactId>
-  <packaging>pom</packaging>
-
-  <name>PLC4J</name>
-  <description>Implementation of the protocol adapters for usage as Java library.</description>
-
-  <modules>
-    <module>api</module>
-    <module>drivers</module>
-    <module>spi</module>
-    <module>tools</module>
-    <module>transports</module>
-    <module>utils</module>
-    <module>osgi</module>
-  </modules>
-
-  <properties>
-    <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <!--
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4x-parent</artifactId>
+        <version>1.0.0.B-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j</artifactId>
+    <packaging>pom</packaging>
+    <name>PLC4J</name>
+    <description>Implementation of the protocol adapters for usage as Java library.</description>
+    <modules>
+        <module>api</module>
+        <module>drivers</module>
+        <module>spi</module>
+        <module>tools</module>
+        <module>transports</module>
+        <module>utils</module>
+        <module>osgi</module>
+    </modules>
+    <properties>
+        <project.build.outputTimestamp>2026-09-03T20:46:19Z</project.build.outputTimestamp>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <!--
             Even if Maven transitively pulls in dependencies, relying on these can
             quite often cause hard to find problems. So it's a good practice to make
             sure everything directly required is also directly added as a dependency.
@@ -61,361 +55,349 @@
             what we need and only that and that runtime dependencies are correctly
             imported with runtime scope.
           -->
-          <execution>
-            <id>check-dependencies</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>analyze-only</goal>
-            </goals>
-            <configuration>
-              <skip>true</skip>
-              <failOnWarning>true</failOnWarning>
-              <ignoreNonCompile>true</ignoreNonCompile>
-              <ignoredDependencies>
-                <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
-                <ignoredDependency>org.junit.jupiter:junit-jupiter</ignoredDependency>
-                <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
-                <ignoredDependency>org.junit.jupiter:junit-jupiter-params</ignoredDependency>
-                <ignoredDependency>org.opentest4j:opentest4j</ignoredDependency>
-                <ignoredDependency>org.hamcrest:hamcrest</ignoredDependency>
-                <ignoredDependency>org.hamcrest:hamcrest-core</ignoredDependency>
-                <ignoredDependency>org.hamcrest:hamcrest-library</ignoredDependency>
-                <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
-                <ignoredDependency>org.mockito:mockito-junit-jupiter</ignoredDependency>
-                <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
-                <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
-                <ignoredDependency>org.apache.groovy:groovy-test-junit5</ignoredDependency>
-                <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
-              </ignoredDependencies>
-              <ignoredUnusedDeclaredDependencies>
-                <!-- Only referenced from the Bundle-Activator manifest header, which the analyzer can't see -->
-                <ignoredUnusedDeclaredDependency>org.apache.plc4x:plc4j-osgi</ignoredUnusedDeclaredDependency>
-              </ignoredUnusedDeclaredDependencies>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Compile any groovy code located in "src/test/groovy" -->
-      <plugin>
-        <groupId>org.codehaus.gmavenplus</groupId>
-        <artifactId>gmavenplus-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>compile-groovy-tests</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>addTestSources</goal>
-              <goal>compileTests</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!--
+                    <execution>
+                        <id>check-dependencies</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <skip>true</skip>
+                            <failOnWarning>true</failOnWarning>
+                            <ignoreNonCompile>true</ignoreNonCompile>
+                            <ignoredDependencies>
+                                <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
+                                <ignoredDependency>org.junit.jupiter:junit-jupiter</ignoredDependency>
+                                <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
+                                <ignoredDependency>org.junit.jupiter:junit-jupiter-params</ignoredDependency>
+                                <ignoredDependency>org.opentest4j:opentest4j</ignoredDependency>
+                                <ignoredDependency>org.hamcrest:hamcrest</ignoredDependency>
+                                <ignoredDependency>org.hamcrest:hamcrest-core</ignoredDependency>
+                                <ignoredDependency>org.hamcrest:hamcrest-library</ignoredDependency>
+                                <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
+                                <ignoredDependency>org.mockito:mockito-junit-jupiter</ignoredDependency>
+                                <ignoredDependency>org.slf4j:slf4j-api</ignoredDependency>
+                                <ignoredDependency>ch.qos.logback:logback-classic</ignoredDependency>
+                                <ignoredDependency>org.apache.groovy:groovy-test-junit5</ignoredDependency>
+                                <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
+                            </ignoredDependencies>
+                            <ignoredUnusedDeclaredDependencies>
+                                <!-- Only referenced from the Bundle-Activator manifest header, which the analyzer can't see -->
+                                <ignoredUnusedDeclaredDependency>org.apache.plc4x:plc4j-osgi</ignoredUnusedDeclaredDependency>
+                            </ignoredUnusedDeclaredDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Compile any groovy code located in "src/test/groovy" -->
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile-groovy-tests</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>addTestSources</goal>
+                            <goal>compileTests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
         This plugin doesn't really do much, it makes sure the jacoco agent
         is downloaded and that the path to this is saved in an environment
         variable, so we can access this later on in the build.
       -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <!--
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <!--
               Prepares the property pointing to the JaCoCo runtime agent which
               is passed as VM argument when Maven the Surefire plugin is executed.
           -->
-          <execution>
-            <id>pre-unit-test</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-            <configuration>
-              <!--
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!--
                   Sets the name of the property containing the settings
                   for JaCoCo runtime agent.
               -->
-              <propertyName>surefireArgLine</propertyName>
-            </configuration>
-          </execution>
-          <!--
+                            <propertyName>surefireArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <!--
               Prepares the property pointing to the JaCoCo runtime agent which
               is passed as VM argument when Maven the Failsafe plugin is executed.
           -->
-          <execution>
-            <id>before:integration-test</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>prepare-agent-integration</goal>
-            </goals>
-            <configuration>
-              <!--
+                    <execution>
+                        <id>before:integration-test</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <!--
                   Sets the name of the property containing the settings
                   for JaCoCo runtime agent.
               -->
-              <propertyName>failsafeArgLine</propertyName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <!-- Exclude multi-release classes and generated code -->
-              <excludes>
-                <exclude>META-INF/versions/**</exclude>
-                <exclude>module-info.class</exclude>
-                <!-- Exclude generated protocol code packages (all readwrite packages are generated) -->
-                <exclude>**/readwrite/*.class</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-          <!--
+                            <propertyName>failsafeArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Exclude multi-release classes and generated code -->
+                            <excludes>
+                                <exclude>META-INF/versions/**</exclude>
+                                <exclude>module-info.class</exclude>
+                                <!-- Exclude generated protocol code packages (all readwrite packages are generated) -->
+                                <exclude>**/readwrite/*.class</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <!--
               Check if the unit-test-coverage is at least a certain minimum.
           -->
-          <execution>
-            <id>check-coverage</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <haltOnFailure>true</haltOnFailure>
-              <!-- Exclude multi-release classes, functional interfaces, and generated code -->
-              <excludes>
-                <exclude>META-INF/versions/**</exclude>
-                <exclude>module-info.class</exclude>
-                <!-- Exclude functional interfaces that can't be directly covered -->
-                <exclude>**/*$*Listener.class</exclude>
-                <!-- Exclude generated protocol code packages (all readwrite packages are generated) -->
-                <exclude>**/readwrite/*.class</exclude>
-                <!-- Exclude functional marker interfaces (hard to test directly) -->
-                <exclude>**/with*.class</exclude>
-              </excludes>
-              <rules>
-                <rule implementation="org.jacoco.maven.RuleConfiguration">
-                  <element>BUNDLE</element>
-                  <limits>
-                    <!-- Fail the build if the instruction level coverage is below 80%. -->
-                    <limit implementation="org.jacoco.report.check.Limit">
-                      <counter>INSTRUCTION</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.80</minimum>
-                    </limit>
-                    <!-- Fail the build if there are classes without any coverage. -->
-                    <limit implementation="org.jacoco.report.check.Limit">
-                      <counter>CLASS</counter>
-                      <value>MISSEDCOUNT</value>
-                      <maximum>0</maximum>
-                    </limit>
-                  </limits>
-                </rule>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!--
+                    <execution>
+                        <id>check-coverage</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <haltOnFailure>true</haltOnFailure>
+                            <!-- Exclude multi-release classes, functional interfaces, and generated code -->
+                            <excludes>
+                                <exclude>META-INF/versions/**</exclude>
+                                <exclude>module-info.class</exclude>
+                                <!-- Exclude functional interfaces that can't be directly covered -->
+                                <exclude>**/*$*Listener.class</exclude>
+                                <!-- Exclude generated protocol code packages (all readwrite packages are generated) -->
+                                <exclude>**/readwrite/*.class</exclude>
+                                <!-- Exclude functional marker interfaces (hard to test directly) -->
+                                <exclude>**/with*.class</exclude>
+                            </excludes>
+                            <rules>
+                                <rule implementation="org.jacoco.maven.RuleConfiguration">
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <!-- Fail the build if the instruction level coverage is below 80%. -->
+                                        <limit implementation="org.jacoco.report.check.Limit">
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                        <!-- Fail the build if there are classes without any coverage. -->
+                                        <limit implementation="org.jacoco.report.check.Limit">
+                                            <counter>CLASS</counter>
+                                            <value>MISSEDCOUNT</value>
+                                            <maximum>0</maximum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
         As our libraries should be consumable on Java 21, downgrade the compiler settings.
       -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <!-- Would have loved to suppress the warnings of generated code only -->
-              <showWarnings>false</showWarnings>
-              <release>${java.version}</release>
-            </configuration>
-          </execution>
-          <execution>
-            <id>default-testCompile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-            <configuration>
-              <!-- Would have loved to suppress the warnings of generated code only -->
-              <showWarnings>false</showWarnings>
-              <release>${java.version}</release>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Would have loved to suppress the warnings of generated code only -->
+                            <showWarnings>false</showWarnings>
+                            <release>${java.version}</release>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Would have loved to suppress the warnings of generated code only -->
+                            <showWarnings>false</showWarnings>
+                            <release>${java.version}</release>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
         Make the surefire execute all unit-tests
       -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!--
             We have to slightly increase the heap-size or some tests will fail.
             Notice the @ instead of the $ as prefix? That's late evaluation.
             Also do we have to pass in the byte-buddy agent to work around issues
             with dynamic loading of jvm agents.
           -->
-          <argLine>-Xmx512m @{surefireArgLine}</argLine>
-          <includes>
-            <include>**/*Test.java</include>
-            <include>**/*Tests.java</include>
-            <include>**/*Spec.java</include>
-          </includes>
-          <environmentVariables>
-            <!-- Pass in to the build, if all tests should be run -->
-            <ENABLE_ALL_TESTS>${enable-all-tests}</ENABLE_ALL_TESTS>
-          </environmentVariables>
-          <excludedGroups>${excluded-test-groups}</excludedGroups>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <!--
+                    <argLine>-Xmx512m @{surefireArgLine}</argLine>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                        <include>**/*Spec.java</include>
+                    </includes>
+                    <environmentVariables>
+                        <!-- Pass in to the build, if all tests should be run -->
+                        <ENABLE_ALL_TESTS>${enable-all-tests}</ENABLE_ALL_TESTS>
+                    </environmentVariables>
+                    <excludedGroups>${excluded-test-groups}</excludedGroups>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <!--
             The failsafe plugin would use the java jigsaw module path,
             this would make loading the test XML files impossible.
             So we simply disable this.
           -->
-          <useModulePath>false</useModulePath>
-          <!--
+                    <useModulePath>false</useModulePath>
+                    <!--
             We have to slightly increase the heap-size or some tests will fail.
             Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>-Xmx512m @{failsafeArgLine}</argLine>
-          <includes>
-            <include>**/*IT.java</include>
-          </includes>
-          <environmentVariables>
-            <!-- Pass in to the build, if all tests should be run -->
-            <ENABLE_ALL_TESTS>${enable-all-tests}</ENABLE_ALL_TESTS>
-          </environmentVariables>
-        </configuration>
-      </plugin>
-
-      <!--
+                    <argLine>-Xmx512m @{failsafeArgLine}</argLine>
+                    <includes>
+                        <include>**/*IT.java</include>
+                    </includes>
+                    <environmentVariables>
+                        <!-- Pass in to the build, if all tests should be run -->
+                        <ENABLE_ALL_TESTS>${enable-all-tests}</ENABLE_ALL_TESTS>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+            <!--
         Generate an OSGI compatible MANIFEST file.
       -->
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>bundle-manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-            <exportScr>true</exportScr>
-            <instructions>
-              <_include>-bnd.bnd</_include>
-              <_removeheaders>Bnd-LastModified,Built-By</_removeheaders>
-            </instructions>
-        </configuration>
-      </plugin>
-
-      <!--
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <exportScr>true</exportScr>
+                    <instructions>
+                        <_include>-bnd.bnd</_include>
+                        <_removeheaders>Bnd-LastModified,Built-By</_removeheaders>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <!--
         Use the MANIFEST file generated by the maven-bundle-plugin.
       -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <!-- Dependencies common to all java modules -->
-  <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- JUnit 5 Support -->
-    <dependency>
-      <groupId>org.junit.platform</groupId>
-      <artifactId>junit-platform-launcher</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.groovy</groupId>
-      <artifactId>groovy-test-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <!-- Dependencies common to all java modules -->
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- JUnit 5 Support -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-test-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
+
