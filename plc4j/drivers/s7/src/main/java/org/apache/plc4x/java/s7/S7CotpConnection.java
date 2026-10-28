@@ -893,12 +893,14 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
                         mergeWriteCode(out, tagName, mapPlcErrorCode(md.getErrorClass(), md.getErrorCode()));
                         return null;
                     }
-                    if (response.getPayload() instanceof S7PayloadWriteVarResponse payload
-                            && !payload.getItems().isEmpty()) {
-                        PlcResponseCode code = mapDataTransportError(payload.getItems().get(0).getReturnCode());
-                        if (code != PlcResponseCode.OK) {
-                            mergeWriteCode(out, tagName, code);
-                        }
+                    if (!(response.getPayload() instanceof S7PayloadWriteVarResponse payload)
+                            || payload.getItems().isEmpty()) {
+                        mergeWriteCode(out, tagName, PlcResponseCode.INTERNAL_ERROR);
+                        return null;
+                    }
+                    PlcResponseCode code = mapDataTransportError(payload.getItems().get(0).getReturnCode());
+                    if (code != PlcResponseCode.OK) {
+                        mergeWriteCode(out, tagName, code);
                     }
                     return null;
                 });

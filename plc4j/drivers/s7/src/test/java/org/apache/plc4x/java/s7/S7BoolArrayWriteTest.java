@@ -134,6 +134,30 @@ class S7BoolArrayWriteTest {
     }
 
     @Test
+    void splitWriteWithoutAStatusDoesNotReportSuccess() throws Exception {
+        ScriptedS7Transport transport = new ScriptedS7Transport();
+        S7CotpConnection connection = S7ScriptedConnectionHarness.newConnectedConnection(transport);
+        transport.resetCounters();
+        CompletableFuture<? extends PlcWriteResponse> future = connection.writeRequestBuilder()
+            .addTagAddress("bools", "%DB1:16.0[0..1999]:BOOL", bools(2000, i -> true))
+            .build().execute();
+        int answered = 0;
+        long deadline = System.currentTimeMillis() + 5_000;
+        while (!future.isDone() && System.currentTimeMillis() < deadline) {
+            if (transport.writeCount() > answered) {
+                byte[] request = transport.writtenFrames().get(answered++);
+                transport.deliver(S7ScriptedConnectionHarness.writeVarResponse(
+                    S7ScriptedConnectionHarness.tpduReferenceOfFrame(request), List.of()));
+                transport.runDataListener();
+            } else {
+                Thread.sleep(5);
+            }
+        }
+        assertEquals(PlcResponseCode.INTERNAL_ERROR, future.get(5, TimeUnit.SECONDS).getResponseCode("bools"));
+        connection.close();
+    }
+
+    @Test
     void reportsTheFirstFailedItemForTheTag() throws Exception {
         PlcResponseCode code = writeBools("%DB1:16.0[0..9]:BOOL", bools(10, i -> true), filled((byte) 0),
             new ArrayList<>(), DataTransportErrorCode.ACCESS_DENIED);
