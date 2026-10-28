@@ -101,7 +101,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 /**
  * S7 connection over the COTP transport. The COTP transport handles TPKT framing and the
@@ -625,34 +624,25 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         for (String t : readRequest.getTagNames()) {
             finalValues.put(t, rejectedTags.get(t));
         }
+        Set<String> splitTagNames = new HashSet<>();
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
         for (S7ReadChunk chunk : chunks) {
-            chain = chain.thenCompose(v -> sendReadChunk(chunk, finalValues));
-        }
-        return chain.thenApply(v -> {
-            // Post-process split-assembled fragments: the assembler stores raw bytes as
-            // PlcRawByteArray. For any non-BYTE original tag, re-parse into the proper typed value.
-            for (String tagName : readRequest.getTagNames()) {
-                PlcResponseItem<PlcValue> item = finalValues.get(tagName);
-                if (item != null && item.getResponseCode() == PlcResponseCode.OK
-                        && item.getValue() instanceof PlcRawByteArray rawArray) {
-                    S7Tag originalTag = (S7Tag) readRequest.getTag(tagName);
-                    // BYTE tags stay as PlcRawByteArray (that IS their final form).
-                    if (originalTag.getDataType() != TransportSize.BYTE) {
-                        try {
-                            PlcValue parsed = parsePlcValue(originalTag, rawArray.getRaw());
-                            finalValues.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, parsed));
-                        } catch (Exception ex) {
-                            LOGGER.warn("Error parsing split-assembled tag '{}'", tagName, ex);
-                            finalValues.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
-                        }
+            for (S7ReadChunk.Slot slot : chunk.slots()) {
+                for (S7ReadChunk.Binding b : slot.bindings()) {
+                    if (b.isSplitFragment()) {
+                        splitTagNames.add(b.tagName());
                     }
                 }
             }
+            chain = chain.thenCompose(v -> sendReadChunk(chunk, finalValues));
+        }
+        return chain.thenApply(v -> {
             // Replace any still-null entries (shouldn't happen) with INTERNAL_ERROR.
             for (Map.Entry<String, PlcResponseItem<PlcValue>> e : finalValues.entrySet()) {
                 if (e.getValue() == null) {
                     e.setValue(new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                } else if (splitTagNames.contains(e.getKey())) {
+                    decodeReassembledTag(e, (S7Tag) readRequest.getTag(e.getKey()));
                 }
             }
             return new DefaultPlcReadResponse(readRequest, finalValues);
@@ -735,30 +725,47 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         }
     }
 
+    /**
+     * A tag split across PDUs is reassembled as the raw payload a read of it returns; it can only
+     * be decoded once every fragment is in.
+     */
+    private void decodeReassembledTag(Map.Entry<String, PlcResponseItem<PlcValue>> entry, S7Tag tag) {
+        if (entry.getValue().getResponseCode() != PlcResponseCode.OK
+            || !(entry.getValue().getValue() instanceof PlcRawByteArray raw)) {
+            return;
+        }
+        try {
+            entry.setValue(new DefaultPlcResponseItem<>(PlcResponseCode.OK,
+                parsePlcValue(tag, raw.getRaw())));
+        } catch (BufferException e) {
+            LOGGER.warn("Error decoding tag {}", entry.getKey(), e);
+            entry.setValue(new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+        }
+    }
+
     private void decodeBindingInto(Map<String, PlcResponseItem<PlcValue>> out, S7ReadChunk.Binding b, byte[] data)
         throws BufferException {
         S7Tag originalTag = b.originalTag();
         if (b.isSplitFragment()) {
-            // Split-fragment reassembly: accumulate raw bytes into a PlcRawByteArray.
-            // Uses sliceLengthFor for total buffer size (handles BOOL packing, STRING layout, etc.)
-            // The elementOffset in the Binding stores the byte offset within the assembled buffer.
-            int byteOffsetInOriginal = b.elementOffset();
+            // Split reassembly: the fragments are collected in a PlcRawByteArray of the tag's
+            // whole payload, which is decoded once they are all in (see decodeReassembledTag).
             PlcResponseItem<PlcValue> existing = out.get(b.tagName());
             byte[] full;
-            if (existing != null && existing.getValue() instanceof PlcRawByteArray prba) {
+            if (existing != null && existing.getResponseCode() != PlcResponseCode.OK) {
+                // An earlier fragment failed, so the tag has failed.
+                return;
+            } else if (existing != null && existing.getValue() instanceof PlcRawByteArray prba) {
                 full = prba.getRaw();
             } else {
-                full = new byte[sliceLengthFor(originalTag)];
+                full = new byte[S7Optimizer.payloadBytes(originalTag)];
                 out.put(b.tagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(full)));
             }
-            int copyLen = Math.min(data.length, full.length - byteOffsetInOriginal);
-            if (byteOffsetInOriginal >= 0 && byteOffsetInOriginal < full.length) {
-                System.arraycopy(data, 0, full, byteOffsetInOriginal, copyLen);
-            }
+            int copyLen = Math.min(data.length, full.length - b.fragmentByteOffset());
+            System.arraycopy(data, 0, full, b.fragmentByteOffset(), copyLen);
             return;
         }
         // Slice block-merged payload.
-        int sliceLen = sliceLengthFor(originalTag);
+        int sliceLen = S7Optimizer.payloadBytes(originalTag);
         byte[] slice;
         if (b.payloadByteOffset() == 0 && data.length == sliceLen) {
             slice = data;
@@ -768,18 +775,6 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         }
         PlcValue value = parsePlcValue(originalTag, slice);
         out.put(b.tagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK, value));
-    }
-
-    private static int sliceLengthFor(S7Tag tag) {
-        if (tag.getDataType() == TransportSize.BOOL) {
-            return Math.max(1, (tag.getNumberOfElements() + 7) / 8);
-        }
-        if (tag.getDataType() == TransportSize.STRING || tag.getDataType() == TransportSize.WSTRING) {
-            int bytesPerChar = tag.getDataType() == TransportSize.WSTRING ? 2 : 1;
-            int stringLength = 254;
-            return tag.getNumberOfElements() * (stringLength + 2) * bytesPerChar;
-        }
-        return tag.getNumberOfElements() * tag.getDataType().getSizeInBytes();
     }
 
     private static void mergeBindingFailure(Map<String, PlcResponseItem<PlcValue>> out,
@@ -845,82 +840,12 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         });
     }
 
-    private CompletableFuture<Void> sendWriteChunk(S7WriteChunk chunk, PlcWriteRequest writeRequest,
-                                                   Map<String, PlcResponseCode> out) {
-        // Detect BOOL array tags that require Read-Modify-Write (n%8 != 0 — unused bits
-        // in the last byte must be preserved from the PLC's current state).
-        Map<String, S7Tag> rmwTags = new LinkedHashMap<>();
-        for (String tagName : chunk.tagNames()) {
-            S7Tag s7Tag = (S7Tag) writeRequest.getTag(tagName);
-            if (needsReadModifyWrite(s7Tag)) {
-                rmwTags.put(tagName, s7Tag);
-            }
-        }
-
-        // Check if any tag in this chunk exceeds PDU and needs write-splitting.
-        // Oversized tags are placed alone in their chunk by the optimizer.
-        if (chunk.tagNames().size() == 1 && rmwTags.isEmpty()) {
-            String tagName = chunk.tagNames().get(0);
-            S7Tag s7Tag = (S7Tag) writeRequest.getTag(tagName);
-            int payloadBytes = S7Optimizer.wireResponseBytes(s7Tag);
-            int totalSize = S7Optimizer.EMPTY_WRITE_REQUEST_SIZE
-                + S7Optimizer.roundUpEven(S7Optimizer.S7_ADDRESS_ANY_SIZE + 4 + payloadBytes);
-            if (totalSize > driverContext.getPduSize()) {
-                return sendSplitWrite(tagName, s7Tag, writeRequest.getPlcValue(tagName), out);
-            }
-        }
-
-        if (rmwTags.isEmpty()) {
-            return doSendWriteChunk(chunk, writeRequest, out, Collections.emptyMap());
-        }
-
-        // Pre-read the raw byte range for each RMW tag.
-        List<S7VarRequestParameterItem> readItems = new ArrayList<>(rmwTags.size());
-        for (S7Tag tag : rmwTags.values()) {
-            int numBytes = (tag.getNumberOfElements() + 7) / 8;
-            S7Address readAddr = new S7AddressAny(TransportSize.BYTE, numBytes,
-                tag.getBlockNumber(), tag.getMemoryArea(),
-                tag.getByteOffset(), (byte) 0);
-            readItems.add(new S7VarRequestParameterItemAddress(readAddr));
-        }
-        S7Message readMsg = new S7MessageRequest(getTpduId(),
-            new S7ParameterReadVarRequest(readItems), null);
-
-        return executeThrottled(() -> sendInternal(readMsg)).thenCompose(responseMsg -> {
-            Map<String, byte[]> rmwData = new LinkedHashMap<>();
-            try {
-                S7PayloadReadVarResponse payload =
-                    (S7PayloadReadVarResponse) ((S7MessageResponseData) responseMsg).getPayload();
-                List<S7VarPayloadDataItem> items = payload.getItems();
-                int i = 0;
-                for (Map.Entry<String, S7Tag> entry : rmwTags.entrySet()) {
-                    S7VarPayloadDataItem item = items.get(i++);
-                    if (item.getReturnCode() == DataTransportErrorCode.OK) {
-                        S7Tag tag = entry.getValue();
-                        PlcValue writeValue = writeRequest.getPlcValue(entry.getKey());
-                        rmwData.put(entry.getKey(), mergeBits(item.getData(), tag, writeValue));
-                    } else {
-                        LOGGER.warn("RMW pre-read failed for tag '{}': {}", entry.getKey(), item.getReturnCode());
-                    }
-                }
-            } catch (Exception e) {
-                LOGGER.warn("RMW pre-read failed, falling back to direct write", e);
-            }
-            return doSendWriteChunk(chunk, writeRequest, out, rmwData);
-        });
-    }
-
-    /**
-     * Handles writing a single tag whose serialized payload exceeds PDU size by splitting
-     * into multiple BYTE-range write requests sent sequentially. Universal for STRING,
-     * WSTRING, large arrays, etc.
-     */
     private CompletableFuture<Void> sendSplitWrite(String tagName, S7Tag s7Tag, PlcValue plcValue,
                                                    Map<String, PlcResponseCode> out) {
         // 1. Serialize the full value.
         S7VarPayloadDataItem fullItem = serializePlcValue(s7Tag, plcValue);
         if (fullItem == null) {
-            out.put(tagName, PlcResponseCode.INVALID_DATA);
+            mergeWriteCode(out, tagName, PlcResponseCode.INVALID_DATA);
             return CompletableFuture.completedFuture(null);
         }
         byte[] fullData = fullItem.getData();
@@ -965,14 +890,14 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
                     }
                     if (response instanceof S7MessageResponseData md
                             && (md.getErrorClass() != 0 || md.getErrorCode() != 0)) {
-                        out.putIfAbsent(tagName, mapPlcErrorCode(md.getErrorClass(), md.getErrorCode()));
+                        mergeWriteCode(out, tagName, mapPlcErrorCode(md.getErrorClass(), md.getErrorCode()));
                         return null;
                     }
                     if (response.getPayload() instanceof S7PayloadWriteVarResponse payload
                             && !payload.getItems().isEmpty()) {
                         PlcResponseCode code = mapDataTransportError(payload.getItems().get(0).getReturnCode());
                         if (code != PlcResponseCode.OK) {
-                            out.putIfAbsent(tagName, code);
+                            mergeWriteCode(out, tagName, code);
                         }
                     }
                     return null;
@@ -980,93 +905,37 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
             });
         }
         // If no fragment reported an error, mark as OK.
-        return chain.thenRun(() -> out.putIfAbsent(tagName, PlcResponseCode.OK));
+        return chain.thenRun(() -> mergeWriteCode(out, tagName, PlcResponseCode.OK));
     }
 
-    /**
-     * Returns {@code true} for BOOL arrays where the number of elements is not a multiple
-     * of 8 — i.e. the last byte contains unused bits that must be preserved during writes.
-     */
-    static boolean needsReadModifyWrite(S7Tag tag) {
-        int n = tag.getNumberOfElements();
-        return n > 1 && (n % 8) != 0 && tag.getDataType() == TransportSize.BOOL;
-    }
-
-    /**
-     * Unpacks individual bit values from packed byte data. Bit 0 of byte 0 is element 0,
-     * bit 1 of byte 0 is element 1, etc. This matches S7 PLC bit ordering.
-     */
-    static boolean[] unpackBits(byte[] data, int numBits) {
-        boolean[] bits = new boolean[numBits];
-        for (int i = 0; i < numBits; i++) {
-            int byteIdx = i / 8;
-            int bitIdx = i % 8;
-            bits[i] = ((data[byteIdx] >> bitIdx) & 0x01) != 0;
-        }
-        return bits;
-    }
-
-    /**
-     * Merges write values into a copy of the current raw bytes. Only the bits covered by
-     * {@code tag.getNumberOfElements()} are modified; the remaining bits in the last byte are
-     * preserved from {@code currentBytes} unchanged.
-     */
-    static byte[] mergeBits(byte[] currentBytes, S7Tag tag, PlcValue plcValue) {
-        byte[] merged = currentBytes.clone();
-        int numElements = tag.getNumberOfElements();
-        for (int i = 0; i < numElements; i++) {
-            PlcValue bitValue = plcValue.getIndex(i);
-            int byteIdx = i / 8;
-            int bitIdx = i % 8;
-            if (bitValue.getBoolean()) {
-                merged[byteIdx] |= (byte) (1 << bitIdx);
-            } else {
-                merged[byteIdx] &= (byte) ~(1 << bitIdx);
+    private CompletableFuture<Void> sendWriteChunk(S7WriteChunk chunk, PlcWriteRequest writeRequest,
+                                                   Map<String, PlcResponseCode> out) {
+        if (chunk.items().size() == 1) {
+            S7WriteChunk.Item item = chunk.items().get(0);
+            PlcValue value = valueOfItem(item, writeRequest.getTag(item.tagName()),
+                writeRequest.getPlcValue(item.tagName()));
+            S7VarPayloadDataItem payload = value == null ? null : serializePlcValue(item.tag(), value);
+            if (payload != null && S7Optimizer.EMPTY_WRITE_REQUEST_SIZE + S7Optimizer.roundUpEven(
+                S7Optimizer.S7_ADDRESS_ANY_SIZE + 4 + payload.getData().length) > driverContext.getPduSize()) {
+                return sendSplitWrite(item.tagName(), item.tag(), value, out);
             }
         }
-        return merged;
-    }
-
-    private CompletableFuture<Void> doSendWriteChunk(S7WriteChunk chunk, PlcWriteRequest writeRequest,
-                                                     Map<String, PlcResponseCode> out,
-                                                     Map<String, byte[]> rmwData) {
-        List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(chunk.tagNames().size());
-        List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(chunk.tagNames().size());
-        for (String tagName : chunk.tagNames()) {
-            S7Tag s7Tag = (S7Tag) writeRequest.getTag(tagName);
-            parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(s7Tag)));
-
-            S7VarPayloadDataItem item;
-            if (rmwData.containsKey(tagName)) {
-                // Use pre-read-merged bytes for RMW tags
-                item = new S7VarPayloadDataItem(DataTransportErrorCode.OK,
-                    DataTransportSize.BYTE_WORD_DWORD, rmwData.get(tagName));
-            } else {
-                item = serializePlcValue(s7Tag, writeRequest.getPlcValue(tagName));
-            }
-            if (item == null) {
+        List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(chunk.items().size());
+        List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(chunk.items().size());
+        // The tag each item that goes out belongs to, in item order, to map the statuses back.
+        List<String> sentTagNames = new ArrayList<>(chunk.items().size());
+        for (S7WriteChunk.Item item : chunk.items()) {
+            String tagName = item.tagName();
+            PlcValue value = valueOfItem(item, writeRequest.getTag(tagName), writeRequest.getPlcValue(tagName));
+            S7VarPayloadDataItem payloadItem = (value == null) ? null : serializePlcValue(item.tag(), value);
+            if (payloadItem == null) {
+                // Skip this item in the actual request - would otherwise corrupt the layout.
                 out.put(tagName, PlcResponseCode.INVALID_DATA);
-                // Skip this tag in the actual request — would otherwise corrupt the layout.
                 continue;
             }
-            payloadItems.add(item);
-        }
-        if (parameterItems.size() != payloadItems.size()) {
-            // At least one serialization failed; remaining tags can still go through.
-            // Re-build the parallel lists trimmed to successful ones.
-            parameterItems = new ArrayList<>();
-            payloadItems = new ArrayList<>();
-            for (String tagName : chunk.tagNames()) {
-                if (out.get(tagName) == PlcResponseCode.INVALID_DATA) continue;
-                S7Tag s7Tag = (S7Tag) writeRequest.getTag(tagName);
-                parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(s7Tag)));
-                if (rmwData.containsKey(tagName)) {
-                    payloadItems.add(new S7VarPayloadDataItem(DataTransportErrorCode.OK,
-                        DataTransportSize.BYTE_WORD_DWORD, rmwData.get(tagName)));
-                } else {
-                    payloadItems.add(serializePlcValue(s7Tag, writeRequest.getPlcValue(tagName)));
-                }
-            }
+            parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(item.tag())));
+            payloadItems.add(payloadItem);
+            sentTagNames.add(tagName);
         }
         if (parameterItems.isEmpty()) {
             return CompletableFuture.completedFuture(null);
@@ -1074,12 +943,6 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         S7Message request = new S7MessageRequest(getTpduId(),
             new S7ParameterWriteVarRequest(parameterItems),
             new S7PayloadWriteVarRequest(payloadItems));
-        final List<String> sentTagNames = new ArrayList<>();
-        for (String tagName : chunk.tagNames()) {
-            if (out.get(tagName) != PlcResponseCode.INVALID_DATA) {
-                sentTagNames.add(tagName);
-            }
-        }
         return executeThrottled(() -> sendInternal(request))
             .handle((response, error) -> {
                 if (error != null) {
@@ -1096,24 +959,52 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
                 }
                 if (errorClass != 0 || errorCode != 0) {
                     PlcResponseCode code = mapPlcErrorCode(errorClass, errorCode);
-                    for (String n : sentTagNames) out.put(n, code);
+                    for (String n : sentTagNames) mergeWriteCode(out, n, code);
                     return null;
                 }
                 if (!(response.getPayload() instanceof S7PayloadWriteVarResponse payload)) {
-                    for (String n : sentTagNames) out.put(n, PlcResponseCode.INTERNAL_ERROR);
+                    for (String n : sentTagNames) mergeWriteCode(out, n, PlcResponseCode.INTERNAL_ERROR);
                     return null;
                 }
                 List<S7VarPayloadStatusItem> items = payload.getItems();
                 for (int i = 0; i < sentTagNames.size(); i++) {
                     String n = sentTagNames.get(i);
                     if (i >= items.size()) {
-                        out.put(n, PlcResponseCode.INTERNAL_ERROR);
+                        mergeWriteCode(out, n, PlcResponseCode.INTERNAL_ERROR);
                     } else {
-                        out.put(n, mapDataTransportError(items.get(i).getReturnCode()));
+                        mergeWriteCode(out, n, mapDataTransportError(items.get(i).getReturnCode()));
                     }
                 }
                 return null;
             });
+    }
+
+    /**
+     * A tag written in several items is only OK if all of them were, so the first failure sticks.
+     */
+    private static void mergeWriteCode(Map<String, PlcResponseCode> out, String tagName, PlcResponseCode code) {
+        PlcResponseCode current = out.get(tagName);
+        if (current == null || current == PlcResponseCode.OK) {
+            out.put(tagName, code);
+        }
+    }
+
+    /**
+     * The part of a tag's value one write item carries: all of it, unless the item is a piece of a
+     * BOOL array, in which case the piece's elements of the list - a single one unwrapped. Null
+     * when the value is not a list with an element for every BOOL, so that no piece of it is
+     * written: every piece checks the whole list, not just its own elements.
+     */
+    private static PlcValue valueOfItem(S7WriteChunk.Item item, PlcTag tag, PlcValue value) {
+        if (item.tag() == tag) {
+            return value;
+        }
+        if (!(value instanceof PlcList list) || list.getLength() < ((S7Tag) tag).getNumberOfElements()) {
+            return null;
+        }
+        int first = item.firstElement();
+        int count = item.tag().getNumberOfElements();
+        return (count == 1) ? list.getIndex(first) : new PlcList(list.getList().subList(first, first + count));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1218,6 +1109,11 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         return null;
     }
 
+    /**
+     * Decodes what a read of the tag returned. Every request addresses a BOOL array from bit 0 of
+     * its start byte (see {@link S7Optimizer#toS7Address}), so its elements begin at the tag's bit
+     * offset.
+     */
     private PlcValue parsePlcValue(S7Tag tag, byte[] data) throws BufferException {
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(data,
             WithOption.WithUnsignedIntegerEncoding("unsigned-binary"),
@@ -1248,25 +1144,28 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
         if (tag.getDataType() == TransportSize.BYTE) {
             return new PlcRawByteArray(data);
         }
+        PlcValue[] resultItems = new PlcValue[tag.getNumberOfElements()];
         if (tag.getDataType() == TransportSize.BOOL) {
-            // Unpack bits from packed bytes — PLC sends BOOL arrays as 1 bit per element,
-            // but DataItem.staticParse expects 1 byte per BOOL (7 reserved + 1 value).
-            boolean[] bits = unpackBits(data, tag.getNumberOfElements());
-            PlcValue[] boolItems = new PlcValue[bits.length];
-            for (int i = 0; i < bits.length; i++) {
-                boolItems[i] = PlcBOOL.of(bits[i]);
+            // BOOL arrays are requested as packed bytes (LSB first), matching the write-side packing.
+            int firstBit = tag.getBitOffset();
+            if (data.length < (firstBit + resultItems.length + 7) / 8) {
+                throw new BufferException("BOOL array response too short: got " + data.length
+                    + " bytes for " + resultItems.length + " elements from bit " + firstBit);
             }
-            return DefaultPlcValueHandler.of(tag, boolItems);
+            for (int i = 0; i < resultItems.length; i++) {
+                int bit = firstBit + i;
+                resultItems[i] = PlcBOOL.of(((data[bit / 8] >> (bit % 8)) & 0x01) != 0);
+            }
+            return DefaultPlcValueHandler.of(tag, resultItems);
         }
-        PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
+        for (int i = 0; i < resultItems.length; i++) {
             try {
-                return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
+                resultItems[i] = DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
                     driverContext.getControllerType(), stringLength);
             } catch (BufferException e) {
-                LOGGER.warn("Error parsing element {} of tag {}", i, tag.getDataType().name(), e);
-                return null;
+                throw new BufferException("Error parsing element " + i + " of tag " + tag.getDataType().name(), e);
             }
-        }).toArray(PlcValue[]::new);
+        }
         return DefaultPlcValueHandler.of(tag, resultItems);
     }
 
@@ -1540,6 +1439,7 @@ public class S7CotpConnection extends ConnectionBase<S7Configuration> {
                 continue;
             }
             try {
+                // Subscribed with the read address, so the data is what a read returns.
                 PlcValue value = parsePlcValue(handle.getTag(), items.get(idx));
                 values.put(handle.getTagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK, value));
             } catch (Exception e) {

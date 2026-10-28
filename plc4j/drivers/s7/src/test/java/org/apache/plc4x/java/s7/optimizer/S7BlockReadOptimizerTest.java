@@ -122,6 +122,19 @@ class S7BlockReadOptimizerTest {
     }
 
     @Test
+    void configuredGapCanExceedAddressOverhead() {
+        S7DriverContext configured = new S7DriverContext();
+        configured.setGap(50);
+        PlcReadRequest request = req(new String[][] {
+            {"a", "%DB1.DBW0:INT"}, {"b", "%DB1.DBW40:INT"}
+        });
+        List<S7ReadChunk> chunks = optimizer.splitReadRequest(request, configured);
+        assertEquals(1, chunks.size());
+        assertEquals(1, chunks.get(0).slots().size());
+        assertEquals(2, chunks.get(0).slots().get(0).bindings().size());
+    }
+
+    @Test
     void singleReadLargerThanPduIsSplit() {
         S7DriverContext tiny = new S7DriverContext();
         tiny.setPduSize(64);

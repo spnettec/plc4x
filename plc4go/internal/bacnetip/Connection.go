@@ -25,6 +25,7 @@ import (
 	"runtime/debug"
 	"slices"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -51,12 +52,19 @@ type Connection struct {
 	driverContext     DriverContext
 	subscribers       []*Subscriber
 	subscribersMu     sync.Mutex
+	// nextCovProcessId allocates the SubscribeCOV subscriber process ids for
+	// every Subscriber of this connection. Notifications reach all of them and
+	// each routes by process id alone, so the ids must be unique per
+	// connection, not per Subscriber. The first id is 1; 0 means "no subscription".
+	nextCovProcessId atomic.Uint32
 	tm                transactions.RequestTransactionManager
 
 	connectionId string
 	tracer       tracer.Tracer
 
 	wg sync.WaitGroup // use to track spawned go routines
+
+	stopRefresh context.CancelFunc // ends the COV refresh loop started by Connect
 
 	log      zerolog.Logger
 	_options []options.WithOption // Used to pass them downstream
@@ -136,13 +144,54 @@ func (c *Connection) Connect(ctx context.Context) error {
 		}
 		c.log.Info().Msg("Ending incoming message transfer")
 	})
+	refreshCtx, cancel := context.WithCancel(context.Background())
+	c.stopRefresh = cancel
+	c.wg.Go(func() {
+		c.refreshSubscriptions(refreshCtx)
+	})
 	return nil
 }
 
 func (c *Connection) Close() error {
 	err := c.DefaultConnection.Close()
+	if c.stopRefresh != nil {
+		c.stopRefresh()
+	}
 	c.wg.Wait()
 	return err
+}
+
+// covRefreshTick is how often the refresh loop checks the COV subscriptions
+// for one that is due (Subscriber.refreshDue).
+const covRefreshTick = time.Second
+
+// refreshSubscriptions keeps the COV subscriptions of this connection alive:
+// a device drops a subscription once its lifetime runs out, so each one is
+// re-issued at lifetime/2 until it is unsubscribed or the connection closes.
+func (c *Connection) refreshSubscriptions(ctx context.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			c.log.Error().
+				Str("stack", string(debug.Stack())).
+				Interface("err", err).
+				Msg("panic-ed")
+		}
+	}()
+	ticker := time.NewTicker(covRefreshTick)
+	defer ticker.Stop()
+	for c.IsConnected() {
+		select {
+		case <-ctx.Done():
+			return
+		case now := <-ticker.C:
+			c.subscribersMu.Lock()
+			subscribers := slices.Clone(c.subscribers)
+			c.subscribersMu.Unlock()
+			for _, s := range subscribers {
+				s.refreshDue(ctx, now)
+			}
+		}
+	}
 }
 
 func (c *Connection) passToDefaultIncomingMessageChannel() {

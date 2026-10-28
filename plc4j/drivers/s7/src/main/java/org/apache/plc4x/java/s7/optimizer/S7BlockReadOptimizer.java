@@ -106,7 +106,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
             while (idx < entries.size()) {
                 TagEntry first = entries.get(idx);
                 int blockStart = first.tag.getByteOffset();
-                int blockEnd = blockStart + tagSizeInBytes(first.tag);
+                int blockEnd = blockStart + payloadBytes(first.tag);
                 List<TagEntry> group = new ArrayList<>();
                 group.add(first);
                 // Accumulated individual cost for auto mode.
@@ -115,10 +115,13 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                 while (idx < entries.size()) {
                     TagEntry next = entries.get(idx);
                     int nextStart = next.tag.getByteOffset();
-                    int nextEnd = nextStart + tagSizeInBytes(next.tag);
-                    // Regardless of the merge strategy, a block may only grow while it still
-                    // fits into one response item; the next tag simply starts a new block (GH-2762).
-                    // Entries are offset-sorted, so nextStart >= blockStart.
+                    int nextEnd = nextStart + payloadBytes(next.tag);
+                    // Bool tags use bit offsets and overlap a single byte; never block-merge them.
+                    if (next.tag.getDataType() == TransportSize.BOOL || first.tag.getDataType() == TransportSize.BOOL) {
+                        break;
+                    }
+                    // ... and only while the block still fits into one response item. The next
+                    // tag simply starts a new block instead.
                     if (Math.max(blockEnd, nextEnd) - blockStart > maxBlockBytes) {
                         break;
                     }
@@ -196,11 +199,11 @@ public class S7BlockReadOptimizer extends S7Optimizer {
                     int offsetInWindow = b.payloadByteOffset() - windowStart;
                     // A tag the window does not hold completely is left to the null-check in the
                     // connection, which reports it as an error rather than a half-decoded value.
-                    if (offsetInWindow < 0 || offsetInWindow + tagSizeInBytes(b.originalTag()) > windowLength) {
+                    if (offsetInWindow < 0 || offsetInWindow + payloadBytes(b.originalTag()) > windowLength) {
                         continue;
                     }
                     visible.add(new S7ReadChunk.Binding(b.tagName(), b.originalTag(),
-                        offsetInWindow, b.elementOffset(), b.isSplitFragment()));
+                        offsetInWindow, b.fragmentByteOffset(), b.isSplitFragment()));
                 }
                 if (visible.isEmpty()) {
                     // Nothing in this slot can be decoded, so there is no point in requesting it.
@@ -222,7 +225,7 @@ public class S7BlockReadOptimizer extends S7Optimizer {
      * is sufficient because the base optimizer does the final PDU layout.
      */
     private static int computeReadRequestCost(S7Tag tag) {
-        int response = 4 + tagSizeInBytes(tag);
+        int response = 4 + payloadBytes(tag);
         if (response % 2 == 1) response++;
         return S7_ADDRESS_ANY_SIZE + response;
     }
@@ -243,18 +246,6 @@ public class S7BlockReadOptimizer extends S7Optimizer {
             return area.getShortName() + "/" + s7Tag.getBlockNumber();
         }
         return area.getShortName();
-    }
-
-    private static int tagSizeInBytes(S7Tag tag) {
-        if (tag.getDataType() == TransportSize.BOOL) {
-            return Math.max(1, (tag.getNumberOfElements() + 7) / 8);
-        }
-        if (tag.getDataType() == TransportSize.STRING || tag.getDataType() == TransportSize.WSTRING) {
-            int bytesPerChar = tag.getDataType() == TransportSize.WSTRING ? 2 : 1;
-            int stringLength = 254;
-            return tag.getNumberOfElements() * (stringLength + 2) * bytesPerChar;
-        }
-        return tag.getNumberOfElements() * tag.getDataType().getSizeInBytes();
     }
 
     private record TagEntry(String tagName, S7Tag tag) {}

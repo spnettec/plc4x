@@ -22,7 +22,6 @@ package bacnetip
 import (
 	"context"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -39,8 +38,8 @@ import (
 )
 
 // Subscriber drives BACnet COV (Change-of-Value) subscriptions: it issues
-// SubscribeCOV requests on Subscribe, refreshes them at lifetime/2 via a
-// background ticker, fans incoming UnconfirmedCOVNotification /
+// SubscribeCOV requests on Subscribe, re-issues them at lifetime/2 when the
+// connection's refresh loop calls refreshDue, fans incoming UnconfirmedCOVNotification /
 // ConfirmedCOVNotification APDUs out to registered consumers, and tears
 // everything down on Unsubscribe.
 //
@@ -53,11 +52,6 @@ type Subscriber struct {
 	// incoming COV notifications can be routed in O(1).
 	handles   map[uint32]*SubscriptionHandle
 	handlesMu sync.RWMutex
-
-	// nextProcessId is a monotonic counter that allocates unique subscriber
-	// process ids per Connection. BACnet spec allows any uint32 value as the
-	// id; starting at 1 keeps 0 reserved for "no subscription".
-	nextProcessId atomic.Uint32
 
 	wg sync.WaitGroup `ignore:"true"`
 
@@ -75,7 +69,6 @@ func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subs
 		log:      logger,
 		_options: _options,
 	}
-	s.nextProcessId.Store(1)
 	return s
 }
 
@@ -102,7 +95,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 				responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
 				continue
 			}
-			processId := m.nextProcessId.Add(1)
+			processId := m.connection.nextCovProcessId.Add(1)
 			handle := NewSubscriptionHandle(
 				m, tagName, tag,
 				internalReq.GetType(tagName),
@@ -115,7 +108,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 			handle.monitoredInstance = tag.GetObjectId().ObjectIdInstance
 			handle.lifetimeSec = lifetime
 
-			code := m.sendSubscribeCOV(ctx, handle, lifetime)
+			code := m.sendSubscribeCOV(ctx, handle, lifetime, false)
 			responseCodes[tagName] = code
 			subscriptionValues[tagName] = handle.DefaultPlcSubscriptionHandle
 
@@ -138,8 +131,9 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	return result
 }
 
-// Unsubscribe sends a SubscribeCOV with lifetime=0 (BACnet cancel semantics)
-// for each handle in the unsubscription request, then drops the handle from
+// Unsubscribe sends a SubscribeCOV cancellation (no issueConfirmedNotifications
+// and no lifetime, ASHRAE 135 13.14.1) for each handle in the unsubscription
+// request, then drops the handle from
 // the routing map so further notifications are silently ignored.
 func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
@@ -154,7 +148,10 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 			if bh == nil {
 				continue
 			}
-			_ = m.sendSubscribeCOV(ctx, bh, 0) // lifetime=0 cancels
+			bh.mu.Lock()
+			bh.cancelled = true
+			_ = m.sendSubscribeCOV(ctx, bh, 0, true)
+			bh.mu.Unlock()
 			m.removeHandle(bh.subscriberProcessId)
 		}
 		// Build a response with OK for every handle the caller passed.
@@ -163,18 +160,58 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 	return result
 }
 
+// refreshDue re-issues SubscribeCOV for every handle whose lifetime is half
+// used up, so the device keeps the subscription alive past its lifetime. A
+// failed refresh is retried after a tenth of the lifetime (at least a second),
+// not on every call. Handles with lifetime 0 never expire and are skipped.
+func (m *Subscriber) refreshDue(ctx context.Context, now time.Time) {
+	m.handlesMu.RLock()
+	handles := make([]*SubscriptionHandle, 0, len(m.handles))
+	for _, h := range m.handles {
+		handles = append(handles, h)
+	}
+	m.handlesMu.RUnlock()
+
+	for _, h := range handles {
+		if ctx.Err() != nil {
+			return
+		}
+		h.mu.Lock()
+		if h.cancelled || h.lifetimeSec == 0 || now.Before(h.retryAt) ||
+			now.Sub(h.lastIssuedAt) < time.Duration(h.lifetimeSec)*time.Second/2 {
+			h.mu.Unlock()
+			continue
+		}
+		if code := m.sendSubscribeCOV(ctx, h, h.lifetimeSec, false); code != apiModel.PlcResponseCode_OK {
+			h.retryAt = now.Add(max(time.Duration(h.lifetimeSec)*time.Second/10, time.Second))
+			m.log.Debug().
+				Uint32("processId", h.subscriberProcessId).
+				Str("tagName", h.tagName).
+				Stringer("responseCode", code).
+				Msg("COV refresh failed")
+		}
+		h.mu.Unlock()
+	}
+}
+
 // sendSubscribeCOV builds and dispatches a single SubscribeCOV confirmed
 // request. Returns the plc4go response code derived from the SimpleAck/Error
-// reply. lifetime=0 cancels an existing subscription.
-func (m *Subscriber) sendSubscribeCOV(ctx context.Context, handle *SubscriptionHandle, lifetime uint32) apiModel.PlcResponseCode {
+// reply. cancel sends the cancellation form, which leaves out both
+// issueConfirmedNotifications and lifetime; lifetime=0 is not a cancellation
+// but an indefinite subscription.
+func (m *Subscriber) sendSubscribeCOV(ctx context.Context, handle *SubscriptionHandle, lifetime uint32, cancel bool) apiModel.PlcResponseCode {
 	tag, ok := handle.tag.(BacNetPlcTag)
 	if !ok || tag == nil {
 		return apiModel.PlcResponseCode_INVALID_ADDRESS
 	}
 	subscriberProcessId := readWriteModel.CreateBACnetContextTagUnsignedInteger(0, uint(handle.subscriberProcessId))
 	monitoredObject := readWriteModel.CreateBACnetContextTagObjectIdentifier(1, tag.GetObjectId().getId(), tag.GetObjectId().ObjectIdInstance)
-	issueConfirmed := readWriteModel.CreateBACnetContextTagBoolean(2, handle.confirmedNotifications)
-	lifetimeTag := readWriteModel.CreateBACnetContextTagUnsignedInteger(3, uint(lifetime))
+	var issueConfirmed readWriteModel.BACnetContextTagBoolean
+	var lifetimeTag readWriteModel.BACnetContextTagUnsignedInteger
+	if !cancel {
+		issueConfirmed = readWriteModel.CreateBACnetContextTagBoolean(2, handle.confirmedNotifications)
+		lifetimeTag = readWriteModel.CreateBACnetContextTagUnsignedInteger(3, uint(lifetime))
+	}
 
 	serviceRequest := readWriteModel.NewBACnetConfirmedServiceRequestSubscribeCOV(
 		0, subscriberProcessId, monitoredObject, issueConfirmed, lifetimeTag,
