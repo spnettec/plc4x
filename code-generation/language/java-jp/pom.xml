@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.plc4x</groupId>
         <artifactId>plc4x-code-generation-language</artifactId>
-        <version>1.0.0.B-SNAPSHOT</version>
+        <version>2.0.0.B-SNAPSHOT</version>
     </parent>
     <artifactId>plc4x-code-generation-language-java</artifactId>
     <name>Code-Generation: Language: Java (JavaPoet)</name>
@@ -88,7 +88,7 @@
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-api</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <!-- Logging -->
         <dependency>
@@ -99,7 +99,7 @@
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x.plugins</groupId>
@@ -115,17 +115,17 @@
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-spi-utils</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-spi-buffers-api</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-spi-buffers-byte</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <!-- https://github.com/palantir/javapoet -->
         <dependency>

@@ -242,9 +242,9 @@ YOFC 自建的 PLC4X 代理服务器（`plc4j/tools/plc4x-server`），基于 Ne
 
 ### 版本号约定
 
-YOFC 保持自己的 `1.0.0.B-SNAPSHOT`，**不跟上游的版本号**（上游 2026-09 起为 `1.1.0-SNAPSHOT`）。`yofc-iot` 的 `com.yofc.iot.apps.opcuaserver` 等 pom 把 `plc4j-*` 依赖钉在 `1.0.0.B-SNAPSHOT`，改这个版本号会连带改下游。
+YOFC 根据 2026-10-29 用户决定使用 `2.0.0.B-SNAPSHOT`，以 `.B` 与上游 `1.1.0-SNAPSHOT` 区分。`yofc-iot` 的 `com.yofc.iot.apps.opcuaserver` 等 pom 把 `plc4j-*` 依赖钉在 `2.0.0.B-SNAPSHOT`，改这个版本号会连带改下游。
 
-冲突表现：~100 个 `pom.xml` 的 `<version>` 行冲突。判据是「只有版本/时间戳差异」→ 取 ours；「上游单方面新增的行」→ 取 theirs 但把 `1.1.0-SNAPSHOT` 换回 `1.0.0.B-SNAPSHOT`。merge 后务必 grep 一遍 `1\.1\.0-SNAPSHOT` 和 `1\.0\.0-SNAPSHOT`（没有 `.B`）：上游新增的 `<parent>` version、新依赖的 version 都不会冲突，会静默带进来，直到构建报 "Non-resolvable parent POM" 才暴露。
+冲突表现：~100 个 `pom.xml` 的 `<version>` 行冲突。判据是「只有版本/时间戳差异」→ 取 ours；「上游单方面新增的行」→ 取 theirs 但把 `1.1.0-SNAPSHOT` 换回 `2.0.0.B-SNAPSHOT`。merge 后务必 grep 一遍 `1\.1\.0-SNAPSHOT` 和 `1\.0\.0-SNAPSHOT`（没有 `.B`）：上游新增的 `<parent>` version、新依赖的 version 都不会冲突，会静默带进来，直到构建报 "Non-resolvable parent POM" 才暴露。
 
 ### 构建：**不要用 `-T 1C`**
 
@@ -280,7 +280,7 @@ cd plc4go && $GO build ./... && $GO vet ./...     # exit 0 才算过
 
 （`go vet` 会报一批 `ReadByte`/`WriteByte` 签名不匹配的 style 警告，那是上游自带的，不是错误。）
 
-例外：这几个目录的 `pom.xml` **版本号仍要保持 `1.0.0.B-SNAPSHOT`**，否则父 pom 解析不到。2026-09 合并后，`plc4go`/`plc4c`/`plc4py`/`plc4net` 与上游的差异**只剩这些 pom 版本行**——这 4 个目录应当与上游保持零差异。
+例外：这几个目录的 `pom.xml` **版本号仍要保持 `2.0.0.B-SNAPSHOT`**，否则父 pom 解析不到。2026-09 合并后，`plc4go`/`plc4c`/`plc4py`/`plc4net` 与上游的差异**只剩这些 pom 版本行**——这 4 个目录应当与上游保持零差异。
 
 ## 工具链
 

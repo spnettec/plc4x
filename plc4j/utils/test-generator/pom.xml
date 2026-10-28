@@ -22,7 +22,7 @@
     <parent>
         <artifactId>plc4j-utils</artifactId>
         <groupId>org.apache.plc4x</groupId>
-        <version>1.0.0.B-SNAPSHOT</version>
+        <version>2.0.0.B-SNAPSHOT</version>
     </parent>
     <artifactId>plc4j-utils-test-generator</artifactId>
     <name>PLC4J: Utils: Test-Generator</name>
@@ -90,12 +90,12 @@
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-spi-buffers-byte</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-spi-buffers-xml</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.groovy</groupId>
@@ -126,22 +126,22 @@
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-driver-s7</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-driver-eip</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-driver-iec-60870</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-spi-buffers-api</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>

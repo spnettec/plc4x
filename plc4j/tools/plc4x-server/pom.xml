@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.plc4x</groupId>
         <artifactId>plc4j-tools</artifactId>
-        <version>1.0.0.B-SNAPSHOT</version>
+        <version>2.0.0.B-SNAPSHOT</version>
     </parent>
     <artifactId>plc4j-plc4x-server</artifactId>
     <name>PLC4J: Tools: Plc4x Server</name>
@@ -119,46 +119,46 @@
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-api</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <!-- SPI sub-modules (plc4j-spi is now pom-only after SPI restructuring) -->
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-spi-drivers</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-spi-buffers-byte</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-spi-values</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-tools-connection-cache</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-driver-plc4x</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
         </dependency>
         <!-- Include only needed drivers (plc4j-driver-all includes drivers not yet
          adapted to the new SPI, causing ServiceLoader conflicts) -->
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-driver-s7</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-driver-simulated</artifactId>
-            <version>1.0.0.B-SNAPSHOT</version>
+            <version>2.0.0.B-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
